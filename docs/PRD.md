@@ -31,7 +31,9 @@ final, dan boleh diubah sesudah dicoba. Angka lainnya wajib persis.
   ditolak lewat pemberitahuan, tanpa nama dan tanpa keahlian.
 - Job penebang, penambang, petani, bisa diganti kapan saja lewat panel warga.
 - Warga bekerja sendiri dengan angka yang sama seperti pemain, 1 pukulan per
-  detik (angka awal), hasil masuk penghitung.
+  detik (angka awal), hasil masuk penghitung. Target yang sedang dikerjakan
+  warga lain tidak diambil: tiap warga mencari pohon, batu, atau petak lain
+  dan berpencar.
 - Tiap warga makan 3 roti per hari, roti habis berarti berhenti kerja, tidak mati.
   Tombol Beri Roti di panel warga membuat warga kenyang seketika (1 roti).
 - Warga ikut melawan tiap malam, HP 50 (angka awal), kalah berarti bangun lagi

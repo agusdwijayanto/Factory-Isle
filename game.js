@@ -516,24 +516,31 @@ function moveToward(v, tx, ty, dt) {
   v.face = { x: Math.abs(dx) > Math.abs(dy) ? Math.sign(dx) : 0, y: Math.abs(dy) >= Math.abs(dx) ? Math.sign(dy) : 0 };
   return false;
 }
-function nearestTree(x, y) {
+function nearestTree(x, y, skip) {
   let best = null, bd = 1e9;
-  const consider = e => { const d = Math.hypot(e.tx * TILE + 16 - x, e.ty * TILE + 16 - y); if (d < bd) { bd = d; best = e; } };
+  const consider = e => { if (skip && skip(e)) return; const d = Math.hypot(e.tx * TILE + 16 - x, e.ty * TILE + 16 - y); if (d < bd) { bd = d; best = e; } };
   for (const t of WORLD.trees) if (alive(t)) consider(t);
   for (const p of S.planted) if (grown(p)) consider(p);
   return best;
 }
-function nearestRock(x, y) {
+function nearestRock(x, y, skip) {
   let best = null, bd = 1e9;
   for (const r of WORLD.rocks) if (alive(r)) {
+    if (skip && skip(r)) continue;
     const d = Math.hypot(r.tx * TILE + 16 - x, r.ty * TILE + 16 - y);
     if (d < bd) { bd = d; best = r; }
   }
   return best;
 }
+// Target yang sedang dikerjakan warga lain tidak diambil: tiap warga mencari target lain.
+function targetTaken(v, key) {
+  for (const o of S.villagers) if (o !== v && o.target === key) return true;
+  return false;
+}
 function villagerWork(v, dt) {
   if (v.job === 'wood') {
-    const t = nearestTree(v.x, v.y);
+    const t = nearestTree(v.x, v.y, e => targetTaken(v, 't:' + e.tx + ',' + e.ty));
+    v.target = t ? 't:' + t.tx + ',' + t.ty : null;
     if (!t) return;
     const cx = t.tx * TILE + 16, cy = t.ty * TILE + 16;
     if (Math.hypot(cx - v.x, cy - v.y) > 44) { moveToward(v, cx, cy, dt); return; }
@@ -542,6 +549,7 @@ function villagerWork(v, dt) {
   } else if (v.job === 'mine') {
     const mine = S.buildings.find(b => b.type === 'mine' && b.built);
     if (mine) {
+      v.target = null;
       const cx = mine.x * TILE + TILE, cy = mine.y * TILE + TILE;
       if (Math.hypot(cx - v.x, cy - v.y) > 52) { moveToward(v, cx, cy, dt); return; }
       v.moving = false; v.prodT += dt;
@@ -557,7 +565,8 @@ function villagerWork(v, dt) {
       }
       return;
     }
-    const r = nearestRock(v.x, v.y);
+    const r = nearestRock(v.x, v.y, e => targetTaken(v, 'r:' + e.tx + ',' + e.ty));
+    v.target = r ? 'r:' + r.tx + ',' + r.ty : null;
     if (!r) return;
     const cx = r.tx * TILE + 16, cy = r.ty * TILE + 16;
     if (Math.hypot(cx - v.x, cy - v.y) > 44) { moveToward(v, cx, cy, dt); return; }
@@ -568,20 +577,23 @@ function villagerWork(v, dt) {
     for (const k in S.crops) {
       const p = k.split(',').map(Number);
       if (S.crops[k].t < CROP_TIME) continue;
+      if (targetTaken(v, 'c:' + k)) continue;
       const d = Math.hypot(p[0] * TILE + 16 - v.x, p[1] * TILE + 16 - v.y);
       if (d < rd) { rd = d; ripe = k; }
     }
     if (ripe) {
+      v.target = 'c:' + ripe;
       const p = ripe.split(',').map(Number);
       if (moveToward(v, p[0] * TILE + 16, p[1] * TILE + 16, dt)) harvestCrop(ripe);
       return;
     }
     for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) {
-      if (!cropTile(x, y) || S.crops[key(x, y)]) continue;
+      if (!cropTile(x, y) || S.crops[key(x, y)] || targetTaken(v, 'p:' + x + ',' + y)) continue;
       const d = Math.hypot(x * TILE + 16 - v.x, y * TILE + 16 - v.y);
       if (d < ed) { ed = d; empty = { x, y }; }
     }
-    if (!empty || S.wheat < CROP_COST) return;
+    if (!empty || S.wheat < CROP_COST) { v.target = null; return; }
+    v.target = 'p:' + empty.x + ',' + empty.y;
     if (moveToward(v, empty.x * TILE + 16, empty.y * TILE + 16, dt)) {
       S.wheat -= CROP_COST;
       S.crops[key(empty.x, empty.y)] = { t: 0 };
@@ -628,8 +640,9 @@ function hurtVillager(v, n) {
 }
 function updateVillagers(dt) {
   for (const v of S.villagers) {
-    if (v.dead) continue;
+    if (v.dead) { v.target = null; continue; }
     v.phase += dt * 6;
+    v.target = null;
     if (S.phase === 'night' && !S.dun) {
       // Warga lapar diam di rumah: tidak kerja, tidak bertarung.
       if (v.fed) villagerFight(v, dt);
