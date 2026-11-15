@@ -45,7 +45,9 @@ final, dan boleh diubah sesudah dicoba. Angka lainnya wajib persis.
 - Bongkar bangunan mengembalikan setengah bahan. Panel info waktu bangunan
   diklik: nama, tingkat, tombol naik tingkat dan bongkar.
 - Townhall tingkat 1 sejak awal. Tingkat 2 butuh 5 warga dan 100 kayu dan
-  50 batu, membuka Toolsmith, Dapur, dan Pasar. Tingkat 3 butuh 10 warga dan
+  50 batu, membuka Toolsmith dan Pasar. Dapur bisa dibangun sejak awal
+  (townhall tingkat 1) supaya rantai roti jalan sebelum tingkat 2.
+  Tingkat 3 butuh 10 warga dan
   200 kayu dan 100 batu dan 20 iron (angka awal), membuka kerajinan gold dan diamond.
 - Tambang 2x2 petak di bukit, biaya 30 kayu dan 10 batu (angka awal),
   penambang di sana menghasilkan 1 batu per 10 detik, 1 dari 5 hasil adalah

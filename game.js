@@ -31,7 +31,7 @@ const BUILD = {
   hut: { name: 'Gubuk', cost: { wood: 20 }, time: 5, th: 1 },
   mine: { name: 'Tambang', cost: { wood: 30, stone: 10 }, time: 5, th: 1, hill: true },
   smith: { name: 'Toolsmith', cost: { wood: 40, stone: 20 }, time: 5, th: 2 },
-  kitchen: { name: 'Dapur', cost: { wood: 30, stone: 10 }, time: 5, th: 2 },
+  kitchen: { name: 'Dapur', cost: { wood: 30, stone: 10 }, time: 5, th: 1 },
   market: { name: 'Pasar', cost: { wood: 20 }, time: 5, th: 2 },
 };
 const HUT_UP = [null, { wood: 40, stone: 20 }, { wood: 80, stone: 40 }]; // ke tingkat 2 dan 3

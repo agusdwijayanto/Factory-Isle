@@ -31,8 +31,8 @@ Berurutan, dibangun di atas kode versi tes, tiap task lolos sebelum lanjut.
 
 ## Task 5 — Townhall naik tingkat dan kunci bangunan (butuh Task 2 dan 3)
 
-- Syarat tingkat 2 dan 3 sesuai PRD, Toolsmith, Dapur, dan Pasar terkunci
-  sampai tingkat 2, kerajinan gold dan diamond terkunci sampai tingkat 3.
+- Syarat tingkat 2 dan 3 sesuai PRD, Toolsmith dan Pasar terkunci
+  sampai tingkat 2, Dapur bisa dibangun sejak awal, kerajinan gold dan diamond terkunci sampai tingkat 3.
 - Lolos: syarat diperiksa benar, kunci membuka tepat waktu.
 
 ## Task 6 — Tambang, Dapur, Pasar (butuh Task 5)
