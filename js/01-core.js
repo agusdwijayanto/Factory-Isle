@@ -132,7 +132,7 @@ function initState(s) {
   // Gandum awal 5: tanpa benih, rantai tanam tidak bisa mulai sama sekali.
   s.wood = 0; s.stone = 0; s.wheat = 5; s.bread = 0;
   s.iron = 0; s.coal = 0; s.gold = 0; s.diamond = 0;
-  s.day = 1; s.t = 0; s.phase = 'day'; s.rtime = 0; s.charge = false;
+  s.day = 1; s.t = 0; s.phase = 'day'; s.rtime = 0; s.charge = false; s.speed = 1;
   s.monsters = []; s.parts = []; s.floats = [];
   s.buildings = []; s.crops = {}; s.tiles = {}; s.planted = [];
   s.villagers = []; s.popup = false; s.cookQ = [];

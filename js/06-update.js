@@ -1,6 +1,7 @@
 'use strict';
 // ---------- Update ----------
 function update(dt) {
+  dt *= S.speed || 1;
   S.rtime += dt;
   if (!S.frozen) {
     S.t += dt;

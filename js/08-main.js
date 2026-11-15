@@ -107,7 +107,7 @@ window.__DM = {
   spawnWave, save, load, keys, input, joy, TILE, MW, MH, DAY_LEN, NIGHT_LEN,
   acceptVillager, declineVillager, spawnVillager, setJob, feedVillager, feedAllVillagers,
   upgradeBuilding, demolishBuilding, upgradeTownhall, craftItem, cookBread, tradeMarket,
-  eatBread, enterDungeon, exitDungeon, openPanel, closePanel, openMenu, closeMenu, openVillagerList,
+  eatBread, enterDungeon, exitDungeon, openPanel, closePanel, openMenu, closeMenu, openVillagerList, cycleSpeed,
   hitTree, hitRock, harvestCrop, dropLoot, onDawn, houseCapacity, findFreeHouse,
   reset() { initState(S); closePanel(); closeMenu(); el.popup.hidden = true; refreshHUD(); },
   teleport(x, y) { S.px = x; S.py = y; S.cam.x = x; S.cam.y = y; },

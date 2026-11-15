@@ -3,6 +3,10 @@
 function openPanel(p) { S.panel = p; renderPanel(); el.panel.hidden = false; }
 function closePanel() { S.panel = null; el.panel.hidden = true; }
 function openVillagerList() { openPanel({ kind: 'villagers' }); }
+function cycleSpeed() {
+  S.speed = S.speed >= 4 ? 1 : S.speed * 2;
+  $('btnSpeed').textContent = S.speed + 'x';
+}
 function openMenu() { closePanel(); refreshMenu(); el.menu.hidden = false; }
 function closeMenu() { el.menu.hidden = true; }
 function refreshMenu() {
@@ -134,6 +138,7 @@ $('btnAccept').addEventListener('click', () => { audio(); acceptVillager(); });
 $('btnDecline').addEventListener('click', () => { audio(); declineVillager(); });
 $('btnEat').addEventListener('click', () => { audio(); eatBread(); });
 $('btnVillagers').addEventListener('click', () => { audio(); openVillagerList(); });
+$('btnSpeed').addEventListener('click', () => { audio(); cycleSpeed(); });
 
 // ---------- Input ----------
 const input = { mx: 0, my: 0 };
