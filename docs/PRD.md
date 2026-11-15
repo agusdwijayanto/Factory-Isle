@@ -35,7 +35,9 @@ final, dan boleh diubah sesudah dicoba. Angka lainnya wajib persis.
   warga lain tidak diambil: tiap warga mencari pohon, batu, atau petak lain
   dan berpencar. Penebang menanam bibit (1 kayu) di petak rumput kosong
   terdekat kalau tidak ada pohon yang bisa ditebang, total pohon mentok
-  80 (angka awal).
+  80 (angka awal). Daftar Warga lewat tombol WARGA di bar atas (atau
+  tombol V): semua warga terlihat beserta job, HP, dan status lapar,
+  job bisa diganti dari daftar tanpa menghampiri warga.
 - Tiap warga makan 3 roti per hari, roti habis berarti berhenti kerja, tidak mati.
   Tombol Beri Roti di panel warga membuat warga kenyang seketika (1 roti).
   Panel townhall punya tombol Beri Roti Semua Warga (1 roti per warga

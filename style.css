@@ -13,6 +13,7 @@ body {
   background: rgba(0, 0, 0, .55); border-radius: 8px 8px 0 0; pointer-events: none;
 }
 #hud .spacer { flex: 1; }
+#hud button { pointer-events: auto; padding: 4px 10px; border: 0; border-radius: 8px; background: #f5a623; color: #fff; font-weight: 700; font-size: 13px; }
 .hpbar, .cycbar { display: inline-block; width: 90px; height: 10px; background: #444; border-radius: 5px; overflow: hidden; vertical-align: middle; }
 .cycbar { width: 70px; }
 #hHpFill { display: block; height: 100%; width: 100%; background: #e74c3c; }

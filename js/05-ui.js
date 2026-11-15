@@ -2,6 +2,7 @@
 // ---------- Panel dan menu ----------
 function openPanel(p) { S.panel = p; renderPanel(); el.panel.hidden = false; }
 function closePanel() { S.panel = null; el.panel.hidden = true; }
+function openVillagerList() { openPanel({ kind: 'villagers' }); }
 function openMenu() { closePanel(); refreshMenu(); el.menu.hidden = false; }
 function closeMenu() { el.menu.hidden = true; }
 function refreshMenu() {
@@ -83,6 +84,14 @@ function renderPanel() {
     for (const j of ['wood', 'mine', 'farm', 'none']) h += '<button data-act="job" data-job="' + j + '"' + (v.job === j ? ' class="on"' : '') + '>' + JOB_NAME[j] + '</button>';
     h += '</div>';
     h += '<button data-act="feed">Beri Roti (kenyang + 25 HP, 1 roti)</button>';
+  } else if (p.kind === 'villagers') {
+    h += '<h3>Daftar Warga</h3>';
+    if (!S.villagers.length) h += '<p>Belum ada warga.</p>';
+    S.villagers.forEach((v, i) => {
+      h += '<div class="crow"><b>Warga ' + (i + 1) + ':</b><span>' + JOB_NAME[v.job] + ' · HP ' + v.hp + '/' + VILL_HP + (v.fed ? '' : ' · Lapar') + (v.dead ? ' · Tumbang' : '') + '</span>';
+      for (const j of ['wood', 'mine', 'farm', 'none']) h += '<button data-act="vill-job" data-i="' + i + '" data-job="' + j + '"' + (v.job === j ? ' class="on"' : '') + '>' + JOB_NAME[j] + '</button>';
+      h += '</div>';
+    });
   }
   h += '<button data-act="close">Tutup</button>';
   el.panel.innerHTML = h;
@@ -108,6 +117,8 @@ el.panel.addEventListener('click', e => {
     const v = S.panel.ref;
     if (actName === 'job') { setJob(v, b.getAttribute('data-job')); renderPanel(); }
     else if (actName === 'feed') { if (feedVillager(v)) renderPanel(); }
+  } else if (S.panel.kind === 'villagers') {
+    if (actName === 'vill-job') { setJob(S.villagers[parseInt(b.getAttribute('data-i'), 10)], b.getAttribute('data-job')); renderPanel(); }
   }
 });
 el.menu.addEventListener('click', e => {
@@ -122,6 +133,7 @@ el.menu.addEventListener('click', e => {
 $('btnAccept').addEventListener('click', () => { audio(); acceptVillager(); });
 $('btnDecline').addEventListener('click', () => { audio(); declineVillager(); });
 $('btnEat').addEventListener('click', () => { audio(); eatBread(); });
+$('btnVillagers').addEventListener('click', () => { audio(); openVillagerList(); });
 
 // ---------- Input ----------
 const input = { mx: 0, my: 0 };
@@ -145,6 +157,7 @@ window.addEventListener('keydown', e => {
     else if (!S.dun) openMenu();
   }
   if (e.key.toLowerCase() === 'e' && !e.repeat) eatBread();
+  if (e.key.toLowerCase() === 'v' && !e.repeat) openVillagerList();
   if (e.key === 'Escape') { closePanel(); closeMenu(); exitBuild(); }
   audio();
 });
