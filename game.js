@@ -507,6 +507,15 @@ function feedVillager(v) {
   addFloat(v.x, v.y - 26, '+' + BREAD_HEAL + ' HP', '#9fe870');
   return true;
 }
+function feedAllVillagers() {
+  let n = 0;
+  for (const v of S.villagers) {
+    if (S.bread < 1) break;
+    if (feedVillager(v)) n++;
+  }
+  if (n === 0) addFloat(S.px, S.py - 30, S.bread < 1 ? 'Tidak ada roti' : 'Semua warga sudah kenyang', '#ffe27a');
+  return n;
+}
 function moveToward(v, tx, ty, dt) {
   const dx = tx - v.x, dy = ty - v.y, d = Math.hypot(dx, dy);
   if (d < 4) { v.moving = false; return true; }
@@ -722,11 +731,12 @@ function cookBread(n) {
   sfx.place();
   return true;
 }
-function tradeMarket(give, get) {
-  if (give === get || S[give] < 2) { sfx.error(); return false; }
-  S[give] -= 2; S[get] += 1;
+function tradeMarket(give, get, n) {
+  n = Math.min(n || 1, Math.floor(S[give] / 2));
+  if (give === get || n < 1) { sfx.error(); return false; }
+  S[give] -= 2 * n; S[get] += n;
   sfx.coin();
-  addFloat(S.px, S.py - 30, '2 ' + RES_NAME[give] + ' → 1 ' + RES_NAME[get], '#ffe27a');
+  addFloat(S.px, S.py - 30, (2 * n) + ' ' + RES_NAME[give] + ' → ' + n + ' ' + RES_NAME[get], '#ffe27a');
   return true;
 }
 
@@ -952,7 +962,8 @@ function renderPanel() {
       h += '<p>Naik ke tingkat ' + (S.th + 1) + ' butuh: ' + req.villagers + ' warga, ' + costText({ wood: req.wood, stone: req.stone, iron: req.iron }) + '</p>';
       h += '<button data-act="th-up">Naik Tingkat</button>';
     } else h += '<p>Tingkat tertinggi.</p>';
-    h += '<p>Tingkat 2 membuka Toolsmith, Dapur, Pasar. Tingkat 3 membuka kerajinan gold dan diamond.</p>';
+    h += '<button data-act="feed-all">Beri Roti Semua Warga (1 roti per warga)</button>';
+    h += '<p>Tingkat 2 membuka Toolsmith dan Pasar. Tingkat 3 membuka kerajinan gold dan diamond.</p>';
   } else if (p.kind === 'building') {
     const b = p.ref;
     h += '<h3>' + buildingName(b) + (b.type === 'hut' ? ' — tingkat ' + b.level : '') + '</h3>';
@@ -989,7 +1000,9 @@ function renderPanel() {
       for (const k in RES_NAME) h += '<button data-act="sel-give" data-res="' + k + '"' + (p.sel.give === k ? ' class="on"' : '') + '>' + RES_NAME[k] + ' (' + S[k] + ')</button>';
       h += '</div><div class="crow"><b>Terima:</b> ';
       for (const k in RES_NAME) h += '<button data-act="sel-get" data-res="' + k + '"' + (p.sel.get === k ? ' class="on"' : '') + '>' + RES_NAME[k] + '</button>';
-      h += '</div><button data-act="trade">Tukar 2 ' + RES_NAME[p.sel.give] + ' → 1 ' + RES_NAME[p.sel.get] + '</button>';
+      h += '</div><button data-act="trade" data-n="1">Tukar 2 ' + RES_NAME[p.sel.give] + ' → 1 ' + RES_NAME[p.sel.get] + '</button>';
+      h += '<button data-act="trade" data-n="10">Tukar 10x — 20 ' + RES_NAME[p.sel.give] + ' → 10 ' + RES_NAME[p.sel.get] + '</button>';
+      h += '<button data-act="trade" data-n="all">Tukar Semua ' + RES_NAME[p.sel.give] + ' → ' + RES_NAME[p.sel.get] + '</button>';
     }
     if (b.type === 'mine' && b.built) h += '<p>Penambang di sini menghasilkan 1 batu per 10 detik, 1 dari 5 hasil adalah iron atau coal.</p>';
     h += '<button data-act="demolish">Bongkar (kembali setengah bahan)</button>';
@@ -1012,6 +1025,7 @@ el.panel.addEventListener('click', e => {
   audio();
   if (actName === 'close') { closePanel(); return; }
   if (actName === 'th-up') { if (upgradeTownhall()) renderPanel(); return; }
+  if (actName === 'feed-all') { if (feedAllVillagers()) renderPanel(); return; }
   if (S.panel.kind === 'building') {
     const bd = S.panel.ref;
     if (actName === 'upgrade') { if (upgradeBuilding(bd)) renderPanel(); }
@@ -1020,7 +1034,7 @@ el.panel.addEventListener('click', e => {
     else if (actName === 'cook') { const raw = b.getAttribute('data-n'); if (cookBread(raw === 'all' ? S.wheat : parseInt(raw, 10))) renderPanel(); }
     else if (actName === 'sel-give') { S.panel.sel.give = b.getAttribute('data-res'); renderPanel(); }
     else if (actName === 'sel-get') { S.panel.sel.get = b.getAttribute('data-res'); renderPanel(); }
-    else if (actName === 'trade') { if (tradeMarket(S.panel.sel.give, S.panel.sel.get)) renderPanel(); }
+    else if (actName === 'trade') { const raw = b.getAttribute('data-n'); const n = raw === 'all' ? Math.floor(S[S.panel.sel.give] / 2) : parseInt(raw, 10); if (tradeMarket(S.panel.sel.give, S.panel.sel.get, n)) renderPanel(); }
   } else if (S.panel.kind === 'villager') {
     const v = S.panel.ref;
     if (actName === 'job') { setJob(v, b.getAttribute('data-job')); renderPanel(); }
@@ -1712,7 +1726,7 @@ if (typeof requestAnimationFrame === 'function') requestAnimationFrame(frame);
 window.__DM = {
   S, WORLD, BUILD, TIERS, update, render, act, enterBuild, exitBuild, tryPlace, ghostValid,
   spawnWave, save, load, keys, input, joy, TILE, MW, MH, DAY_LEN, NIGHT_LEN,
-  acceptVillager, declineVillager, spawnVillager, setJob, feedVillager,
+  acceptVillager, declineVillager, spawnVillager, setJob, feedVillager, feedAllVillagers,
   upgradeBuilding, demolishBuilding, upgradeTownhall, craftItem, cookBread, tradeMarket,
   eatBread, enterDungeon, exitDungeon, openPanel, closePanel, openMenu, closeMenu,
   hitTree, hitRock, harvestCrop, dropLoot, onDawn, houseCapacity, findFreeHouse,

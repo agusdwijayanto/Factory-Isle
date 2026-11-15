@@ -36,6 +36,8 @@ final, dan boleh diubah sesudah dicoba. Angka lainnya wajib persis.
   dan berpencar.
 - Tiap warga makan 3 roti per hari, roti habis berarti berhenti kerja, tidak mati.
   Tombol Beri Roti di panel warga membuat warga kenyang seketika (1 roti).
+  Panel townhall punya tombol Beri Roti Semua Warga (1 roti per warga
+  yang lapar atau luka).
 - Warga ikut melawan tiap malam, HP 50 (angka awal), kalah berarti bangun lagi
   keesokan pagi di rumahnya. Malam tiba warga kumpul dulu di townhall dan
   menunggu; mereka maju serang bareng begitu pemain memukul monster duluan.
@@ -59,7 +61,7 @@ final, dan boleh diubah sesudah dicoba. Angka lainnya wajib persis.
 - Toolsmith biaya 40 kayu dan 20 batu (angka awal). Dapur biaya 30 kayu dan
   10 batu (angka awal), mengubah 1 gandum menjadi 1 roti dalam 5 detik
   (angka awal), tombol borongan 1, 10, dan semua gandum. Pasar biaya 20 kayu (angka awal), tukar 2 bahan menjadi
-  1 bahan lain (angka awal).
+  1 bahan lain (angka awal), tombol borongan 1x, 10x, dan semua.
 
 ### Petak bebas
 
