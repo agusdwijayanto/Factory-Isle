@@ -79,11 +79,30 @@ function targetTaken(v, key) {
   for (const o of S.villagers) if (o !== v && o.target === key) return true;
   return false;
 }
+// Penebang menanam bibit di petak rumput kosong terdekat kalau tidak ada pohon yang bisa ditebang.
+function plantTree(v, dt) {
+  if (S.wood < 1 || WORLD.trees.length + S.planted.length >= TREE_CAP) { v.target = null; return; }
+  const vtx = Math.floor(v.x / TILE), vty = Math.floor(v.y / TILE);
+  let best = null, bd = 1e9;
+  for (let y = Math.max(0, vty - 12); y <= Math.min(MH - 1, vty + 12); y++) for (let x = Math.max(0, vtx - 12); x <= Math.min(MW - 1, vtx + 12); x++) {
+    if (!ghostValid(x, y, 'tree') || targetTaken(v, 's:' + x + ',' + y)) continue;
+    if (S.planted.some(p => p.tx === x && p.ty === y)) continue;
+    const d = Math.hypot(x * TILE + 16 - v.x, y * TILE + 16 - v.y);
+    if (d < bd) { bd = d; best = { x, y }; }
+  }
+  if (!best) { v.target = null; return; }
+  v.target = 's:' + best.x + ',' + best.y;
+  if (moveToward(v, best.x * TILE + 16, best.y * TILE + 16, dt)) {
+    S.wood -= 1;
+    S.planted.push({ tx: best.x, ty: best.y, hp: TREE_HP, respawn: 0, shake: 0, seed: Math.random(), planted: true, grow: TREE_GROW });
+    sfx.plant(); burst(v.x, v.y + 8, '#5cb84d', 6, 50);
+  }
+}
 function villagerWork(v, dt) {
   if (v.job === 'wood') {
     const t = nearestTree(v.x, v.y, e => targetTaken(v, 't:' + e.tx + ',' + e.ty));
     v.target = t ? 't:' + t.tx + ',' + t.ty : null;
-    if (!t) return;
+    if (!t) { plantTree(v, dt); return; }
     const cx = t.tx * TILE + 16, cy = t.ty * TILE + 16;
     if (Math.hypot(cx - v.x, cy - v.y) > 44) { moveToward(v, cx, cy, dt); return; }
     v.moving = false; v.hitCd -= dt;

@@ -33,7 +33,9 @@ final, dan boleh diubah sesudah dicoba. Angka lainnya wajib persis.
 - Warga bekerja sendiri dengan angka yang sama seperti pemain, 1 pukulan per
   detik (angka awal), hasil masuk penghitung. Target yang sedang dikerjakan
   warga lain tidak diambil: tiap warga mencari pohon, batu, atau petak lain
-  dan berpencar.
+  dan berpencar. Penebang menanam bibit (1 kayu) di petak rumput kosong
+  terdekat kalau tidak ada pohon yang bisa ditebang, total pohon mentok
+  80 (angka awal).
 - Tiap warga makan 3 roti per hari, roti habis berarti berhenti kerja, tidak mati.
   Tombol Beri Roti di panel warga membuat warga kenyang seketika (1 roti).
   Panel townhall punya tombol Beri Roti Semua Warga (1 roti per warga

@@ -8,7 +8,7 @@
 const MW = 48, MH = 32, TILE = 32, VW = 960, VH = 640;
 const DAY_LEN = 180, NIGHT_LEN = 90; // detik
 const SAVE_KEY = 'indotopia-save-v1';
-const TREE_HP = 3, TREE_YIELD = 3, TREE_RESPAWN = 60, TREE_GROW = 60;
+const TREE_HP = 3, TREE_YIELD = 3, TREE_RESPAWN = 60, TREE_GROW = 60, TREE_CAP = 80;
 const ROCK_HP = 4, ROCK_YIELD = 2, ROCK_RESPAWN = 90;
 const CROP_TIME = 30, CROP_YIELD = 2, CROP_COST = 1;
 const HUT_COST = 20, HUT_TIME = 5;
