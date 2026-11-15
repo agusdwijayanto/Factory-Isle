@@ -56,7 +56,7 @@ final, dan boleh diubah sesudah dicoba. Angka lainnya wajib persis.
   iron atau coal acak (angka awal).
 - Toolsmith biaya 40 kayu dan 20 batu (angka awal). Dapur biaya 30 kayu dan
   10 batu (angka awal), mengubah 1 gandum menjadi 1 roti dalam 5 detik
-  (angka awal). Pasar biaya 20 kayu (angka awal), tukar 2 bahan menjadi
+  (angka awal), tombol borongan 1, 10, dan semua gandum. Pasar biaya 20 kayu (angka awal), tukar 2 bahan menjadi
   1 bahan lain (angka awal).
 
 ### Petak bebas

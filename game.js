@@ -701,10 +701,11 @@ function craftItem(kind, tier) {
   if (!S.flags.craft1) { S.flags.craft1 = true; showBanner('Senjata pertama dibuat!'); }
   return true;
 }
-function cookBread() {
-  if (S.wheat < 1) { sfx.error(); return false; }
-  S.wheat--;
-  S.cookQ.push({ t: 5 });
+function cookBread(n) {
+  n = Math.min(n || 1, S.wheat);
+  if (n < 1) { sfx.error(); return false; }
+  S.wheat -= n;
+  for (let i = 0; i < n; i++) S.cookQ.push({ t: 5 });
   sfx.place();
   return true;
 }
@@ -963,8 +964,10 @@ function renderPanel() {
       h += '<div class="crow"><b>Perisai:</b> <button data-act="craft" data-kind="shield" data-tier="0"' + (S.equip.shield > 0 ? ' disabled' : '') + '>Buat (10 kayu + 10 batu, -20% damage)' + (S.equip.shield > 0 ? ' ✓' : '') + '</button></div>';
     }
     if (b.type === 'kitchen' && b.built) {
-      h += '<p>Roti: ' + S.bread + ' · Gandum: ' + S.wheat + ' · Antrean: ' + S.cookQ.length + '</p>';
-      h += '<button data-act="cook">Buat Roti — 1 gandum (5 detik)</button>';
+      h += '<p>Roti: ' + S.bread + ' · Gandum: ' + S.wheat + ' · Antrean: ' + S.cookQ.length + ' (5 detik per roti)</p>';
+      h += '<button data-act="cook" data-n="1">Buat 1 Roti — 1 gandum</button>';
+      h += '<button data-act="cook" data-n="10">Buat 10 Roti — 10 gandum</button>';
+      h += '<button data-act="cook" data-n="all">Buat Semua Gandum Jadi Roti</button>';
     }
     if (b.type === 'market' && b.built) {
       p.sel = p.sel || { give: 'wood', get: 'stone' };
@@ -1001,7 +1004,7 @@ el.panel.addEventListener('click', e => {
     if (actName === 'upgrade') { if (upgradeBuilding(bd)) renderPanel(); }
     else if (actName === 'demolish') { demolishBuilding(bd); closePanel(); }
     else if (actName === 'craft') { if (craftItem(b.getAttribute('data-kind'), parseInt(b.getAttribute('data-tier'), 10))) renderPanel(); }
-    else if (actName === 'cook') { if (cookBread()) renderPanel(); }
+    else if (actName === 'cook') { const raw = b.getAttribute('data-n'); if (cookBread(raw === 'all' ? S.wheat : parseInt(raw, 10))) renderPanel(); }
     else if (actName === 'sel-give') { S.panel.sel.give = b.getAttribute('data-res'); renderPanel(); }
     else if (actName === 'sel-get') { S.panel.sel.get = b.getAttribute('data-res'); renderPanel(); }
     else if (actName === 'trade') { if (tradeMarket(S.panel.sel.give, S.panel.sel.get)) renderPanel(); }
