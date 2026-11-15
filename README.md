@@ -16,6 +16,6 @@ Game tycoon pabrik 2D di browser, terinspirasi Factory Town Tycoon (Roblox). Ban
 Kayu (Sawhorse, Carpenter) → bata dan kaca (Oven) → ingot logam (Smelter) → komponen dan Motor (Blacksmith). Batas item aktif 150; bangun Storage buat menaikkannya.
 
 ## Teknologi
-HTML5 Canvas + JavaScript polos, tanpa framework dan tanpa build step. Gambar digambar prosedural di Canvas (paket aset Kenney Tiny berlisensi CC0 tidak dapat diunduh dari lingkungan build karena servernya menjawab 403).
+HTML5 Canvas + JavaScript polos, tanpa framework dan tanpa build step. Gambar memakai sprite Kenney Tiny 16x16 berlisensi CC0 (folder `assets/`, daftar lengkap di `assets/ASSETS.md`), dengan gambar prosedural sebagai fallback kalau sprite gagal dimuat. Air, palm, dan kapal tetap prosedural karena tidak ada sprite yang cocok di paket Kenney.
 
 Dokumen perencanaan ada di folder `docs/` (STRUKTUR, PRD, TASK). Angka bertanda TUNING di dokumen adalah usulan yang tidak ada di wiki sumber riset.

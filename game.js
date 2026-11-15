@@ -24,6 +24,57 @@ const ROADS = [
 ];
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
+ctx.imageSmoothingEnabled = false; // sprite 16x16 diskala 2x tetap tajam
+
+// ---------- sprite Kenney Tiny (CC0, lihat assets/ASSETS.md) ----------
+// Gagal dimuat = kembali ke gambar prosedural, supaya game tetap jalan.
+const SPRITE_FILES = {
+  grass: "town_0000.png", grassTuft: "town_0001.png", grassFlower: "town_0002.png",
+  treeRound: "town_0004.png", treeBig: "town_0005.png", treePine: "town_0007.png",
+  dirt: "town_0025.png",
+  roof: "town_0066.png", wallOrange: "town_0072.png", wallBlue: "town_0076.png",
+  winOrange: "town_0084.png", doorOrange: "town_0085.png",
+  doorsOrangeL: "town_0086.png", doorsOrangeR: "town_0087.png",
+  winBlue: "town_0088.png", doorBlue: "town_0089.png",
+  beltV: "factory_0004.png", beltH: "factory_0025.png",
+  smelter: "factory_0074.png", carpenter: "factory_0075.png",
+  oven: "factory_0086.png", splitter: "factory_0090.png",
+  crate: "factory_0097.png", sawhorse: "factory_0108.png",
+  stump: "farm_0026.png", pebbles: "farm_0077.png", rockPile: "farm_0089.png",
+  player: "farm_0109.png",
+  clayDirt: "dungeon_0000.png", rockGround: "dungeon_0024.png", rockGround2: "dungeon_0025.png",
+  paved: "dungeon_0042.png", sand: "dungeon_0048.png", sand2: "dungeon_0049.png",
+  bridge: "dungeon_0071.png", anvil: "dungeon_0074.png", mayor: "dungeon_0086.png"
+};
+const IMG = {};
+for (const k in SPRITE_FILES) {
+  const im = new Image();
+  im.src = "assets/" + SPRITE_FILES[k];
+  IMG[k] = im;
+}
+// false kalau sprite belum siap, supaya pemanggil bisa memakai fallback
+function spr(k, px, py, flipX, flipY) {
+  const im = IMG[k];
+  if (!im || !im.complete || !im.naturalWidth) return false;
+  if (flipX || flipY) {
+    ctx.save();
+    ctx.translate(px + (flipX ? TILE : 0), py + (flipY ? TILE : 0));
+    ctx.scale(flipX ? -1 : 1, flipY ? -1 : 1);
+    ctx.drawImage(im, 0, 0, TILE, TILE);
+    ctx.restore();
+  } else {
+    ctx.drawImage(im, px, py, TILE, TILE);
+  }
+  return true;
+}
+const MACHINE_SPR = { sawhorse: "sawhorse", carpenter: "carpenter", oven: "oven", smelter: "smelter", blacksmith: "anvil", splitter: "splitter", storage: "crate" };
+const SHOP_STYLE = {
+  sketchwood: { wall: "wallOrange", win: "winOrange", dbl: false },
+  carpenterShop: { wall: "wallOrange", win: "winOrange", dbl: true },
+  blacksmithShop: { wall: "wallBlue", win: "winBlue", dbl: false },
+  toolShop: { wall: "wallBlue", win: "winBlue", dbl: false },
+  exchange: { wall: "wallOrange", win: "winOrange", dbl: true }
+};
 
 const key = (x, y) => x + "," + y;
 const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
@@ -407,7 +458,7 @@ function camTarget() {
 }
 function snapCam() { const [tx, ty] = camTarget(); cam.x = tx; cam.y = ty; }
 
-// ---------- gambar (prosedural, gaya piksel sederhana) ----------
+// ---------- gambar (sprite Kenney Tiny, fallback prosedural kalau sprite gagal dimuat) ----------
 function rect(x, y, w, h, c) { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); }
 const GCOLORS = {
   grass: ["#549254", "#5b9a5b"], forest: ["#40763f", "#478548"], plot: ["#69a862", "#71b06a"],
@@ -422,8 +473,27 @@ function draw() {
   const y0 = Math.max(0, Math.floor(cam.y / TILE)), y1 = Math.min(MH - 1, y0 + Math.ceil(canvas.height / TILE) + 1);
   for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
     const g = groundAt(x, y);
-    rect(x * TILE, y * TILE, TILE, TILE, GCOLORS[g][(x + y) % 2]);
-    if (g === "water") rect(x * TILE + 6, y * TILE + 14, 12, 2, "#5b8cc0");
+    const px = x * TILE, py = y * TILE, h = (x * 31 + y * 17) % 7;
+    let drew = false;
+    if (g === "grass") drew = spr(h === 0 ? "grassFlower" : h < 3 ? "grassTuft" : "grass", px, py);
+    else if (g === "forest") drew = spr(h < 4 ? "grassTuft" : "grass", px, py);
+    else if (g === "plot") drew = spr(h === 0 ? "grassFlower" : h < 3 ? "grassTuft" : "grass", px, py);
+    else if (g === "paved") drew = spr("paved", px, py);
+    else if (g === "road") drew = spr("dirt", px, py);
+    else if (g === "bridge") {
+      // sprite jembatan transparan di sela papan: dasari dulu dengan warna air
+      rect(px, py, TILE, TILE, GCOLORS.water[(x + y) % 2]);
+      drew = spr("bridge", px, py);
+      if (!drew) rect(px, py, TILE, TILE, GCOLORS.bridge[(x + y) % 2]);
+      continue;
+    }
+    else if (g === "sand") drew = spr((x + y) % 2 ? "sand2" : "sand", px, py);
+    else if (g === "rock") drew = spr((x + y) % 2 ? "rockGround2" : "rockGround", px, py);
+    // air tidak punya sprite di paket Kenney: tetap prosedural
+    if (!drew) {
+      rect(px, py, TILE, TILE, GCOLORS[g][(x + y) % 2]);
+      if (g === "water") rect(px + 6, py + 14, 12, 2, "#5b8cc0");
+    }
   }
   // garis batas plaza town dan lahan plot
   ctx.strokeStyle = "#6d675c"; ctx.lineWidth = 2;
@@ -435,62 +505,109 @@ function draw() {
   const now = performance.now();
   for (const n of S.nodes) {
     const px = n.x * TILE, py = n.y * TILE;
-    if (n.readyAt > now) { // tunggul / lubang bekas panen
-      rect(px + 10, py + 20, 12, 8, "#7a5c3e");
+    if (n.readyAt > now) { // tunggul / sisa bekas panen
+      if (!spr(n.type === "tree" ? "stump" : "pebbles", px, py)) rect(px + 10, py + 20, 12, 8, "#7a5c3e");
       continue;
     }
-    if (n.type === "tree" && groundAt(n.x, n.y) === "sand") { // palm di desert
+    if (n.type === "tree" && groundAt(n.x, n.y) === "sand") { // palm di desert: tidak ada sprite palm di paket Kenney
       rect(px + 14, py + 14, 5, 16, "#8a6d3b");
       rect(px + 2, py + 4, 12, 5, "#3a8540");
       rect(px + 18, py + 4, 12, 5, "#3a8540");
       rect(px + 10, py + 1, 12, 5, "#2e6b30");
     } else if (n.type === "tree") {
-      rect(px + 13, py + 18, 6, 12, "#7a5c3e");
-      rect(px + 4, py + 2, 24, 18, "#2e6b30");
-      rect(px + 8, py + 6, 8, 6, "#3a8540");
-    } else if (n.type === "sand") rect(px + 3, py + 8, 26, 18, "#e3cf8f");
-    else if (n.type === "clay") rect(px + 3, py + 8, 26, 18, "#c08552");
-    else {
-      rect(px + 3, py + 10, 26, 18, "#7d7d7d");
+      const v = (n.x * 7 + n.y * 13) % 3;
+      if (!spr(v === 0 ? "treeRound" : v === 1 ? "treeBig" : "treePine", px, py)) {
+        rect(px + 13, py + 18, 6, 12, "#7a5c3e");
+        rect(px + 4, py + 2, 24, 18, "#2e6b30");
+        rect(px + 8, py + 6, 8, 6, "#3a8540");
+      }
+    } else if (n.type === "sand") {
+      if (!spr("sand", px, py)) rect(px + 3, py + 8, 26, 18, "#e3cf8f");
+    } else if (n.type === "clay") {
+      if (!spr("clayDirt", px, py)) rect(px + 3, py + 8, 26, 18, "#c08552");
+    } else {
+      // titik warna tetap: pembeda jenis bijih
+      if (!spr("rockPile", px, py)) rect(px + 3, py + 10, 26, 18, "#7d7d7d");
       rect(px + 8, py + 13, 7, 7, NODE_COLORS[n.type]);
       rect(px + 18, py + 18, 6, 6, NODE_COLORS[n.type]);
     }
   }
-  // conveyor
+  // conveyor (sprite mengarah kanan/atas; arah lain dibalik)
   for (const k in S.belts) {
     const b = S.belts[k];
     const [x, y] = k.split(",").map(Number);
-    rect(x * TILE + 1, y * TILE + 8, TILE - 2, 16, "#444");
-    rect(x * TILE + 4, y * TILE + 12, TILE - 8, 2, "#777");
-    rect(x * TILE + 4, y * TILE + 20, TILE - 8, 2, "#777");
-    ctx.fillStyle = "#ffd75e";
-    ctx.font = "12px sans-serif";
-    ctx.fillText(DIR_ARROW[b.dir], x * TILE + 11, y * TILE + 20);
-    if (b.item) rect(x * TILE + 10, y * TILE + 10, 12, 12, "#d9a441");
+    const px = x * TILE, py = y * TILE;
+    let drew = false;
+    if (b.dir === "right") drew = spr("beltH", px, py);
+    else if (b.dir === "left") drew = spr("beltH", px, py, true, false);
+    else if (b.dir === "up") drew = spr("beltV", px, py);
+    else drew = spr("beltV", px, py, false, true);
+    if (!drew) {
+      rect(px + 1, py + 8, TILE - 2, 16, "#444");
+      rect(px + 4, py + 12, TILE - 8, 2, "#777");
+      rect(px + 4, py + 20, TILE - 8, 2, "#777");
+      ctx.fillStyle = "#ffd75e";
+      ctx.font = "12px sans-serif";
+      ctx.fillText(DIR_ARROW[b.dir], px + 11, py + 20);
+    }
+    if (b.item) rect(px + 10, py + 10, 12, 12, "#d9a441");
   }
   // mesin & storage
   for (const m of S.machines) {
     const px = m.x * TILE, py = m.y * TILE;
-    rect(px + 2, py + 2, TILE - 4, TILE - 4, m.type === "storage" ? "#8a6d3b" : "#5d6d7e");
-    rect(px + 2, py + 2, TILE - 4, 8, m.type === "storage" ? "#a8854a" : "#74879c");
+    if (!spr(MACHINE_SPR[m.type], px, py)) {
+      rect(px + 2, py + 2, TILE - 4, TILE - 4, m.type === "storage" ? "#8a6d3b" : "#5d6d7e");
+      rect(px + 2, py + 2, TILE - 4, 8, m.type === "storage" ? "#a8854a" : "#74879c");
+    }
     if (m.progress > 0) rect(px + 3, py + TILE - 8, (TILE - 6) * (1 - m.progress / DATA.machines[m.type].recipes[m.recipe].time), 4, "#ffd75e");
+    // pelat gelap di belakang label supaya nama terbaca di atas sprite terang
+    rect(px + 2, py + 11, TILE - 4, 12, "rgba(0,0,0,0.55)");
     ctx.fillStyle = "#fff";
     ctx.font = "bold 11px sans-serif";
-    ctx.fillText(DATA.machines[m.type].name.slice(0, 4), px + 4, py + 22);
+    ctx.fillText(DATA.machines[m.type].name.slice(0, 4), px + 4, py + 21);
   }
   // toko
   for (const [id, sx, sy, w] of SHOPS) {
-    rect(sx * TILE, sy * TILE, w * TILE, 2 * TILE, "#7a4a2b");
-    rect(sx * TILE, sy * TILE, w * TILE, 14, "#a33e31");
+    const st = SHOP_STYLE[id];
+    let ok = true;
+    for (let i = 0; i < w; i++) {
+      if (!spr("roof", (sx + i) * TILE, sy * TILE)) ok = false;
+      if (!spr(st.wall, (sx + i) * TILE, (sy + 1) * TILE)) ok = false;
+    }
+    if (ok) {
+      const mid = Math.floor(w / 2);
+      for (let i = 0; i < w; i++) {
+        const px = (sx + i) * TILE, py = (sy + 1) * TILE;
+        if (st.dbl && i === mid - 1) { spr("doorsOrangeL", px, py); spr("doorsOrangeR", px + TILE, py); i++; }
+        else if (!st.dbl && i === mid) spr(st.wall === "wallOrange" ? "doorOrange" : "doorBlue", px, py);
+        else spr(st.win, px, py);
+      }
+    } else {
+      rect(sx * TILE, sy * TILE, w * TILE, 2 * TILE, "#7a4a2b");
+      rect(sx * TILE, sy * TILE, w * TILE, 14, "#a33e31");
+      rect(sx * TILE + 4, (sy + 1) * TILE + 8, w * TILE - 8, 12, "#c9a86a");
+    }
     ctx.fillStyle = "#fff";
     ctx.font = "bold 12px sans-serif";
-    ctx.fillText(DATA.shops[id].name, sx * TILE + 6, sy * TILE + 34);
-    rect(sx * TILE + 4, (sy + 1) * TILE + 8, w * TILE - 8, 12, "#c9a86a");
+    ctx.fillText(DATA.shops[id].name, sx * TILE + 6, sy * TILE - 4);
   }
-  // bangunan desa gurun & kapal bajak laut (pajangan, toko belum aktif)
+  // bangunan desa gurun (pajangan, toko belum aktif); kapal tetap prosedural (tidak ada sprite kapal di paket Kenney)
   for (const [sx, sy, w, h] of SOON) {
-    rect(sx * TILE, sy * TILE, w * TILE, h * TILE, "#a9825a");
-    rect(sx * TILE, sy * TILE, w * TILE, 12, "#7a4a2b");
+    if (h > 2) { // kapal bajak laut
+      rect(sx * TILE, sy * TILE, w * TILE, h * TILE, "#a9825a");
+      rect(sx * TILE, sy * TILE, w * TILE, 12, "#7a4a2b");
+      continue;
+    }
+    let ok = true;
+    for (let i = 0; i < w; i++) {
+      if (!spr("roof", (sx + i) * TILE, sy * TILE)) ok = false;
+      if (!spr("wallOrange", (sx + i) * TILE, (sy + 1) * TILE)) ok = false;
+    }
+    if (ok) spr("doorOrange", (sx + 1) * TILE, (sy + 1) * TILE);
+    else {
+      rect(sx * TILE, sy * TILE, w * TILE, h * TILE, "#a9825a");
+      rect(sx * TILE, sy * TILE, w * TILE, 12, "#7a4a2b");
+    }
   }
   rect(90 * TILE + 14, 34 * TILE, 4, 2 * TILE, "#5a3a1a");      // tiang kapal
   rect(90 * TILE + 18, 34 * TILE + 4, 14, 18, "#e8e2d2");      // layar kapal
@@ -499,17 +616,21 @@ function draw() {
   ctx.fillText("Desa Gurun", 73 * TILE, 22 * TILE + 12);
   ctx.fillText("Kapal Bajak Laut", 86 * TILE, 35 * TILE);
   // NPC Mayor
-  rect(MAYOR.x * TILE + 8, MAYOR.y * TILE + 16, 16, 14, "#7a2b50");
-  rect(MAYOR.x * TILE + 9, MAYOR.y * TILE + 3, 14, 13, "#f2c185");
-  rect(MAYOR.x * TILE + 9, MAYOR.y * TILE + 3, 14, 5, "#333");
+  if (!spr("mayor", MAYOR.x * TILE, MAYOR.y * TILE)) {
+    rect(MAYOR.x * TILE + 8, MAYOR.y * TILE + 16, 16, 14, "#7a2b50");
+    rect(MAYOR.x * TILE + 9, MAYOR.y * TILE + 3, 14, 13, "#f2c185");
+    rect(MAYOR.x * TILE + 9, MAYOR.y * TILE + 3, 14, 5, "#333");
+  }
   ctx.fillStyle = "#fff";
   ctx.font = "bold 11px sans-serif";
   ctx.fillText("Mayor", MAYOR.x * TILE + 2, MAYOR.y * TILE - 3);
-  // pemain
+  // pemain (sprite tampak depan; paket Kenney tidak punya karakter jalan 4 arah)
   const p = S.player;
-  rect(p.x + 8, p.y + 16, 16, 14, "#2b50c8");       // badan
-  rect(p.x + 9, p.y + 3, 14, 13, "#f2c185");        // kepala
-  rect(p.x + 9, p.y + 3, 14, 5, "#5a3a1a");         // rambut
+  if (!spr("player", p.x, p.y)) {
+    rect(p.x + 8, p.y + 16, 16, 14, "#2b50c8");       // badan
+    rect(p.x + 9, p.y + 3, 14, 13, "#f2c185");        // kepala
+    rect(p.x + 9, p.y + 3, 14, 5, "#5a3a1a");         // rambut
+  }
   const d = DIRS[p.dir];                            // penanda arah
   rect(p.x + 14 + d[0] * 6, p.y + 14 + d[1] * 6, 4, 4, "#ffd75e");
   ctx.restore();
