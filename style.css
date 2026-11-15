@@ -45,6 +45,7 @@ body {
 #panel p { margin: 6px 0; color: #d5dbe8; }
 #panel .crow { margin: 8px 0; display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
 #panel button { margin: 3px 2px 0 0; }
+#panel input[type="number"] { width: 52px; padding: 6px 8px; border: 0; border-radius: 8px; font-size: 14px; font-weight: 700; text-align: center; }
 #popup {
   position: absolute; top: 34%; left: 50%; transform: translate(-50%, -50%);
   background: rgba(0, 0, 0, .88); padding: 16px 20px; border-radius: 12px;

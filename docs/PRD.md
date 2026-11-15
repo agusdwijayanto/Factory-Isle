@@ -36,8 +36,9 @@ final, dan boleh diubah sesudah dicoba. Angka lainnya wajib persis.
   dan berpencar. Penebang menanam bibit (1 kayu) di petak rumput kosong
   terdekat kalau tidak ada pohon yang bisa ditebang, total pohon mentok
   80 (angka awal). Daftar Warga lewat tombol WARGA di bar atas (atau
-  tombol V): semua warga terlihat beserta job, HP, dan status lapar,
-  job bisa diganti dari daftar tanpa menghampiri warga. Tombol percepat
+  tombol V): hitungan per job dengan tombol - dan + dan kotak angka
+  yang bisa diketik; tambah hanya dari warga tanpa job, kurang
+  mengembalikan ke tanpa job, angka dibatasi jumlah warga. Tombol percepat
   waktu di bar atas berputar 1x, 2x, 4x tiap ketuk; semua waktu game
   (siang/malam, tumbuh, produksi) ikut cepat.
 - Tiap warga makan 3 roti per hari, roti habis berarti berhenti kerja, tidak mati.

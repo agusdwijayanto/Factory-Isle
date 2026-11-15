@@ -90,12 +90,11 @@ function renderPanel() {
     h += '<button data-act="feed">Beri Roti (kenyang + 25 HP, 1 roti)</button>';
   } else if (p.kind === 'villagers') {
     h += '<h3>Daftar Warga</h3>';
-    if (!S.villagers.length) h += '<p>Belum ada warga.</p>';
-    S.villagers.forEach((v, i) => {
-      h += '<div class="crow"><b>Warga ' + (i + 1) + ':</b><span>' + JOB_NAME[v.job] + ' · HP ' + v.hp + '/' + VILL_HP + (v.fed ? '' : ' · Lapar') + (v.dead ? ' · Tumbang' : '') + '</span>';
-      for (const j of ['wood', 'mine', 'farm', 'none']) h += '<button data-act="vill-job" data-i="' + i + '" data-job="' + j + '"' + (v.job === j ? ' class="on"' : '') + '>' + JOB_NAME[j] + '</button>';
-      h += '</div>';
-    });
+    for (const j of ['wood', 'mine', 'farm']) {
+      const n = S.villagers.filter(v => v.job === j).length;
+      h += '<div class="crow"><b>' + JOB_NAME[j] + ':</b> <button data-act="job-minus" data-job="' + j + '">-</button><input data-job-count="' + j + '" type="number" min="0" value="' + n + '"><button data-act="job-plus" data-job="' + j + '">+</button></div>';
+    }
+    h += '<p>Tanpa job: ' + S.villagers.filter(v => v.job === 'none').length + '</p>';
   }
   h += '<button data-act="close">Tutup</button>';
   el.panel.innerHTML = h;
@@ -122,8 +121,17 @@ el.panel.addEventListener('click', e => {
     if (actName === 'job') { setJob(v, b.getAttribute('data-job')); renderPanel(); }
     else if (actName === 'feed') { if (feedVillager(v)) renderPanel(); }
   } else if (S.panel.kind === 'villagers') {
-    if (actName === 'vill-job') { setJob(S.villagers[parseInt(b.getAttribute('data-i'), 10)], b.getAttribute('data-job')); renderPanel(); }
+    const j = b.getAttribute('data-job');
+    const cur = S.villagers.filter(v => v.job === j).length;
+    if (actName === 'job-plus') { setJobCount(j, cur + 1); renderPanel(); }
+    else if (actName === 'job-minus') { setJobCount(j, cur - 1); renderPanel(); }
   }
+});
+el.panel.addEventListener('change', e => {
+  const inp = e.target.closest ? e.target.closest('input[data-job-count]') : null;
+  if (!inp || !S.panel || S.panel.kind !== 'villagers') return;
+  setJobCount(inp.getAttribute('data-job-count'), parseInt(inp.value, 10));
+  renderPanel();
 });
 el.menu.addEventListener('click', e => {
   const b = e.target.closest ? e.target.closest('button') : null;
@@ -153,6 +161,7 @@ function pollKeys() {
   input.mx = x; input.my = y;
 }
 window.addEventListener('keydown', e => {
+  if (e.target && e.target.tagName === 'INPUT') return;
   if ([' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) e.preventDefault();
   keys[e.key.toLowerCase()] = true;
   if (e.key === ' ' && !e.repeat) act();

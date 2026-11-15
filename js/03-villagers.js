@@ -31,6 +31,23 @@ function setJob(v, job) {
   addFloat(v.x, v.y - 26, JOB_NAME[job], JOB_COLOR[job]);
   sfx.place();
 }
+// Atur jumlah warga per job: tambah hanya dari yang tanpa job, kurang melepas dari urutan terakhir.
+function setJobCount(job, n) {
+  n = Math.max(0, Math.min(S.villagers.length, Math.floor(n) || 0));
+  const have = S.villagers.filter(v => v.job === job).length;
+  if (n > have) {
+    let need = n - have;
+    for (const v of S.villagers) {
+      if (need <= 0) break;
+      if (v.job === 'none') { setJob(v, job); need--; }
+    }
+  } else if (n < have) {
+    let drop = have - n;
+    for (let i = S.villagers.length - 1; i >= 0 && drop > 0; i--) {
+      if (S.villagers[i].job === job) { setJob(S.villagers[i], 'none'); drop--; }
+    }
+  }
+}
 function feedVillager(v) {
   if (v.dead) return false;
   if (S.bread < 1) { addFloat(v.x, v.y - 26, 'Tidak ada roti', '#ff8a8a'); return false; }

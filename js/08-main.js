@@ -105,7 +105,7 @@ if (typeof requestAnimationFrame === 'function') requestAnimationFrame(frame);
 window.__DM = {
   S, WORLD, BUILD, TIERS, update, render, act, enterBuild, exitBuild, tryPlace, ghostValid,
   spawnWave, save, load, keys, input, joy, TILE, MW, MH, DAY_LEN, NIGHT_LEN,
-  acceptVillager, declineVillager, spawnVillager, setJob, feedVillager, feedAllVillagers,
+  acceptVillager, declineVillager, spawnVillager, setJob, setJobCount, feedVillager, feedAllVillagers,
   upgradeBuilding, demolishBuilding, upgradeTownhall, craftItem, cookBread, tradeMarket,
   eatBread, enterDungeon, exitDungeon, openPanel, closePanel, openMenu, closeMenu, openVillagerList, cycleSpeed,
   hitTree, hitRock, harvestCrop, dropLoot, onDawn, houseCapacity, findFreeHouse,
