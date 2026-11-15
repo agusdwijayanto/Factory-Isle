@@ -77,5 +77,5 @@ Berurutan, dibangun di atas kode versi tes, tiap task lolos sebelum lanjut.
 
 - Push ke repo Indotopia (menggantikan game tycoon sebagai commit baru di atas
   riwayat yang ada, tanpa force-push), GitHub Pages aktif, kirim link live.
-- Lolos: link live terbuka dan bisa dimainkan, game.js live sama persis
+- Lolos: link live terbuka dan bisa dimainkan, semua file js/ live sama persis
   dengan lokal.

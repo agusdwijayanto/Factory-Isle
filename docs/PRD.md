@@ -89,7 +89,7 @@ final, dan boleh diubah sesudah dicoba. Angka lainnya wajib persis.
 ### Malam dan monster
 
 - Tiap malam gelombang monster datang, malam pertama 3, tiap malam berikutnya
-  tambah 1. Monster HP 30, serangan 10.
+  tambah 2, tanpa batas. Monster HP 30, serangan 10.
 - Monster kalah menjatuhkan bahan acak: 50% kayu/batu/makanan, 30% iron atau
   coal, 15% 2 sampai 3 bahan, 5% bahan langka (angka awal).
 - Roti memulihkan 25 HP (angka awal), untuk pemain dan warga.
