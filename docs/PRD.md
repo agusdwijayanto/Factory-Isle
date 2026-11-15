@@ -33,8 +33,10 @@ final, dan boleh diubah sesudah dicoba. Angka lainnya wajib persis.
 - Warga bekerja sendiri dengan angka yang sama seperti pemain, 1 pukulan per
   detik (angka awal), hasil masuk penghitung.
 - Tiap warga makan 3 roti per hari, roti habis berarti berhenti kerja, tidak mati.
+  Tombol Beri Roti di panel warga membuat warga kenyang seketika (1 roti).
 - Warga ikut melawan tiap malam, HP 50 (angka awal), kalah berarti bangun lagi
-  keesokan pagi di rumahnya.
+  keesokan pagi di rumahnya. Malam tiba warga kumpul dulu di townhall dan
+  menunggu; mereka maju serang bareng begitu pemain memukul monster duluan.
 
 ### Rumah dan bangunan
 

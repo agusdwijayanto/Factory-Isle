@@ -132,7 +132,7 @@ function initState(s) {
   // Gandum awal 5: tanpa benih, rantai tanam tidak bisa mulai sama sekali.
   s.wood = 0; s.stone = 0; s.wheat = 5; s.bread = 0;
   s.iron = 0; s.coal = 0; s.gold = 0; s.diamond = 0;
-  s.day = 1; s.t = 0; s.phase = 'day'; s.rtime = 0;
+  s.day = 1; s.t = 0; s.phase = 'day'; s.rtime = 0; s.charge = false;
   s.monsters = []; s.parts = []; s.floats = [];
   s.buildings = []; s.crops = {}; s.tiles = {}; s.planted = [];
   s.villagers = []; s.popup = false; s.cookQ = [];
@@ -262,6 +262,8 @@ function damageTaken(n) {
   return Math.max(1, Math.round(d));
 }
 function hitMonster(m, dmg) {
+  // Pukulan pertama pemain di malam hari = aba-aba serang bareng warga.
+  if (S.phase === 'night' && !S.dun) S.charge = true;
   m.hp -= dmg;
   const d = Math.hypot(m.x - S.px, m.y - S.py) || 1;
   m.x += (m.x - S.px) / d * 10; m.y += (m.y - S.py) / d * 10;
@@ -497,8 +499,10 @@ function setJob(v, job) {
   sfx.place();
 }
 function feedVillager(v) {
-  if (v.hp >= VILL_HP || S.bread < 1) return false;
-  S.bread--; v.hp = Math.min(VILL_HP, v.hp + BREAD_HEAL);
+  if (v.dead) return false;
+  if (S.bread < 1) { addFloat(v.x, v.y - 26, 'Tidak ada roti', '#ff8a8a'); return false; }
+  if (v.fed && v.hp >= VILL_HP) return false;
+  S.bread--; v.fed = true; v.hp = Math.min(VILL_HP, v.hp + BREAD_HEAL);
   sfx.eat(); burst(v.x, v.y, '#ffd94d', 6, 50);
   addFloat(v.x, v.y - 26, '+' + BREAD_HEAL + ' HP', '#9fe870');
   return true;
@@ -589,6 +593,11 @@ function villagerFight(v, dt) {
   let best = null, bd = 1e9;
   for (const m of S.monsters) { const d = Math.hypot(m.x - v.x, m.y - v.y); if (d < bd) { bd = d; best = m; } }
   if (!best) {
+    moveToward(v, BALAI.x * TILE + 48, BALAI.y * TILE + 48, dt);
+    return;
+  }
+  // Belum ada aba-aba: kumpul di townhall, lawan hanya kalau monster sudah di depan mata.
+  if (!S.charge && bd > 48) {
     moveToward(v, BALAI.x * TILE + 48, BALAI.y * TILE + 48, dt);
     return;
   }
@@ -975,7 +984,7 @@ function renderPanel() {
     h += '<div class="crow"><b>Job:</b> ';
     for (const j of ['wood', 'mine', 'farm', 'none']) h += '<button data-act="job" data-job="' + j + '"' + (v.job === j ? ' class="on"' : '') + '>' + JOB_NAME[j] + '</button>';
     h += '</div>';
-    h += '<button data-act="feed">Beri Roti (+25 HP, 1 roti)</button>';
+    h += '<button data-act="feed">Beri Roti (kenyang + 25 HP, 1 roti)</button>';
   }
   h += '<button data-act="close">Tutup</button>';
   el.panel.innerHTML = h;
@@ -1124,7 +1133,7 @@ function update(dt) {
   S.rtime += dt;
   if (!S.frozen) {
     S.t += dt;
-    if (S.phase === 'day' && S.t >= DAY_LEN) { S.phase = 'night'; spawnWave(); }
+    if (S.phase === 'day' && S.t >= DAY_LEN) { S.phase = 'night'; S.charge = false; spawnWave(); }
     else if (S.phase === 'night' && S.t >= DAY_LEN + NIGHT_LEN) {
       S.t = 0; S.day++; S.phase = 'day';
       for (const m of S.monsters) burst(m.x, m.y, '#b9a7e6', 8, 60);
