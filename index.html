@@ -3,41 +3,58 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Indotopia</title>
-<meta name="description" content="Game tycoon pabrik 2D di browser, terinspirasi Factory Town Tycoon. Bangun rantai produksi dari kayu sampai Motor.">
+<title>Indotopia — Desa Monster</title>
+<link rel="icon" href="data:,">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header id="hud">
-  <span class="logo">Indotopia</span>
-  <span id="money">$0</span>
-  <span id="active">Item aktif: 0/150</span>
-  <button id="btnBuild">Bangun</button>
-  <button id="btnInv">Inventaris</button>
-  <button id="btnSave">Simpan</button>
-  <button id="btnReset">Reset</button>
-</header>
-
-<main id="wrap">
-  <canvas id="game" width="1056" height="720"></canvas>
-  <aside id="invPanel" class="hidden">
-    <h3>Inventaris</h3>
-    <div id="invList"></div>
-  </aside>
-</main>
-
-<div id="panel" class="hidden"></div>
-<div id="toast" class="hidden"></div>
-
-<div id="touchUI">
-  <div id="joy"><div id="joyKnob"></div></div>
-  <button id="btnAct">Aksi</button>
-  <button id="btnBeltDir">Sabuk: ▶</button>
+<div id="wrap">
+  <canvas id="game" width="960" height="640"></canvas>
+  <div id="hud">
+    <span>Kayu <b id="hWood">0</b></span>
+    <span>Batu <b id="hStone">0</b></span>
+    <span>Gandum <b id="hWheat">5</b></span>
+    <span>Roti <b id="hBread">0</b></span>
+    <span>Iron <b id="hIron">0</b></span>
+    <span>Coal <b id="hCoal">0</b></span>
+    <span>Gold <b id="hGold">0</b></span>
+    <span>Diamond <b id="hDiamond">0</b></span>
+    <span class="hpwrap">HP <span class="hpbar"><span id="hHpFill"></span></span> <b id="hHp">100/100</b></span>
+    <span class="spacer"></span>
+    <span>Warga <b id="hVill">0/0 · TH 1</b></span>
+    <span><b id="hDay">Hari 1</b> · <span id="hPhase">Siang</span></span>
+    <span class="cycbar"><span id="hCyc"></span></span>
+  </div>
+  <div id="buildbar" hidden><span id="buildTxt"></span> <button id="btnCancel">BATAL</button></div>
+  <div id="menu" hidden>
+    <button data-build="hut" data-name="Gubuk">Gubuk</button>
+    <button data-build="mine" data-name="Tambang">Tambang</button>
+    <button data-build="smith" data-name="Toolsmith">Toolsmith</button>
+    <button data-build="kitchen" data-name="Dapur">Dapur</button>
+    <button data-build="market" data-name="Pasar">Pasar</button>
+    <button data-build="road" data-name="Jalan">Jalan</button>
+    <button data-build="farm" data-name="Lahan Petani">Lahan Petani</button>
+    <button data-build="tree" data-name="Tanam Pohon">Tanam Pohon</button>
+    <button data-build="erase" data-name="Hapus Petak">Hapus Petak</button>
+    <button data-build="cancel" data-name="Tutup">Tutup</button>
+  </div>
+  <div id="panel" hidden></div>
+  <div id="popup" hidden>
+    <p><b>Warga baru datang!</b><br>Terima dia ke desa?</p>
+    <button id="btnAccept">Terima</button>
+    <button id="btnDecline">Tolak</button>
+  </div>
+  <div id="banner"></div>
+  <div id="controls">
+    <div id="joy"><div id="stick"></div></div>
+    <div id="btns">
+      <button id="btnEat">MAKAN ROTI</button>
+      <button id="btnBuild">BANGUN</button>
+      <button id="btnAct">AKSI</button>
+    </div>
+  </div>
 </div>
-
-<p id="help">WASD/panah: jalan &nbsp;|&nbsp; E: interaksi (panen, mesin, toko) &nbsp;|&nbsp; R: putar arah conveyor &nbsp;|&nbsp; B: menu bangun &nbsp;|&nbsp; Klik juga bisa.</p>
-
-<script src="data.js"></script>
+<p id="hint">Laptop: WASD/panah jalan, spasi/klik aksi, B bangun, E makan roti, klik bangunan/warga untuk panel. HP: joystick jalan, tombol AKSI untuk pukul/ambil.</p>
 <script src="game.js"></script>
 </body>
 </html>

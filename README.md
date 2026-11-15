@@ -1,21 +1,36 @@
-# Indotopia
+# Indotopia — Desa Monster (versi kompleks)
 
-Game tycoon pabrik 2D di browser, terinspirasi Factory Town Tycoon (Roblox). Bangun rantai produksi sendiri: tebang kayu, buat mebel, bakar bata, lebur besi, rakit Motor, jual ke toko kota.
+Game 2D web single-player: kamu bola slime biru, ketua desa monster.
+Bangun kerjaan, atur warga, bertarung tiap malam, masuk dungeon.
 
-**Main langsung:** https://agusdwijayanto.github.io/Indotopia/
+Main di: https://agusdwijayanto.github.io/Indotopia/
 
 ## Cara main
-- **WASD / panah**: jalan. **E**: interaksi (panen, buka mesin, buka toko). **B**: menu bangun. **R**: putar arah conveyor. Klik petak di sebelah karakter juga bisa.
-- Di HP: joystick virtual + tombol Aksi.
-- Panen pohon, pasir, tanah liat, dan bijih di lahan kiri. Bangun mesin di lahan, muat bahannya, pilih resep, ambil hasilnya atau sambungkan conveyor ke Storage.
-- Jual hasil ke toko di kota: tiap toko hanya membeli barang tertentu dengan harga tetap.
-- Uang dipakai buat riset mesin berikutnya, upgrade alat di Tool Shop, atau beli bahan instan di Exchange (lebih mahal).
-- Progres tersimpan otomatis di browser. Tombol Reset mengembalikan ke modal awal $50.
 
-## Jalur produksi v1
-Kayu (Sawhorse, Carpenter) → bata dan kaca (Oven) → ingot logam (Smelter) → komponen dan Motor (Blacksmith). Batas item aktif 150; bangun Storage buat menaikkannya.
+- **Laptop:** WASD/panah jalan, spasi/klik aksi, B menu bangun, E makan roti.
+  Klik bangunan atau warga untuk membuka panelnya.
+- **HP:** joystick jalan, tombol AKSI untuk pukul/ambil, tombol BANGUN untuk menu.
+
+## Inti game
+
+- Tebang, tambang, tanam, panen. Tanam pohon dan petak lahan sendiri.
+- Warga datang kalau ada rumah kosong. Terima atau tolak, beri job
+  (penebang, penambang, petani), job bisa diganti kapan saja.
+- Warga makan 3 roti per hari. Roti dibuat di Dapur dari gandum.
+- 6 bangunan: Townhall, Rumah, Tambang, Toolsmith, Dapur, Pasar.
+- Senjata, armor, dan alat naik tingkat: kayu, batu, besi, emas, berlian.
+- Tiap malam monster menyerang desa dan menjatuhkan bahan acak.
+- Dungeon 3 lantai di bukit: syarat masuk harus punya senjata dulu.
+  Diamond hanya ada di lantai terdalam.
 
 ## Teknologi
-HTML5 Canvas + JavaScript polos, tanpa framework dan tanpa build step. Gambar memakai sprite Kenney Tiny 16x16 berlisensi CC0 (folder `assets/`, daftar lengkap di `assets/ASSETS.md`), dengan gambar prosedural sebagai fallback kalau sprite gagal dimuat. Air, palm, dan kapal tetap prosedural karena tidak ada sprite yang cocok di paket Kenney.
 
-Dokumen perencanaan ada di folder `docs/` (STRUKTUR, PRD, TASK). Angka bertanda TUNING di dokumen adalah usulan yang tidak ada di wiki sumber riset.
+HTML5 Canvas + JavaScript polos, tanpa build step, tanpa dependensi,
+tanpa aset luar. Grafik prosedural, suara WebAudio sintetis.
+Simpanan otomatis di browser (localStorage).
+
+## Dokumen desain
+
+- `docs/STRUKTUR.md` — struktur yang disetujui
+- `docs/PRD.md` — PRD yang disetujui
+- `docs/TASK.md` — daftar task dan kriteria lolos

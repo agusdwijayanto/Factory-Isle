@@ -1,47 +1,81 @@
-# Task Indotopia v1
+# Task Indotopia — versi kompleks (disetujui)
 
-Status: semua task di bawah SELESAI dan teruji (lihat README untuk bukti tes).
+Berurutan, dibangun di atas kode versi tes, tiap task lolos sebelum lanjut.
 
-**Task 1 — Kerangka dan peta** (fondasi)
-- Folder proyek, satu halaman HTML + Canvas, peta ubin lahan dan kota, karakter jalan 4 arah pakai keyboard, kamera mengikuti karakter
-- Lolos: game terbuka di browser, karakter bisa keliling lahan dan kota tanpa menembus bangunan
+## Task 1 — Fondasi versi kompleks
 
-**Task 2 — Data game** (sejajar Task 1)
-- Satu file data (data.js) berisi semua item, resep + waktu proses, biaya riset, dan harga toko persis hasil riset dan PRD
-- Lolos: skrip validasi Node menyatakan tidak ada resep yang menyebut bahan/hasil di luar daftar item, dan semua mesin punya harga riset
+- Bahan baru masuk penghitung: gandum, roti, iron, coal, gold, diamond.
+  Model bangunan naik tingkat dan simpanan naik versi.
+- Lolos: game versi tes tetap jalan utuh, bahan baru tampil di HUD,
+  simpanan lama tidak merusak game.
 
-**Task 3 — Panen manual dan inventaris** (sesudah Task 1 + 2)
-- Kapak menebang pohon jadi Log, sekop menggali Sand dan Clay, beliung menambang Stone dan bijih; node tumbuh/muncul lagi; inventaris dan tampilan koin
-- Lolos: Log, Sand, Clay, Stone, dan Iron Ore bisa dikumpulkan ke inventaris
+## Task 2 — Warga: datang, terima, job, kerja (butuh Task 1)
 
-**Task 4 — Bangun dan riset** (sesudah Task 3)
-- Menu bangun menaruh bangunan di petak; mesin terkunci sampai riset dibayar (Carpenter $50, Oven $100, Log Splitter $150 TUNING, Smelter $250 TUNING, Blacksmith $1.000)
-- Lolos: mesin terkunci tidak bisa dibangun, koin berkurang persis sejumlah biaya riset
+- Warga datang 1 per hari kalau ada rumah kosong, pemberitahuan terima atau
+  tolak, panel job, warga bekerja sendiri, makan 3 roti per hari, berhenti
+  kerja kalau roti habis.
+- Lolos: warga datang, bekerja, hasil masuk penghitung, makan, dan berhenti
+  saat roti habis.
 
-**Task 5 — Mesin produksi dan conveyor** (sesudah Task 4)
-- Mesin memilih satu resep, mengambil bahan dari buffer masukan, memproses sesuai waktu resep, mengeluarkan hasil; Smelter membakar Firelog; conveyor memindahkan keluaran mesin ke Storage/inventaris; batas item aktif 150 menghentikan produksi
-- Lolos: Log menjadi Plank jalan; Brick keluar 10 dari 3 Firelog + 2 Clay dalam 15 detik; mesin berhenti saat batas item aktif tercapai
+## Task 3 — Rumah naik tingkat dan panel CRUD (butuh Task 1)
 
-**Task 6 — Rantai logam** (sesudah Task 5)
-- Smelter melebur bijih (Iron Ingot dari 2 Iron Ore, Bronze dari 4 Copper Ingot + 1 Tin Ingot), Blacksmith membuat Nails, Coil, Gear, Iron Beam, Iron Frame, Drill Head, Motor
-- Lolos: dari bijih mentah sampai Motor jadi mengikuti resep riset, diperiksa lewat validasi data
+- Gubuk menjadi rumah menjadi rumah besar, biaya dan tampungan sesuai PRD,
+  bongkar kembali setengah bahan, panel info waktu diklik.
+- Lolos: naik tingkat, bongkar, dan panel bekerja sesuai PRD.
 
-**Task 7 — Kota dan toko** (sesudah Task 6)
-- Empat toko membeli hanya daftar barangnya dengan harga PRD; Exchange menjual bahan premium; Tool Shop menjual upgrade alat bertingkat dan membeli Iron Beam, Drill Head, Motor
-- Lolos: fungsi harga teruji di Node (jual Log = $7, Iron Beam = $72, Motor = $225)
+## Task 4 — Petak bebas dan tanam pohon (butuh Task 1)
 
-**Task 8 — Simpanan dan kontrol HP** (sesudah Task 7)
-- Simpan otomatis di localStorage (berkala 5 detik, tombol Simpan, dan saat halaman ditutup), muat saat dibuka, tombol Reset ke modal $50; joystick virtual dan tombol aksi buat layar sentuh
-- Lolos: kode simpan/muat ada dan state terserialisasi penuh (mesin, sabuk, simpanan uang, inventaris)
+- Jalan gratis, lahan petani 1x1 gratis, tanam pohon biaya 1 kayu, tanam di
+  lahan biaya 1 makanan menjadi panen 2 makanan.
+- Lolos: semua petak bisa dibuat dan dihapus bebas, ekonomi tanam sesuai PRD.
 
-**Task 9 — Tes loop penuh** (terakhir)
-- Pemeriksaan menyeluruh mengikuti kriteria sukses PRD: node --check lolos, validasi data lolos, server lokal mengembalikan HTTP 200 untuk semua file, smoke test harga lolos
-- Lolos: semua tes di README hijau
+## Task 5 — Townhall naik tingkat dan kunci bangunan (butuh Task 2 dan 3)
 
-## Angka TUNING (tidak ada di wiki, usulan yang dikunci di PRD)
-- Waktu proses Sawhorse: 5 detik per resep; jalur manual Log menjadi Firelog x3 di Sawhorse
-- Biaya riset Log Splitter $150, Smelter $250; semua resep Smelter 15 detik + bahan bakar Firelog x1
-- Harga beli Table $45, Bench $40, Window $55 di Toko Carpenter; harga jual Motor $225
-- Waktu tumbuh lagi node: pohon 60 dtk, pasir/tanah liat 30 dtk, batu 40 dtk, bijih 45 dtk
-- Batas item aktif: dasar 150 (wiki), naik 150 per Storage (penyederhanaan dari sistem housing/storage asli)
-- Bangunan gratis sesudah riset terbuka (penyederhanaan; versi asli memakai bahan crafting per bangunan)
+- Syarat tingkat 2 dan 3 sesuai PRD, Toolsmith, Dapur, dan Pasar terkunci
+  sampai tingkat 2, kerajinan gold dan diamond terkunci sampai tingkat 3.
+- Lolos: syarat diperiksa benar, kunci membuka tepat waktu.
+
+## Task 6 — Tambang, Dapur, Pasar (butuh Task 5)
+
+- Tambang di bukit dengan penambang menghasilkan batu, iron, dan coal.
+  Dapur mengubah gandum menjadi roti. Pasar menukar bahan.
+- Lolos: produksi, pengolahan, dan tukar bahan bekerja sesuai PRD.
+
+## Task 7 — Toolsmith: senjata, armor, upgrade alat (butuh Task 5 dan 6)
+
+- Kerajinan 5 tingkat untuk pedang, bow, perisai, armor, kapak, dan beliung,
+  dengan biaya dan angka sesuai PRD.
+- Lolos: semua kerajinan bisa dibuat, angka damage dan armor benar.
+
+## Task 8 — Malam: warga melawan, drop acak, roti menyembuhkan (butuh Task 2 dan 7)
+
+- Warga ikut melawan gelombang malam, monster menjatuhkan bahan acak sesuai
+  tabel PRD, makan roti memulihkan HP.
+- Lolos: warga bertarung, drop keluar, roti menyembuhkan.
+
+## Task 9 — Dungeon (butuh Task 7 dan 8)
+
+- Pintu di bukit, syarat senjata, 3 lantai dengan monster makin kuat, peti
+  item acak, jalan keluar kapan saja.
+- Lolos: syarat diperiksa, 3 lantai bisa dimasuki dan ditinggalkan, peti
+  memberi item.
+
+## Task 10 — Rasa main dan HUD (butuh semua task sistem)
+
+- Bunyi, partikel, dan angka melayang untuk semua aksi baru, perayaan untuk
+  warga pertama, senjata pertama, dan townhall naik tingkat.
+- Lolos: tiap aksi baru terasa, HUD selalu benar.
+
+## Task 11 — Tes loop penuh (butuh semua task di atas)
+
+- Siklus penuh: terima warga, beri job, panen otomatis, makan roti, naik
+  tingkat, buat senjata, lawan gelombang malam, masuk dungeon dan keluar,
+  15 menit di HP dan laptop.
+- Lolos: tanpa crash, tanpa error konsol, semua kriteria PRD terpenuhi.
+
+## Task 12 — Push dan link live (butuh Task 11)
+
+- Push ke repo Indotopia (menggantikan game tycoon sebagai commit baru di atas
+  riwayat yang ada, tanpa force-push), GitHub Pages aktif, kirim link live.
+- Lolos: link live terbuka dan bisa dimainkan, game.js live sama persis
+  dengan lokal.

@@ -1,44 +1,86 @@
-# Struktur Indotopia
+# STRUKTUR Indotopia — versi kompleks (disetujui)
 
-**1. Konsep inti**
-- Tycoon pabrik 2D di browser, tampilan atas berbasis ubin, single-player tanpa server
-- Bangun rantai produksi di lahan sendiri, olah bahan naik tingkat, jual ke toko, hasilnya buat upgrade dan perluas
+## 1. Konsep inti
 
-**2. Alur main**
-- Modal awal $50 + kapak, tebang pohon dan panen bahan buat bahan dasar
-- Bangun mesin pertama, produksi jalan otomatis, antar hasil ke toko
-- Uang hasil jual dipakai riset mesin tingkat berikutnya, upgrade alat, perluas lahan
-- Ujung jalur v1: Motor dari Blacksmith
+- Game 2D web single-player: kamu bola slime biru, ketua desa monster,
+  membangun desa dari dusun kecil menjadi kota.
+- Inti mainnya: bangun kerjaan, atur warga, bertarung tiap malam, masuk dungeon.
 
-**3. Dunia**
-- Satu lahan pribadi buat pabrik dan sumber daya, satu kota berisi empat toko tetap
-- Tema ikut game asli: kayu dan besi
+## 2. Platform dan teknologi
 
-**4. Sistem inti**
-- Peta ubin, bangunan ditaruh di petak, conveyor menyambung mesin ke Storage
-- Mesin memilih satu resep, bahan masuk, proses pakai waktu, hasil keluar
-- Firelog jadi bahan bakar Smelter; Oven membakar Firelog sebagai bahan resep
-- Batas item aktif 150: produksi berhenti saat batas tercapai; Storage menaikkannya
+- Browser, HTML5 Canvas + JS polos tanpa build step, live GitHub Pages,
+  simpanan otomatis di browser, HP dan laptop.
 
-**5. Rantai produksi**
-- Kayu: Sawhorse, lalu Carpenter (Wood Frame, Table, Bench, Window)
-- Bata dan kaca: Oven berbahan Firelog + Clay/Sand
-- Logam: Smelter melebur bijih jadi ingot (besi, tembaga, timah, perunggu)
-- Komponen: Blacksmith (Nails, Coil, Gear, Iron Beam, Iron Frame, Drill Head, Motor)
-- Pendukung: Log Splitter (Firelog massal), Storage, Conveyor
+## 3. Dunia
 
-**6. Ekonomi**
-- Jual hanya ke toko khusus per jenis barang, harga tetap dari sistem
-- Exchange menjual bahan dengan harga premium sebagai jalan pintas
-- Uang menempel di pemain, tidak ada pasar antar pemain (single-player)
+- Peta 48x32 petak: hutan, bukit tambang, area desa di tengah, pintu dungeon di bukit.
+- Siklus siang dan malam, layar menggelap waktu malam.
 
-**7. Teknis**
-- HTML5 Canvas + JavaScript polos, tanpa framework, tanpa build step
-- Pola conveyor jalur menyambung ditulis sendiri (terinspirasi pola umum, tanpa menyalin kode berlisensi GPL)
-- Aset gambar prosedural di Canvas (paket Kenney Tiny tidak bisa diunduh dari lingkungan build: kenney.nl menjawab 403; lisensinya CC0 bila nanti dipakai)
-- Simpanan otomatis di localStorage browser
+## 4. Warga
 
-**8. Keputusan yang dikunci di PRD**
-- Unlock mesin memakai bayar riset
-- Lingkup v1 sampai Blacksmith dan Motor; sisanya tahap berikutnya
-- Karakter pemain digambar sederhana, jalan 4 arah
+- Semua warga bola slime, dibedakan warna dan ikon alat: penebang hijau,
+  penambang abu-abu, petani kuning, tanpa job merah muda, pemain tetap biru.
+- Warga datang kalau ada rumah kosong, diterima atau ditolak, tanpa nama
+  dan tanpa keahlian bawaan.
+- Warga diberi job yang bisa diganti kapan saja, bekerja sendiri, dan ikut
+  melawan tiap malam.
+- Tiap warga makan 3 roti per hari, roti habis berarti berhenti kerja, tidak mati.
+
+## 5. Bangunan (6)
+
+- Townhall: bangunan awal, naik tingkat dengan syarat jumlah warga dan bahan.
+- Rumah: gubuk menjadi rumah menjadi rumah besar, menampung 1, 2, lalu 3 warga.
+- Tambang: di bukit, penambang menghasilkan batu, kadang iron dan coal.
+- Toolsmith: membuat senjata, armor, dan upgrade alat.
+- Dapur: mengubah gandum menjadi roti, nanti membuka bahan makanan lain.
+- Pasar: menukar bahan berlebih dengan bahan yang kurang.
+- Semua bangunan CRUD: naik tingkat, dibongkar kembali setengah bahan,
+  dilihat infonya lewat panel.
+
+## 6. Petak bebas
+
+- Jalan coklat gratis, dibuat dan dihapus bebas.
+- Lahan petani 1x1 gratis, ditaruh bebas seperti jalan.
+- Tanam pohon biaya 1 kayu, tanam di lahan biaya 1 makanan.
+
+## 7. Senjata dan armor
+
+- Rantai tingkat: wooden, stone, iron, gold, diamond yang langka.
+- Senjata: pedang, bow, perisai. Armor mengurangi damage.
+- Berlaku untuk pemain dan warga.
+
+## 8. Malam dan monster
+
+- Tiap malam gelombang monster datang, monster kalah menjatuhkan bahan acak.
+- Pemain petarung utama, warga membantu. Kalah berarti bangun lagi di desa
+  tanpa hukuman.
+- Tanpa tembok, tanpa menara, tanpa barak: tidak ada pertahanan otomatis.
+
+## 9. Dungeon
+
+- Pintu di bukit, syarat masuk harus punya senjata dulu.
+- Monster lebih kuat, drop lebih bagus, item acak, termasuk bahan langka
+  untuk tingkat diamond.
+
+## 10. Bahan
+
+Kayu, batu, gandum, roti, iron, coal, gold, diamond — dari tambang,
+dungeon, dan drop monster.
+
+## 11. Rasa main
+
+Prioritas utama: bunyi, partikel, angka melayang, getar layar, perayaan.
+
+## 12. Aturan tetap
+
+- Tidak ada bola hitam dan tidak ada bola putih.
+- Roti memulihkan HP, untuk warga dan pemain.
+
+## 13. Di luar versi kompleks
+
+Mode online, musik latar, dekorasi, hewan, musim.
+
+## 14. Kriteria lolos
+
+Semua sistem bekerja, 15 menit main tanpa crash, dan Agus yang menilai
+seru atau tidak.
