@@ -214,8 +214,8 @@ window.addEventListener('keydown', e => {
 window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
 function canvasTile(e) {
   const r = canvas.getBoundingClientRect();
-  const wx = (e.clientX - r.left) * (VW / r.width) + S.cam.x;
-  const wy = (e.clientY - r.top) * (VH / r.height) + S.cam.y;
+  const wx = (e.clientX - r.left) * (VW / r.width) / S.zoom + S.cam.x;
+  const wy = (e.clientY - r.top) * (VH / r.height) / S.zoom + S.cam.y;
   return { tx: Math.floor(wx / TILE), ty: Math.floor(wy / TILE), wx, wy };
 }
 canvas.addEventListener('click', e => {

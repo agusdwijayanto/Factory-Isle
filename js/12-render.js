@@ -90,11 +90,12 @@ function render() {
   if (night) circle(VW - 90, 70, 26, '#f4f1d8');
   else circle(VW - 90, 70, 30, '#ffd94d');
   ctx.save();
+  ctx.scale(S.zoom, S.zoom);
   const shx = S.shake > 0 ? (Math.random() - 0.5) * S.shake * 14 : 0;
   const shy = S.shake > 0 ? (Math.random() - 0.5) * S.shake * 14 : 0;
   ctx.translate(-Math.round(S.cam.x) + shx, -Math.round(S.cam.y) + shy);
-  const x0 = Math.max(0, Math.floor(S.cam.x / TILE)), x1 = Math.min(S.mw - 1, Math.ceil((S.cam.x + VW) / TILE));
-  const y0 = Math.max(0, Math.floor(S.cam.y / TILE)), y1 = Math.min(MH - 1, Math.ceil((S.cam.y + VH) / TILE));
+  const x0 = Math.max(0, Math.floor(S.cam.x / TILE)), x1 = Math.min(S.mw - 1, Math.ceil((S.cam.x + VW / S.zoom) / TILE));
+  const y0 = Math.max(0, Math.floor(S.cam.y / TILE)), y1 = Math.min(MH - 1, Math.ceil((S.cam.y + VH / S.zoom) / TILE));
   for (let ty = y0; ty <= y1; ty++) for (let tx = x0; tx <= x1; tx++) {
     const c = S.tiles[ty][tx];
     if (c !== T_EMPTY) drawTile(tx, ty, c);
@@ -118,3 +119,5 @@ function render() {
   if (night) { ctx.fillStyle = 'rgba(10,10,50,0.28)'; ctx.fillRect(0, 0, VW, VH); }
 }
 canvas.addEventListener('mousemove', e => { const t = canvasTile(e); S.ghost = { tx: t.tx, ty: t.ty }; });
+// Scroll ke atas = zoom in, ke bawah = zoom out. passive false supaya halaman tidak ikut bergeser.
+canvas.addEventListener('wheel', e => { e.preventDefault(); setZoom(S.zoom * (e.deltaY < 0 ? 1.1 : 1 / 1.1)); }, { passive: false });

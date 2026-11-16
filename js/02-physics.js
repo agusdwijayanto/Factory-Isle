@@ -46,9 +46,14 @@ function updatePlayer(dt, move) {
   S.px = clamp(S.px, PW / 2, S.mw * TILE - PW / 2);
   if (S.py > MH * TILE) { S.py = MH * TILE - PH; S.vy = 0; S.onGround = true; } // pengaman, tidak boleh jatuh keluar dunia
 }
+function setZoom(z) {
+  // Batas bawah 0.5 = seluruh dunia awal (60x40 petak) pas satu layar.
+  S.zoom = clamp(z, 0.5, 2);
+}
 function updateCamera() {
-  const tx = clamp(S.px - VW / 2, 0, Math.max(0, S.mw * TILE - VW));
-  const ty = clamp(S.py - VH / 2, 0, Math.max(0, MH * TILE - VH));
+  const vw = VW / S.zoom, vh = VH / S.zoom;
+  const tx = clamp(S.px - vw / 2, 0, Math.max(0, S.mw * TILE - vw));
+  const ty = clamp(S.py - vh / 2, 0, Math.max(0, MH * TILE - vh));
   S.cam.x += (tx - S.cam.x) * 0.2; S.cam.y += (ty - S.cam.y) * 0.2;
   if (Math.abs(tx - S.cam.x) < 0.5) S.cam.x = tx;
   if (Math.abs(ty - S.cam.y) < 0.5) S.cam.y = ty;

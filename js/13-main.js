@@ -8,7 +8,7 @@ function save() {
       px: S.px, py: S.py, day: S.day, t: S.t, phase: S.phase, skills: S.skills,
       shipQ: S.shipQ, soldToday: S.soldToday, boughtToday: S.boughtToday,
       counters: S.counters, missions: S.missions, knownSplice: S.knownSplice,
-      turnip: S.turnip, expansions: S.expansions, flags: S.flags,
+      turnip: S.turnip, expansions: S.expansions, flags: S.flags, zoom: S.zoom,
     };
     localStorage.setItem(SAVE_KEY, JSON.stringify(d));
   } catch (e) { /* penyimpanan penuh/diblokir: game tetap jalan */ }
@@ -23,6 +23,7 @@ function load() {
     S.skills = d.skills; S.shipQ = d.shipQ; S.soldToday = d.soldToday; S.boughtToday = d.boughtToday;
     S.counters = d.counters; S.missions = d.missions; S.knownSplice = d.knownSplice;
     S.turnip = d.turnip; S.expansions = d.expansions; S.flags = d.flags || {};
+    S.zoom = clamp(d.zoom || 1, 0.5, 2);
     S.vx = 0; S.vy = 0;
     return true;
   } catch (e) { return false; }
@@ -64,7 +65,7 @@ if (typeof requestAnimationFrame === 'function') requestAnimationFrame(frame);
 window.__DM = {
   S, TILE, MW0, MH, DAY_LEN, NIGHT_LEN, SEASON_LEN, SAVE_KEY, TILES, ITEMS, PLANTS,
   SPLICE_RECIPES, CRAFT_RECIPES, PROFESSIONS, GIFT_SHOP, SHOP_BUY, EXPAND_COSTS,
-  update, render, doJump, updatePlayer, pollMove, tileAt, solidAt, playerTile,
+  update, render, doJump, updatePlayer, updateCamera, setZoom, pollMove, tileAt, solidAt, playerTile,
   punchTile, breakTile, placeTile, actTile, actForward, inReach, effHp,
   plantAt, grown, plantSeed, waterPlant, harvestPlant, inSeason, tryBreed, breedResult, fertilizePlant,
   spliceSeeds, findSpliceRecipe, discoverRecipes, craftItem, nearStation,

@@ -240,6 +240,7 @@ function initState(s) {
   s.px = 30 * TILE + 16; s.py = surfAt(30) * TILE - 14; s.vx = 0; s.vy = 0; // 14 = setengah tinggi badan
   s.face = 1; s.onGround = false; s.walk = 0;
   s.cam = { x: 0, y: 0 };
+  s.zoom = 1;
   s.coins = 0; s.taskCoins = 0; s.inv = {};
   s.day = 1; s.t = 0; s.phase = 'day'; s.rtime = 0;
   s.skills = {
