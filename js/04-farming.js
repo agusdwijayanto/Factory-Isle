@@ -2,6 +2,15 @@
 // ---------- Farming: tanam, siram, tumbuh, panen, musim, breeding ----------
 function plantAt(tx, ty) { return S.plants.find(p => p.tx === tx && p.ty === ty) || null; }
 function grown(p) { return p.growth >= PLANTS[p.seed].grow; }
+// Label tanaman dekat: nama di atas, timer di bawah nama. Timer berhenti kalau kering/luar musim.
+function plantLabel(p) {
+  const def = PLANTS[p.seed];
+  if (p.growth >= def.grow) return { name: def.name, status: 'SIAP' };
+  const sisa = Math.ceil((def.grow - p.growth) / growthMult());
+  if (!inSeason(p.seed)) return { name: def.name, status: 'Luar musim' };
+  if (!p.watered) return { name: def.name, status: 'Kering · ' + sisa + ' dtk' };
+  return { name: def.name, status: sisa + ' dtk' };
+}
 function plantColor(p) { return p.color || PLANTS[p.seed].color || null; }
 function inSeason(seed) {
   if (hasProf('farm', 'season-keeper')) return true;

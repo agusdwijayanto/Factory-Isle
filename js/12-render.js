@@ -2,6 +2,8 @@
 // ---------- Gambar: semua prosedural, tanpa aset luar ----------
 function rect(x, y, w, h, c) { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); }
 function circle(x, y, r, c) { ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill(); }
+// Teks putih bergaris tepi gelap, supaya terbaca di atas langit maupun tanah.
+function label(x, y, txt) { ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.6)'; ctx.strokeText(txt, x, y); ctx.fillStyle = '#fff'; ctx.fillText(txt, x, y); }
 function drawTile(tx, ty, code) {
   const x = tx * TILE, y = ty * TILE;
   let ox = 0;
@@ -63,7 +65,15 @@ function drawPlant(p) {
   } else {
     circle(x - 3, yb - hgt + 2, 3, '#57a85a'); circle(x + 3, yb - hgt, 3, '#57a85a');
   }
-  if (!p.watered && r < 1) { ctx.fillStyle = '#6db9ff'; ctx.font = '11px system-ui'; ctx.textAlign = 'center'; ctx.fillText('~', x, yb - hgt - 8); }
+  const pt = playerTile();
+  const near = Math.abs(p.tx - pt.tx) <= 3 && Math.abs(p.ty - pt.ty) <= 3;
+  if (!p.watered && r < 1 && !near) { ctx.fillStyle = '#6db9ff'; ctx.font = '11px system-ui'; ctx.textAlign = 'center'; ctx.fillText('~', x, yb - hgt - 8); }
+  if (near) {
+    const lb = plantLabel(p);
+    ctx.font = 'bold 11px system-ui'; ctx.textAlign = 'center';
+    label(x, yb - hgt - 20, lb.name);
+    label(x, yb - hgt - 7, lb.status);
+  }
 }
 function drawNPC(n) {
   const x = n.tx * TILE + 16, yb = (n.ty + 1) * TILE;

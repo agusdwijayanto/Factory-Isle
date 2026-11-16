@@ -67,7 +67,7 @@ window.__DM = {
   SPLICE_RECIPES, CRAFT_RECIPES, PROFESSIONS, GIFT_SHOP, SHOP_BUY, EXPAND_COSTS,
   update, render, doJump, updatePlayer, updateCamera, setZoom, pollMove, tileAt, solidAt, playerTile,
   punchTile, breakTile, placeTile, actTile, actForward, inReach, effHp,
-  plantAt, grown, plantSeed, waterPlant, harvestPlant, inSeason, tryBreed, breedResult, fertilizePlant,
+  plantAt, grown, plantSeed, waterPlant, harvestPlant, inSeason, tryBreed, breedResult, fertilizePlant, plantLabel,
   spliceSeeds, findSpliceRecipe, discoverRecipes, craftItem, nearStation,
   buyItem, sellItem, sellPrice, buyGift, onDawnEconomy,
   genTurnipWeek, turnipPriceNow, buyTurnips, sellTurnips, rotTurnips, expandLand,
