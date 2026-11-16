@@ -8,15 +8,13 @@ body {
 #game { width: 100%; height: auto; display: block; border-radius: 8px; background: #000; image-rendering: pixelated; touch-action: none; }
 #hud {
   position: absolute; top: 0; left: 0; right: 0;
-  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
   padding: 8px 12px; font-size: 14px; font-weight: 600;
   background: rgba(0, 0, 0, .55); border-radius: 8px 8px 0 0; pointer-events: none;
 }
 #hud .spacer { flex: 1; }
 #hud button { pointer-events: auto; padding: 4px 10px; border: 0; border-radius: 8px; background: #f5a623; color: #fff; font-weight: 700; font-size: 13px; }
-.hpbar, .cycbar { display: inline-block; width: 90px; height: 10px; background: #444; border-radius: 5px; overflow: hidden; vertical-align: middle; }
-.cycbar { width: 70px; }
-#hHpFill { display: block; height: 100%; width: 100%; background: #e74c3c; }
+.cycbar { display: inline-block; width: 70px; height: 10px; background: #444; border-radius: 5px; overflow: hidden; vertical-align: middle; }
 #hCyc { display: block; height: 100%; width: 0%; background: #ffd94d; }
 #buildbar {
   position: absolute; top: 44px; left: 50%; transform: translateX(-50%);
@@ -30,31 +28,21 @@ body {
   display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 94%;
 }
 #menu[hidden] { display: none; }
-#menu button, #panel button, #popup button {
+#menu button, #panel button {
   padding: 7px 11px; border: 0; border-radius: 8px; background: #f5a623;
   color: #fff; font-weight: 700; font-size: 13px;
 }
 #menu button:disabled, #panel button:disabled { background: #666; color: #bbb; }
-#menu button.on, #panel button.on { outline: 3px solid #fff; }
 #panel {
   position: absolute; top: 44px; right: 10px; width: min(430px, 92%);
   background: rgba(0, 0, 0, .85); padding: 12px 14px; border-radius: 10px;
   font-size: 13px; max-height: 78%; overflow-y: auto;
 }
-#panel h3 { margin: 0 0 6px; font-size: 16px; }
+#panel h3 { margin: 8px 0 6px; font-size: 16px; }
+#panel h3:first-child { margin-top: 0; }
 #panel p { margin: 6px 0; color: #d5dbe8; }
 #panel .crow { margin: 8px 0; display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
 #panel button { margin: 3px 2px 0 0; }
-#panel input[type="number"] { width: 52px; padding: 6px 8px; border: 0; border-radius: 8px; font-size: 14px; font-weight: 700; text-align: center; }
-#popup {
-  position: absolute; top: 34%; left: 50%; transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, .88); padding: 16px 20px; border-radius: 12px;
-  text-align: center; font-size: 15px;
-}
-#popup p { margin: 0 0 10px; }
-#popup button { margin: 0 5px; padding: 9px 18px; font-size: 14px; }
-#btnAccept { background: #4caf50 !important; }
-#btnDecline { background: #e74c3c !important; }
 #banner {
   position: absolute; top: 30%; left: 0; right: 0; text-align: center;
   font-size: 30px; font-weight: 800; color: #ffe27a;
@@ -68,23 +56,14 @@ body {
   padding: 12px; pointer-events: none;
 }
 #controls > * { pointer-events: auto; }
-#joy {
-  width: 112px; height: 112px; border-radius: 50%;
-  background: rgba(255, 255, 255, .14); border: 2px solid rgba(255, 255, 255, .35);
-  position: relative; touch-action: none;
-}
-#stick {
-  width: 48px; height: 48px; border-radius: 50%; background: rgba(255, 255, 255, .75);
-  position: absolute; left: 32px; top: 32px;
-}
-#btns { display: flex; gap: 10px; }
-#btns button {
+#moveBtns, #btns { display: flex; gap: 10px; }
+#controls button {
   padding: 16px 20px; border: 0; border-radius: 14px;
   font-size: 16px; font-weight: 800; color: #fff; touch-action: none;
+  background: rgba(255, 255, 255, .22); border: 2px solid rgba(255, 255, 255, .35);
 }
-#btnBuild { background: #f5a623; }
-#btnEat { background: #8e6a3e; }
-#btnBuild.on { outline: 3px solid #fff; }
-#btnAct { background: #4caf50; }
+#btnBuild { background: #f5a623; border: 0; }
+#btnAct { background: #4caf50; border: 0; }
+#btnJump { background: #4a7ab8; border: 0; }
 #hint { font-size: 13px; color: #9aa7bd; text-align: center; padding: 0 12px; }
-@media (pointer: fine) { #joy { display: none; } #controls { justify-content: flex-end; } }
+@media (pointer: fine) { #moveBtns { display: none; } #controls { justify-content: flex-end; } }

@@ -1,81 +1,18 @@
-# Task Indotopia — versi kompleks (disetujui)
+# TASK — Indotopia (game kaya Growtopia versi kita)
 
-Berurutan, dibangun di atas kode versi tes, tiap task lolos sebelum lanjut.
+Disetujui Agus 2026-11-16, perintah "gasss" 2026-11-16.
 
-## Task 1 — Fondasi versi kompleks
-
-- Bahan baru masuk penghitung: gandum, roti, iron, coal, gold, diamond.
-  Model bangunan naik tingkat dan simpanan naik versi.
-- Lolos: game versi tes tetap jalan utuh, bahan baru tampil di HUD,
-  simpanan lama tidak merusak game.
-
-## Task 2 — Warga: datang, terima, job, kerja (butuh Task 1)
-
-- Warga datang 1 per hari kalau ada rumah kosong, pemberitahuan terima atau
-  tolak, panel job, warga bekerja sendiri, makan 3 roti per hari, berhenti
-  kerja kalau roti habis.
-- Lolos: warga datang, bekerja, hasil masuk penghitung, makan, dan berhenti
-  saat roti habis.
-
-## Task 3 — Rumah naik tingkat dan panel CRUD (butuh Task 1)
-
-- Gubuk menjadi rumah menjadi rumah besar, biaya dan tampungan sesuai PRD,
-  bongkar kembali setengah bahan, panel info waktu diklik.
-- Lolos: naik tingkat, bongkar, dan panel bekerja sesuai PRD.
-
-## Task 4 — Petak bebas dan tanam pohon (butuh Task 1)
-
-- Jalan gratis, lahan petani 1x1 gratis, tanam pohon biaya 1 kayu, tanam di
-  lahan biaya 1 makanan menjadi panen 2 makanan.
-- Lolos: semua petak bisa dibuat dan dihapus bebas, ekonomi tanam sesuai PRD.
-
-## Task 5 — Townhall naik tingkat dan kunci bangunan (butuh Task 2 dan 3)
-
-- Syarat tingkat 2 dan 3 sesuai PRD, Toolsmith dan Pasar terkunci
-  sampai tingkat 2, Dapur bisa dibangun sejak awal, kerajinan gold dan diamond terkunci sampai tingkat 3.
-- Lolos: syarat diperiksa benar, kunci membuka tepat waktu.
-
-## Task 6 — Tambang, Dapur, Pasar (butuh Task 5)
-
-- Tambang di bukit dengan penambang menghasilkan batu, iron, dan coal.
-  Dapur mengubah gandum menjadi roti. Pasar menukar bahan.
-- Lolos: produksi, pengolahan, dan tukar bahan bekerja sesuai PRD.
-
-## Task 7 — Toolsmith: senjata, armor, upgrade alat (butuh Task 5 dan 6)
-
-- Kerajinan 5 tingkat untuk pedang, bow, perisai, armor, kapak, dan beliung,
-  dengan biaya dan angka sesuai PRD.
-- Lolos: semua kerajinan bisa dibuat, angka damage dan armor benar.
-
-## Task 8 — Malam: warga melawan, drop acak, roti menyembuhkan (butuh Task 2 dan 7)
-
-- Warga ikut melawan gelombang malam, monster menjatuhkan bahan acak sesuai
-  tabel PRD, makan roti memulihkan HP.
-- Lolos: warga bertarung, drop keluar, roti menyembuhkan.
-
-## Task 9 — Dungeon (butuh Task 7 dan 8)
-
-- Pintu di bukit, syarat senjata, 3 lantai dengan monster makin kuat, peti
-  item acak, jalan keluar kapan saja.
-- Lolos: syarat diperiksa, 3 lantai bisa dimasuki dan ditinggalkan, peti
-  memberi item.
-
-## Task 10 — Rasa main dan HUD (butuh semua task sistem)
-
-- Bunyi, partikel, dan angka melayang untuk semua aksi baru, perayaan untuk
-  warga pertama, senjata pertama, dan townhall naik tingkat.
-- Lolos: tiap aksi baru terasa, HUD selalu benar.
-
-## Task 11 — Tes loop penuh (butuh semua task di atas)
-
-- Siklus penuh: terima warga, beri job, panen otomatis, makan roti, naik
-  tingkat, buat senjata, lawan gelombang malam, masuk dungeon dan keluar,
-  15 menit di HP dan laptop.
-- Lolos: tanpa crash, tanpa error konsol, semua kriteria PRD terpenuhi.
-
-## Task 12 — Push dan link live (butuh Task 11)
-
-- Push ke repo Indotopia (menggantikan game tycoon sebagai commit baru di atas
-  riwayat yang ada, tanpa force-push), GitHub Pages aktif, kirim link live.
-- Lolos: link live terbuka dan bisa dimainkan, semua file js/ live sama persis
-  dengan lokal.
+1. **Fondasi:** canvas side-view, grid world 60x40, jenis petak langit/tanah/batu/kayu, kamera mengikuti pemain, simpan otomatis. Lolos: world tampil, kamera jalan, simpan dan muat jalan.
+2. **Gerak dan fisika:** jalan, lompat, gravitasi, tabrakan petak, jatuh tanpa damage. Lolos: pemain berdiri di tanah tanpa tembus, lompat 3 petak.
+3. **Pukul dan taruh blok:** jangkauan 1 petak, HP blok, drop benih dan bahan, taruh dari inventory, bongkar kembali bahan. Lolos: 3 jenis blok sesuai jumlah pukulannya, drop dan bongkar benar.
+4. **Farming:** tanam, tumbuh waktu nyata, siram, panen, musim 28 hari dengan tanaman per musim. Lolos: siklus tanam-siram-panen jalan, tanaman luar musim berhenti tumbuh.
+5. **Splice, breeding, buku resep:** meja splice dengan 8 resep, breeding bunga genetik, buku resep mencatat temuan. Lolos: splice dan breeding menghasilkan yang baru, buku resep terisi.
+6. **Crafting:** stasiun meja kerja, tungku, meja splice, crafting hanya dekat stasiun, 10 resep. Lolos: crafting jauh dari stasiun ditolak, semua resep bisa dibuat.
+7. **Ekonomi:** koin, toko NPC harga tetap, kotak kirim dibayar besok pagi, batas harian, mata uang tugas dan toko hadiah. Lolos: jual beli benar, pembayaran besok benar, batas menolak kelebihan.
+8. **Pasar lobak:** beli Minggu, harga berubah 2 kali sehari, 4 pola, busuk tiap Minggu, terpisah dari toko utama. Lolos: siklus seminggu penuh benar, lobak busuk tepat waktu.
+9. **Skill dan profesi:** 3 skill, XP dari aktivitas, 10 tingkat, profesi di tingkat 5 dan 10. Lolos: XP naik, profesi bisa dipilih dan memberi bonus.
+10. **NPC dan misi:** 2 NPC, 3 misi harian, hadiah mata uang tugas dan koin. Lolos: misi selesai memberi hadiah, misi baru tiap hari.
+11. **Perluasan lahan:** beli +20 kolom, harga menanjak, mentok 5 perluasan. Lolos: world melebar, harga benar, perluasan ke-6 ditolak.
+12. **Rasa main dan HUD:** bunyi, partikel, angka melayang, getar layar, HUD koin/hari/musim/jam, kontrol sentuh. Lolos: semua efek jalan, game bisa dimainkan dari HP.
+13. **Tes loop penuh:** simulasi headless dan browser sungguhan, siklus penuh, 15 menit tanpa crash. Lolos: semua cek hijau, 0 error konsol.
+14. **Push dan link live:** ganti isi repo Indotopia dengan commit baru di atas riwayat yang ada, tanpa force-push, game desa tetap tersimpan di riwayat git. Lolos: link live membuka game baru, file live sama persis dengan lokal. (Dilakukan Muse, bukan bagian pembangunan ini.)

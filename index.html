@@ -3,67 +3,53 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Indotopia — Desa Monster</title>
+<title>Indotopia — Growtopia versi kita</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=1">
 </head>
 <body>
 <div id="wrap">
   <canvas id="game" width="960" height="640"></canvas>
   <div id="hud">
-    <span>Kayu <b id="hWood">0</b></span>
-    <span>Batu <b id="hStone">0</b></span>
-    <span>Gandum <b id="hWheat">5</b></span>
-    <span>Roti <b id="hBread">0</b></span>
-    <span>Iron <b id="hIron">0</b></span>
-    <span>Coal <b id="hCoal">0</b></span>
-    <span>Gold <b id="hGold">0</b></span>
-    <span>Diamond <b id="hDiamond">0</b></span>
-    <span class="hpwrap">HP <span class="hpbar"><span id="hHpFill"></span></span> <b id="hHp">100/100</b></span>
-    <span class="spacer"></span>
-    <span>Warga <b id="hVill">0/0 · TH 1</b></span>
-    <button id="btnVillagers">WARGA</button>
-    <button id="btnSpeed">1x</button>
-    <span><b id="hDay">Hari 1</b> · <span id="hPhase">Siang</span></span>
+    <span>Koin <b id="hCoins">0</b></span>
+    <span>Tugas <b id="hTask">0</b></span>
+    <span><b id="hDay">Hari 1 · Semi</b> · <span id="hPhase">Siang</span></span>
     <span class="cycbar"><span id="hCyc"></span></span>
+    <span>Pilih <b id="hSel">-</b></span>
+    <span class="spacer"></span>
+    <button id="btnInv">TAS</button>
+    <button id="btnSkill">SKILL</button>
+    <button id="btnBook">BUKU</button>
   </div>
   <div id="buildbar" hidden><span id="buildTxt"></span> <button id="btnCancel">BATAL</button></div>
-  <div id="menu" hidden>
-    <button data-build="hut" data-name="Gubuk">Gubuk</button>
-    <button data-build="mine" data-name="Tambang">Tambang</button>
-    <button data-build="smith" data-name="Toolsmith">Toolsmith</button>
-    <button data-build="kitchen" data-name="Dapur">Dapur</button>
-    <button data-build="market" data-name="Pasar">Pasar</button>
-    <button data-build="road" data-name="Jalan">Jalan</button>
-    <button data-build="farm" data-name="Lahan Petani">Lahan Petani</button>
-    <button data-build="tree" data-name="Tanam Pohon">Tanam Pohon</button>
-    <button data-build="erase" data-name="Hapus Petak">Hapus Petak</button>
-    <button data-build="cancel" data-name="Tutup">Tutup</button>
-  </div>
+  <div id="menu" hidden></div>
   <div id="panel" hidden></div>
-  <div id="popup" hidden>
-    <p><b>Warga baru datang!</b><br>Terima dia ke desa?</p>
-    <button id="btnAccept">Terima</button>
-    <button id="btnDecline">Tolak</button>
-  </div>
   <div id="banner"></div>
   <div id="controls">
-    <div id="joy"><div id="stick"></div></div>
+    <div id="moveBtns">
+      <button id="btnLeft">◀</button>
+      <button id="btnRight">▶</button>
+    </div>
     <div id="btns">
-      <button id="btnEat">MAKAN ROTI</button>
       <button id="btnBuild">BANGUN</button>
       <button id="btnAct">AKSI</button>
+      <button id="btnJump">LOMPAT</button>
     </div>
   </div>
 </div>
-<p id="hint">Laptop: WASD/panah jalan, spasi/klik aksi, B bangun, E makan roti, V daftar warga, klik bangunan/warga untuk panel. HP: joystick jalan, tombol AKSI untuk pukul/ambil.</p>
-<script src="js/01-core.js?v=3"></script>
-<script src="js/02-player.js?v=3"></script>
-<script src="js/03-villagers.js?v=3"></script>
-<script src="js/04-combat.js?v=3"></script>
-<script src="js/05-ui.js?v=3"></script>
-<script src="js/06-update.js?v=3"></script>
-<script src="js/07-render.js?v=3"></script>
-<script src="js/08-main.js?v=3"></script>
+<p id="hint">Laptop: A/D jalan, W/spasi lompat, spasi/klik pukul, E interaksi, B bangun, I tas, P skill, O buku resep. HP: tombol kiri/kanan/lompat/aksi, ketuk petak untuk pukul/tanam.</p>
+<script src="js/01-core.js?v=1"></script>
+<script src="js/02-physics.js?v=1"></script>
+<script src="js/03-blocks.js?v=1"></script>
+<script src="js/04-farming.js?v=1"></script>
+<script src="js/05-splice.js?v=1"></script>
+<script src="js/06-crafting.js?v=1"></script>
+<script src="js/07-economy.js?v=1"></script>
+<script src="js/08-skills.js?v=1"></script>
+<script src="js/09-npc.js?v=1"></script>
+<script src="js/10-ui.js?v=1"></script>
+<script src="js/11-update.js?v=1"></script>
+<script src="js/12-render.js?v=1"></script>
+<script src="js/13-main.js?v=1"></script>
 </body>
 </html>
