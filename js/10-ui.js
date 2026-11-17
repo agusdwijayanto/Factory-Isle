@@ -12,6 +12,7 @@ function qtyButtons(act, extra) {
 function renderPanel() {
   const p = S.panel;
   if (!p) return;
+  if (p.kind === 'inv') el.panel.classList.add('wide'); else el.panel.classList.remove('wide');
   let h = '<button class="close" data-act="close">X</button>';
   if (p.kind === 'inv') h += renderInv();
   else if (p.kind === 'store') h += renderStore();
@@ -26,24 +27,38 @@ function renderPanel() {
   else if (p.kind === 'info') h += renderInfo(p);
   el.panel.innerHTML = h;
 }
+// Slot gaya Growtopia: kotak warna + jumlah + nama kecil + centang favorit.
+function slotHtml(id, act, markSel) {
+  const it = ITEMS[id];
+  return '<div class="slot' + (markSel && S.sel === id ? ' sel' : '') + '" data-act="' + act + '" data-item="' + id + '">' +
+    '<span class="sw" style="background:' + (it.color || '#888') + '"></span>' +
+    '<span class="cnt">' + S.inv[id] + '</span>' +
+    '<span class="nm">' + it.name + '</span>' +
+    (S.favs[id] ? '<span class="favmark">✓</span>' : '') + '</div>';
+}
 function renderInv() {
   const q = (S.invSearch || '').toLowerCase();
   let h = '<h3>Tas</h3><input type="text" data-role="inv-search" placeholder="Enter Item Name" value="' + escapeHtml(S.invSearch || '') + '">';
-  h += '<div class="grid">';
+  h += '<div class="invqty"><span>Jumlah:</span>' +
+    '<button data-act="invqty" data-n="1"' + (S.invQty === 1 ? ' class="on"' : '') + '>1</button>' +
+    '<button data-act="invqty" data-n="10"' + (S.invQty === 10 ? ' class="on"' : '') + '>10</button>' +
+    '<button data-act="invqty" data-n="all"' + (S.invQty > 10 ? ' class="on"' : '') + '>Semua</button></div>';
+  h += '<div class="invwrap"><div class="grid">';
   for (const id of invList()) {
     if (q && !ITEMS[id].name.toLowerCase().includes(q)) continue;
-    h += '<div class="slot' + (S.sel === id ? ' sel' : '') + (S.favs[id] ? ' fav' : '') + '" data-act="select" data-item="' + id + '">' +
-      ITEMS[id].name + '<br>' + S.inv[id] + '</div>';
+    h += slotHtml(id, 'select', true);
   }
-  h += '</div>';
-  if (S.sel) {
-    h += '<p>Terpilih: <b>' + ITEMS[S.sel].name + '</b> (' + countItem(S.sel) + ')</p>';
-    h += '<div class="crow"><span>RECYCLE</span><span>' + qtyButtons('recycle', 'data-item="' + S.sel + '"') + '</span></div>';
-    h += '<div class="crow"><span>STORE (ke peti world)</span><span>' + qtyButtons('store', 'data-item="' + S.sel + '"') + '</span></div>';
-    h += '<div class="crow"><span>DROP</span><span>' + qtyButtons('drop', 'data-item="' + S.sel + '"') + '</span></div>';
-    h += '<div class="crow"><span></span><span><button data-act="info" data-item="' + S.sel + '">INFO</button> ' +
-      '<button data-act="fav" data-item="' + S.sel + '">' + (S.favs[S.sel] ? 'UNFAV' : 'FAV') + '</button></span></div>';
-  } else h += '<p>Ketuk item untuk memilih.</p>';
+  h += '</div><div class="invbtns">';
+  const dis = S.sel ? '' : ' disabled';
+  const sel = S.sel || '';
+  h += '<button data-act="recycle" data-item="' + sel + '"' + dis + '>RECYCLE</button>';
+  h += '<button data-act="store" data-item="' + sel + '"' + dis + '>STORE</button>';
+  h += '<button data-act="drop" data-item="' + sel + '"' + dis + '>DROP</button>';
+  h += '<button data-act="info" data-item="' + sel + '"' + dis + '>INFO</button>';
+  h += '<button data-act="fav" data-item="' + sel + '"' + dis + '>' + (S.sel && S.favs[S.sel] ? 'UNFAV' : 'FAV') + '</button>';
+  h += '</div></div>';
+  if (S.sel) h += '<p>Terpilih: <b>' + ITEMS[S.sel].name + '</b> (' + countItem(S.sel) + ')</p>';
+  else h += '<p>Ketuk item untuk memilih.</p>';
   h += '<div class="crow"><span>Lock: ' + countItem('lock-world') + ' WL · ' + countItem('diamond-lock') + ' DL · ' + countItem('bluegem-lock') + ' BGL</span>' +
     '<span><button data-act="combine">GABUNG LOCK</button> <button data-act="split">PECAH LOCK</button></span></div>';
   return h;
@@ -98,9 +113,7 @@ function renderTrade() {
   });
   if (!t.player.length) h += '<p>(kosong)</p>';
   h += '<p>Tambah dari tas:</p><div class="grid">';
-  for (const id of invList()) {
-    h += '<div class="slot" data-act="trade-add" data-item="' + id + '">' + ITEMS[id].name + '<br>' + S.inv[id] + '</div>';
-  }
+  for (const id of invList()) h += slotHtml(id, 'trade-add', false);
   h += '</div>';
   h += '<p>Sisi ' + escapeHtml(t.npc) + ' (otomatis senilai):</p>';
   for (const s of t.npcSide) h += '<p>' + ITEMS[s.id].name + ' x' + s.qty + '</p>';
@@ -171,8 +184,24 @@ function refreshHUD() {
   el.hLevel.textContent = S.level;
   el.hWorld.textContent = S.worldName;
   el.hHp.textContent = 'HP ' + Math.max(0, Math.ceil(S.hp));
-  el.modeDock.textContent = S.mode === 'fist' ? 'KEPALAN' : 'KUNCI';
-  el.hotSlot.textContent = S.sel ? ('Pilih: ' + ITEMS[S.sel].name + ' (' + countItem(S.sel) + ')') : 'Tidak ada yang dipilih';
+  renderHotbar();
+}
+// Hotbar 4 slot: Kepalan, Kunci, lalu 2 item terakhir yang dipilih di tas.
+function pushQuick(id) {
+  S.quick = [id].concat(S.quick.filter(q => q !== id)).slice(0, 2);
+}
+function renderHotbar() {
+  let h = '<div class="hslot' + (S.mode === 'fist' && !S.sel ? ' sel' : '') + '" data-hb="fist"><span class="hblabel">KEPALAN</span></div>';
+  h += '<div class="hslot' + (S.mode === 'wrench' ? ' sel' : '') + '" data-hb="wrench"><span class="hblabel">KUNCI</span></div>';
+  for (let i = 0; i < 2; i++) {
+    const id = S.quick[i];
+    if (id && ITEMS[id]) {
+      h += '<div class="hslot' + (S.sel === id ? ' sel' : '') + '" data-hb="item" data-item="' + id + '">' +
+        '<span class="sw" style="background:' + (ITEMS[id].color || '#888') + '"></span>' +
+        '<span class="cnt">' + countItem(id) + '</span><span class="nm">' + ITEMS[id].name + '</span></div>';
+    } else h += '<div class="hslot empty"></div>';
+  }
+  el.hotbar.innerHTML = h;
 }
 
 // ---------- Layar pilih world ----------
@@ -248,6 +277,7 @@ function wrenchAct(tx, ty) {
 function openNpcPanel() {
   // Panel NPC: profil + tombol trade (wrench ke pemain lain di Growtopia).
   S.panel = { kind: 'npc' };
+  el.panel.classList.remove('wide');
   el.panel.innerHTML = '<button class="close" data-act="close">X</button><h3>' + escapeHtml(S.npc.name) + '</h3>' +
     '<p>Pedagang keliling. Stoknya berputar tiap hari.</p>' +
     '<button data-act="open-trade">TRADE</button> <button data-act="npc-stock">LIHAT STOK</button><div id="npcStock"></div>';
@@ -298,7 +328,16 @@ function bindInput() {
   hold('btnRight', 'right');
   $('btnJump').addEventListener('pointerdown', e => { e.preventDefault(); audio(); doJump(); });
   $('btnPunch').addEventListener('pointerdown', e => { e.preventDefault(); audio(); actForward(); refreshHUD(); });
-  $('modeDock').addEventListener('click', () => { audio(); toggleMode(); });
+  el.hotbar.addEventListener('click', e => {
+    const s = e.target.closest ? e.target.closest('[data-hb]') : null;
+    if (!s) return;
+    audio();
+    const k = s.getAttribute('data-hb');
+    if (k === 'fist') { S.mode = 'fist'; S.sel = null; }
+    else if (k === 'wrench') { S.mode = 'wrench'; }
+    else if (k === 'item') { S.sel = s.getAttribute('data-item'); S.mode = 'fist'; }
+    sfx.click(); refreshHUD();
+  });
   $('hGems').addEventListener('click', () => openPanel({ kind: 'store' }));
   $('btnInv').addEventListener('click', () => openPanel({ kind: 'inv' }));
   $('btnStore').addEventListener('click', () => openPanel({ kind: 'store' }));
@@ -332,11 +371,13 @@ function onPanelClick(e) {
   if (!b) return;
   const act = b.getAttribute('data-act');
   const n = b.getAttribute('data-n');
-  const qty = n === 'all' ? 999999 : parseInt(n || '1', 10);
+  // Tanpa data-n, jumlah mengikuti pilihan Jumlah di panel tas.
+  const qty = n ? (n === 'all' ? 999999 : parseInt(n, 10)) : (S.invQty || 1);
   const item = b.getAttribute('data-item');
   audio();
   if (act === 'close') { closePanel(); return; }
-  if (act === 'select') { S.sel = item; sfx.click(); renderPanel(); refreshHUD(); return; }
+  if (act === 'invqty') { S.invQty = n === 'all' ? 999999 : parseInt(n, 10); renderPanel(); return; }
+  if (act === 'select') { S.sel = item; pushQuick(item); sfx.click(); renderPanel(); refreshHUD(); return; }
   if (act === 'buy') { buyItem(item, qty); renderPanel(); refreshHUD(); return; }
   if (act === 'recycle') { recycleItem(item, qty); renderPanel(); refreshHUD(); return; }
   if (act === 'store') { storeItem(item, qty); renderPanel(); refreshHUD(); return; }

@@ -3,7 +3,7 @@
 function save() {
   try {
     const d = {
-      v: 1, gems: S.gems, inv: S.inv, favs: S.favs, sel: S.sel, mode: S.mode,
+      v: 1, gems: S.gems, inv: S.inv, favs: S.favs, sel: S.sel, mode: S.mode, quick: S.quick,
       level: S.level, xp: S.xp, roles: S.roles, knownSplice: S.knownSplice,
       flags: S.flags, worlds: S.worlds, worldName: S.worldName,
       px: S.px, py: S.py, hp: S.hp, zoom: S.zoom,
@@ -17,6 +17,7 @@ function load() {
     const d = JSON.parse(localStorage.getItem(SAVE_KEY));
     if (!d || d.v !== 1 || !d.worlds || !d.worlds[d.worldName]) return false;
     S.gems = d.gems; S.inv = d.inv; S.favs = d.favs || {}; S.sel = d.sel || null; S.mode = d.mode || 'fist';
+    S.quick = d.quick || [];
     S.level = d.level; S.xp = d.xp; S.roles = d.roles; S.knownSplice = d.knownSplice || [];
     S.flags = d.flags || {}; S.worlds = d.worlds; S.worldName = d.worldName;
     S.world = S.worlds[S.worldName];

@@ -5,36 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Indotopia — Remake kaya Growtopia</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 <div id="wrap">
-  <div id="stage">
-  <canvas id="game" width="960" height="640"></canvas>
-  <div id="chatlog"></div>
-  <input id="chatInput" placeholder="Ketik pesan... /msg /sb /bc untuk perintah" maxlength="120">
-  <div id="panel" hidden></div>
-  <div id="worldsel" hidden>
-    <h2>INDOTOPIA</h2>
-    <div id="wsWotd"></div>
-    <input id="wsName" placeholder="Nama world (1-24 huruf/angka)" maxlength="24">
-    <div class="wsbtns"><button id="wsGo">MASUK</button><button id="wsHome">HOME</button></div>
-    <div id="wsList"></div>
-  </div>
-  <div id="banner"></div>
-  <div id="controls">
-    <div id="moveBtns">
-      <button id="btnLeft">◀</button>
-      <button id="btnRight">▶</button>
-    </div>
-    <div id="btns">
-      <button id="btnPunch">PUKUL</button>
-      <button id="btnJump">LOMPAT</button>
-    </div>
-  </div>
-  </div>
   <div id="hud">
-    <button id="hGems" title="Buka Toko">Gems <b id="hGemsN">0</b></button>
+    <button id="hGems" title="Buka Toko"><span class="gemdiamond"></span><b id="hGemsN">0</b></button>
     <span id="hName">Pemain</span>
     <span>Lv <b id="hLevel">1</b></span>
     <span>World <b id="hWorld">AWAL</b></span>
@@ -48,22 +24,50 @@
     <button id="btnAdmin">ADMIN</button>
     <button id="btnWorlds">GANTI WORLD</button>
   </div>
-  <div id="hotbar"><button id="modeDock">KEPALAN</button><span id="hotSlot">Tidak ada yang dipilih</span></div>
-  <p id="hint">Laptop: A/D jalan, W/spasi lompat, klik pukul/taruh, Q ganti Kepalan/Kunci, I tas, B buku, P profil, G guild, Enter chat, scroll zoom. HP: tombol kiri/kanan/lompat/pukul, ketuk petak untuk pukul/taruh, ketuk dock untuk ganti mode.</p>
+  <div id="stage">
+  <canvas id="game" width="960" height="640"></canvas>
+  <div id="chatbox">
+    <div id="chatlog"></div>
+    <input id="chatInput" placeholder="Ketik pesan... /msg /sb /bc untuk perintah" maxlength="120">
+  </div>
+  <div id="panel" hidden></div>
+  <div id="worldsel" hidden>
+    <div class="wsPanel">
+      <h2>INDOTOPIA</h2>
+      <div id="wsWotd"></div>
+      <input id="wsName" placeholder="Nama world (1-24 huruf/angka)" maxlength="24">
+      <div class="wsbtns"><button id="wsGo">MASUK</button><button id="wsHome">HOME</button></div>
+      <div id="wsList"></div>
+    </div>
+  </div>
+  <div id="banner"></div>
+  <div id="controls">
+    <div id="moveBtns">
+      <button id="btnLeft">◀</button>
+      <button id="btnRight">▶</button>
+    </div>
+    <div id="btns">
+      <button id="btnPunch">PUKUL</button>
+      <button id="btnJump">▲</button>
+    </div>
+  </div>
+  <div id="hotbar"></div>
+  </div>
+  <p id="hint">Laptop: A/D jalan, W/spasi lompat, klik pukul/taruh, Q ganti Kepalan/Kunci, I tas, B buku, P profil, G guild, Enter chat, scroll zoom. HP: tombol kiri/kanan/lompat/pukul, ketuk petak untuk pukul/taruh, ketuk hotbar untuk ganti mode atau pilih item.</p>
 </div>
-<script src="js/01-core.js?v=2"></script>
-<script src="js/02-physics.js?v=2"></script>
-<script src="js/03-blocks.js?v=2"></script>
-<script src="js/04-farming.js?v=2"></script>
-<script src="js/05-splice.js?v=2"></script>
-<script src="js/06-inventory.js?v=2"></script>
-<script src="js/07-economy.js?v=2"></script>
-<script src="js/08-progression.js?v=2"></script>
-<script src="js/09-social.js?v=2"></script>
-<script src="js/10-ui.js?v=2"></script>
-<script src="js/11-admin.js?v=2"></script>
-<script src="js/12-update.js?v=2"></script>
-<script src="js/13-render.js?v=2"></script>
-<script src="js/14-main.js?v=2"></script>
+<script src="js/01-core.js?v=3"></script>
+<script src="js/02-physics.js?v=3"></script>
+<script src="js/03-blocks.js?v=3"></script>
+<script src="js/04-farming.js?v=3"></script>
+<script src="js/05-splice.js?v=3"></script>
+<script src="js/06-inventory.js?v=3"></script>
+<script src="js/07-economy.js?v=3"></script>
+<script src="js/08-progression.js?v=3"></script>
+<script src="js/09-social.js?v=3"></script>
+<script src="js/10-ui.js?v=3"></script>
+<script src="js/11-admin.js?v=3"></script>
+<script src="js/12-update.js?v=3"></script>
+<script src="js/13-render.js?v=3"></script>
+<script src="js/14-main.js?v=3"></script>
 </body>
 </html>

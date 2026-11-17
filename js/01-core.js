@@ -54,47 +54,54 @@ const LOCK_DEFS = {
 // ---------- Katalog item ----------
 // rarity: angka riset (1, 2, 47, 87) atau tafsir (3, 5, 40) — lihat PRD.md.
 // price: harga Store tetap (gems). gems: rentang gems panen (tafsir kecuali Pepper/Chandelier).
+// color: swatch kotak warna di slot tas/hotbar, warna khas tiap item.
 const ITEMS = {
-  dirt: { name: 'Dirt', rarity: 1, price: 2, tile: T_DIRT, gems: [0, 1], desc: 'Blok tanah dasar. Tumbuh 31 detik.' },
-  rock: { name: 'Rock', rarity: 1, price: 2, tile: T_ROCK, gems: [0, 1], desc: 'Blok batu dasar.' },
-  wood: { name: 'Wood Block', rarity: 2, price: 4, tile: T_WOOD, gems: [0, 2], desc: 'Blok kayu.' },
-  grass: { name: 'Grass', rarity: 2, price: 4, tile: T_GRASS, gems: [0, 2], desc: 'Blok rumput.' },
-  brick: { name: 'Brick', rarity: 3, price: 8, tile: T_BRICK, gems: [0, 3], desc: 'Blok bata.' },
-  door: { name: 'Door', rarity: 2, price: 8, tile: T_DOOR, gems: [0, 2], desc: 'Pukul untuk teleport ke pintu lain.' },
-  lava: { name: 'Lava', rarity: 1, price: 4, tile: T_LAVA, gems: [0, 1], desc: 'Panas! Menyakiti yang menyentuhnya.' },
-  cave: { name: 'Cave Background', rarity: 1, price: 2, tile: T_CAVE, gems: [0, 1], desc: 'Latar gua gelap.' },
-  golden: { name: 'Golden Block', rarity: 40, price: 100, tile: T_GOLDEN, gems: [0, 16], desc: 'Blok emas berkilau.' },
-  fireplace: { name: 'Fireplace', rarity: 5, price: 20, tile: T_FIREPLACE, gems: [0, 5], desc: 'Perapian hangat.' },
-  chandelier: { name: 'Chandelier', rarity: 87, price: 500, tile: T_CHANDELIER, gems: [0, 22], desc: 'Lampu gantung megah. Tumbuh 7 hari lebih.' },
-  pepper: { name: 'Pepper', rarity: 47, price: 100, tile: T_PEPPER, gems: [0, 12], desc: 'Cabai farmable. Tumbuh 1 hari lebih.' },
-  sign: { name: 'Sign', rarity: 2, price: 8, tile: T_SIGN, gems: [0, 2], desc: 'Papan tulis. Wrench untuk mengedit teks.' },
-  glass: { name: 'Glass Pane', rarity: 2, price: 8, tile: T_GLASS, gems: [0, 2], desc: 'Kaca latar tembus pandang.' },
-  vending: { name: 'Vending Machine', rarity: 0, price: 8000, tile: T_VENDING, desc: 'Mesin jual. Isi barang, pasang harga WL.' },
-  weather: { name: 'Weather Machine', rarity: 0, price: 1000, tile: T_WEATHER, desc: 'Pukul untuk mengganti cuaca world.' },
-  chest: { name: 'Chest', rarity: 0, price: 50, tile: T_CHEST, desc: 'Peti penyimpanan world.' },
-  'lock-small': { name: 'Small Lock', rarity: 0, price: 50, tile: T_LOCK_S, lock: 'small', desc: 'Mengunci 10 petak.' },
-  'lock-big': { name: 'Big Lock', rarity: 0, price: 200, tile: T_LOCK_B, lock: 'big', desc: 'Mengunci 48 petak.' },
-  'lock-huge': { name: 'Huge Lock', rarity: 0, price: 500, tile: T_LOCK_H, lock: 'huge', desc: 'Mengunci 200 petak.' },
-  'lock-world': { name: 'World Lock', rarity: 0, price: 2000, tile: T_LOCK_W, lock: 'world', desc: 'Mengunci seluruh world. Mata uang player.' },
-  'diamond-lock': { name: 'Diamond Lock', rarity: 0, price: 0, desc: 'Senilai 100 World Lock.' },
-  'bluegem-lock': { name: 'Blue Gem Lock', rarity: 0, price: 0, desc: 'Senilai 100 Diamond Lock.' },
-  brush: { name: 'Paintbrush', rarity: 0, price: 100, desc: 'Kuas. Harus dimiliki untuk mengecat blok.' },
-  'paint-red': { name: 'Paint Bucket - Red', rarity: 0, price: 30, paint: '#e74c3c', desc: 'Cat merah untuk blok.' },
-  'paint-yellow': { name: 'Paint Bucket - Yellow', rarity: 0, price: 30, paint: '#f1c40f', desc: 'Cat kuning untuk blok.' },
-  'paint-green': { name: 'Paint Bucket - Green', rarity: 0, price: 30, paint: '#27ae60', desc: 'Cat hijau untuk blok.' },
-  'paint-aqua': { name: 'Paint Bucket - Aqua', rarity: 0, price: 30, paint: '#1abc9c', desc: 'Cat aqua untuk blok.' },
-  'paint-blue': { name: 'Paint Bucket - Blue', rarity: 0, price: 30, paint: '#2980b9', desc: 'Cat biru untuk blok.' },
-  'paint-purple': { name: 'Paint Bucket - Purple', rarity: 0, price: 30, paint: '#8e44ad', desc: 'Cat ungu untuk blok.' },
-  'paint-charcoal': { name: 'Paint Bucket - Charcoal', rarity: 0, price: 30, paint: '#2c3e50', desc: 'Cat arang untuk blok.' },
-  varnish: { name: 'Varnish', rarity: 0, price: 30, paint: null, desc: 'Menghapus cat dari blok.' },
-  'wotd-trophy': { name: 'WOTD Trophy', rarity: 0, price: 0, desc: 'Trofi World of the Day.' },
+  dirt: { name: 'Dirt', rarity: 1, price: 2, tile: T_DIRT, gems: [0, 1], color: '#7a4a22', desc: 'Blok tanah dasar. Tumbuh 31 detik.' },
+  rock: { name: 'Rock', rarity: 1, price: 2, tile: T_ROCK, gems: [0, 1], color: '#8d8d8d', desc: 'Blok batu dasar.' },
+  wood: { name: 'Wood Block', rarity: 2, price: 4, tile: T_WOOD, gems: [0, 2], color: '#b07a3e', desc: 'Blok kayu.' },
+  grass: { name: 'Grass', rarity: 2, price: 4, tile: T_GRASS, gems: [0, 2], color: '#4caf3c', desc: 'Blok rumput.' },
+  brick: { name: 'Brick', rarity: 3, price: 8, tile: T_BRICK, gems: [0, 3], color: '#b5442c', desc: 'Blok bata.' },
+  door: { name: 'Door', rarity: 2, price: 8, tile: T_DOOR, gems: [0, 2], color: '#e0b25c', desc: 'Pukul untuk teleport ke pintu lain.' },
+  lava: { name: 'Lava', rarity: 1, price: 4, tile: T_LAVA, gems: [0, 1], color: '#ff5722', desc: 'Panas! Menyakiti yang menyentuhnya.' },
+  cave: { name: 'Cave Background', rarity: 1, price: 2, tile: T_CAVE, gems: [0, 1], color: '#3a3a4a', desc: 'Latar gua gelap.' },
+  golden: { name: 'Golden Block', rarity: 40, price: 100, tile: T_GOLDEN, gems: [0, 16], color: '#f7c600', desc: 'Blok emas berkilau.' },
+  fireplace: { name: 'Fireplace', rarity: 5, price: 20, tile: T_FIREPLACE, gems: [0, 5], color: '#e67e22', desc: 'Perapian hangat.' },
+  chandelier: { name: 'Chandelier', rarity: 87, price: 500, tile: T_CHANDELIER, gems: [0, 22], color: '#fef9a0', desc: 'Lampu gantung megah. Tumbuh 7 hari lebih.' },
+  pepper: { name: 'Pepper', rarity: 47, price: 100, tile: T_PEPPER, gems: [0, 12], color: '#d32f2f', desc: 'Cabai farmable. Tumbuh 1 hari lebih.' },
+  sign: { name: 'Sign', rarity: 2, price: 8, tile: T_SIGN, gems: [0, 2], color: '#c9a86a', desc: 'Papan tulis. Wrench untuk mengedit teks.' },
+  glass: { name: 'Glass Pane', rarity: 2, price: 8, tile: T_GLASS, gems: [0, 2], color: '#bfe8ff', desc: 'Kaca latar tembus pandang.' },
+  vending: { name: 'Vending Machine', rarity: 0, price: 8000, tile: T_VENDING, color: '#d8434e', desc: 'Mesin jual. Isi barang, pasang harga WL.' },
+  weather: { name: 'Weather Machine', rarity: 0, price: 1000, tile: T_WEATHER, color: '#7ec8e3', desc: 'Pukul untuk mengganti cuaca world.' },
+  chest: { name: 'Chest', rarity: 0, price: 50, tile: T_CHEST, color: '#9c7a4a', desc: 'Peti penyimpanan world.' },
+  'lock-small': { name: 'Small Lock', rarity: 0, price: 50, tile: T_LOCK_S, lock: 'small', color: '#9aa7b5', desc: 'Mengunci 10 petak.' },
+  'lock-big': { name: 'Big Lock', rarity: 0, price: 200, tile: T_LOCK_B, lock: 'big', color: '#5b8dd9', desc: 'Mengunci 48 petak.' },
+  'lock-huge': { name: 'Huge Lock', rarity: 0, price: 500, tile: T_LOCK_H, lock: 'huge', color: '#7b5bd9', desc: 'Mengunci 200 petak.' },
+  'lock-world': { name: 'World Lock', rarity: 0, price: 2000, tile: T_LOCK_W, lock: 'world', color: '#f2c14e', desc: 'Mengunci seluruh world. Mata uang player.' },
+  'diamond-lock': { name: 'Diamond Lock', rarity: 0, price: 0, color: '#4dd0e1', desc: 'Senilai 100 World Lock.' },
+  'bluegem-lock': { name: 'Blue Gem Lock', rarity: 0, price: 0, color: '#3d7bff', desc: 'Senilai 100 Diamond Lock.' },
+  brush: { name: 'Paintbrush', rarity: 0, price: 100, color: '#a1887f', desc: 'Kuas. Harus dimiliki untuk mengecat blok.' },
+  'paint-red': { name: 'Paint Bucket - Red', rarity: 0, price: 30, paint: '#e74c3c', color: '#e74c3c', desc: 'Cat merah untuk blok.' },
+  'paint-yellow': { name: 'Paint Bucket - Yellow', rarity: 0, price: 30, paint: '#f1c40f', color: '#f1c40f', desc: 'Cat kuning untuk blok.' },
+  'paint-green': { name: 'Paint Bucket - Green', rarity: 0, price: 30, paint: '#27ae60', color: '#27ae60', desc: 'Cat hijau untuk blok.' },
+  'paint-aqua': { name: 'Paint Bucket - Aqua', rarity: 0, price: 30, paint: '#1abc9c', color: '#1abc9c', desc: 'Cat aqua untuk blok.' },
+  'paint-blue': { name: 'Paint Bucket - Blue', rarity: 0, price: 30, paint: '#2980b9', color: '#2980b9', desc: 'Cat biru untuk blok.' },
+  'paint-purple': { name: 'Paint Bucket - Purple', rarity: 0, price: 30, paint: '#8e44ad', color: '#8e44ad', desc: 'Cat ungu untuk blok.' },
+  'paint-charcoal': { name: 'Paint Bucket - Charcoal', rarity: 0, price: 30, paint: '#2c3e50', color: '#2c3e50', desc: 'Cat arang untuk blok.' },
+  varnish: { name: 'Varnish', rarity: 0, price: 30, paint: null, color: '#dfe5ea', desc: 'Menghapus cat dari blok.' },
+  'wotd-trophy': { name: 'WOTD Trophy', rarity: 0, price: 0, color: '#ffd75e', desc: 'Trofi World of the Day.' },
 };
 const SEED_ITEMS = ['dirt', 'rock', 'wood', 'grass', 'brick', 'door', 'lava', 'cave', 'golden', 'fireplace', 'chandelier', 'pepper', 'sign', 'glass'];
+// Benih memakai warna dasarnya yang lebih muda, supaya beda dari bloknya.
+function lighter(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  const m = c => Math.round(c + (255 - c) * 0.45);
+  return 'rgb(' + m((n >> 16) & 255) + ',' + m((n >> 8) & 255) + ',' + m(n & 255) + ')';
+}
 for (const id of SEED_ITEMS) {
   ITEMS['seed-' + id] = {
     name: ITEMS[id].name + ' Seed', rarity: ITEMS[id].rarity,
     price: { dirt: 5, rock: 5, lava: 8, cave: 5, wood: 10, grass: 10, door: 10, sign: 10, glass: 10, brick: 25, fireplace: 50, pepper: 200, golden: 500, chandelier: 2000 }[id],
-    seed: true, seedOf: id, desc: 'Benih ' + ITEMS[id].name + '. Tanam di atas blok.',
+    seed: true, seedOf: id, color: lighter(ITEMS[id].color), desc: 'Benih ' + ITEMS[id].name + '. Tanam di atas blok.',
   };
 }
 const STORE_ITEMS = Object.keys(ITEMS).filter(id => ITEMS[id].price > 0);
@@ -227,6 +234,7 @@ function initState(s) {
   s.cam = { x: 0, y: 0 }; s.zoom = 1;
   s.gems = 0; s.inv = { dirt: 10, 'seed-dirt': 10, 'seed-rock': 10 };
   s.favs = {}; s.sel = null; s.mode = 'fist';
+  s.quick = []; s.invQty = 1; // quick slot hotbar (maks 2) + jumlah aksi tas
   s.level = 1; s.xp = 0;
   s.roles = { farmer: { xp: 0, level: 1 }, builder: { xp: 0, level: 1 } };
   s.knownSplice = []; s.flags = {};
@@ -267,7 +275,7 @@ const ctx = canvas.getContext('2d');
 const el = {
   panel: $('panel'), banner: $('banner'), chatlog: $('chatlog'), chatInput: $('chatInput'),
   hGemsN: $('hGemsN'), hName: $('hName'), hLevel: $('hLevel'), hWorld: $('hWorld'), hHp: $('hHp'),
-  modeDock: $('modeDock'), hotSlot: $('hotSlot'),
+  hotbar: $('hotbar'),
   worldsel: $('worldsel'), wsName: $('wsName'), wsList: $('wsList'), wsWotd: $('wsWotd'),
 };
 
@@ -281,7 +289,9 @@ function burst(x, y, color, n, spd) {
 function addFloat(x, y, txt, color) { S.floats.push({ x, y, txt, color: color || '#fff', life: 1.1 }); }
 let bannerT = null;
 function banner(txt) {
-  el.banner.textContent = txt; el.banner.classList.add('show');
+  // Kata kunci dalam tanda kutip menjadi kuning, kaya dialog Growtopia.
+  el.banner.innerHTML = escapeHtml(txt).replace(/"([^"]+)"/g, '<b>$1</b>');
+  el.banner.classList.add('show');
   if (bannerT) clearTimeout(bannerT);
   bannerT = setTimeout(() => el.banner.classList.remove('show'), 2200);
 }

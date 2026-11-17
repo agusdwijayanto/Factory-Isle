@@ -4,12 +4,17 @@
 // ini secara fundamental butuh server). Bentuknya dibuat semirip mungkin
 // dengan umpan balik Growtopia: pesan chat + banner, bukan popup modal.
 function addChat(text, cls) {
-  S.chatLog.push({ text, cls: cls || '' });
+  S.chatLog.push({ text, cls: cls || '', t: nowMs() });
   if (S.chatLog.length > 40) S.chatLog.shift();
   renderChat();
 }
+function stamp(t) {
+  const d = new Date(t);
+  const p = n => (n < 10 ? '0' : '') + n;
+  return '[' + p(d.getHours()) + ':' + p(d.getMinutes()) + ']';
+}
 function renderChat() {
-  el.chatlog.innerHTML = S.chatLog.map(m => '<div class="' + m.cls + '">' + escapeHtml(m.text) + '</div>').join('');
+  el.chatlog.innerHTML = S.chatLog.map(m => '<div class="' + m.cls + '">' + stamp(m.t != null ? m.t : nowMs()) + ' ' + escapeHtml(m.text) + '</div>').join('');
 }
 function escapeHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
