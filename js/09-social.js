@@ -14,7 +14,9 @@ function stamp(t) {
   return '[' + p(d.getHours()) + ':' + p(d.getMinutes()) + ']';
 }
 function renderChat() {
-  el.chatlog.innerHTML = S.chatLog.map(m => '<div class="' + m.cls + '">' + stamp(m.t != null ? m.t : nowMs()) + ' ' + escapeHtml(m.text) + '</div>').join('');
+  // Terbaru paling atas, kaya kotak obrolan Growtopia baru; tampil 30 baris.
+  const ms = S.chatLog.slice(-30).reverse();
+  el.chatlog.innerHTML = ms.map(m => '<div class="' + m.cls + '">' + stamp(m.t != null ? m.t : nowMs()) + ' ' + escapeHtml(m.text) + '</div>').join('');
 }
 function escapeHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

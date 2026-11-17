@@ -7,7 +7,7 @@ function save() {
       level: S.level, xp: S.xp, roles: S.roles, knownSplice: S.knownSplice,
       flags: S.flags, worlds: S.worlds, worldName: S.worldName,
       px: S.px, py: S.py, hp: S.hp, zoom: S.zoom,
-      guild: S.guild, wotdClaimed: S.wotdClaimed,
+      guild: S.guild, wotdClaimed: S.wotdClaimed, chat: S.chat,
     };
     localStorage.setItem(SAVE_KEY, JSON.stringify(d));
   } catch (e) { /* penyimpanan penuh/diblokir: game tetap jalan */ }
@@ -24,6 +24,7 @@ function load() {
     S.px = d.px; S.py = d.py; S.hp = d.hp != null ? d.hp : 100;
     S.zoom = clamp(d.zoom || 1, 0.5, 2);
     S.guild = d.guild || null; S.wotdClaimed = d.wotdClaimed || {};
+    S.chat = d.chat || { docked: false, locked: false, x: null, y: null, hidden: false };
     S.vx = 0; S.vy = 0;
     spawnTrader();
     return true;
@@ -63,6 +64,7 @@ if (typeof window !== 'undefined' && window.addEventListener) window.addEventLis
 if (S.worldSelOpen) showWorldSel();
 refreshHUD();
 renderChat();
+applyChatLayout();
 if (typeof requestAnimationFrame === 'function') requestAnimationFrame(frame);
 
 // ---------- Kait tes headless ----------
@@ -87,11 +89,12 @@ window.__GT = {
   addChat, renderChat, sendChat, runCommand, broadcastTick, createGuild, guildTick,
   setGuildStatement, pickWOTD, enterWOTDCheck, updateTrader, spawnTrader,
   openPanel, closePanel, renderPanel, refreshHUD, showWorldSel, hideWorldSel, enterWorld,
-  toggleMode, canvasTile, keys, touch,
+  toggleMode, canvasTile, keys, touch, toggleBag, wrenchIconHit, wrenchIconX,
+  applyChatLayout, clampChatBox,
   adminGiveGems, adminGiveItem, adminSetLevel, adminGiveXp, adminUnlockRecipes,
   adminGrowAll, adminClearWorld, adminReset, onAdminClick,
   save, load, nowMs,
-  reset() { initState(S); closePanel(); hideWorldSel(); refreshHUD(); renderChat(); },
+  reset() { initState(S); closePanel(); hideWorldSel(); refreshHUD(); renderChat(); applyChatLayout(); },
   teleport(x, y) { S.px = x; S.py = y; S.cam.x = x; S.cam.y = y; S.vx = 0; S.vy = 0; },
   give(res) { for (const k in res) gainItem(k, res[k]); },
   giveGems(n) { S.gems += n; },

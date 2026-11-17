@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Indotopia — Remake kaya Growtopia</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 <div id="wrap">
@@ -16,7 +16,6 @@
     <span>World <b id="hWorld">AWAL</b></span>
     <span id="hHp">HP 100</span>
     <span class="spacer"></span>
-    <button id="btnInv">TAS</button>
     <button id="btnStore">TOKO</button>
     <button id="btnBook">BUKU</button>
     <button id="btnProfile">PROFIL</button>
@@ -27,8 +26,13 @@
   <div id="stage">
   <canvas id="game" width="960" height="640"></canvas>
   <div id="chatbox">
+    <div id="chatTop">
+      <input id="chatInput" placeholder="Ketik pesan... /msg /sb /bc untuk perintah" maxlength="120">
+      <button id="chatDock" title="Dock/undock obrolan">☰</button>
+      <button id="chatLock" title="Kunci posisi obrolan">🔓</button>
+    </div>
     <div id="chatlog"></div>
-    <input id="chatInput" placeholder="Ketik pesan... /msg /sb /bc untuk perintah" maxlength="120">
+    <div id="chatGrip">≡</div>
   </div>
   <div id="panel" hidden></div>
   <div id="worldsel" hidden>
@@ -55,19 +59,19 @@
   </div>
   <p id="hint">Laptop: A/D jalan, W/spasi lompat, klik pukul/taruh, Q ganti Kepalan/Kunci, I tas, B buku, P profil, G guild, Enter chat, scroll zoom. HP: tombol kiri/kanan/lompat/pukul, ketuk petak untuk pukul/taruh, ketuk hotbar untuk ganti mode atau pilih item.</p>
 </div>
-<script src="js/01-core.js?v=4"></script>
-<script src="js/02-physics.js?v=4"></script>
-<script src="js/03-blocks.js?v=4"></script>
-<script src="js/04-farming.js?v=4"></script>
-<script src="js/05-splice.js?v=4"></script>
-<script src="js/06-inventory.js?v=4"></script>
-<script src="js/07-economy.js?v=4"></script>
-<script src="js/08-progression.js?v=4"></script>
-<script src="js/09-social.js?v=4"></script>
-<script src="js/10-ui.js?v=4"></script>
-<script src="js/11-admin.js?v=4"></script>
-<script src="js/12-update.js?v=4"></script>
-<script src="js/13-render.js?v=4"></script>
-<script src="js/14-main.js?v=4"></script>
+<script src="js/01-core.js?v=5"></script>
+<script src="js/02-physics.js?v=5"></script>
+<script src="js/03-blocks.js?v=5"></script>
+<script src="js/04-farming.js?v=5"></script>
+<script src="js/05-splice.js?v=5"></script>
+<script src="js/06-inventory.js?v=5"></script>
+<script src="js/07-economy.js?v=5"></script>
+<script src="js/08-progression.js?v=5"></script>
+<script src="js/09-social.js?v=5"></script>
+<script src="js/10-ui.js?v=5"></script>
+<script src="js/11-admin.js?v=5"></script>
+<script src="js/12-update.js?v=5"></script>
+<script src="js/13-render.js?v=5"></script>
+<script src="js/14-main.js?v=5"></script>
 </body>
 </html>

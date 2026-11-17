@@ -160,6 +160,10 @@ function drawCracks() {
     const code = m[3] === 'fg' ? fgAt(tx, ty) : bgAt(tx, ty);
     const def = TILES[code];
     if (!def) continue;
+    // Retakan hilang kalau sudah lewat waktu restore: kerusakan sudah pulih,
+    // jadi tidak boleh membekas sampai dipukul lagi.
+    const last = S.tileHit[k] == null ? -99 : S.tileHit[k];
+    if (!S.tileHp[k] || (S.rtime || 0) - last > def.restore) { delete S.tileHp[k]; delete S.tileHit[k]; continue; }
     const f = S.tileHp[k] / def.hits;
     ctx.strokeStyle = 'rgba(0,0,0,0.7)'; ctx.lineWidth = 2;
     ctx.beginPath();
@@ -191,6 +195,13 @@ function drawDrops() {
     ctx.closePath(); ctx.fill();
   }
 }
+// Posisi x glif kunci di samping nama: tepi kanan nama + 9px. Lebar nama
+// ditaksir 7px per huruf (font 11px), sama untuk gambar dan zona klik.
+function wrenchIconX(x, name) { return x + name.length * 3.5 + 9; }
+function drawWrenchGlyph(x, y) {
+  ctx.font = '13px Verdana'; ctx.textAlign = 'center';
+  ctx.fillText('🔧', x, y);
+}
 function drawAvatar(x, y, face, walk, shirt, name, color) {
   const bob = Math.abs(Math.sin(walk)) * 2;
   const px = x - 10, py = y - 14 + bob * 0.3;
@@ -199,7 +210,10 @@ function drawAvatar(x, y, face, walk, shirt, name, color) {
   ctx.fillStyle = '#222'; ctx.fillRect(px + (face > 0 ? 12 : 6), py + 6, 3, 3); // mata
   ctx.fillStyle = shirt; ctx.fillRect(px + 2, py + 12, 16, 8); // badan
   ctx.fillStyle = '#2c4a8a'; ctx.fillRect(px + 3, py + 20, 6, 8); ctx.fillRect(px + 11, py + 20, 6, 8); // celana
-  if (name) label(x, py - 6, name);
+  if (name) {
+    label(x, py - 6, name);
+    if (S.mode === 'wrench') drawWrenchGlyph(wrenchIconX(x, name), py - 6);
+  }
 }
 function drawTrader() {
   const npc = S.npc;
@@ -212,6 +226,7 @@ function drawPlayer() {
   ctx.font = '11px Verdana'; ctx.textAlign = 'center';
   ctx.fillStyle = '#000'; ctx.fillText('Pemain', S.px + 1, S.py - 19);
   ctx.fillStyle = nameColor(); ctx.fillText('Pemain', S.px, S.py - 20);
+  if (S.mode === 'wrench') drawWrenchGlyph(wrenchIconX(S.px, 'Pemain'), S.py - 20);
   if (S.fireT > 0) {
     ctx.fillStyle = 'rgba(255,107,53,0.7)';
     ctx.fillRect(S.px - 10, S.py - 16, 20, 6);

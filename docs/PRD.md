@@ -221,3 +221,12 @@ Semua yang riset tidak temukan atau yang butuh penyesuaian solo:
 38. Simpan otomatis tiap 10 detik + pindah world + tutup halaman.
 39. Musik latar tidak ada; SFX disintesis (nama file SFX riset hanya
     menginspirasi fungsinya).
+40. Hotbar: SATU slot toggle kepalan/kunci (ketuk kepalan menjadi kunci dan
+    sebaliknya), emoji 👊/🔧, plus 3 quick slot. Koreksi Agus 17 Nov 19:46
+    dari wiki Fist; dua slot terpisah adalah kesalahan tafsir screenshot.
+41. Pemicu tas (DICATAT 17 Nov 19:56, BELUM dibangun, menunggu gas Agus):
+    tab kecil pas di tengah atas dock. Di-tap membuka/menutup tas, ditarik
+    ke atas membuka, ditarik ke bawah menutup. Tab tetap biru tanpa emoji,
+    panah kecil menghadap atas saat tertutup dan bawah saat terbuka.
+    Tombol tulisan TAS di HUD dihapus; tombol I tetap membuka tas. Emoji
+    hanya untuk kepalan/kunci, tidak untuk semua elemen (teguran Agus).

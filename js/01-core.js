@@ -246,6 +246,7 @@ function initState(s) {
   s.broadcastT = 120; s.broadcastIdx = 0; s.vendT = 40; s.guildT = 600;
   s.frozen = false; s.nowOverride = null; s.worldSelOpen = true;
   s.punchFx = null;
+  s.chat = { docked: false, locked: false, x: null, y: null, hidden: false };
   spawnTrader();
 }
 function countItem(id) { return S.inv[id] || 0; }
@@ -273,7 +274,8 @@ function $(id) { return document.getElementById(id); }
 const canvas = $('game');
 const ctx = canvas.getContext('2d');
 const el = {
-  panel: $('panel'), banner: $('banner'), chatlog: $('chatlog'), chatInput: $('chatInput'),
+  panel: $('panel'), banner: $('banner'), chatbox: $('chatbox'), chatlog: $('chatlog'), chatInput: $('chatInput'),
+  chatGrip: $('chatGrip'), stage: $('stage'),
   hGemsN: $('hGemsN'), hName: $('hName'), hLevel: $('hLevel'), hWorld: $('hWorld'), hHp: $('hHp'),
   hotbar: $('hotbar'),
   worldsel: $('worldsel'), wsName: $('wsName'), wsList: $('wsList'), wsWotd: $('wsWotd'),

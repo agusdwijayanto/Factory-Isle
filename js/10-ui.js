@@ -2,8 +2,11 @@
 // ---------- Panel dialog biru, HUD, layar pilih world, input ----------
 // Semua dialog mengikuti gaya Growtopia: panel biru tembus pandang, tombol
 // chunky, teks putih. Satu div #panel dipakai bergantian per kind.
-function openPanel(p) { S.panel = p; renderPanel(); el.panel.hidden = false; }
-function closePanel() { S.panel = null; el.panel.hidden = true; }
+function openPanel(p) { S.panel = p; renderPanel(); el.panel.hidden = false; renderHotbar(); }
+function closePanel() { S.panel = null; el.panel.hidden = true; renderHotbar(); }
+function toggleBag() {
+  if (S.panel && S.panel.kind === 'inv') closePanel(); else openPanel({ kind: 'inv' });
+}
 function qtyButtons(act, extra) {
   return '<button data-act="' + act + '" ' + (extra || '') + ' data-n="1">1</button>' +
     '<button data-act="' + act + '" ' + (extra || '') + ' data-n="10">10</button>' +
@@ -191,9 +194,12 @@ function pushQuick(id) {
   S.quick = [id].concat(S.quick.filter(q => q !== id)).slice(0, 3);
 }
 function renderHotbar() {
+  // Tab pemicu tas di tengah atas dock: panah ke atas = tas tertutup.
+  const bagOpen = S.panel && S.panel.kind === 'inv';
+  let h = '<div class="invtab" data-tab="1">' + (bagOpen ? '▼' : '▲') + '</div>';
   // Satu slot toggle kaya Growtopia: ketuk kepalan menjadi kunci, ketuk kunci menjadi kepalan.
   const toolSel = S.mode === 'wrench' || !S.sel;
-  let h = '<div class="hslot' + (toolSel ? ' sel' : '') + '" data-hb="toggle"><span class="hbemo">' + (S.mode === 'fist' ? '👊' : '🔧') + '</span></div>';
+  h += '<div class="hslot' + (toolSel ? ' sel' : '') + '" data-hb="toggle"><span class="hbemo">' + (S.mode === 'fist' ? '👊' : '🔧') + '</span></div>';
   for (let i = 0; i < 3; i++) {
     const id = S.quick[i];
     if (id && ITEMS[id]) {
@@ -260,6 +266,28 @@ function canvasTile(cx, cy) {
   const sx = (cx - r.left) * (VW / r.width), sy = (cy - r.top) * (VH / r.height);
   return { tx: Math.floor((S.cam.x + sx / S.zoom) / TILE), ty: Math.floor((S.cam.y + sy / S.zoom) / TILE) };
 }
+// Zona klik glif kunci di samping nama, dalam koordinat dunia yang sama
+// dengan gambarnya. Hanya aktif di mode kunci; di luar itu null.
+function wrenchIconHit(cx, cy) {
+  if (S.mode !== 'wrench') return null;
+  const r = canvas.getBoundingClientRect();
+  const wx = S.cam.x + (cx - r.left) * (VW / r.width) / S.zoom;
+  const wy = S.cam.y + (cy - r.top) * (VH / r.height) / S.zoom;
+  if (Math.abs(wx - wrenchIconX(S.px, 'Pemain')) <= 12 && Math.abs(wy - (S.py - 20)) <= 12) return 'player';
+  const npc = S.npc;
+  if (npc) {
+    const nx = npc.tx * TILE + 16, ny = npc.ty * TILE + 16 - 20;
+    if (Math.abs(wx - wrenchIconX(nx, npc.name)) <= 12 && Math.abs(wy - ny) <= 12) return 'npc';
+  }
+  return null;
+}
+function canvasPress(cx, cy) {
+  const hit = wrenchIconHit(cx, cy);
+  if (hit === 'player') { openPanel({ kind: 'profile' }); return; }
+  if (hit === 'npc') { openNpcPanel(); return; }
+  const t = canvasTile(cx, cy);
+  actTile(t.tx, t.ty);
+}
 function actTile(tx, ty) {
   if (S.worldSelOpen) return;
   if (S.mode === 'wrench') { wrenchAct(tx, ty); return; }
@@ -305,8 +333,7 @@ function bindInput() {
   document.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
   canvas.addEventListener('mousedown', e => {
     audio();
-    const t = canvasTile(e.clientX, e.clientY);
-    actTile(t.tx, t.ty);
+    canvasPress(e.clientX, e.clientY);
   });
   canvas.addEventListener('wheel', e => {
     e.preventDefault();
@@ -315,8 +342,7 @@ function bindInput() {
   canvas.addEventListener('touchstart', e => {
     audio();
     const t = e.changedTouches[0];
-    const tl = canvasTile(t.clientX, t.clientY);
-    actTile(tl.tx, tl.ty);
+    canvasPress(t.clientX, t.clientY);
     e.preventDefault();
   }, { passive: false });
   const hold = (id, prop) => {
@@ -339,7 +365,6 @@ function bindInput() {
     sfx.click(); refreshHUD();
   });
   $('hGems').addEventListener('click', () => openPanel({ kind: 'store' }));
-  $('btnInv').addEventListener('click', () => openPanel({ kind: 'inv' }));
   $('btnStore').addEventListener('click', () => openPanel({ kind: 'store' }));
   $('btnBook').addEventListener('click', () => openPanel({ kind: 'book' }));
   $('btnProfile').addEventListener('click', () => openPanel({ kind: 'profile' }));
@@ -361,6 +386,85 @@ function bindInput() {
       if (inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
     }
   });
+  bindBagTab();
+  bindChatBox();
+}
+// Tab tas: tap = buka/tutup, tarik ke atas = buka, tarik ke bawah = tutup.
+// Tap dibedakan dari tarik lewat jarak gerak 10px.
+let tabDrag = null;
+function bindBagTab() {
+  el.hotbar.addEventListener('pointerdown', e => {
+    const t = e.target.closest ? e.target.closest('[data-tab]') : null;
+    if (!t) return;
+    tabDrag = { y0: e.clientY, acted: false };
+    e.preventDefault();
+  });
+  document.addEventListener('pointermove', e => {
+    if (!tabDrag || tabDrag.acted) return;
+    const dy = e.clientY - tabDrag.y0;
+    if (dy < -10) { tabDrag.acted = true; if (!S.panel || S.panel.kind !== 'inv') openPanel({ kind: 'inv' }); }
+    else if (dy > 10) { tabDrag.acted = true; if (S.panel && S.panel.kind === 'inv') closePanel(); }
+  });
+  document.addEventListener('pointerup', () => {
+    if (!tabDrag) return;
+    if (!tabDrag.acted) toggleBag();
+    tabDrag = null;
+  });
+}
+// ---------- Jendela obrolan melayang + dock ----------
+function applyChatLayout() {
+  const c = S.chat;
+  const box = el.chatbox;
+  if (c.docked) {
+    box.style.left = '8px'; box.style.right = '8px'; box.style.top = '8px';
+    box.style.width = 'auto'; box.style.transform = '';
+  } else {
+    box.style.right = ''; box.style.width = '';
+    if (c.x == null || c.y == null) {
+      const st = el.stage.getBoundingClientRect();
+      const bw = box.getBoundingClientRect().width || st.width * 0.46;
+      c.x = Math.max(0, (st.width - bw) / 2);
+      c.y = st.height * 0.15;
+    }
+    box.style.left = c.x + 'px'; box.style.top = c.y + 'px'; box.style.transform = '';
+  }
+  el.chatlog.style.display = c.hidden ? 'none' : '';
+  $('chatLock').textContent = c.locked ? '🔒' : '🔓';
+}
+function clampChatBox() {
+  const c = S.chat;
+  if (!c || c.docked || c.x == null) return;
+  const st = el.stage.getBoundingClientRect(), r = el.chatbox.getBoundingClientRect();
+  c.x = clamp(c.x, 0, Math.max(0, st.width - r.width));
+  c.y = clamp(c.y, 0, Math.max(0, st.height - r.height));
+  el.chatbox.style.left = c.x + 'px'; el.chatbox.style.top = c.y + 'px';
+}
+let chatDrag = null;
+function bindChatBox() {
+  el.chatbox.addEventListener('pointerdown', e => {
+    if (S.chat.docked || S.chat.locked) return;
+    if (e.target === el.chatInput || (e.target.closest && e.target.closest('button')) || e.target === el.chatGrip) return;
+    const r = el.chatbox.getBoundingClientRect();
+    chatDrag = { dx: e.clientX - r.left, dy: e.clientY - r.top };
+    e.preventDefault();
+  });
+  document.addEventListener('pointermove', e => {
+    if (!chatDrag) return;
+    const st = el.stage.getBoundingClientRect();
+    const r = el.chatbox.getBoundingClientRect();
+    S.chat.x = clamp(e.clientX - st.left - chatDrag.dx, 0, Math.max(0, st.width - r.width));
+    S.chat.y = clamp(e.clientY - st.top - chatDrag.dy, 0, Math.max(0, st.height - r.height));
+    el.chatbox.style.left = S.chat.x + 'px'; el.chatbox.style.top = S.chat.y + 'px';
+  });
+  document.addEventListener('pointerup', () => {
+    if (!chatDrag) return;
+    chatDrag = null;
+    save();
+  });
+  $('chatDock').addEventListener('click', () => { S.chat.docked = !S.chat.docked; applyChatLayout(); save(); sfx.click(); });
+  $('chatLock').addEventListener('click', () => { S.chat.locked = !S.chat.locked; applyChatLayout(); save(); sfx.click(); });
+  el.chatGrip.addEventListener('click', () => { S.chat.hidden = !S.chat.hidden; applyChatLayout(); save(); sfx.click(); });
+  if (typeof window !== 'undefined' && window.addEventListener) window.addEventListener('resize', clampChatBox);
 }
 function panelInput(role) {
   const inp = el.panel.querySelector ? el.panel.querySelector('[data-role="' + role + '"]') : null;
