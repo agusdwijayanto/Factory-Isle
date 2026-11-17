@@ -57,6 +57,8 @@ function frame(ts) {
 load();
 bindInput();
 applyParams();
+fitCanvas();
+if (typeof window !== 'undefined' && window.addEventListener) window.addEventListener('resize', fitCanvas);
 if (S.worldSelOpen) showWorldSel();
 refreshHUD();
 renderChat();

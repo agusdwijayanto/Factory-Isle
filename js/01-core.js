@@ -4,7 +4,8 @@
    riset tidak temukan ditandai tafsir dan didokumentasikan di docs/PRD.md. */
 
 // ---------- Konstanta ----------
-const TILE = 32, MW = 100, MH = 60, BEDROCK_ROWS = 6, VW = 960, VH = 640;
+const TILE = 32, MW = 100, MH = 60, BEDROCK_ROWS = 6;
+let VW = 960, VH = 640; // viewport dinamis, disetel fitCanvas() mengikuti ukuran stage
 const GRAV = 1200, JUMP_V = 480, WALK = 160, FALL_MAX = 600;
 const PUNCH_CD = 0.2, REACH = 3, SAVE_KEY = 'indotopia-remake-save-v1';
 const TRADE_SLOTS = 4, STACK_MAX = 200, LEVEL_CAP = 125, ROLE_CAP = 10;

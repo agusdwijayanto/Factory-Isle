@@ -50,6 +50,16 @@ function updatePlayer(dt, move) {
   if (S.py > MH * TILE) { S.py = MH * TILE - PH; S.vy = 0; S.onGround = true; } // pengaman, tidak boleh jatuh keluar dunia
 }
 function setZoom(z) { S.zoom = clamp(z, 0.5, 2); }
+// Viewport mengikuti ukuran stage di layar: tanpa distorsi, tanpa scrollbar.
+function fitCanvas() {
+  const st = typeof document !== 'undefined' ? document.getElementById('stage') : null;
+  const r = st && st.getBoundingClientRect ? st.getBoundingClientRect() : null;
+  const w = Math.max(320, Math.floor(r ? r.width : 960));
+  const h = Math.max(240, Math.floor(r ? r.height : 640));
+  if (canvas.width !== w) canvas.width = w;
+  if (canvas.height !== h) canvas.height = h;
+  VW = w; VH = h;
+}
 function updateCamera() {
   const vw = VW / S.zoom, vh = VH / S.zoom;
   const tx = clamp(S.px - vw / 2, 0, Math.max(0, MW * TILE - vw));
