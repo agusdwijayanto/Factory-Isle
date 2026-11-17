@@ -1,178 +1,214 @@
 'use strict';
-// ---------- Panel, menu bangun, HUD, input ----------
+// ---------- Panel dialog biru, HUD, layar pilih world, input ----------
+// Semua dialog mengikuti gaya Growtopia: panel biru tembus pandang, tombol
+// chunky, teks putih. Satu div #panel dipakai bergantian per kind.
 function openPanel(p) { S.panel = p; renderPanel(); el.panel.hidden = false; }
 function closePanel() { S.panel = null; el.panel.hidden = true; }
-function openMenu() { closePanel(); refreshMenu(); el.menu.hidden = false; }
-function closeMenu() { el.menu.hidden = true; }
-function setPlace(place) {
-  S.place = place;
-  if (place) {
-    const txt = place.kind === 'tile' ? TILES[place.code].name : ITEMS[place.id].name;
-    el.buildTxt.textContent = 'Taruh: ' + txt + ' — klik petak kosong';
-    el.buildbar.hidden = false;
-  } else el.buildbar.hidden = true;
-  refreshHUD();
-}
-function exitBuild() { setPlace(null); closeMenu(); }
-function renderBuildMenu() {
-  let h = '';
-  for (const e of BUILD_ENTRIES) h += '<button data-build="' + e.code + '" data-name="' + TILES[e.code].name + '"></button>';
-  h += '<button data-build="cancel" data-name="Tutup">Tutup</button>';
-  el.menu.innerHTML = h;
-}
-function refreshMenu() {
-  const btns = el.menu.querySelectorAll ? el.menu.querySelectorAll('button[data-build]') : [];
-  for (const b of btns) {
-    const k = b.getAttribute('data-build');
-    if (k === 'cancel') continue;
-    const e = BUILD_ENTRIES.find(x => x.code === parseInt(k, 10));
-    b.disabled = !hasCost(e.cost);
-    b.textContent = b.getAttribute('data-name') + ' — ' + costText(e.cost);
-  }
-}
 function qtyButtons(act, extra) {
-  return '<button data-act="' + act + '" ' + extra + ' data-n="1">1</button>' +
-    '<button data-act="' + act + '" ' + extra + ' data-n="10">10</button>' +
-    '<button data-act="' + act + '" ' + extra + ' data-n="all">Semua</button>';
-}
-function sellListHtml() {
-  let h = '<div class="crow"><b>Jual (dibayar besok pagi):</b></div>';
-  let any = false;
-  for (const id in S.inv) {
-    if (id === 'turnip' || !ITEMS[id].sell) continue;
-    any = true;
-    h += '<div class="crow"><span>' + ITEMS[id].name + ' (' + S.inv[id] + ') — ' + sellPrice(id) + ' koin</span> ' + qtyButtons('sell', 'data-item="' + id + '"') + '</div>';
-  }
-  if (!any) h += '<p>Tas kosong.</p>';
-  h += '<p>Terjual hari ini: ' + S.soldToday + '/' + DAILY_LIMIT + ' · Terbeli: ' + S.boughtToday + '/' + DAILY_LIMIT + '</p>';
-  return h;
+  return '<button data-act="' + act + '" ' + (extra || '') + ' data-n="1">1</button>' +
+    '<button data-act="' + act + '" ' + (extra || '') + ' data-n="10">10</button>' +
+    '<button data-act="' + act + '" ' + (extra || '') + ' data-n="all">Semua</button>';
 }
 function renderPanel() {
   const p = S.panel;
   if (!p) return;
-  let h = '';
-  if (p.kind === 'merchant') {
-    h += '<h3>Pedagang</h3><div class="crow"><b>Beli:</b></div>';
-    for (const id of SHOP_BUY) h += '<div class="crow"><span>' + ITEMS[id].name + ' — ' + ITEMS[id].buy + ' koin</span> ' + qtyButtons('buy', 'data-item="' + id + '"') + '</div>';
-    h += sellListHtml();
-    h += '<h3>Pasar Lobak</h3>';
-    if (dayInWeek(S.day) === 0) {
-      if (!S.turnip || S.turnip.week !== weekOf(S.day)) genTurnipWeek(weekOf(S.day));
-      h += '<p>Hari Minggu: beli lobak ' + S.turnip.buyPrice + ' koin. Punyamu: ' + countItem('turnip') + '</p>' + qtyButtons('buy-turnip', '');
-    } else {
-      h += '<p>Harga jual sekarang: ' + turnipPriceNow() + ' koin. Punyamu: ' + countItem('turnip') + '</p>' + qtyButtons('sell-turnip', '');
-    }
-    h += '<h3>Lahan</h3>';
-    if (S.expansions < MAX_EXPAND) h += '<p>Perluasan ke-' + (S.expansions + 1) + ': +20 kolom, ' + EXPAND_COSTS[S.expansions] + ' koin.</p><button data-act="expand">Beli Lahan</button>';
-    else h += '<p>Lahan sudah mentok.</p>';
-  } else if (p.kind === 'quest') {
-    h += '<h3>Pemberi Misi</h3>';
-    S.missions.forEach((m, i) => {
-      const have = Math.min(missionHave(m), m.need);
-      h += '<div class="crow"><span>' + missionText(m) + ' (' + have + '/' + m.need + ') — ' + m.rewardCoins + ' koin + ' + m.rewardTask + ' tugas</span> <button data-act="claim" data-i="' + i + '"' + (m.claimed || have < m.need ? ' disabled' : '') + '>' + (m.claimed ? 'Sudah diambil' : 'Ambil Hadiah') + '</button></div>';
-    });
-    h += '<h3>Toko Hadiah</h3><p>Mata uang tugasmu: ' + S.taskCoins + '</p>';
-    for (const g of GIFT_SHOP) h += '<div class="crow"><span>' + ITEMS[g.item].name + ' — ' + g.cost + ' tugas</span> <button data-act="gift" data-item="' + g.item + '"' + (S.taskCoins < g.cost ? ' disabled' : '') + '>Beli</button></div>';
-  } else if (p.kind === 'skills') {
-    h += '<h3>Skill</h3>';
-    for (const k in SKILL_NAMES) {
-      const sk = S.skills[k];
-      h += '<p><b>' + SKILL_NAMES[k] + '</b> — tingkat ' + sk.level + ' · XP ' + sk.xp + '/' + (sk.level * 100) + '</p>';
-      for (const tier of [5, 10]) {
-        const slot = tier === 5 ? 'prof5' : 'prof10';
-        if (sk[slot]) h += '<p>Profesi ' + tier + ': ' + PROFESSIONS[k][tier].find(x => x.id === sk[slot]).name + '</p>';
-        else if (sk.level >= tier) {
-          h += '<div class="crow"><b>Pilih profesi ' + tier + ':</b> ';
-          for (const pr of PROFESSIONS[k][tier]) h += '<button data-act="prof" data-skill="' + k + '" data-tier="' + tier + '" data-id="' + pr.id + '">' + pr.name + ' (' + pr.desc + ')</button>';
-          h += '</div>';
-        }
-      }
-    }
-  } else if (p.kind === 'book') {
-    h += '<h3>Buku Resep</h3><div class="crow"><b>Splice:</b></div>';
-    SPLICE_RECIPES.forEach((r, i) => {
-      h += '<p>' + (S.knownSplice.includes(i) ? ITEMS[r.a].name + ' + ' + ITEMS[r.b].name + ' = ' + ITEMS[r.out].name : '??? + ??? = ???') + '</p>';
-    });
-    h += '<div class="crow"><b>Crafting:</b></div>';
-    for (const r of CRAFT_RECIPES) h += '<p>' + r.name + ' — ' + costText(r.cost) + (hasCost(r.cost) ? ' ✓ bisa dibuat' : '') + '</p>';
-  } else if (p.kind === 'inv') {
-    h += '<h3>Tas</h3>';
-    const ids = Object.keys(S.inv);
-    if (!ids.length) h += '<p>Kosong. Pukul blok untuk mendapat benih dan bahan.</p>';
-    for (const id of ids) {
-      const usable = ITEMS[id].seed || ITEMS[id].tile || id === 'fertilizer';
-      h += '<button data-act="inv-sel" data-item="' + id + '"' + (usable ? '' : ' disabled') + '>' + ITEMS[id].name + ' (' + S.inv[id] + ')</button> ';
-    }
-    h += '<p>Klik benih atau barang untuk memilihnya, lalu klik petak di world.</p>';
-  } else if (p.kind === 'craft') {
-    const stName = { workbench: 'Meja Kerja', furnace: 'Tungku', splice: 'Meja Splice' }[p.station];
-    h += '<h3>' + stName + '</h3>';
-    for (const r of CRAFT_RECIPES.filter(c => c.station === p.station)) {
-      h += '<div class="crow"><span>' + r.name + ' — ' + costText(r.cost) + '</span> <button data-act="craft" data-id="' + r.id + '"' + (hasCost(r.cost) ? '' : ' disabled') + '>Buat</button></div>';
-    }
-    if (p.station === 'splice') {
-      h += '<div class="crow"><b>Splice benih:</b></div>';
-      SPLICE_RECIPES.forEach((r, i) => {
-        if (!S.knownSplice.includes(i)) return;
-        const need = r.a === r.b ? 2 : 1;
-        const ok = countItem(r.a) >= need && countItem(r.b) >= need;
-        h += '<div class="crow"><span>' + ITEMS[r.a].name + ' + ' + ITEMS[r.b].name + ' = ' + ITEMS[r.out].name + '</span> <button data-act="splice" data-i="' + i + '"' + (ok ? '' : ' disabled') + '>Splice</button></div>';
-      });
-    }
-  } else if (p.kind === 'shipbin') {
-    h += '<h3>Kotak Kirim</h3>' + sellListHtml();
-  }
-  h += '<button data-act="close">Tutup</button>';
+  let h = '<button class="close" data-act="close">X</button>';
+  if (p.kind === 'inv') h += renderInv();
+  else if (p.kind === 'store') h += renderStore();
+  else if (p.kind === 'book') h += renderBook();
+  else if (p.kind === 'profile') h += renderProfile();
+  else if (p.kind === 'guild') h += renderGuild();
+  else if (p.kind === 'trade') h += renderTrade();
+  else if (p.kind === 'wrench') h += renderWrench(p);
+  else if (p.kind === 'vending') h += renderVending(p);
+  else if (p.kind === 'chest') h += renderChest();
+  else if (p.kind === 'admin') h += renderAdmin();
+  else if (p.kind === 'info') h += renderInfo(p);
   el.panel.innerHTML = h;
 }
-el.panel.addEventListener('click', e => {
-  const b = e.target.closest ? e.target.closest('button') : null;
-  if (!b || !S.panel) return;
-  const actName = b.getAttribute('data-act');
-  audio();
-  if (actName === 'close') { closePanel(); return; }
-  const rawN = b.getAttribute('data-n');
-  const n = rawN === 'all' ? 999 : parseInt(rawN || '1', 10);
-  if (actName === 'buy') { buyItem(b.getAttribute('data-item'), n); renderPanel(); }
-  else if (actName === 'sell') { sellItem(b.getAttribute('data-item'), n); renderPanel(); }
-  else if (actName === 'buy-turnip') { buyTurnips(n); renderPanel(); }
-  else if (actName === 'sell-turnip') { sellTurnips(n); renderPanel(); }
-  else if (actName === 'expand') { expandLand(); renderPanel(); }
-  else if (actName === 'claim') { claimMission(parseInt(b.getAttribute('data-i'), 10)); renderPanel(); }
-  else if (actName === 'gift') { buyGift(b.getAttribute('data-item')); renderPanel(); }
-  else if (actName === 'prof') { chooseProfession(b.getAttribute('data-skill'), parseInt(b.getAttribute('data-tier'), 10), b.getAttribute('data-id')); renderPanel(); }
-  else if (actName === 'craft') { craftItem(b.getAttribute('data-id')); renderPanel(); }
-  else if (actName === 'splice') { const r = SPLICE_RECIPES[parseInt(b.getAttribute('data-i'), 10)]; spliceSeeds(r.a, r.b); renderPanel(); }
-  else if (actName === 'inv-sel') {
-    const id = b.getAttribute('data-item');
-    if (ITEMS[id].seed) setPlace({ kind: 'seed', id });
-    else if (ITEMS[id].tile) setPlace({ kind: 'item', id });
-    else if (id === 'fertilizer') setPlace({ kind: 'use', id });
-    closePanel();
+function renderInv() {
+  const q = (S.invSearch || '').toLowerCase();
+  let h = '<h3>Tas</h3><input type="text" data-role="inv-search" placeholder="Enter Item Name" value="' + escapeHtml(S.invSearch || '') + '">';
+  h += '<div class="grid">';
+  for (const id of invList()) {
+    if (q && !ITEMS[id].name.toLowerCase().includes(q)) continue;
+    h += '<div class="slot' + (S.sel === id ? ' sel' : '') + (S.favs[id] ? ' fav' : '') + '" data-act="select" data-item="' + id + '">' +
+      ITEMS[id].name + '<br>' + S.inv[id] + '</div>';
   }
-  refreshHUD();
-});
-el.menu.addEventListener('click', e => {
-  const b = e.target.closest ? e.target.closest('button') : null;
-  if (!b) return;
-  audio();
-  const k = b.getAttribute('data-build');
-  if (k === 'cancel' || b.disabled) { closeMenu(); return; }
-  const entry = BUILD_ENTRIES.find(x => x.code === parseInt(k, 10));
-  setPlace({ kind: 'tile', code: entry.code, cost: entry.cost });
-  closeMenu();
-});
-$('btnCancel').addEventListener('pointerdown', e => { e.preventDefault(); exitBuild(); });
-
-// ---------- HUD ----------
+  h += '</div>';
+  if (S.sel) {
+    h += '<p>Terpilih: <b>' + ITEMS[S.sel].name + '</b> (' + countItem(S.sel) + ')</p>';
+    h += '<div class="crow"><span>RECYCLE</span><span>' + qtyButtons('recycle', 'data-item="' + S.sel + '"') + '</span></div>';
+    h += '<div class="crow"><span>STORE (ke peti world)</span><span>' + qtyButtons('store', 'data-item="' + S.sel + '"') + '</span></div>';
+    h += '<div class="crow"><span>DROP</span><span>' + qtyButtons('drop', 'data-item="' + S.sel + '"') + '</span></div>';
+    h += '<div class="crow"><span></span><span><button data-act="info" data-item="' + S.sel + '">INFO</button> ' +
+      '<button data-act="fav" data-item="' + S.sel + '">' + (S.favs[S.sel] ? 'UNFAV' : 'FAV') + '</button></span></div>';
+  } else h += '<p>Ketuk item untuk memilih.</p>';
+  h += '<div class="crow"><span>Lock: ' + countItem('lock-world') + ' WL · ' + countItem('diamond-lock') + ' DL · ' + countItem('bluegem-lock') + ' BGL</span>' +
+    '<span><button data-act="combine">GABUNG LOCK</button> <button data-act="split">PECAH LOCK</button></span></div>';
+  return h;
+}
+function renderStore() {
+  let h = '<h3>Growtopia Store</h3><p>Gems: ' + S.gems + '</p>';
+  for (const id of STORE_ITEMS) {
+    h += '<div class="crow"><span>' + ITEMS[id].name + ' — ' + ITEMS[id].price + ' gems</span><span>' + qtyButtons('buy', 'data-item="' + id + '"') + '</span></div>';
+  }
+  return h;
+}
+function renderBook() {
+  let h = '<h3>Buku Resep Splice</h3><p>Hanya resep yang sudah ditemukan yang tercatat di sini.</p>';
+  if (!S.knownSplice.length) h += '<p>Belum ada resep ditemukan. Coba splice dua benih!</p>';
+  for (const rk of S.knownSplice) {
+    const r = SPLICE_RECIPES.find(x => (x.a + '+' + x.b) === rk);
+    if (r) h += '<p>' + ITEMS[r.a].name + ' + ' + ITEMS[r.b].name + ' = ' + ITEMS[r.out].name + ' (Tier ' + r.tier + ')</p>';
+  }
+  return h;
+}
+function renderProfile() {
+  let h = '<h3>Profil</h3><p>Nama: <b style="color:' + nameColor() + '">Pemain</b> · Level ' + S.level +
+    ' · XP ' + S.xp + '/' + (S.level >= LEVEL_CAP ? '-' : xpNeed(S.level)) + '</p>';
+  h += '<p>Pemilik world: ya (semua world di sini milikmu)</p><h3>Role</h3>';
+  for (const k in ROLE_NAMES) {
+    const r = S.roles[k];
+    h += '<p><b>' + ROLE_NAMES[k] + '</b> — level ' + r.level + ' · XP ' + r.xp + '/' + (r.level >= ROLE_CAP ? '-' : roleNeed(r.level)) + '</p>';
+  }
+  h += '<p>Role lain (Surgeon, Fishing, Chef, Star Captain) dan quest masuk tahap kedua.</p>';
+  return h;
+}
+function renderGuild() {
+  if (!S.guild) {
+    return '<h3>Guild</h3><p>Buat guild seharga 200.000 gems. Gems: ' + S.gems + '</p>' +
+      '<input type="text" data-role="guild-name" placeholder="Nama guild" maxlength="24"> ' +
+      '<button data-act="create-guild">BUAT GUILD</button>';
+  }
+  let h = '<h3>Guild: ' + escapeHtml(S.guild.name) + '</h3><p>' + escapeHtml(S.guild.statement) + '</p>';
+  h += '<input type="text" data-role="guild-statement" placeholder="Pernyataan guild" maxlength="120" value="' + escapeHtml(S.guild.statement) + '"> ' +
+    '<button data-act="save-statement">SIMPAN</button>';
+  h += '<h3>Anggota (' + S.guild.members.length + '/10)</h3>';
+  for (const m of S.guild.members) h += '<p>' + escapeHtml(m) + '</p>';
+  return h;
+}
+function renderTrade() {
+  const t = S.trade;
+  if (!t) return '<h3>Trade</h3><p>Tidak ada trade aktif.</p>';
+  let h = '<h3>Trade dengan ' + escapeHtml(t.npc) + '</h3>';
+  h += '<p>Sisimu (maks 4 stack x 200):</p>';
+  t.player.forEach((s, i) => {
+    h += '<div class="crow"><span>' + ITEMS[s.id].name + ' x' + s.qty + '</span><button data-act="trade-remove" data-i="' + i + '">Hapus</button></div>';
+  });
+  if (!t.player.length) h += '<p>(kosong)</p>';
+  h += '<p>Tambah dari tas:</p><div class="grid">';
+  for (const id of invList()) {
+    h += '<div class="slot" data-act="trade-add" data-item="' + id + '">' + ITEMS[id].name + '<br>' + S.inv[id] + '</div>';
+  }
+  h += '</div>';
+  h += '<p>Sisi ' + escapeHtml(t.npc) + ' (otomatis senilai):</p>';
+  for (const s of t.npcSide) h += '<p>' + ITEMS[s.id].name + ' x' + s.qty + '</p>';
+  if (!t.npcSide.length) h += '<p>(kosong)</p>';
+  h += '<div class="crow"><span></span><span><button data-act="trade-accept"' + (t.playerOk ? ' disabled' : '') + '>TERIMA</button> ' +
+    '<button data-act="trade-do"' + (t.playerOk && t.npcOk ? '' : ' disabled') + '>LAKUKAN TRADE</button> ' +
+    '<button data-act="trade-cancel">BATAL</button></span></div>';
+  return h;
+}
+function renderWrench(p) {
+  const tr = treeAt(p.tx, p.ty);
+  const fg = fgAt(p.tx, p.ty), bg = bgAt(p.tx, p.ty);
+  const lk = lockAt(p.tx, p.ty);
+  let h = '<h3>Info Petak (' + p.tx + ', ' + p.ty + ')</h3>';
+  if (tr) h += '<p>' + treeLabel(tr) + '</p>';
+  if (fg !== T_EMPTY) {
+    const d = TILES[fg];
+    h += '<p>Depan: <b>' + d.name + '</b> · Rarity ' + (ITEMS[d.item] ? ITEMS[d.item].rarity : '-') + ' · ' + (isFinite(d.hits) ? d.hits + ' pukulan' : 'tidak bisa dipukul') + '</p>';
+    if (d.sign) {
+      h += '<p>Teks: ' + escapeHtml(S.world.signs[key(p.tx, p.ty)] || '(kosong)') + '</p>' +
+        '<input type="text" data-role="sign-text" placeholder="Tulis di papan..." maxlength="80" value="' + escapeHtml(S.world.signs[key(p.tx, p.ty)] || '') + '"> ' +
+        '<button data-act="save-sign" data-x="' + p.tx + '" data-y="' + p.ty + '">SIMPAN TEKS</button>';
+    }
+    if (d.door) h += '<button data-act="remove-door" data-x="' + p.tx + '" data-y="' + p.ty + '">HANCURKAN PINTU</button>';
+    if (d.weather) h += '<button data-act="toggle-weather">GANTI CUACA</button>';
+    if (d.vending) h += '<button data-act="open-vending" data-x="' + p.tx + '" data-y="' + p.ty + '">KELOLA MESIN</button>';
+    if (d.chest) h += '<button data-act="open-chest">BUKA PETI</button>';
+    if (d.lock) h += '<button data-act="remove-lock" data-x="' + p.tx + '" data-y="' + p.ty + '">BONGKAR LOCK</button>';
+  }
+  if (bg !== T_EMPTY) h += '<p>Belakang: <b>' + TILES[bg].name + '</b></p>';
+  if (fg === T_EMPTY && bg === T_EMPTY && !tr) h += '<p>Petak kosong.</p>';
+  if (lk) h += '<p>Area lock: ' + LOCK_DEFS[lk.kind].name + ' · Pemilik: ' + escapeHtml(lk.owner) + '</p>';
+  if (S.world.paint[key(p.tx, p.ty)]) h += '<p>Dicet warna.</p>';
+  return h;
+}
+function renderVending(p) {
+  const v = S.world.vending[key(p.tx, p.ty)];
+  if (!v) return '<h3>Vending Machine</h3><p>Mesin tidak ditemukan.</p>';
+  let h = '<h3>Vending Machine</h3><p>Hasil: ' + v.earned + ' WL ' + (v.earned > 0 ? '<button data-act="vend-withdraw" data-x="' + p.tx + '" data-y="' + p.ty + '">AMBIL</button>' : '') + '</p>';
+  h += '<p>Isi: ' + (v.item ? ITEMS[v.item].name + ' x' + v.qty + ' @ ' + v.price + ' WL' : '(kosong)') + '</p>';
+  if (v.item) h += '<button data-act="vend-take" data-x="' + p.tx + '" data-y="' + p.ty + '">AMBIL ISI</button> ';
+  h += '<button data-act="vend-remove" data-x="' + p.tx + '" data-y="' + p.ty + '">HANCURKAN MESIN</button>';
+  h += '<h3>Isi Mesin</h3><select data-role="vend-item">';
+  for (const id of invList()) h += '<option value="' + id + '">' + ITEMS[id].name + ' (' + S.inv[id] + ')</option>';
+  h += '</select> Jumlah <input type="number" data-role="vend-qty" value="10" min="1"> Harga (WL) <input type="number" data-role="vend-price" value="1" min="0"> ' +
+    '<button data-act="vend-set" data-x="' + p.tx + '" data-y="' + p.ty + '">ISI</button>';
+  return h;
+}
+function renderChest() {
+  let h = '<h3>Peti World</h3>';
+  const ids = Object.keys(S.world.chest);
+  if (!ids.length) h += '<p>Peti kosong. Pakai STORE di tas untuk menyimpan ke sini.</p>';
+  for (const id of ids) {
+    h += '<div class="crow"><span>' + ITEMS[id].name + ' (' + S.world.chest[id] + ')</span><span>' + qtyButtons('chest-take', 'data-item="' + id + '"') + '</span></div>';
+  }
+  return h;
+}
+function renderInfo(p) {
+  const it = ITEMS[p.item];
+  return '<h3>' + it.name + '</h3><p>Rarity: ' + it.rarity + '</p><p>' + it.desc + '</p>' +
+    (it.seed ? '<p>Waktu tumbuh: ' + fmtTime(growTimeMs(it.seedOf)) + '</p>' : '') +
+    (it.price ? '<p>Harga Store: ' + it.price + ' gems</p>' : '<p>Tidak dijual di Store.</p>');
+}
 function refreshHUD() {
-  el.hCoins.textContent = S.coins;
-  el.hTask.textContent = S.taskCoins;
-  el.hDay.textContent = 'Hari ' + S.day + ' · ' + SEASONS[seasonOf(S.day)];
-  el.hPhase.textContent = S.phase === 'day' ? 'Siang' : 'Malam';
-  const len = S.phase === 'day' ? DAY_LEN : NIGHT_LEN;
-  el.hCyc.style.width = clamp(S.t / len * 100, 0, 100) + '%';
-  el.hSel.textContent = S.place ? (S.place.kind === 'tile' ? TILES[S.place.code].name : ITEMS[S.place.id].name) : '-';
+  el.hGemsN.textContent = S.gems;
+  el.hName.textContent = 'Pemain';
+  el.hName.style.color = nameColor();
+  el.hLevel.textContent = S.level;
+  el.hWorld.textContent = S.worldName;
+  el.hHp.textContent = 'HP ' + Math.max(0, Math.ceil(S.hp));
+  el.modeDock.textContent = S.mode === 'fist' ? 'KEPALAN' : 'KUNCI';
+  el.hotSlot.textContent = S.sel ? ('Pilih: ' + ITEMS[S.sel].name + ' (' + countItem(S.sel) + ')') : 'Tidak ada yang dipilih';
+}
+
+// ---------- Layar pilih world ----------
+function showWorldSel() {
+  S.worldSelOpen = true;
+  closePanel();
+  const wotd = pickWOTD();
+  el.wsWotd.textContent = wotd ? ('World of the Day: ' + wotd) : '';
+  el.wsList.innerHTML = Object.keys(S.worlds).sort().map(n =>
+    '<button data-world="' + escapeHtml(n) + '">' + escapeHtml(n) + '</button>').join('');
+  el.worldsel.hidden = false;
+}
+function hideWorldSel() { S.worldSelOpen = false; el.worldsel.hidden = true; }
+function enterWorld(name) {
+  name = (name || '').trim().toUpperCase();
+  if (!validWorldName(name)) {
+    addChat('Nama world tidak valid (1-24 huruf/angka, tanpa nama terlarang).', 'sys');
+    sfx.error();
+    return false;
+  }
+  save();
+  if (!S.worlds[name]) {
+    S.worlds[name] = genWorld(name);
+    addChat('World baru "' + name + '" dibuat!', 'sys');
+  }
+  S.world = S.worlds[name];
+  S.worldName = name;
+  S.px = S.world.spawn.tx * TILE + 16; S.py = S.world.spawn.ty * TILE + 4;
+  S.vx = 0; S.vy = 0; S.tileHp = {}; S.tileHit = {};
+  S.drops = []; S.gemDrops = [];
+  spawnTrader();
+  hideWorldSel();
+  enterWOTDCheck();
+  refreshHUD();
+  save();
+  return true;
 }
 
 // ---------- Input ----------
@@ -184,77 +220,164 @@ function pollMove() {
   if (keys['d'] || keys['arrowright'] || touch.right) m += 1;
   return m;
 }
-function interact() {
-  const n = nearNPC();
-  if (n) { openPanel({ kind: n.id === 'merchant' ? 'merchant' : 'quest' }); return; }
-  const p = playerTile();
-  for (let y = p.ty - 2; y <= p.ty + 2; y++) for (let x = p.tx - 2; x <= p.tx + 2; x++) {
-    const code = tileAt(x, y);
-    if (code !== T_EMPTY && TILES[code] && TILES[code].station) { openPanel({ kind: 'craft', station: TILES[code].station }); return; }
-    if (code === T_SHIPBIN) { openPanel({ kind: 'shipbin' }); return; }
-  }
-  actForward();
+function toggleMode() {
+  S.mode = S.mode === 'fist' ? 'wrench' : 'fist';
+  sfx.click();
+  refreshHUD();
 }
-window.addEventListener('keydown', e => {
-  if ([' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)) e.preventDefault();
-  keys[e.key.toLowerCase()] = true;
-  audio();
-  if (e.key === ' ' || e.key.toLowerCase() === 'w') { doJump(); if (e.key === ' ') actForward(); }
-  if (e.key.toLowerCase() === 'e' && !e.repeat) interact();
-  if (e.key.toLowerCase() === 'b' && !e.repeat) {
-    if (S.place) exitBuild();
-    else if (!el.menu.hidden) closeMenu();
-    else openMenu();
-  }
-  if ((e.key.toLowerCase() === 'i' || e.key === 'Tab') && !e.repeat) openPanel({ kind: 'inv' });
-  if (e.key.toLowerCase() === 'p' && !e.repeat) openPanel({ kind: 'skills' });
-  if (e.key.toLowerCase() === 'o' && !e.repeat) openPanel({ kind: 'book' });
-  if (e.key === 'Escape') { closePanel(); exitBuild(); }
-});
-window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
-function canvasTile(e) {
+function canvasTile(cx, cy) {
   const r = canvas.getBoundingClientRect();
-  const wx = (e.clientX - r.left) * (VW / r.width) / S.zoom + S.cam.x;
-  const wy = (e.clientY - r.top) * (VH / r.height) / S.zoom + S.cam.y;
-  return { tx: Math.floor(wx / TILE), ty: Math.floor(wy / TILE), wx, wy };
+  const sx = (cx - r.left) * (VW / r.width), sy = (cy - r.top) * (VH / r.height);
+  return { tx: Math.floor((S.cam.x + sx / S.zoom) / TILE), ty: Math.floor((S.cam.y + sy / S.zoom) / TILE) };
 }
-canvas.addEventListener('click', e => {
-  audio();
-  const t = canvasTile(e);
-  for (const n of S.npcs) {
-    const nx = n.tx * TILE + 16, ny = n.ty * TILE + 16;
-    if (Math.abs(t.wx - nx) < 24 && Math.abs(t.wy - ny) < 32) {
-      openPanel({ kind: n.id === 'merchant' ? 'merchant' : 'quest' });
+function actTile(tx, ty) {
+  if (S.worldSelOpen) return;
+  if (S.mode === 'wrench') { wrenchAct(tx, ty); return; }
+  if (S.sel && (ITEMS[S.sel].seed || ITEMS[S.sel].tile || ITEMS[S.sel].paint !== undefined)) {
+    if (!placeTile(tx, ty)) punchTile(tx, ty);
+  } else punchTile(tx, ty);
+  refreshHUD();
+}
+function wrenchAct(tx, ty) {
+  const npc = S.npc;
+  if (npc && Math.abs(tx - npc.tx) <= 1 && Math.abs(ty - npc.ty) <= 1) { openNpcPanel(); return; }
+  const p = playerTile();
+  if (tx === p.tx && (ty === p.ty || ty === p.ty + 1)) { openPanel({ kind: 'profile' }); return; }
+  openPanel({ kind: 'wrench', tx, ty });
+}
+function openNpcPanel() {
+  // Panel NPC: profil + tombol trade (wrench ke pemain lain di Growtopia).
+  S.panel = { kind: 'npc' };
+  el.panel.innerHTML = '<button class="close" data-act="close">X</button><h3>' + escapeHtml(S.npc.name) + '</h3>' +
+    '<p>Pedagang keliling. Stoknya berputar tiap hari.</p>' +
+    '<button data-act="open-trade">TRADE</button> <button data-act="npc-stock">LIHAT STOK</button><div id="npcStock"></div>';
+  el.panel.hidden = false;
+}
+function bindInput() {
+  document.addEventListener('keydown', e => {
+    const tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'SELECT') {
+      if (e.key === 'Enter' && e.target === el.chatInput) { sendChat(el.chatInput.value); el.chatInput.value = ''; el.chatInput.blur(); }
+      if (e.key === 'Enter' && e.target === el.wsName) enterWorld(el.wsName.value);
       return;
     }
-  }
-  if (S.place && S.place.kind === 'use') {
-    const p = plantAt(t.tx, t.ty);
-    if (p) fertilizePlant(p);
+    keys[e.key.toLowerCase()] = true;
+    if (e.key === ' ' || e.key === 'w' || e.key === 'W' || e.key === 'ArrowUp') { doJump(); e.preventDefault(); }
+    if (e.key === 'Enter') { el.chatInput.focus(); e.preventDefault(); }
+    if (e.key === 'Escape') closePanel();
+    if (e.key === 'q' || e.key === 'Q') toggleMode();
+    if (e.key === 'i' || e.key === 'I') openPanel({ kind: 'inv' });
+    if (e.key === 'b' || e.key === 'B') openPanel({ kind: 'book' });
+    if (e.key === 'p' || e.key === 'P') openPanel({ kind: 'profile' });
+    if (e.key === 'g' || e.key === 'G') openPanel({ kind: 'guild' });
+  });
+  document.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+  canvas.addEventListener('mousedown', e => {
+    audio();
+    const t = canvasTile(e.clientX, e.clientY);
+    actTile(t.tx, t.ty);
+  });
+  canvas.addEventListener('wheel', e => {
+    e.preventDefault();
+    setZoom(S.zoom + (e.deltaY < 0 ? 0.1 : -0.1));
+  }, { passive: false });
+  canvas.addEventListener('touchstart', e => {
+    audio();
+    const t = e.changedTouches[0];
+    const tl = canvasTile(t.clientX, t.clientY);
+    actTile(tl.tx, tl.ty);
+    e.preventDefault();
+  }, { passive: false });
+  const hold = (id, prop) => {
+    const b = $(id);
+    b.addEventListener('pointerdown', e => { e.preventDefault(); audio(); touch[prop] = true; });
+    b.addEventListener('pointerup', () => { touch[prop] = false; });
+    b.addEventListener('pointerleave', () => { touch[prop] = false; });
+  };
+  hold('btnLeft', 'left');
+  hold('btnRight', 'right');
+  $('btnJump').addEventListener('pointerdown', e => { e.preventDefault(); audio(); doJump(); });
+  $('btnPunch').addEventListener('pointerdown', e => { e.preventDefault(); audio(); actForward(); refreshHUD(); });
+  $('modeDock').addEventListener('click', () => { audio(); toggleMode(); });
+  $('hGems').addEventListener('click', () => openPanel({ kind: 'store' }));
+  $('btnInv').addEventListener('click', () => openPanel({ kind: 'inv' }));
+  $('btnStore').addEventListener('click', () => openPanel({ kind: 'store' }));
+  $('btnBook').addEventListener('click', () => openPanel({ kind: 'book' }));
+  $('btnProfile').addEventListener('click', () => openPanel({ kind: 'profile' }));
+  $('btnGuild').addEventListener('click', () => openPanel({ kind: 'guild' }));
+  $('btnAdmin').addEventListener('click', () => openPanel({ kind: 'admin' }));
+  $('btnWorlds').addEventListener('click', () => { save(); showWorldSel(); });
+  $('wsGo').addEventListener('click', () => enterWorld(el.wsName.value));
+  $('wsHome').addEventListener('click', () => enterWorld('AWAL'));
+  el.wsList.addEventListener('click', e => {
+    const b = e.target.closest ? e.target.closest('[data-world]') : null;
+    if (b) enterWorld(b.getAttribute('data-world'));
+  });
+  el.panel.addEventListener('click', onPanelClick);
+  el.panel.addEventListener('input', e => {
+    if (e.target.getAttribute && e.target.getAttribute('data-role') === 'inv-search') {
+      S.invSearch = e.target.value;
+      renderPanel();
+      const inp = el.panel.querySelector('[data-role="inv-search"]');
+      if (inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+    }
+  });
+}
+function panelInput(role) {
+  const inp = el.panel.querySelector ? el.panel.querySelector('[data-role="' + role + '"]') : null;
+  return inp ? inp.value : '';
+}
+function onPanelClick(e) {
+  const b = e.target.closest ? e.target.closest('[data-act]') : null;
+  if (!b) return;
+  const act = b.getAttribute('data-act');
+  const n = b.getAttribute('data-n');
+  const qty = n === 'all' ? 999999 : parseInt(n || '1', 10);
+  const item = b.getAttribute('data-item');
+  audio();
+  if (act === 'close') { closePanel(); return; }
+  if (act === 'select') { S.sel = item; sfx.click(); renderPanel(); refreshHUD(); return; }
+  if (act === 'buy') { buyItem(item, qty); renderPanel(); refreshHUD(); return; }
+  if (act === 'recycle') { recycleItem(item, qty); renderPanel(); refreshHUD(); return; }
+  if (act === 'store') { storeItem(item, qty); renderPanel(); refreshHUD(); return; }
+  if (act === 'drop') { dropSelected(item, qty); renderPanel(); refreshHUD(); return; }
+  if (act === 'info') { openPanel({ kind: 'info', item }); return; }
+  if (act === 'fav') { toggleFav(item); renderPanel(); return; }
+  if (act === 'combine') { combineLocks(); renderPanel(); refreshHUD(); return; }
+  if (act === 'split') { splitLocks(); renderPanel(); refreshHUD(); return; }
+  if (act === 'chest-take') { takeFromChest(item, qty); renderPanel(); refreshHUD(); return; }
+  if (act === 'create-guild') { if (createGuild(panelInput('guild-name'))) renderPanel(); refreshHUD(); return; }
+  if (act === 'save-statement') { setGuildStatement(panelInput('guild-statement')); renderPanel(); return; }
+  if (act === 'open-trade') { openTrade(); openPanel({ kind: 'trade' }); return; }
+  if (act === 'npc-stock') {
+    const d = $('npcStock');
+    if (d) d.innerHTML = '<p>Stok hari ini:</p>' + traderStock().map(s => '<p>' + ITEMS[s.id].name + ' x' + s.qty + '</p>').join('');
     return;
   }
-  if (S.place) { placeTile(t.tx, t.ty); refreshHUD(); return; }
-  actTile(t.tx, t.ty);
-  refreshHUD();
-});
-function holdBtn(id, on, off) {
-  const b = $(id);
-  b.addEventListener('pointerdown', e => { e.preventDefault(); audio(); on(); });
-  const end = e => { e.preventDefault(); if (off) off(); };
-  b.addEventListener('pointerup', end);
-  b.addEventListener('pointercancel', end);
-  b.addEventListener('pointerleave', end);
+  if (act === 'trade-add') { tradeAdd(item, 10); renderPanel(); return; }
+  if (act === 'trade-remove') { tradeRemove(parseInt(b.getAttribute('data-i'), 10)); renderPanel(); return; }
+  if (act === 'trade-accept') { tradeAccept(); renderPanel(); return; }
+  if (act === 'trade-do') { if (tradeDo()) closePanel(); refreshHUD(); return; }
+  if (act === 'trade-cancel') { tradeCancel(); closePanel(); return; }
+  if (act === 'save-sign') {
+    S.world.signs[key(parseInt(b.getAttribute('data-x'), 10), parseInt(b.getAttribute('data-y'), 10))] = panelInput('sign-text');
+    addChat('Teks papan disimpan.', 'sys'); renderPanel(); return;
+  }
+  if (act === 'remove-door') {
+    const x = parseInt(b.getAttribute('data-x'), 10), y = parseInt(b.getAttribute('data-y'), 10);
+    S.world.fg[y][x] = T_EMPTY; gainItem('door', 1); closePanel(); return;
+  }
+  if (act === 'toggle-weather') { toggleWeather(); renderPanel(); return; }
+  if (act === 'open-vending') { openPanel({ kind: 'vending', tx: parseInt(b.getAttribute('data-x'), 10), ty: parseInt(b.getAttribute('data-y'), 10) }); return; }
+  if (act === 'open-chest') { openPanel({ kind: 'chest' }); return; }
+  if (act === 'remove-lock') { removeLockAt(parseInt(b.getAttribute('data-x'), 10), parseInt(b.getAttribute('data-y'), 10)); closePanel(); refreshHUD(); return; }
+  if (act === 'vend-set') {
+    vendSet(parseInt(b.getAttribute('data-x'), 10), parseInt(b.getAttribute('data-y'), 10),
+      panelInput('vend-item'), parseInt(panelInput('vend-qty'), 10) || 0, parseInt(panelInput('vend-price'), 10) || 0);
+    renderPanel(); refreshHUD(); return;
+  }
+  if (act === 'vend-take') { vendTakeStock(parseInt(b.getAttribute('data-x'), 10), parseInt(b.getAttribute('data-y'), 10)); renderPanel(); refreshHUD(); return; }
+  if (act === 'vend-withdraw') { vendWithdraw(parseInt(b.getAttribute('data-x'), 10), parseInt(b.getAttribute('data-y'), 10)); renderPanel(); refreshHUD(); return; }
+  if (act === 'vend-remove') { if (vendRemove(parseInt(b.getAttribute('data-x'), 10), parseInt(b.getAttribute('data-y'), 10))) closePanel(); refreshHUD(); return; }
+  if (act && act.indexOf('admin-') === 0) { onAdminClick(act, b); return; }
 }
-holdBtn('btnLeft', () => { touch.left = true; }, () => { touch.left = false; });
-holdBtn('btnRight', () => { touch.right = true; }, () => { touch.right = false; });
-holdBtn('btnJump', () => doJump());
-holdBtn('btnAct', () => { actForward(); refreshHUD(); });
-holdBtn('btnBuild', () => {
-  if (S.place) exitBuild();
-  else if (!el.menu.hidden) closeMenu();
-  else openMenu();
-});
-$('btnInv').addEventListener('click', () => { audio(); openPanel({ kind: 'inv' }); });
-$('btnSkill').addEventListener('click', () => { audio(); openPanel({ kind: 'skills' }); });
-$('btnBook').addEventListener('click', () => { audio(); openPanel({ kind: 'book' }); });
-renderBuildMenu();

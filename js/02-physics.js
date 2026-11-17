@@ -1,12 +1,16 @@
 'use strict';
 // ---------- Fisika: jalan, lompat, gravitasi, tabrakan petak ----------
 const PW = 20, PH = 28; // badan pemain lebih kecil dari petak, supaya tidak nyangkut
-function tileAt(tx, ty) {
-  if (tx < 0 || tx >= S.mw || ty < 0 || ty >= MH) return T_STONE; // dinding dunia
-  return S.tiles[ty][tx];
+function fgAt(tx, ty) {
+  if (tx < 0 || tx >= MW || ty < 0 || ty >= MH) return T_BEDROCK; // dinding dunia
+  return S.world.fg[ty][tx];
+}
+function bgAt(tx, ty) {
+  if (tx < 0 || tx >= MW || ty < 0 || ty >= MH) return T_EMPTY;
+  return S.world.bg[ty][tx];
 }
 function solidAt(tx, ty) {
-  const c = tileAt(tx, ty);
+  const c = fgAt(tx, ty);
   return c !== T_EMPTY && !!TILES[c] && TILES[c].solid;
 }
 function playerTile() { return { tx: Math.floor(S.px / TILE), ty: Math.floor(S.py / TILE) }; }
@@ -29,7 +33,6 @@ function updatePlayer(dt, move) {
   if (!collides(nx, S.py)) S.px = nx;
   else {
     const dir = Math.sign(S.vx);
-    // Snap dari posisi penetrasi (nx), bukan posisi lama: posisi lama masih di baris udara.
     S.px = dir > 0 ? Math.floor((nx + PW / 2) / TILE) * TILE - PW / 2 - 0.01 : (Math.floor((nx - PW / 2) / TILE) + 1) * TILE + PW / 2 + 0.01;
     S.vx = 0;
   }
@@ -43,18 +46,19 @@ function updatePlayer(dt, move) {
     S.py = (Math.floor((ny - PH / 2) / TILE) + 1) * TILE + PH / 2 + 0.01;
     S.vy = 0;
   }
-  S.px = clamp(S.px, PW / 2, S.mw * TILE - PW / 2);
+  S.px = clamp(S.px, PW / 2, MW * TILE - PW / 2);
   if (S.py > MH * TILE) { S.py = MH * TILE - PH; S.vy = 0; S.onGround = true; } // pengaman, tidak boleh jatuh keluar dunia
 }
-function setZoom(z) {
-  // Batas bawah 0.5 = seluruh dunia awal (60x40 petak) pas satu layar.
-  S.zoom = clamp(z, 0.5, 2);
-}
+function setZoom(z) { S.zoom = clamp(z, 0.5, 2); }
 function updateCamera() {
   const vw = VW / S.zoom, vh = VH / S.zoom;
-  const tx = clamp(S.px - vw / 2, 0, Math.max(0, S.mw * TILE - vw));
+  const tx = clamp(S.px - vw / 2, 0, Math.max(0, MW * TILE - vw));
   const ty = clamp(S.py - vh / 2, 0, Math.max(0, MH * TILE - vh));
   S.cam.x += (tx - S.cam.x) * 0.2; S.cam.y += (ty - S.cam.y) * 0.2;
   if (Math.abs(tx - S.cam.x) < 0.5) S.cam.x = tx;
   if (Math.abs(ty - S.cam.y) < 0.5) S.cam.y = ty;
+}
+function inReach(tx, ty) {
+  const p = playerTile();
+  return Math.max(Math.abs(tx - p.tx), Math.abs(ty - p.ty)) <= REACH;
 }

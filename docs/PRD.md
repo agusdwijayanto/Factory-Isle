@@ -1,135 +1,223 @@
-# PRD — Indotopia (game kaya Growtopia versi kita)
+# PRD — Indotopia Remake
 
-Disetujui Agus 2026-11-16. Angka-angka di bagian "PRD yang disetujui" MENGIKAT dan tidak boleh diubah diam-diam. Bagian "Keputusan interpretasi" berisi hal yang PRD tidak rinci, diputuskan saat pembangunan dan didokumentasikan di sini.
+## 1. Tujuan
+Salinan Growtopia single-player di browser yang bisa dimainkan dan dites Agus
+dari panel admin, sepersis mungkin dengan aslinya sebelum dimodifikasi
+menjadi versi kita.
 
-## PRD yang disetujui
+## 2. Pengguna
+Agus sendiri, main di HP dan PC, mengetes fitur lewat panel admin.
 
-**Dunia**
-- Grid 60 lebar x 40 tinggi, petak 32 px. 10 baris atas langit, sisanya tanah dan batu. Kamera mengikuti pemain.
-- Perluasan: beli lahan +20 kolom ke kanan, biaya 500, 1000, 2000, 4000, 8000 koin, mentok 5 perluasan.
+## 3. World
+- Grid 100x60, TILE 32, 6 baris bedrock di bawah, 54 baris terpakai.
+- Masuk dengan mengetik nama; nama baru berarti world baru. Nama 1-24 karakter
+  huruf/angka; nama terlarang (SETH, HAMUMU, ADMIN, GOD, SATAN, HITLER,
+  SYSTEM, MODERATOR) ditolak.
+- Generasi: permukaan bervariasi, ~24 lapis tanah, lalu campuran batu/tanah,
+  kantong lava di lapis 7-10 dari bawah, latar gua di bawah permukaan,
+  Main Door acak di permukaan dengan bedrock di bawahnya.
+- Tiap world tersimpan sendiri. Nama world pertama default: AWAL.
 
-**Gerak menyamping**
-- Jalan 5 petak/detik, lompat setinggi 3 petak, ada gravitasi, jatuh tanpa damage.
-- Kontrol: A/D atau panah jalan, W atau spasi lompat, klik atau spasi pukul, E interaksi, B menu bangun. Jangkauan pukul 1 petak ke segala arah. Kontrol sentuh wajib ada (tombol kiri/kanan/lompat/aksi).
+## 4. Gerak
+Menyamping, lompat + gravitasi, tanpa fall damage. Jalan 5 petak/detik
+(160 px/detik), lompat 3 petak (gravitasi 1200 px/s2, kecepatan lompat
+480 px/s). Kamera ikut pemain, tidak keluar batas world. Zoom roda mouse
+0,5x-2x, tersimpan.
 
-**Blok dan pukul**
-- Tanah 2 pukulan, kayu 3 pukulan, batu 4 pukulan. Tiap blok hancur menjatuhkan 1 benih + 1 blok bahan. Menaruh blok dari inventory, bongkar kembali bahannya.
+## 5. Pukul dan blok
+- Pukul tiap 0,2 detik, jangkauan 3 petak (Chebyshev dari petak pemain),
+  retakan bertahap + bunyi per pukulan. Kerusakan pulih sesudah jeda
+  (8 detik umumnya, 1 detik Glass Pane).
+- Blok foreground di atas background. Menghancurkan blok menjatuhkan 1 blok;
+  blok spliceable berpeluang 1 dari 5 menjatuhkan benihnya.
+- Pintu dipukul = teleport ke pintu lain terdekat; hapus pintu lewat wrench.
+- Lava: 20 damage + knockback + api 3 detik per sentuhan (kebal 1 detik);
+  HP habis = bangun di Main Door HP penuh. HP regen 5/detik sesudah 5 detik tenang.
+- Cat: butuh Paintbrush; cat yang dipilih menentukan warna; Varnish menghapus.
+- Weather machine dipukul = cuaca berputar (cerah, hujan, malam, salju), visual saja.
+- Lock dan vending machine tidak bisa dipukul pecah; hanya lewat wrench.
 
-**Farming**
-- Tanam benih di petak tanah kosong. Waktu tumbuh waktu nyata: gandum 60 detik, pohon 120 detik. Tanaman yang tidak disiram tidak tumbuh tapi tidak mati. Siram dengan tombol aksi di samping tanaman. Musim 28 hari game, 4 musim setahun. Tiap musim hanya tanaman tertentu yang tumbuh; tanaman luar musim berhenti tumbuh. Panen 2 hasil per tanaman.
+### Tabel blok
+| Blok | Rarity | Pukulan | Layer | Harga Store (gems) |
+|---|---|---|---|---|
+| Dirt | 1 | 2 | depan | 2 |
+| Rock | 1 | 3 | depan | 2 |
+| Lava | 1 | 2 | depan | 4 |
+| Cave Background | 1 | 2 | belakang | 2 |
+| Door | 2 | 2 | depan | 8 |
+| Grass | 2 | 2 | depan | 4 |
+| Wood Block | 2 | 3 | depan | 4 |
+| Sign | 2 | 2 | depan | 8 |
+| Glass Pane | 2 | 2 | belakang | 8 |
+| Brick | 3 | 4 | depan | 8 |
+| Fireplace | 5 | 4 | depan | 20 |
+| Golden Block | 40 | 20 | depan | 100 |
+| Pepper | 47 | 4 | depan | 100 |
+| Chandelier | 87 | 7 | depan | 500 |
+| Bedrock | - | tidak bisa | depan | - |
+| Vending Machine | - | wrench | depan | 8000 |
+| Weather Machine | - | wrench | depan | 1000 |
+| Chest | - | 2 | depan | 50 |
 
-**Splice dan breeding**
-- Splice 2 benih di meja splice menjadi 1 benih baru, tabel resep tetap, 8 resep awal. Bunga bersebelahan bisa menghasilkan bunga baru dengan warna dari aturan genetik sederhana, peluang 25% per hari game per pasangan. Buku resep mencatat semua resep yang ditemukan.
+### Harga benih (gems)
+Dirt 5, Rock 5, Lava 8, Cave 5, Wood 10, Grass 10, Door 10, Sign 10,
+Glass 10, Brick 25, Fireplace 50, Pepper 200, Golden 500, Chandelier 2000.
 
-**Crafting**
-- Stasiun meja kerja 10 kayu, tungku, meja splice. Crafting hanya saat berdiri dekat stasiun. 10 resep awal. Buku resep menunjukkan resep dari bahan yang dimiliki.
+## 6. Farming
+- Benih ditanam di ruang kosong tepat di atas blok padat.
+- Waktu tumbuh t = r^3 + 30r detik WAKTU NYATA (r = rarity), berbasis
+  timestamp tanam: Dirt 31 dtk, Pepper 105.233 dtk, Chandelier 661.113 dtk.
+- Panen memberi 2-5 buah + benih (tiap buah 20% benih bonus) + gems.
+- Rentang gems panen: rarity 1: 0-1, 2: 0-2, 3: 0-3, 5: 0-5, 40: 0-16,
+  47 (Pepper): 0-12, 87 (Chandelier): 0-22.
+- Gems jatuh fisik, bergabung per denominasi (kuning 1, biru 5, merah 10,
+  hijau 50, ungu 100), diambil dengan berjalan melewatinya.
+- Pohon belum matang yang dipukul hancur tanpa hasil.
+- Pohon menempati petak tapi tidak solid. Label pohon tampil dalam 4 petak.
 
-**Ekonomi**
-- Koin melekat di player. Toko NPC harga tetap. Hasil jualan masuk kotak kirim dan dibayar besok pagi. Batas jual dan beli 20 item per hari. Mata uang tugas hanya dari misi, dipakai di toko hadiah.
+## 7. Splice
+Benih kedua ditanam di atas bibit benih pertama; pohon hasil mulai tumbuh
+dari nol dengan waktu tumbuh item hasil. Pasangan gagal: benih kedua kembali
+utuh. Benih ketiga ditolak. Buku hanya mencatat resep yang sudah ditemukan.
 
-**Pasar lobak (TERPISAH dari toko utama)**
-- Beli hari Minggu harga 90 sampai 110, jual Senin sampai Sabtu harga berubah 2 kali sehari, mentok 660, 4 pola harga, lobak busuk tiap Minggu. Minggu lobak = 7 hari game.
+### Tabel resep (10)
+| Benih 1 | Benih 2 | Hasil | Tier | Sumber |
+|---|---|---|---|---|
+| Dirt | Cave | Door | 1 | riset |
+| Dirt | Rock | Grass | 1 | riset |
+| Dirt | Lava | Wood Block | 1 | riset |
+| Rock | Lava | Glass Pane | 1 | riset |
+| Rock | Cave | Sign | 1 | riset |
+| Grass | Rock | Brick | 2 | tafsir |
+| Wood | Lava | Fireplace | 2 | tafsir |
+| Wood | Brick | Pepper | 2 | tafsir |
+| Brick | Fireplace | Golden Block | 3 | tafsir |
+| Golden Block | Fireplace | Chandelier | 3 | riset |
 
-**Skill dan profesi**
-- 3 skill (Bertani, Menebang, Menambang). 10 tingkat, profesi di tingkat 5 dan 10. XP dari aktivitas, butuh tingkat dikali 100 XP per tingkat. 2 pilihan profesi per skill.
+## 8. Ekonomi
+- Gems TIDAK bisa ditrade, tanpa kecuali.
+- Store menjual item dengan harga tetap pakai gems (lihat tabel).
+- Lock: Small 50 gems/10 petak (5x2), Big 200/48 (8x6), Huge 500/200 (20x10),
+  World Lock 2.000/seluruh world. Bentuk area = kotak ke kanan-bawah dari
+  petak lock. World Lock tidak bisa ditaruh kalau world sudah punya lock.
+  Decay lock MATI. Bongkar lock sendiri mengembalikan lock-nya.
+- Lock = uang: 100 WL = 1 DL, 100 DL = 1 BGL, lewat tombol gabung/pecah di tas.
 
-**NPC dan misi**
-- 2 NPC awal (pedagang dan pemberi misi). 3 misi harian (kumpul, tanam, splice), hadiah mata uang tugas dan koin.
+## 9. Trading
+- Lewat wrench ke NPC pedagang keliling (satu per world, nama + stok berputar
+  tiap hari).
+- Jendela trade maks 4 stack x 200, kedua pihak konfirmasi, bunyi kasir.
+- Sisi NPC terisi otomatis dari stoknya sampai senilai sisi pemain;
+  NPC setuju otomatis karena sisinya sudah senilai. Barang berpindah saat
+  trade dieksekusi, bukan saat dimasukkan.
+- Nilai tukar = harga Store; DL = 100x harga WL, BGL = 10.000x harga WL.
 
-**Hari**
-- 1 hari game = siang 3 menit + malam 1,5 menit. Tidak ada monster malam di versi ini.
+## 10. Vending machine
+Beli 8.000 gems, ditaruh di world mana saja, diisi barang + harga dalam WL.
+NPC pengunjung membeli 1-3 barang berkala kalau harga tidak melebihi nilai
+item (max(1, floor(harga Store/200)) WL). Hasil dalam WL diambil pemilik
+lewat wrench. Mesin harus dikosongkan dulu sebelum dihancurkan.
 
-**Rasa main**
-- Bunyi WebAudio, partikel, angka melayang, getar layar, perayaan pencapaian pertama. HUD: koin, mata uang tugas, hari, musim, jam.
+## 11. Progresi
+- XP = 1 + floor(rarity/5) per panen. Butuh level x 100 XP untuk naik level.
+  Cap level 125, nama biru di 125, nama hijau sebagai pemilik world.
+- Role Farmer (tanam +1, panen +2) dan Builder (taruh +1, hancur +1),
+  masing-masing sampai level 10, butuh level x 100 poin role.
+- Empat role lain + quest TIDAK masuk v1.
 
-**Di luar lingkup:** multiplayer, trade antar player, lock, rarity, chat, guild, dungeon dan boss, musik latar.
+## 12. Sosial versi solo
+- Guild: buat seharga 200.000 gems; anggota NPC bergabung tiap 10 menit,
+  mentok 10; panel daftar anggota + pernyataan bisa diedit.
+- WOTD: satu world pilihan harian deterministik dari tanggal + world milik
+  pemain; tampil di layar pilih world; masuk world WOTD memberi WOTD Trophy
+  sekali sehari.
+- Broadcast hanya dari sistem (pesan berkala tiap 5 menit + event).
+- Chat kiri bawah: umpan balik aksi + perintah /msg (gratis), /sb (40 gems),
+  /bc (20 gems). Ditampilkan bergaya, tanpa pengiriman nyata.
 
-**Kunci simpan:** indotopia-gt-save-v1 (baru, bukan kunci game desa).
+## 13. UI
+- Gems kiri atas (ketuk = Store); nama, level, nama world, HP.
+- HP: tombol gerak kiri bawah, lompat + pukul kanan bawah.
+- Tas: grid bisa scroll + jumlah + kolom cari + RECYCLE/STORE/DROP/INFO/FAV.
+  RECYCLE mengembalikan 1/10 harga Store. STORE menyimpan ke peti world.
+  DROP menjatuhkan. INFO dialog info. FAV menandai favorit (tampil dulu).
+- Dialog panel BIRU tembus pandang. Dock Fist/Wrench.
+- Tanpa day/night cycle.
 
-## Keputusan interpretasi (PRD tidak merinci, diputuskan saat pembangunan)
+## 14. Panel admin
+Tombol ADMIN di HUD, berlabel alat tes: beri gems, beri item, beri lock,
+atur level, beri XP, buka semua resep, tumbuhkan semua pohon, teleport antar
+world, kosongkan world, reset save. Tiap aksi tercatat di chat.
 
-**Kontrol dan aksi**
-- Spasi = lompat SEKALIGUS memukul ke arah hadap (PRD menyebut spasi untuk lompat dan untuk pukul). W = lompat saja. Klik = pukul petak yang diklik saja. Tombol sentuh LOMPAT dan AKSI terpisah; AKSI = pukul ke arah hadap.
-- Klik pada petak: tanaman matang dipanen, tanaman belum disiram disiram, blok dipukul, dalam urutan itu sesuai isi petak yang diklik. Klik pada NPC membuka panel NPC. E = interaksi dengan yang terdekat (NPC, stasiun, kotak kirim, tanaman).
-- Tombol tambahan: I = tas (inventory), P = skill, O = buku resep. Petak yang bisa ditaruh blok jangkauannya 2 petak (pukul tetap 1 petak), supaya membangun ke atas masih nyaman.
-- Tanaman disiram bertahan sampai fajar berikutnya, lalu harus disiram lagi. Menanam di luar musim boleh, tapi tanaman tidak tumbuh sampai musimnya tiba.
+## 15. Suara
+SFX pukul, ambil gems, tanam, splice, kasir saat trade, lewat WebAudio
+(oscillator, tanpa file audio). Tanpa musik latar. Teks melayang saat dapat
+item. Tanpa screen shake, tanpa floating damage.
 
-**Fisika**
-- Gravitasi 1200 px/detik^2, kecepatan lompat 480 px/detik (puncak lompatan = 3 petak persis). Kecepatan jalan 160 px/detik (5 petak/detik). Kecepatan jatuh mentok 600 px/detik.
+## 16. Simpan
+localStorage kunci `indotopia-remake-save-v1`. Profil (gems, level, XP, role),
+tas, semua world (grid, pohon + timestamp, lock, cat, papan, peti, vending,
+cuaca), resep ditemukan, zoom, guild, klaim WOTD. Simpan otomatis tiap
+10 detik + saat pindah world + saat halaman ditutup.
 
-**Dunia dan blok**
-- Permukaan tanah berundak 10-12 baris dari atas (angka awal). Di bawah permukaan: tanah sampai baris 24, lalu campuran tanah dan batu, makin dalam makin banyak batu.
-- Blok tanah yang hancur menjatuhkan 1 benih gandum + 1 tanah. Blok kayu menjatuhkan 1 benih pohon + 1 kayu. Blok batu menjatuhkan 1 benih bunga + 1 batu.
-- Petak yang ditaruh pemain dicatat; membongkarnya mengembalikan SELURUH biaya bahannya (PRD tidak menyebut setengah). Blok alami yang hancur mengikuti aturan benih + bahan di atas.
-- Biaya taruh: tanah 1 tanah, kayu 1 kayu, batu 1 batu, pagar 2 kayu, obor 1 kayu, bata 2 batu, papan 1 kayu, meja kerja 10 kayu, tungku 20 batu, meja splice 30 kayu + 10 batu, kotak kirim 10 kayu.
-- HP petak hias/stasiun (PRD hanya mengatur tanah/kayu/batu): pagar 1, obor 1, bata 4, papan 2, meja kerja 5, tungku 5, meja splice 5, kotak kirim 5, peti 2, lampion 1.
-- Saat dunia dibuat, 1 meja kerja dan 1 kotak kirim sudah terpasang dekat titik spawn supaya loop bisa mulai. Inventaris awal kosong, koin awal 0.
+## 17. Kriteria sukses
+Semua sistem di atas bisa dimainkan ujung ke ujung dari browser; tes headless
+dan Playwright lolos tanpa error konsol; live terverifikasi md5 sama dengan
+lokal; nomor versi aset naik tiap deploy.
 
-**Daftar tanaman per musim (musim: 0=Semi, 1=Panas, 2=Gugur, 3=Dingin)**
-- Gandum: 60 dtk, Semi+Panas, panen 2 gandum.
-- Pohon: 120 dtk, Semi+Panas+Gugur, panen 2 kayu.
-- Bunga liar (benih bunga): 90 dtk, Semi+Panas, panen 2 bunga warna dasar acak (warna diundi saat tanam).
-- Labu: 90 dtk, Gugur, panen 2 labu.
-- Apel: 150 dtk, Semi+Panas+Gugur, panen 2 apel.
-- Pinus: 180 dtk, semua musim, panen 2 kayu.
-- Bunga matahari: 90 dtk, Panas, panen 2 bunga matahari.
-- Stroberi: 90 dtk, Semi, panen 2 stroberi.
-- Sakura: 150 dtk, Semi, panen 2 sakura.
-- Melon: 120 dtk, Panas, panen 2 melon.
-- Anggur: 120 dtk, Gugur, panen 2 anggur.
-- Bunga pelangi: 150 dtk, Semi+Panas, panen 2 bunga pelangi.
-- Tanaman emas: 180 dtk, Panas+Gugur, panen 2 buah emas.
-- Bunga warna (merah/kuning/putih/oranye/pink/ungu): 90 dtk, Semi+Panas, panen 2 bunga warna itu.
-- Musim Dingin: hanya pinus yang tumbuh; tanaman lain berhenti tumbuh (tidak mati).
+## 18. Di luar lingkup
+Multiplayer nyata, server, uang asli dan paket gems, RMT, quest, empat role
+lain, peringkat guild.
 
-**Tabel 8 resep splice (urutan benih bebas)**
-1. Benih gandum + benih gandum = benih labu.
-2. Benih gandum + benih pohon = benih apel.
-3. Benih pohon + benih pohon = benih pinus.
-4. Benih bunga + benih bunga = benih bunga matahari.
-5. Benih gandum + benih bunga = benih stroberi.
-6. Benih pohon + benih bunga = benih sakura.
-7. Benih labu + benih apel = benih melon.
-8. Benih stroberi + benih bunga matahari = benih anggur.
-- Resep splice "ditemukan" saat pemain memegang kedua benih bahannya bersamaan; buku resep hanya menampilkan resep yang ditemukan. Splice hanya bisa di dekat meja splice.
-
-**Tabel warna genetik bunga (pasangan bunga matang bersebelahan, peluang 25% tiap fajar)**
-- Merah+merah=merah, kuning+kuning=kuning, putih+putih=putih.
-- Merah+kuning=oranye, merah+putih=pink, kuning+putih=ungu.
-- Pasangan dengan warna campuran: warna campuran menang (mis. merah+oranye=oranye, kuning+pink=pink, putih+ungu=ungu).
-- Oranye+pink=ungu, oranye+ungu=ungu, pink+ungu=ungu, campuran+campuran sama=warna itu.
-- Bunga baru tumbuh di petak kosong bersebelahan dengan pasangan (kiri pasangan didahulukan, lalu kanan). Bunga matahari, sakura, dan bunga pelangi tidak ikut breeding. Pasangan dihitung sekali per fajar, kiri ke kanan.
-
-**Daftar 10 resep crafting**
-- Meja kerja: pupuk (2 gandum), buket bunga (3 bunga warna apa saja), peti (8 kayu), lampion (1 kayu + 1 bunga matahari).
-- Tungku: roti (2 gandum), kue labu (1 labu + 1 gandum), jus apel (2 apel), selai stroberi (2 stroberi).
-- Meja splice: benih pelangi (1 benih bunga oranye + 1 benih bunga pink), benih emas (1 benih melon + 1 benih anggur).
-- Crafting hanya dalam jarak 2 petak dari stasiun. Pupuk dipakai pada tanaman: langsung menambah 30 detik pertumbuhan.
-
-**Daftar harga tetap toko (koin)**
-- Jual (toko membeli darimu): gandum 10, kayu 8, batu 6, tanah 2, labu 30, apel 25, bunga matahari 20, stroberi 20, sakura 30, melon 40, anggur 35, bunga merah/kuning/putih 15, bunga oranye/pink/ungu 30, bunga pelangi 100, buah emas 150, roti 25, kue labu 50, jus apel 30, selai stroberi 30, buket bunga 80, pupuk 15, benih gandum 3, benih pohon 4, benih bunga 3, benih labu 10, benih apel 12, benih pinus 12, benih bunga matahari 10, benih stroberi 10, benih sakura 15, benih melon 20, benih anggur 18, benih pelangi 50, benih emas 75, benih bunga merah/kuning/putih 8, benih bunga oranye/pink/ungu 15.
-- Beli (toko menjual padamu): benih gandum 5, benih pohon 8, benih bunga 6, pupuk 15.
-- Batas harian: 20 item terjual DAN 20 item terbeli per hari (penghitung terpisah). Menjual selalu lewat kotak kirim (dibayar fajar berikutnya), dari panel pedagang maupun dari objek kotak kirim.
-- Toko hadiah (mata uang tugas): benih pelangi 10, benih emas 15, benih bunga ungu 6, buket bunga 8.
-
-**4 pola harga lobak (harga beli Minggu 90-110 acak; harga jual Senin-Sabtu, 2 harga per hari: pagi dan sore; sore mulai tengah hari)**
-- Fluktuasi: jalan acak naik-turun 40-180.
-- Menurun: mulai 100-110, tiap slot dikali 0,88, mentok bawah 30.
-- Lonjakan kecil: dasar menurun, satu slot acak 150-250.
-- Lonjakan besar: dasar menurun, slot 6-8 melonjak 300-660 (puncak di slot 7), lalu menurun.
-- Hari Minggu hanya bisa beli, Senin-Sabtu hanya bisa jual. Lobak yang masih dipegang saat fajar Minggu menjadi busuk dan dihapus. Jual/beli lobak memakai batas harian yang sama dengan toko. Hasil jual lobak dibayar LANGSUNG (bukan lewat kotak kirim), karena pasar lobak terpisah dari toko utama.
-
-**Skill dan profesi**
-- XP: menanam +5, panen +10, splice +15 (Bertani); menghancurkan blok kayu +8 (Menebang); menghancurkan blok batu +8 (Menambang). Naik tingkat saat XP mencapai tingkat x 100, lalu XP sisa dibawa.
-- Profesi tingkat 5, pilih 1 dari 2: Bertani: Panen Ganda (25% panen +1 hasil) atau Tangan Hijau (tumbuh 25% lebih cepat). Menebang: Kapak Tajam (blok kayu butuh 1 pukulan lebih sedikit) atau Penanam (+1 benih dari blok kayu). Menambang: Beliung Kuat (blok batu butuh 1 pukulan lebih sedikit) atau Pemburu Batu (+1 blok batu).
-- Profesi tingkat 10, pilih 1 dari 2: Bertani: Master Tani (harga jual hasil tani +50%) atau Penjaga Musim (tanaman tumbuh di semua musim). Menebang: Penebang Ulung (blok kayu butuh total 2 pukulan lebih sedikit) atau Kayu Berharga (harga jual kayu +50%). Menambang: Penambang Ulung (blok batu butuh total 2 pukulan lebih sedikit) atau Batu Berharga (harga jual batu +50%).
-- Pengurangan pukulan tidak boleh membuat HP blok di bawah 1. Pilihan profesi yang belum diambil bisa diambil kapan saja lewat panel skill.
-
-**Templat misi (3 per hari: 1 kumpul, 1 tanam, 1 splice; dibuat tiap fajar)**
-- Kumpul: kumpulkan N item (gandum/kayu/batu, atau hasil musim yang sedang berjalan), N = 5 + 2 per minggu permainan, mentok 20. Hadiah: 10 koin per item + 1 mata uang tugas per 5 item.
-- Tanam: tanam N benih apa saja, N = 3 + 1 per minggu permainan, mentok 10. Hadiah: 10 koin per benih + 1 mata uang tugas per 5 benih.
-- Splice: lakukan N splice, N = 1 + 1 per 2 minggu permainan, mentok 3. Hadiah: 30 koin per splice + 2 mata uang tugas per splice.
-- Progres kumpul dihitung dari item yang DIDAPAT hari itu (panen/pukul), bukan isi tas. Hadiah diambil di NPC pemberi misi; misi tidak selesai hangus saat fajar berikutnya.
-
-**NPC**
-- Pedagang: panel toko (beli, jual, lobak). Pemberi misi: panel misi + toko hadiah. Posisi: pedagang di kiri titik spawn, pemberi misi di kanan titik spawn, keduanya berdiri di permukaan. Interaksi dalam jarak 2 petak.
+## Keputusan interpretasi
+Semua yang riset tidak temukan atau yang butuh penyesuaian solo:
+1. Bentuk area lock = kotak ke kanan-bawah dari petak lock (riset hanya
+   memberi jumlah petak).
+2. Rarity Brick 3, Fireplace 5, Golden 40 = tafsir (riset memastikan 1, 2,
+   47, 87).
+3. Pukulan Golden Block 20 mengikuti riset (tabel farmable); pita 7 di
+   draf awal spesifikasi dikoreksi saat verifikasi.
+4. Rentang gems panen tafsir kecuali Pepper 0-12 dan Chandelier 0-22 (riset).
+5. Buah panen 2-5 (riset: sampai 8 untuk farmable); tiap buah 20% benih bonus.
+6. Pecah blok TIDAK menjatuhkan gems (spesifikasi hanya menyebut gems dari panen).
+7. Empat resep splice tafsir (lihat tabel resep).
+8. Pintu teleport ke pintu lain terdekat; hapus pintu lewat wrench.
+9. Lava 20 damage/sentuhan, kebal 1 detik, api 3 detik, regen 5/detik
+   sesudah 5 detik tenang (riset: mati sesudah 5 sentuhan cepat).
+10. Empat cuaca berputar, visual saja.
+11. Cat butuh Paintbrush; warna dari cat yang dipilih; Varnish menghapus.
+12. Tas tanpa batas stack; batas 200/stack hanya di jendela trade.
+13. Gabung/pecah lock lewat tombol di tas (riset: double-tap 100 WL, BGL via
+    Sales-Man — disederhanakan).
+14. Decay lock mati (tidak bermakna solo).
+15. Mekanik trade NPC: sisi NPC otomatis senilai, NPC auto-setuju, barang
+    berpindah saat eksekusi.
+16. Nilai tukar NPC = harga Store.
+17. Vending boleh di world mana saja (riset: hanya world-locked); ambang beli
+    NPC dan intervalnya tafsir.
+18. Kurva level dan role: level x 100 (riset tidak menemukan kurva).
+19. Poin role: Farmer tanam +1/panen +2, Builder taruh +1/hancur +1.
+20. Guild: anggota NPC tiap 10 menit, mentok 10 (riset tidak menemukan cap).
+21. WOTD deterministik dari tanggal; trofi sekali sehari; "10 Growtoken"
+    hanya teks simulasi.
+22. Broadcast sistem tiap 5 menit; /bc 20 gems (tafsir; /sb 40 gems dari riset).
+23. Nama pemain tetap "Pemain".
+24. Pohon mentah dipukul hancur tanpa hasil (riset: satu sumber panduan).
+25. Pohon splice mulai tumbuh dari nol.
+26. Benih gagal splice kembali utuh; benih ketiga ditolak (riset).
+27. Angka jalan/lompat/gravitasi dari spesifikasi (riset tidak menemukan angka).
+28. Jangkauan pukul 3 petak Chebyshev (konflik riset 3-inklusif vs
+    2-eksklusif; spesifikasi: 3).
+29. Harga lock versi wiki (konflik tangkapan toko Nov 2026 yang lebih tinggi).
+30. XP versi floor (konflik prose round-up di halaman Leveling).
+31. Cap level 125 (ada penampakan 126, belum terverifikasi).
+32. Pohon tidak solid; label pohon dalam 4 petak.
+33. STORE di tas = simpan ke peti world (spesifikasi; riset: STORE membuka Store).
+34. Tanpa jeda konfirmasi di jendela trade (riset tidak menemukan safeguard itu).
+35. Pedagang keliling: satu per world, nama + stok berputar per hari.
+36. Generasi: 24 lapis tanah lalu campuran batu/tanah; kantong lava lapis 7-10
+    dari bawah (riset menyebut ~30 lapis total).
+37. Gems jatuh hilang sesudah 60 detik, item jatuh sesudah 120 detik.
+38. Simpan otomatis tiap 10 detik + pindah world + tutup halaman.
+39. Musik latar tidak ada; SFX disintesis (nama file SFX riset hanya
+    menginspirasi fungsinya).

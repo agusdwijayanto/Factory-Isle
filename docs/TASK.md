@@ -1,18 +1,50 @@
-# TASK — Indotopia (game kaya Growtopia versi kita)
+# TASK — Indotopia Remake
 
-Disetujui Agus 2026-11-16, perintah "gasss" 2026-11-16.
+15 langkah, sesuai urutan dependensi. Semua selesai dan dites
+(headless 135 cek + Playwright 17 cek, 0 error konsol).
 
-1. **Fondasi:** canvas side-view, grid world 60x40, jenis petak langit/tanah/batu/kayu, kamera mengikuti pemain, simpan otomatis. Lolos: world tampil, kamera jalan, simpan dan muat jalan.
-2. **Gerak dan fisika:** jalan, lompat, gravitasi, tabrakan petak, jatuh tanpa damage. Lolos: pemain berdiri di tanah tanpa tembus, lompat 3 petak.
-3. **Pukul dan taruh blok:** jangkauan 1 petak, HP blok, drop benih dan bahan, taruh dari inventory, bongkar kembali bahan. Lolos: 3 jenis blok sesuai jumlah pukulannya, drop dan bongkar benar.
-4. **Farming:** tanam, tumbuh waktu nyata, siram, panen, musim 28 hari dengan tanaman per musim. Lolos: siklus tanam-siram-panen jalan, tanaman luar musim berhenti tumbuh.
-5. **Splice, breeding, buku resep:** meja splice dengan 8 resep, breeding bunga genetik, buku resep mencatat temuan. Lolos: splice dan breeding menghasilkan yang baru, buku resep terisi.
-6. **Crafting:** stasiun meja kerja, tungku, meja splice, crafting hanya dekat stasiun, 10 resep. Lolos: crafting jauh dari stasiun ditolak, semua resep bisa dibuat.
-7. **Ekonomi:** koin, toko NPC harga tetap, kotak kirim dibayar besok pagi, batas harian, mata uang tugas dan toko hadiah. Lolos: jual beli benar, pembayaran besok benar, batas menolak kelebihan.
-8. **Pasar lobak:** beli Minggu, harga berubah 2 kali sehari, 4 pola, busuk tiap Minggu, terpisah dari toko utama. Lolos: siklus seminggu penuh benar, lobak busuk tepat waktu.
-9. **Skill dan profesi:** 3 skill, XP dari aktivitas, 10 tingkat, profesi di tingkat 5 dan 10. Lolos: XP naik, profesi bisa dipilih dan memberi bonus.
-10. **NPC dan misi:** 2 NPC, 3 misi harian, hadiah mata uang tugas dan koin. Lolos: misi selesai memberi hadiah, misi baru tiap hari.
-11. **Perluasan lahan:** beli +20 kolom, harga menanjak, mentok 5 perluasan. Lolos: world melebar, harga benar, perluasan ke-6 ditolak.
-12. **Rasa main dan HUD:** bunyi, partikel, angka melayang, getar layar, HUD koin/hari/musim/jam, kontrol sentuh. Lolos: semua efek jalan, game bisa dimainkan dari HP.
-13. **Tes loop penuh:** simulasi headless dan browser sungguhan, siklus penuh, 15 menit tanpa crash. Lolos: semua cek hijau, 0 error konsol.
-14. **Push dan link live:** ganti isi repo Indotopia dengan commit baru di atas riwayat yang ada, tanpa force-push, game desa tetap tersimpan di riwayat git. Lolos: link live membuka game baru, file live sama persis dengan lokal. (Dilakukan Muse, bukan bagian pembangunan ini.)
+1. Rangka + world: grid 100x60, bedrock, world bernama, masuk dengan mengetik
+   nama, simpan dan muat localStorage. Lolos: world baru dari nama, tutup lalu
+   buka lagi, isinya utuh.
+2. Gerak + fisika + kamera: jalan, lompat, gravitasi, kamera ikut pemain,
+   zoom roda mouse. Lolos: jalan 5 petak per detik, lompat 3 petak, kamera
+   tidak keluar batas world.
+3. Kontrol HP + PC: tombol sentuh kiri/kanan/lompat, keyboard, klik mouse,
+   dock Fist/Wrench. Lolos: semua input jalan di kedua mode, ganti mode
+   mengubah aksi ketuk.
+4. Pukul + blok: cadence 0,2 detik, retakan, jangkauan 3, foreground di atas
+   background, drop benih plus bahan, tabel item. Lolos: blok pecah sesuai
+   jumlah pukulan, drop masuk tas.
+5. Farming + pohon: tanam di atas blok, rumus tumbuh, panen buah plus benih
+   plus gems, gems fisik bergabung. Lolos: pohon tumbuh sesuai rumus, gems
+   bergabung per denominasi.
+6. Splice + buku resep: benih di atas bibit, 10 resep awal, buku mencatat
+   temuan. Lolos: 10 resep menghasilkan benih benar, buku hanya menampilkan
+   yang ditemukan.
+7. Tas + UI dasar: grid scroll, jumlah, cari, RECYCLE/STORE/DROP/INFO/FAV,
+   dialog biru, HUD gems. Lolos: semua tombol tas bekerja.
+8. Store + lock + ekonomi: Store harga tetap, beli lock, gabung dan pecah
+   WL/DL/BGL, lock menandai area. Lolos: 100 WL menjadi 1 DL, lock mengunci
+   areanya.
+9. Trading + NPC: jendela trade 4 stack x 200, konfirmasi dua pihak, NPC
+   keliling stok berputar. Lolos: trade jalan hanya sesudah kedua pihak
+   konfirmasi, gems tidak bisa masuk jendela.
+10. Vending machine: beli, taruh, isi, harga WL, NPC membeli berkala. Lolos:
+    NPC membeli, stok berkurang, hasil masuk.
+11. Progresi: XP, cap level 125, role Farmer dan Builder sampai 10, nama biru.
+    Lolos: XP sesuai rumus, role naik dari aksi yang benar.
+12. Sosial solo: guild, WOTD, broadcast sistem, chat plus perintah. Lolos:
+    guild terbentuk, WOTD berganti harian, chat menampilkan umpan balik.
+13. Panel admin: beri gems, beri item, beri lock, atur level dan XP, buka
+    semua resep, tumbuh seketika, teleport, kosongkan world, reset save.
+    Lolos: tiap tombol mengubah state dengan benar.
+14. Suara + rasa: SFX pukul, gems, tanam, splice, kasir, teks melayang.
+    Lolos: SFX berbunyi di aksi yang benar, 0 error konsol.
+15. Tes + deploy: tes headless dan Playwright, push ke repo Indotopia,
+    verifikasi live md5, nomor versi aset naik. Lolos: semua tes lolos,
+    live sama dengan lokal. (Push dan verifikasi live oleh Muse; subagent
+    pembangun tidak push.)
+
+Urutan: 1 lalu 2 lalu 3 lalu 4, 5 dan 6 sesudah 4, 7 sesudah 4, 8 sesudah 7,
+9 dan 10 sesudah 8, 11 sesudah 5, 12 sesudah 7, 13 sesudah 5/7/8/11,
+14 sesudah 4/5, 15 terakhir.

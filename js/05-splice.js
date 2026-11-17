@@ -1,29 +1,33 @@
 'use strict';
-// ---------- Splice: 2 benih menjadi benih baru, resep ditemukan dari bahan ----------
-// Resep "ditemukan" saat pemain memegang kedua benih bahannya bersamaan.
-function discoverRecipes() {
-  SPLICE_RECIPES.forEach((r, i) => {
-    if (S.knownSplice.includes(i)) return;
-    const need = r.a === r.b ? 2 : 1;
-    if (countItem(r.a) >= need && countItem(r.b) >= need) S.knownSplice.push(i);
-  });
-}
-function findSpliceRecipe(a, b) {
-  return SPLICE_RECIPES.find(r => (r.a === a && r.b === b) || (r.a === b && r.b === a)) || null;
-}
-function spliceSeeds(a, b) {
-  if (!nearStation('splice')) { addFloat(S.px, S.py - 30, 'Butuh Meja Splice di dekatmu', '#ff8a8a'); sfx.error(); return false; }
-  const r = findSpliceRecipe(a, b);
-  if (!r) return false;
-  const need = r.a === r.b ? 2 : 1;
-  if (countItem(r.a) < need || countItem(r.b) < need) { sfx.error(); return false; }
-  removeItem(r.a, need);
-  if (r.a !== r.b) removeItem(r.b, 1);
-  gainItem(r.out, 1);
-  S.counters.spliced++;
-  gainXP('farm', 15);
-  sfx.splice(); burst(S.px, S.py - 10, '#c9a7ff', 12, 80);
-  addFloat(S.px, S.py - 30, '+1 ' + ITEMS[r.out].name, '#c9a7ff');
-  celebrate('splice', 'Splice pertama!');
+// ---------- Splice: benih kedua di atas bibit, tabel pasangan tetap ----------
+// Tidak ada stasiun splice dan tidak ada bocoran resep (riset): penemuan
+// lewat mencoba pasangan, hasil yang sudah ditemukan tercatat di buku.
+function spliceAt(tx, ty, seedId) {
+  const tr = treeAt(tx, ty);
+  if (!tr) return false;
+  if (tr.seed2) {
+    addChat('Terlalu berbahaya mencoba mencampur tiga benih.', 'sys');
+    return false; // benih tidak terpakai
+  }
+  const recipe = findSpliceRecipe(tr.seed1, seedId);
+  if (!recipe) {
+    addChat('Hmm, sepertinya ' + ITEMS[tr.seed1].name + ' dan ' + ITEMS[seedId].name + ' tidak bisa displice.', 'sys');
+    return false; // benih kedua kembali utuh (riset: panduan lama)
+  }
+  if (!removeItem(seedId, 1)) return false;
+  tr.seed2 = seedId;
+  tr.item = ITEMS[recipe.out].seedOf;
+  tr.plantedAt = nowMs(); // pohon hasil mulai tumbuh dari nol
+  const rk = recipe.a + '+' + recipe.b;
+  if (!S.knownSplice.includes(rk)) S.knownSplice.push(rk);
+  addChat(ITEMS[tr.seed1].name + ' dan ' + ITEMS[seedId].name + ' telah displice menjadi ' + ITEMS[tr.item].name + ' Tree!', 'sys');
+  banner('Splice berhasil: ' + ITEMS[tr.item].name + ' Tree!');
+  sfx.splice();
+  burst(tx * TILE + 16, ty * TILE + 16, '#c9a6ff', 12, 80);
   return true;
+}
+function tryPlantOrSplice(tx, ty, seedId) {
+  // Satu aksi tanam: bibit yang sudah ada berarti splice, petak kosong berarti tanam.
+  if (treeAt(tx, ty)) return spliceAt(tx, ty, seedId);
+  return plantAt(tx, ty, seedId);
 }
