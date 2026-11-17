@@ -188,12 +188,13 @@ function refreshHUD() {
 }
 // Hotbar 4 slot: Kepalan, Kunci, lalu 2 item terakhir yang dipilih di tas.
 function pushQuick(id) {
-  S.quick = [id].concat(S.quick.filter(q => q !== id)).slice(0, 2);
+  S.quick = [id].concat(S.quick.filter(q => q !== id)).slice(0, 3);
 }
 function renderHotbar() {
-  let h = '<div class="hslot' + (S.mode === 'fist' && !S.sel ? ' sel' : '') + '" data-hb="fist"><span class="hblabel">KEPALAN</span></div>';
-  h += '<div class="hslot' + (S.mode === 'wrench' ? ' sel' : '') + '" data-hb="wrench"><span class="hblabel">KUNCI</span></div>';
-  for (let i = 0; i < 2; i++) {
+  // Satu slot toggle kaya Growtopia: ketuk kepalan menjadi kunci, ketuk kunci menjadi kepalan.
+  const toolSel = S.mode === 'wrench' || !S.sel;
+  let h = '<div class="hslot' + (toolSel ? ' sel' : '') + '" data-hb="toggle"><span class="hbemo">' + (S.mode === 'fist' ? '👊' : '🔧') + '</span></div>';
+  for (let i = 0; i < 3; i++) {
     const id = S.quick[i];
     if (id && ITEMS[id]) {
       h += '<div class="hslot' + (S.sel === id ? ' sel' : '') + '" data-hb="item" data-item="' + id + '">' +
@@ -333,8 +334,7 @@ function bindInput() {
     if (!s) return;
     audio();
     const k = s.getAttribute('data-hb');
-    if (k === 'fist') { S.mode = 'fist'; S.sel = null; }
-    else if (k === 'wrench') { S.mode = 'wrench'; }
+    if (k === 'toggle') { S.mode = S.mode === 'fist' ? 'wrench' : 'fist'; }
     else if (k === 'item') { S.sel = s.getAttribute('data-item'); S.mode = 'fist'; }
     sfx.click(); refreshHUD();
   });

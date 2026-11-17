@@ -234,7 +234,7 @@ function initState(s) {
   s.cam = { x: 0, y: 0 }; s.zoom = 1;
   s.gems = 0; s.inv = { dirt: 10, 'seed-dirt': 10, 'seed-rock': 10 };
   s.favs = {}; s.sel = null; s.mode = 'fist';
-  s.quick = []; s.invQty = 1; // quick slot hotbar (maks 2) + jumlah aksi tas
+  s.quick = []; s.invQty = 1; // quick slot hotbar (maks 3) + jumlah aksi tas
   s.level = 1; s.xp = 0;
   s.roles = { farmer: { xp: 0, level: 1 }, builder: { xp: 0, level: 1 } };
   s.knownSplice = []; s.flags = {};
