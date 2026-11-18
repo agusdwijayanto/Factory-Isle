@@ -5,13 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Indotopia — Tycoon Pabrik Isometrik</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="style.css?v=6">
+<link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
 <canvas id="game"></canvas>
 
 <header id="hud">
   <button id="btn-burger" class="hud-btn" aria-label="Menu"><span></span><span></span><span></span></button>
+  <div id="mapname">Kota</div>
   <div id="money">$50</div>
 </header>
 
@@ -65,6 +66,14 @@
   <div id="shop-body"></div>
 </section>
 
+<section id="mayor-panel" class="panel hidden">
+  <div class="panel-head">
+    <div class="panel-title">Mayor — Lahan</div>
+    <button class="btn-x" data-close="mayor-panel">X</button>
+  </div>
+  <div id="mayor-body"></div>
+</section>
+
 <section id="tas-panel" class="panel hidden">
   <div class="panel-head">
     <div class="panel-title">Tas</div>
@@ -89,10 +98,10 @@
     <button class="btn-x" data-close="help-panel">X</button>
   </div>
   <div class="help-text">
-    <p>Ketuk petak: karakter berjalan ke sana. Ketuk pohon, bijih, pasir, tanah liat, atau kapas: karakter memanen di tempat.</p>
-    <p>Ketuk mesin: karakter menghampiri dan panelnya terbuka. Masukkan bahan, mesin mengolah sendiri. Sawhorse hanya jalan bila karakter berdiri di sampingnya.</p>
-    <p>Conveyor mengalirkan item searah panah ke mesin atau penyimpanan di depannya.</p>
-    <p>Ketuk Toko: karakter berjalan ke toko untuk menjual. Coil dan Gear tidak dijual.</p>
+    <p>Kota: ketuk pohon, bijih, pasir, tanah liat, atau kapas untuk memanen. Ketuk Toko untuk menjual, ketuk Mayor untuk memperbesar lahan.</p>
+    <p>Masuk ke lahan: jalan ke kotak plot putih di kota. Keluar dari lahan: hanya lewat gerbang di tepi bawah lahan.</p>
+    <p>Lahan: ketuk mesin untuk membuka panelnya. Masukkan bahan, mesin mengolah sendiri. Sawhorse hanya jalan bila karakter berdiri di sampingnya. Mesin tetap jalan walau kamu sedang di kota.</p>
+    <p>Conveyor mengalirkan item searah panah ke mesin atau penyimpanan di depannya. Coil dan Gear tidak dijual.</p>
     <p>PC: WASD atau panah untuk berjalan, R memutar arah saat menaruh, Esc menutup panel.</p>
   </div>
 </section>
@@ -111,19 +120,19 @@
 
 <div id="toast" class="hidden"></div>
 
-<script src="js/01-core.js?v=6"></script>
-<script src="js/02-iso.js?v=6"></script>
-<script src="js/03-data.js?v=6"></script>
-<script src="js/04-atlas.js?v=6"></script>
-<script src="js/05-render.js?v=6"></script>
-<script src="js/06-input.js?v=6"></script>
-<script src="js/07-pemain.js?v=6"></script>
-<script src="js/08-gerak.js?v=6"></script>
-<script src="js/09-mesin.js?v=6"></script>
-<script src="js/10-resep.js?v=6"></script>
-<script src="js/11-ekonomi.js?v=6"></script>
-<script src="js/12-simpan.js?v=6"></script>
-<script src="js/13-ui.js?v=6"></script>
-<script src="js/14-main.js?v=6"></script>
+<script src="js/01-core.js?v=7"></script>
+<script src="js/02-iso.js?v=7"></script>
+<script src="js/03-data.js?v=7"></script>
+<script src="js/04-atlas.js?v=7"></script>
+<script src="js/05-render.js?v=7"></script>
+<script src="js/06-input.js?v=7"></script>
+<script src="js/07-pemain.js?v=7"></script>
+<script src="js/08-gerak.js?v=7"></script>
+<script src="js/09-mesin.js?v=7"></script>
+<script src="js/10-resep.js?v=7"></script>
+<script src="js/11-ekonomi.js?v=7"></script>
+<script src="js/12-simpan.js?v=7"></script>
+<script src="js/13-ui.js?v=7"></script>
+<script src="js/14-main.js?v=7"></script>
 </body>
 </html>

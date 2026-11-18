@@ -50,6 +50,24 @@ function bufText(buf) {
   return parts.length ? parts.join(', ') : 'kosong';
 }
 
+// Ikon item dari atlas untuk panel DOM. Atlas bisa belum siap saat panel
+// pertama dibuka: kembalikan null supaya panel jatuh ke teks nama saja.
+function iconEl(itemId) {
+  try {
+    if (Atlas.canvas) return Atlas.iconCanvas('item_' + itemId, 28);
+  } catch (_) { /* abaikan */ }
+  return null;
+}
+function chipWithIcon(itemId, n) {
+  const span = document.createElement('span');
+  span.className = 'chip icon-chip';
+  const icon = iconEl(itemId);
+  if (icon) span.appendChild(icon);
+  span.appendChild(document.createTextNode(ITEMS[itemId].name + ' ' + n));
+  return span;
+}
+let lastBufSig = '';
+
 const UI = {
   toast(msg) {
     const t = $('toast');
@@ -62,13 +80,14 @@ const UI = {
 
   refreshHUD() {
     $('money').textContent = '$' + fmt(S.money);
+    $('mapname').textContent = S.map === 'plot' ? 'Lahan' : 'Kota';
     $('btn-tas').textContent = 'TAS (' + carriedTotal() + ')';
   },
 
   // Satu panel dalam satu waktu: membuka panel lain menutup panel inspect/storage.
   openPanel(id) {
     ['build-menu', 'inspect-panel', 'storage-panel', 'shop-panel', 'tas-panel',
-     'burger-menu', 'admin-panel', 'settings-panel', 'help-panel'].forEach((p) => {
+     'burger-menu', 'admin-panel', 'settings-panel', 'help-panel', 'mayor-panel'].forEach((p) => {
       if (p !== id) $(p).classList.add('hidden');
     });
     if (id !== 'inspect-panel' && id !== 'storage-panel') { inspectKey = null; S.selected = null; }
@@ -77,7 +96,7 @@ const UI = {
   closePanel(id) { $(id).classList.add('hidden'); },
   closeAll() {
     ['build-menu', 'inspect-panel', 'storage-panel', 'shop-panel', 'tas-panel',
-     'burger-menu', 'admin-panel', 'settings-panel', 'help-panel'].forEach((id) => this.closePanel(id));
+     'burger-menu', 'admin-panel', 'settings-panel', 'help-panel', 'mayor-panel'].forEach((id) => this.closePanel(id));
     S.selected = null; inspectKey = null;
     if (S.placing) this.cancelPlacing();
   },
@@ -129,6 +148,11 @@ const UI = {
         SFX.play('error');
         this.toast('Belum cukup untuk riset ' + MACHINES[item.id].name);
       }
+      return;
+    }
+    if (S.map !== 'plot') {
+      SFX.play('error');
+      this.toast('Bangun hanya di lahanmu. Masuk lewat kotak plot putih di kota.');
       return;
     }
     S.placing = { kind: item.kind, id: item.id };
@@ -189,7 +213,10 @@ const UI = {
     const recipes = RECIPES[m.id];
     const row = el('div', null, 'mp-recipes');
     recipes.forEach((r, i) => {
-      const b = el('button', ITEMS[r.out].name + ' x' + r.n);
+      const b = el('button', null);
+      const icon = iconEl(r.out);
+      if (icon) b.appendChild(icon);
+      b.appendChild(document.createTextNode(ITEMS[r.out].name + ' x' + r.n));
       if (i === m.recipe) b.className = 'on';
       b.addEventListener('click', () => {
         if (i !== m.recipe) {
@@ -211,6 +238,10 @@ const UI = {
     fill.id = 'insp-progress';
     bar.appendChild(fill);
     body.appendChild(bar);
+    // Status mesin selalu terlihat, supaya diamnya mesin tidak misterius.
+    const status = el('div', null, 'mp-status');
+    status.id = 'insp-status';
+    body.appendChild(status);
     body.appendChild(this.actionRow([
       ['Masukkan bahan', () => { depositTo(m); this.renderInspect(); }],
       ['Ambil hasil', () => { takeFrom(m); this.renderInspect(); this.refreshHUD(); }],
@@ -234,14 +265,39 @@ const UI = {
         this.closeMachine(); this.refreshHUD(); saveSoon();
       }],
     ]));
+    lastBufSig = '';
     this.updateInspectLive();
   },
   updateInspectLive() {
     if (!inspectKey) return;
     const m = S.machines.get(inspectKey);
-    const fill = $('insp-progress'), buf = $('insp-buffers');
+    const fill = $('insp-progress'), buf = $('insp-buffers'), st = $('insp-status');
     if (m && fill) fill.style.width = Math.round(m.progress * 100) + '%';
-    if (m && buf) buf.textContent = 'Masuk: ' + bufText(m.input) + ' | Keluar: ' + bufText(m.output);
+    // Chip buffer dibangun ulang hanya bila isinya berubah: fungsi ini
+    // dipanggil tiap tick, rebuild DOM tiap frame bikin panel berkedip.
+    if (m && buf) {
+      const sig = JSON.stringify(m.input) + '|' + JSON.stringify(m.output);
+      if (sig !== lastBufSig) {
+        lastBufSig = sig;
+        buf.innerHTML = '';
+        buf.appendChild(el('span', 'Masuk: '));
+        const ins = Object.entries(m.input);
+        if (!ins.length) buf.appendChild(document.createTextNode('kosong'));
+        ins.forEach(([id, n]) => buf.appendChild(chipWithIcon(id, n)));
+        buf.appendChild(el('span', '  Keluar: '));
+        const outs = Object.entries(m.output);
+        if (!outs.length) buf.appendChild(document.createTextNode('kosong'));
+        outs.forEach(([id, n]) => buf.appendChild(chipWithIcon(id, n)));
+      }
+    }
+    if (m && st) {
+      st.textContent = m.stopped ? 'Dihentikan (Stop). Tekan Lanjutkan untuk jalan lagi.'
+        : m.progress > 0 ? 'Sedang mengolah.'
+        : !inputsOk(m) ? 'Menunggu bahan yang cocok di Masuk.'
+        : !outputRoom(m) ? 'Output penuh — Ambil hasil atau sambung conveyor/storage.'
+        : m.id === 'sawhorse' ? 'Sawhorse jalan bila karakter berdiri di sampingnya.'
+        : 'Siap mengolah.';
+    }
   },
   actionRow(pairs) {
     const row = el('div', null, 'mp-actions');
@@ -266,7 +322,12 @@ const UI = {
     $('storage-name').textContent = st.id === 'box' ? 'Wooden Box' : st.id === 'container' ? 'Container' : 'Storage Rack';
     const body = $('storage-body');
     body.innerHTML = '';
-    body.appendChild(el('div', 'Isi (' + bufferTotal(st.items) + '/' + STORAGE_CAP[st.id] + '): ' + bufText(st.items), 'mp-desc'));
+    const line = el('div', null, 'mp-desc');
+    line.appendChild(document.createTextNode('Isi (' + bufferTotal(st.items) + '/' + STORAGE_CAP[st.id] + '): '));
+    const entries = Object.entries(st.items);
+    if (!entries.length) line.appendChild(document.createTextNode('kosong'));
+    entries.forEach(([id, n]) => line.appendChild(chipWithIcon(id, n)));
+    body.appendChild(line);
     body.appendChild(this.actionRow([
       ['Simpan semua bawaan', () => {
         for (const [id, n] of Object.entries(S.inv)) {
@@ -306,7 +367,11 @@ const UI = {
     }
     for (const id of sellable) {
       const row = el('div', null, 'shop-row');
-      row.appendChild(el('span', ITEMS[id].name + ' x' + invCount(id) + '  ($' + fmt(sellPrice(id)) + ')'));
+      const left = el('span', null, 'shop-item');
+      const icon = iconEl(id);
+      if (icon) left.appendChild(icon);
+      left.appendChild(document.createTextNode(ITEMS[id].name + ' x' + invCount(id) + '  ($' + fmt(sellPrice(id)) + ')'));
+      row.appendChild(left);
       const btns = el('span', null, 'shop-btns');
       for (const n of [1, 10, Infinity]) {
         const b = el('button', n === Infinity ? 'Semua' : String(n));
@@ -338,11 +403,62 @@ const UI = {
     if (!ids.length) body.appendChild(el('div', 'Tas kosong. Panen dulu dengan mengetuk pohon atau bijih.', 'mp-desc'));
     for (const id of ids) {
       const row = el('div', null, 'shop-row');
-      row.appendChild(el('span', ITEMS[id].name));
+      const left = el('span', null, 'shop-item');
+      const icon = iconEl(id);
+      if (icon) left.appendChild(icon);
+      left.appendChild(document.createTextNode(ITEMS[id].name));
+      row.appendChild(left);
       row.appendChild(el('span', 'x' + S.inv[id]));
       body.appendChild(row);
     }
     this.openPanel('tas-panel');
+  },
+
+  // ---- Mayor: ekspansi lahan + Auto Seller ----
+  openMayor() {
+    this.renderMayor();
+    this.openPanel('mayor-panel');
+  },
+  renderMayor() {
+    const body = $('mayor-body');
+    body.innerHTML = '';
+    body.appendChild(el('div', 'Perbesar lahanmu. Sesudah semua ekspansi, Auto Seller menjual hasil pabrik secara berkala.', 'mp-desc'));
+    const m = S.maps.plot;
+    body.appendChild(el('div', 'Lahan sekarang: ' + m.w + 'x' + m.h + ' petak.', 'mp-desc'));
+    const list = el('div', null, 'mayor-list');
+    EXPANSIONS.forEach((ex, i) => {
+      const done = i < S.expansion;
+      const row = el('div', null, 'mayor-row');
+      row.appendChild(el('span', (done ? '✓ ' : '') + ex.name + ' — ' + ex.w + 'x' + ex.h + ' ($' + fmt(ex.cost) + ')'));
+      const b = el('button', done ? 'Terbeli' : 'Beli');
+      b.disabled = done || i !== S.expansion || S.money < ex.cost;
+      b.addEventListener('click', () => {
+        if (buyExpansion()) {
+          SFX.play('success');
+          this.toast('Lahan membesar menjadi ' + ex.w + 'x' + ex.h + '!');
+          this.renderMayor(); this.refreshHUD();
+        }
+      });
+      row.appendChild(b);
+      list.appendChild(row);
+    });
+    const row = el('div', null, 'mayor-row');
+    row.appendChild(el('span', (S.autoSeller ? '✓ ' : '') + 'Auto Seller — jual otomatis tiap ' + AUTO_SELLER_EVERY + ' dtk ($' + fmt(AUTO_SELLER_COST) + ')'));
+    const b = el('button', S.autoSeller ? 'Aktif' : 'Beli');
+    b.disabled = !canBuyAutoSeller();
+    b.addEventListener('click', () => {
+      if (buyAutoSeller()) {
+        SFX.play('success');
+        this.toast('Auto Seller aktif!');
+        this.renderMayor(); this.refreshHUD();
+      }
+    });
+    row.appendChild(b);
+    list.appendChild(row);
+    body.appendChild(list);
+    if (S.expansion < EXPANSIONS.length) {
+      body.appendChild(el('div', 'Auto Seller terbuka sesudah semua ekspansi dibeli.', 'mp-desc'));
+    }
   },
 
   // ---- Tutorial + target ----

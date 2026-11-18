@@ -29,6 +29,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
   background: rgba(16, 12, 26, .92); border: 2px solid #e07b39; border-radius: 10px;
   padding: 8px 16px;
 }
+#mapname {
+  font-size: 14px; font-weight: 700; color: #e8d9bd;
+  background: rgba(16, 12, 26, .92); border: 1px solid #8a5a33; border-radius: 10px;
+  padding: 8px 12px;
+}
 
 /* Panel gelap tembus pandang, aksen hangat seperti cahaya lentera. */
 .panel {
@@ -95,18 +100,36 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* Panel mesin dan admin: kartu tengah. */
 #inspect-panel, #storage-panel, #shop-panel, #tas-panel, #admin-panel,
-#settings-panel, #help-panel {
+#settings-panel, #help-panel, #mayor-panel {
   left: 50%; top: 50%; transform: translate(-50%, -50%);
   width: min(420px, 92vw); max-height: 78vh; overflow-y: auto;
 }
 .mp-desc { font-size: 14px; color: #e8d9bd; margin-bottom: 8px; }
 .mp-recipe { font-size: 13px; color: #ffd75e; margin-bottom: 10px; }
-.mp-buffers { font-size: 13px; color: #e8d9bd; margin-bottom: 8px; }
+.mp-buffers { font-size: 13px; color: #e8d9bd; margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
 .mp-recipes { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
 .mp-recipes button {
   min-height: 38px; padding: 0 10px; border-radius: 8px;
   background: #2a1f16; border: 1px solid #8a5a33;
+  display: inline-flex; align-items: center; gap: 5px;
 }
+.item-icon { width: 28px; height: 28px; flex: none; image-rendering: pixelated; }
+.icon-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: #241a12; border: 1px solid #8a5a33; border-radius: 999px; padding: 2px 8px 2px 2px;
+}
+.icon-chip .item-icon { width: 22px; height: 22px; }
+.shop-item { display: inline-flex; align-items: center; gap: 6px; }
+.mayor-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+.mayor-row {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  font-size: 14px; padding: 8px 0; border-bottom: 1px solid #3a2a1e;
+}
+.mayor-row button {
+  flex: none; min-width: 64px; min-height: 40px; padding: 0 12px; border-radius: 8px;
+  background: #2a1f16; border: 1px solid #8a5a33;
+}
+.mayor-row button:disabled { opacity: 0.45; }
 .mp-recipes button.on { background: #e07b39; color: #1c1208; font-weight: 700; border-color: #ffd75e; }
 .mp-bar { height: 12px; border-radius: 6px; background: #241a12; border: 1px solid #8a5a33; overflow: hidden; margin-bottom: 10px; }
 #insp-progress { height: 100%; width: 0; background: #5eff8a; }

@@ -17,8 +17,8 @@ function updateMachines(dt) {
       if (canStart(m)) { consumeInputs(m); m.progress = 0.001; }
       else continue;
     }
-    // Sawhorse: karakter harus di samping, kalau tidak progres berhenti.
-    if (m.id === 'sawhorse' && !adjacentToPlayer(gx, gy)) continue;
+    // Sawhorse: karakter harus di samping DI PLOT; di kota ia berhenti.
+    if (m.id === 'sawhorse' && (S.map !== 'plot' || !adjacentToPlayer(gx, gy))) continue;
     const r = getRecipe(m);
     m.progress += dt / r.secs;
     if (m.progress >= 1) {

@@ -72,6 +72,7 @@ function handleTap(sx, sy) {
 
 function tryPlace(gx, gy) {
   const p = S.placing;
+  if (S.map !== 'plot') { SFX.play('error'); UI.toast('Bangun hanya di lahanmu. Masuk lewat kotak plot.'); return; }
   if (!canPlace(gx, gy, p)) { SFX.play('error'); UI.toast('Tidak bisa ditaruh di sini'); return; }
   const cost = p.fromKey ? 0 : (BUILD_COST[p.id] || 0);
   if (S.money < cost) { SFX.play('error'); UI.toast('Uang tidak cukup'); return; }

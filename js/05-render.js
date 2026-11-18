@@ -49,6 +49,27 @@ function P_isoBox(g, cx, cy, w, hgt, cTop, cLeft, cRight) {
   g.moveTo(cx, ty + hh); g.lineTo(cx + hw, ty); g.lineTo(cx + hw, cy); g.lineTo(cx, cy + hh);
   g.closePath(); g.fillStyle = cRight; g.fill();
 }
+// Pembantu ikon: bongkahan bijih dan batangan ingot, tengah di (cx, cy).
+function P_oreIcon(g, cx, cy, fleck) {
+  g.fillStyle = '#7d8894';
+  g.beginPath();
+  g.moveTo(cx - 13, cy + 9); g.lineTo(cx - 8, cy - 8); g.lineTo(cx + 4, cy - 12);
+  g.lineTo(cx + 12, cy - 2); g.lineTo(cx + 13, cy + 9); g.closePath(); g.fill();
+  g.fillStyle = '#5d6773';
+  g.beginPath();
+  g.moveTo(cx + 4, cy - 12); g.lineTo(cx + 12, cy - 2);
+  g.lineTo(cx + 13, cy + 9); g.lineTo(cx + 3, cy + 9); g.closePath(); g.fill();
+  g.fillStyle = fleck;
+  [[-6, -3], [2, -7], [6, 1]].forEach(([dx, dy]) => g.fillRect(cx + dx, cy + dy, 4, 4));
+}
+function P_ingot(g, cx, cy, color, dark) {
+  g.fillStyle = color;
+  g.beginPath();
+  g.moveTo(cx - 14, cy + 8); g.lineTo(cx - 10, cy - 6); g.lineTo(cx + 10, cy - 6); g.lineTo(cx + 14, cy + 8);
+  g.closePath(); g.fill();
+  g.fillStyle = dark; g.fillRect(cx - 14, cy + 5, 28, 3);
+  g.fillStyle = 'rgba(255,255,255,0.35)'; g.fillRect(cx - 10, cy - 6, 20, 3);
+}
 function P_furnace(g, cx, cy) {
   const grad = g.createRadialGradient(cx, cy, 0, cx, cy, 8);
   grad.addColorStop(0, '#ffd75e'); grad.addColorStop(1, '#ff7a2e');
@@ -327,6 +348,211 @@ const PAINTERS = {
     g.fillRect(-5, -49, 10, 4);
     g.restore();
   },
+  // ---------- Ikon item: tengah sel, wajib muat di dalam sel 64px ----------
+  item_Log: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#7a5230';
+    g.beginPath(); g.ellipse(cx - 13, cy + 2, 6, 9, 0, 0, 6.29); g.fill();
+    g.fillStyle = '#a8763e'; g.fillRect(cx - 13, cy - 7, 26, 18);
+    g.fillStyle = '#c9a86a';
+    g.beginPath(); g.ellipse(cx + 13, cy + 2, 6, 9, 0, 0, 6.29); g.fill();
+    g.strokeStyle = '#7a5230'; g.lineWidth = 1.5;
+    g.beginPath(); g.ellipse(cx + 13, cy + 2, 3, 5, 0, 0, 6.29); g.stroke();
+  },
+  item_Pillar: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#8a5a33'; g.fillRect(cx - 7, cy - 18, 14, 36);
+    g.fillStyle = '#a8763e'; g.fillRect(cx - 10, cy - 21, 20, 5); g.fillRect(cx - 10, cy + 16, 20, 5);
+    g.fillStyle = 'rgba(255,255,255,0.25)'; g.fillRect(cx - 7, cy - 18, 4, 36);
+  },
+  item_Plank: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#c9a86a';
+    g.fillRect(cx - 16, cy - 12, 32, 8); g.fillRect(cx - 16, cy - 2, 32, 8); g.fillRect(cx - 16, cy + 8, 32, 8);
+    g.strokeStyle = '#a8763e'; g.lineWidth = 1.5;
+    for (const dy of [-12, -2, 8]) g.strokeRect(cx - 16, cy + dy, 32, 8);
+  },
+  item_Firelog: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 36;
+    g.fillStyle = '#7a5230';
+    g.beginPath(); g.ellipse(cx - 12, cy + 2, 5, 8, 0, 0, 6.29); g.fill();
+    g.fillStyle = '#a8763e'; g.fillRect(cx - 12, cy - 6, 24, 16);
+    g.fillStyle = '#ff7a2e';
+    g.beginPath();
+    g.moveTo(cx + 2, cy - 8); g.quadraticCurveTo(cx + 12, cy - 18, cx + 8, cy - 26);
+    g.quadraticCurveTo(cx + 16, cy - 16, cx + 12, cy - 6); g.closePath(); g.fill();
+    g.fillStyle = '#ffd75e';
+    g.beginPath();
+    g.moveTo(cx + 5, cy - 9); g.quadraticCurveTo(cx + 10, cy - 15, cx + 8, cy - 20);
+    g.quadraticCurveTo(cx + 12, cy - 14, cx + 10, cy - 8); g.closePath(); g.fill();
+  },
+  item_Brick: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#b06040';
+    g.fillRect(cx - 16, cy + 2, 15, 10); g.fillRect(cx + 1, cy + 2, 15, 10); g.fillRect(cx - 8, cy - 10, 15, 10);
+    g.strokeStyle = '#8a4630'; g.lineWidth = 1.5;
+    g.strokeRect(cx - 16, cy + 2, 15, 10); g.strokeRect(cx + 1, cy + 2, 15, 10); g.strokeRect(cx - 8, cy - 10, 15, 10);
+  },
+  item_Glass: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = 'rgba(159,212,232,0.85)'; g.fillRect(cx - 13, cy - 16, 26, 32);
+    g.strokeStyle = '#5f8fa8'; g.lineWidth = 2.5; g.strokeRect(cx - 13, cy - 16, 26, 32);
+    g.strokeStyle = 'rgba(255,255,255,0.8)'; g.lineWidth = 2;
+    g.beginPath(); g.moveTo(cx - 8, cy + 10); g.lineTo(cx + 2, cy - 12); g.stroke();
+  },
+  item_IronOre: (g, ox, oy) => P_oreIcon(g, ox + 32, oy + 32, '#e07b39'),
+  item_CopperOre: (g, ox, oy) => P_oreIcon(g, ox + 32, oy + 32, '#4fae9d'),
+  item_TinOre: (g, ox, oy) => P_oreIcon(g, ox + 32, oy + 32, '#d8e2e8'),
+  item_Sand: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#e8d9a0';
+    g.beginPath();
+    g.moveTo(cx - 16, cy + 12); g.lineTo(cx, cy - 14); g.lineTo(cx + 16, cy + 12);
+    g.closePath(); g.fill();
+    g.fillStyle = '#c9a86a';
+    g.beginPath(); g.arc(cx - 5, cy + 5, 2, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx + 6, cy + 8, 2, 0, 6.29); g.fill();
+  },
+  item_Clay: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#a5613f';
+    g.beginPath(); g.ellipse(cx, cy + 6, 15, 9, 0, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx - 6, cy - 4, 7, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx + 6, cy - 2, 6, 0, 6.29); g.fill();
+    g.fillStyle = '#8a4c2e';
+    g.beginPath(); g.ellipse(cx, cy + 8, 10, 4, 0, 0, 6.29); g.fill();
+  },
+  item_Cotton: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#f2ede0';
+    [[-9, 2], [0, -6], [9, 2], [-4, 8], [5, 8]].forEach(([dx, dy]) => {
+      g.beginPath(); g.arc(cx + dx, cy + dy, 7, 0, 6.29); g.fill();
+    });
+    g.fillStyle = '#d8d2c2';
+    g.beginPath(); g.arc(cx - 9, cy + 4, 3, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx + 8, cy + 5, 3, 0, 6.29); g.fill();
+  },
+  item_IronIngot: (g, ox, oy) => P_ingot(g, ox + 32, oy + 32, '#8d99a8', '#5d6773'),
+  item_CopperIngot: (g, ox, oy) => P_ingot(g, ox + 32, oy + 32, '#e08a5a', '#b06a3e'),
+  item_BronzeIngot: (g, ox, oy) => P_ingot(g, ox + 32, oy + 32, '#c98f2e', '#9a6a1e'),
+  item_Coil: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.strokeStyle = '#d97b4f'; g.lineWidth = 3;
+    for (const r of [13, 8, 3]) { g.beginPath(); g.arc(cx, cy, r, 0, 6.29); g.stroke(); }
+  },
+  item_Gear: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#c9a86a';
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2;
+      g.save(); g.translate(cx, cy); g.rotate(a);
+      g.fillRect(-3, -16, 6, 7);
+      g.restore();
+    }
+    g.beginPath(); g.arc(cx, cy, 11, 0, 6.29); g.fill();
+    g.fillStyle = '#241a12'; g.beginPath(); g.arc(cx, cy, 4.5, 0, 6.29); g.fill();
+  },
+  item_IronBeam: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#7d8894';
+    g.fillRect(cx - 15, cy - 14, 30, 6); g.fillRect(cx - 4, cy - 14, 8, 28); g.fillRect(cx - 15, cy + 8, 30, 6);
+    g.fillStyle = '#5d6773'; g.fillRect(cx - 15, cy + 11, 30, 3);
+  },
+  item_IronFrame: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.strokeStyle = '#6e7683'; g.lineWidth = 6; g.strokeRect(cx - 13, cy - 13, 26, 26);
+    g.fillStyle = '#8d99a8';
+    [[-13, -13], [13, -13], [-13, 13], [13, 13]].forEach(([dx, dy]) => g.fillRect(cx + dx - 3, cy + dy - 3, 6, 6));
+  },
+  item_Nails: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.strokeStyle = '#b8b0a0'; g.lineWidth = 2.5; g.lineCap = 'round';
+    [[-10, -8, 0.5], [0, -12, 0], [10, -8, -0.5]].forEach(([dx, dy, tilt]) => {
+      g.save(); g.translate(cx + dx, cy + dy); g.rotate(tilt);
+      g.beginPath(); g.moveTo(0, 0); g.lineTo(0, 18); g.stroke();
+      g.fillStyle = '#d8d2c2'; g.fillRect(-4, -3, 8, 4);
+      g.restore();
+    });
+  },
+  item_Motor: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#e8b64c'; g.fillRect(cx - 13, cy - 8, 20, 18);
+    g.fillStyle = '#8d99a8'; g.fillRect(cx + 7, cy - 4, 8, 10);
+    g.fillStyle = '#6e7683';
+    for (let i = 0; i < 3; i++) g.fillRect(cx - 10 + i * 6, cy - 12, 3, 4);
+    g.fillStyle = '#2c2833'; g.fillRect(cx - 9, cy - 1, 6, 6);
+  },
+  item_WoodFrame: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.strokeStyle = '#d9b06a'; g.lineWidth = 6; g.strokeRect(cx - 13, cy - 13, 26, 26);
+    g.strokeStyle = '#a8763e'; g.lineWidth = 1.5; g.strokeRect(cx - 13, cy - 13, 26, 26);
+  },
+  item_Table: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#a8763e'; g.fillRect(cx - 16, cy - 6, 32, 6);
+    g.fillStyle = '#7a5230'; g.fillRect(cx - 12, cy, 4, 14); g.fillRect(cx + 8, cy, 4, 14);
+    g.fillStyle = '#c9a86a'; g.fillRect(cx - 16, cy - 6, 32, 2);
+  },
+  item_Bench: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#8a5a33'; g.fillRect(cx - 15, cy + 2, 30, 5);
+    g.fillRect(cx - 11, cy + 7, 4, 9); g.fillRect(cx + 7, cy + 7, 4, 9);
+    g.fillStyle = '#a8763e'; g.fillRect(cx - 15, cy + 2, 30, 2);
+  },
+  item_Window: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#9fd4e8'; g.fillRect(cx - 12, cy - 14, 24, 28);
+    g.strokeStyle = '#7a5230'; g.lineWidth = 3; g.strokeRect(cx - 12, cy - 14, 24, 28);
+    g.beginPath(); g.moveTo(cx, cy - 14); g.lineTo(cx, cy + 14); g.moveTo(cx - 12, cy); g.lineTo(cx + 12, cy); g.stroke();
+    g.strokeStyle = 'rgba(255,255,255,0.8)'; g.lineWidth = 2;
+    g.beginPath(); g.moveTo(cx - 8, cy + 8); g.lineTo(cx - 2, cy - 8); g.stroke();
+  },
+  // ---------- Mayor, gerbang, kotak plot ----------
+  mayor: (g, ox, oy) => {
+    // Perempuan rambut pirang, gaun biru-putih (foto Mayor).
+    const cx = ox + 32, gy = oy + 62;
+    P_shadow(g, cx, gy, 10);
+    g.fillStyle = '#2c4a7a'; // gaun
+    g.beginPath();
+    g.moveTo(cx - 5, gy - 32); g.lineTo(cx + 5, gy - 32);
+    g.lineTo(cx + 11, gy); g.lineTo(cx - 11, gy);
+    g.closePath(); g.fill();
+    g.fillStyle = '#e8e4f5'; // celemek putih
+    g.beginPath();
+    g.moveTo(cx - 3, gy - 30); g.lineTo(cx + 3, gy - 30);
+    g.lineTo(cx + 6, gy - 2); g.lineTo(cx - 6, gy - 2);
+    g.closePath(); g.fill();
+    g.fillStyle = '#f0c8a0'; // tangan + kepala
+    g.fillRect(cx - 9, gy - 30, 3, 9); g.fillRect(cx + 6, gy - 30, 3, 9);
+    g.beginPath(); g.arc(cx, gy - 38, 7, 0, 6.29); g.fill();
+    g.fillStyle = '#e8c860'; // rambut pirang
+    g.beginPath(); g.arc(cx, gy - 41, 8, Math.PI, 0); g.fill();
+    g.fillRect(cx - 8, gy - 41, 3, 10); g.fillRect(cx + 5, gy - 41, 3, 10);
+    g.fillStyle = '#2a1a10'; g.fillRect(cx - 3, gy - 39, 2, 2); g.fillRect(cx + 2, gy - 39, 2, 2);
+  },
+  gate: (g, ox, oy) => {
+    const cx = ox + 32, gy = oy + 62;
+    P_shadow(g, cx, gy, 16);
+    g.fillStyle = '#5f3d22';
+    g.fillRect(cx - 20, gy - 34, 5, 34); g.fillRect(cx + 15, gy - 34, 5, 34);
+    g.fillStyle = '#7a5230'; g.fillRect(cx - 22, gy - 40, 44, 6);
+    g.fillStyle = '#ffd75e';
+    g.fillRect(cx - 19, gy - 33, 3, 3); g.fillRect(cx + 16, gy - 33, 3, 3);
+    g.fillStyle = '#e8b64c'; g.fillRect(cx - 8, gy - 32, 16, 9);
+    g.strokeStyle = '#5f3d22'; g.lineWidth = 1.5; g.strokeRect(cx - 8, gy - 32, 16, 9);
+  },
+  plotpad: (g, ox, oy) => {
+    // Lempeng putih berbingkai kuning, rata dengan lantai (drawTile).
+    const cx = ox + 32, cy = oy + 32;
+    g.beginPath();
+    g.moveTo(cx, cy - 15); g.lineTo(cx + 30, cy); g.lineTo(cx, cy + 15); g.lineTo(cx - 30, cy);
+    g.closePath(); g.fillStyle = '#e8e4da'; g.fill();
+    g.strokeStyle = '#e8b64c'; g.lineWidth = 2.5; g.stroke();
+    g.fillStyle = '#c98f2e';
+    [[0, -9], [17, 0], [0, 9], [-17, 0]].forEach(([dx, dy]) => {
+      g.beginPath(); g.arc(cx + dx, cy + dy, 2, 0, 6.29); g.fill();
+    });
+  },
 };
 Object.assign(Atlas.painters, PAINTERS);
 
@@ -419,6 +645,8 @@ function render() {
   ctx.globalAlpha = 1;
 
   const glows = [];
+  const onPlot = S.map === 'plot';
+  const gate = onPlot ? gatePos() : null;
   const playerS = Math.floor(S.player.fx + S.player.fy);
   let playerDrawn = false;
   for (let s = 0; s <= GRID_W + GRID_H - 2; s++) {
@@ -431,7 +659,7 @@ function render() {
       const ground = t.t === 'sand' ? 'sand' : t.t === 'clay' ? 'clay' : 'grass' + Math.floor(hash2(gx, gy) * 4);
       Atlas.drawTile(ctx, ground, x, y, z);
 
-      const conv = S.conveyors.get(key(gx, gy));
+      const conv = onPlot ? S.conveyors.get(key(gx, gy)) : null;
       if (conv) {
         // Belt itu rata dengan lantai: pakai drawTile (jangkar tengah petak).
         // draw() berjangkar alas sel, mengangkat belah ketupat belt 26px
@@ -463,12 +691,24 @@ function render() {
         const dead = NODES[t.obj] && t.hp <= 0;
         if (!dead || t.obj === 'tree') {
           const sprite = t.obj === 'tree' && dead ? 'stump' : t.obj;
-          Atlas.draw(ctx, sprite, x, y + 6 * z, z);
+          if (sprite === 'plotpad') {
+            Atlas.drawTile(ctx, 'plotpad', x, y, z);
+          } else {
+            Atlas.draw(ctx, sprite, x, y + 6 * z, z);
+            if (t.obj === 'mayor') {
+              ctx.font = '700 ' + Math.max(11, Math.round(12 * z)) + 'px system-ui, sans-serif';
+              ctx.textAlign = 'center';
+              ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.7)';
+              ctx.strokeText('Mayor', x, y - 56 * z);
+              ctx.fillStyle = '#ffd75e'; ctx.fillText('Mayor', x, y - 56 * z);
+            }
+          }
           if (GLOWS[t.obj]) { const [dx, dy, r, a] = GLOWS[t.obj]; glows.push({ x: x + dx * z, y: y + dy * z, r: r * z, a }); }
         }
       }
       if (t.obj === 'shop') Atlas.draw(ctx, 'shop', x, y + 6 * z, z);
-      const m = S.machines.get(key(gx, gy));
+      if (gate && gx === gate.gx && gy === gate.gy) Atlas.draw(ctx, 'gate', x, y + 6 * z, z);
+      const m = onPlot ? S.machines.get(key(gx, gy)) : null;
       if (m) {
         Atlas.draw(ctx, m.id, x, y + 6 * z, z);
         paintDirArrow(x, y, z, m.dir);
@@ -484,11 +724,11 @@ function render() {
         }
         if (m.progress > 0 && !m.stopped) paintMiniBar(x, y - 52 * z, z, m.progress);
       }
-      const st = S.storages.get(key(gx, gy));
+      const st = onPlot ? S.storages.get(key(gx, gy)) : null;
       if (st) Atlas.draw(ctx, st.id, x, y + 6 * z, z);
-      const w = S.walls.get(key(gx, gy));
+      const w = onPlot ? S.walls.get(key(gx, gy)) : null;
       if (w) Atlas.draw(ctx, w.id, x, y + 6 * z, z);
-      const d = S.decor.get(key(gx, gy));
+      const d = onPlot ? S.decor.get(key(gx, gy)) : null;
       if (d) {
         Atlas.draw(ctx, d.id, x, y + 6 * z, z);
         if (GLOWS[d.id]) { const [dx, dy, r, a] = GLOWS[d.id]; glows.push({ x: x + dx * z, y: y + dy * z, r: r * z, a }); }
@@ -558,11 +798,13 @@ function render() {
   ctx.globalAlpha = 1;
 }
 
-// Aturan taruh: rumput kosong untuk mesin/storage/wall/decor; conveyor
-// boleh di atas rumput kosong saja (tidak menimpa mesin).
+// Aturan taruh: hanya di plot, rumput kosong; gerbang tidak boleh ditutup.
 function canPlace(gx, gy, placing) {
+  if (S.map !== 'plot') return false;
   const t = tileAt(gx, gy);
   if (!t || t.obj) return false;
+  const g = gatePos();
+  if (gx === g.gx && gy === g.gy) return false;
   const k = key(gx, gy);
   if (S.machines.has(k) || S.storages.has(k) || S.walls.has(k) || S.decor.has(k) || S.conveyors.has(k)) return false;
   if (placing && placing.kind === 'conveyor') return t.t === 'grass';

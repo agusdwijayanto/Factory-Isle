@@ -18,19 +18,21 @@ Live: https://agusdwijayanto.github.io/Indotopia/
 - [x] Simpan otomatis, tutorial, panel ADMIN, menu burger 4 tombol
 - [x] Tanah datar, conveyor menapak lantai, node habis menghilang sampai tumbuh lagi
 
-## Tahap berikutnya — menunggu gas Agus
+## Sudah live — v7 (18 Nov 2026)
 
-- [ ] Langkah 1: Tes repro bug refresh (skenario output mesin penuh) — menunggu izin Agus
-- [ ] Langkah 2: Ikon item di dalam panel mesin, ikut game asli, tampilan disesuaikan (ATM)
-- [ ] Langkah 3: Dua map — Map 1 kota (toko, NPC, bahan), Map 2 plot (pabrik); masuk lewat kotak plot, keluar lewat gerbang; mesin tetap jalan di kedua map
-- [ ] Langkah 4: NPC Mayor + rantai ekspansi plot (struktur asli: Size, Size+, Size++, Size+++, Auto Seller; angka disesuaikan)
-- [ ] Langkah 5: Sprite Gemini (alur: draf prompt, Gemini merapikan, generate, patokan gaya referensi #5, susun ikut assets/atlas-manifest.json)
-- [ ] Langkah 6: Penyesuaian UI/UX ATM untuk sentuh (target sentuh, panel, HUD)
+- [x] Langkah 1: Bug refresh — repro mengonfirmasi akar masalah: output mesin penuh (cap 30) membuat canStart gagal permanen; refresh bukan penyebab, diamnya sudah terjadi sebelumnya. Perbaikan: soft cap (mesin boleh mulai bila ada ruang apa pun) + status mesin selalu terlihat di panel. Tes regresi ditambahkan.
+- [x] Langkah 2: Ikon item di dalam panel mesin, tas, toko, dan storage (ikon + nama + angka), ikut game asli, tampilan disesuaikan (ATM). 25 ikon prosedural di atlas.
+- [x] Langkah 3: Dua map — Map 1 kota (toko, Mayor, kotak plot, sumber daya), Map 2 plot (pabrik); masuk lewat kotak plot, keluar HANYA lewat gerbang; mesin tetap jalan di kedua map; nama map di HUD; simpan lama dimigrasikan (v1 ke v2, kunci simpan sama).
+- [x] Langkah 4: NPC Mayor (perempuan pirang, gaun biru-putih) + rantai ekspansi plot (Size 200, Size+ 400, Size++ 800, Size+++ 2000; angka asli) + Auto Seller $5.000 (keputusan turunan; harga asli 175.000 terlalu jauh dari ekonomi harga papan). Tiap ekspansi membesarkan grid plot. Harga jual ikut harga PAPAN (keputusan Agus).
+- [x] Langkah 5: Siap sprite Gemini — manifest diperluas (61 sprite: ikon item, Mayor, gerbang, kotak plot) + docs/PROMPT_GEMINI.md berisi draf prompt 6 batch. Generate BELUM dilakukan (butuh browser + alur Gemini).
+- [x] Langkah 6: UI/UX ATM untuk sentuh — HUD tetap minimal (burger + nama map + uang), target sentuh 36-48px, panel kebaca, status mesin terlihat. Tanpa tombol HUD baru.
+
+Tes: headless 71/71, Playwright 79/79 (HP 390x844 + desktop 1280x800), nol error konsol, nol overflow. Versi aset: ?v=7.
 
 ## Di luar tahap ini (sesuai PRD)
 
-- Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel, irigasi, bangunan logika, multi-save
+- Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites dan live. Versi live saat ini: v6.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v7.

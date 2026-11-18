@@ -51,3 +51,59 @@ function doResearch(id) {
   saveSoon();
   return true;
 }
+
+// ---- Mayor: ekspansi plot berurutan, lalu Auto Seller ----
+function nextExpansion() {
+  return S.expansion < EXPANSIONS.length ? EXPANSIONS[S.expansion] : null;
+}
+
+function buyExpansion() {
+  const e = nextExpansion();
+  if (!e || S.money < e.cost) return false;
+  S.money -= e.cost;
+  S.expansion++;
+  expandPlotGrid(e.w, e.h);
+  saveSoon();
+  return true;
+}
+
+function canBuyAutoSeller() {
+  return !S.autoSeller && S.expansion >= EXPANSIONS.length && S.money >= AUTO_SELLER_COST;
+}
+
+function buyAutoSeller() {
+  if (!canBuyAutoSeller()) return false;
+  S.money -= AUTO_SELLER_COST;
+  S.autoSeller = true;
+  saveSoon();
+  return true;
+}
+
+// Auto Seller: tiap beberapa detik menjual isi output mesin dan storage
+// plot dengan harga papan. Tas karakter tidak disentuh.
+function autoSellerTick(dt) {
+  if (!S.autoSeller) return;
+  S.autoSellerT += dt;
+  if (S.autoSellerT < AUTO_SELLER_EVERY) return;
+  S.autoSellerT = 0;
+  let gain = 0, count = 0;
+  const drain = (buf) => {
+    for (const [id, n] of Object.entries(buf)) {
+      const price = sellPrice(id);
+      if (price === null || price === undefined) continue;
+      gain += price * n; count += n;
+      S.stats.sold[id] = (S.stats.sold[id] || 0) + n;
+      delete buf[id];
+    }
+  };
+  for (const m of S.machines.values()) drain(m.output);
+  for (const st of S.storages.values()) drain(st.items);
+  if (gain > 0) {
+    S.money += gain;
+    const p = playerTile();
+    addFloater(p.gx, p.gy, 'Auto Seller +$' + fmt(gain), '#ffd75e');
+    SFX.play('coin');
+    saveSoon();
+  }
+  return count;
+}

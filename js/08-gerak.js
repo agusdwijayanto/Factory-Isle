@@ -10,9 +10,11 @@ const DIRS = [
 function blockedForWalk(gx, gy) {
   if (!inGrid(gx, gy)) return true;
   const k = key(gx, gy);
-  if (S.machines.has(k) || S.storages.has(k) || S.walls.has(k)) return true;
-  if (gx === S.shop.gx && gy === S.shop.gy) return true;
+  // Bangunan hanya ada di plot; di kota koordinat yang sama adalah rumput.
+  if (S.map === 'plot' && (S.machines.has(k) || S.storages.has(k) || S.walls.has(k))) return true;
+  if (S.map === 'town' && gx === S.shop.gx && gy === S.shop.gy) return true;
   const t = S.grid[gy][gx];
+  if (t.obj === 'mayor') return true;
   // Pohon/bijih/kapas hidup menghalangi; tunggul (hp 0) dan lentera bisa dilewati.
   if (t.obj && NODES[t.obj] && t.hp > 0) return true;
   return false;

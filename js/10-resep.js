@@ -13,9 +13,16 @@ function inputsOk(m) {
   return Object.entries(r.in).every(([id, n]) => (m.input[id] || 0) >= n);
 }
 
+// Boleh mulai kalau output masih ada ruang apa pun. Syarat lama (ruang
+// satu batch penuh) membuat mesin diam permanen walau output belum penuh
+// (mis. 25/30 dengan batch 6): itulah "mesin mati sesudah refresh" yang
+// dilaporkan Agus — diamnya sudah terjadi sebelum refresh, eject yang
+// mengosongkan output-lah yang menghidupkannya lagi. Batch boleh
+// mendorong output sedikit melewati cap; conveyor/ambil hasil yang
+// mengosongkannya.
 function outputRoom(m) {
   const r = getRecipe(m);
-  return r && bufferTotal(m.output) + r.n <= OUTPUT_CAP;
+  return r && bufferTotal(m.output) < OUTPUT_CAP;
 }
 
 function canStart(m) {

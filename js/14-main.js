@@ -23,6 +23,7 @@ function frame(now) {
   updateMachines(dt);
   updateConveyors(dt);
   updateRegrow(dt);
+  autoSellerTick(dt);
   S.floaters = S.floaters.filter((f) => S.time - f.born < 0.9);
   UI.tick(dt);
   render();

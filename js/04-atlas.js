@@ -22,7 +22,7 @@ const Atlas = {
     this._ready = (async () => {
       let m = null;
       try {
-        const r = await fetch('assets/atlas-manifest.json?v=2');
+        const r = await fetch('assets/atlas-manifest.json?v=7');
         if (r.ok) m = await r.json();
       } catch (_) { /* file:// atau offline: pakai salinan darurat */ }
       this.manifest = m || MANIFEST_EMBEDDED;
@@ -83,12 +83,26 @@ const Atlas = {
     ctx.drawImage(this.canvas, r.sx, r.sy, r.sw, r.sh, x - w / 2, y - (r.cellH * scale) / 2, w, h);
     if (alpha !== 1) ctx.globalAlpha = 1;
   },
+
+  // Ikon untuk panel DOM: potong SEL SAJA (tanpa bantalan luapan) dari
+  // atlas ke canvas kecil. Pelukis ikon wajib muat di dalam selnya.
+  iconCanvas(name, size = 28) {
+    const r = this.rect(name);
+    const cv = document.createElement('canvas');
+    cv.width = size; cv.height = size;
+    cv.className = 'item-icon';
+    if (!r) return cv;
+    const g = cv.getContext('2d');
+    g.imageSmoothingEnabled = false;
+    g.drawImage(this.canvas, r.sx, r.sy, r.cellH, r.cellH, 0, 0, size, size);
+    return cv;
+  },
 };
 
 // Salinan darurat manifest, sama isinya dengan assets/atlas-manifest.json.
 const MANIFEST_EMBEDDED = {
   name: 'indotopia-tycoon-atlas-v1', atlasFile: 'atlas.png', source: 'procedural',
-  cell: 64, cols: 8, rows: 10, anchor: 'bottom-center',
+  cell: 64, cols: 8, rows: 14, anchor: 'bottom-center',
   sprites: {
     tree: { col: 0, row: 0, w: 1, h: 1 }, oreIron: { col: 1, row: 0, w: 1, h: 1 },
     oreCopper: { col: 2, row: 0, w: 1, h: 1 }, oreTin: { col: 3, row: 0, w: 1, h: 1 },
@@ -108,5 +122,20 @@ const MANIFEST_EMBEDDED = {
     sand: { col: 5, row: 3, w: 1, h: 1 }, clay: { col: 6, row: 3, w: 1, h: 1 },
     shop: { col: 0, row: 4, w: 2, h: 2 },
     player: { col: 0, row: 6, w: 1, h: 1, frames: 3, dirs: 4 },
+    item_Log: { col: 2, row: 5, w: 1, h: 1 }, item_Pillar: { col: 3, row: 5, w: 1, h: 1 },
+    item_Plank: { col: 4, row: 5, w: 1, h: 1 }, item_Firelog: { col: 5, row: 5, w: 1, h: 1 },
+    item_Brick: { col: 6, row: 5, w: 1, h: 1 }, item_Glass: { col: 7, row: 5, w: 1, h: 1 },
+    item_IronOre: { col: 0, row: 10, w: 1, h: 1 }, item_CopperOre: { col: 1, row: 10, w: 1, h: 1 },
+    item_TinOre: { col: 2, row: 10, w: 1, h: 1 }, item_Sand: { col: 3, row: 10, w: 1, h: 1 },
+    item_Clay: { col: 4, row: 10, w: 1, h: 1 }, item_Cotton: { col: 5, row: 10, w: 1, h: 1 },
+    item_IronIngot: { col: 6, row: 10, w: 1, h: 1 }, item_CopperIngot: { col: 7, row: 10, w: 1, h: 1 },
+    item_BronzeIngot: { col: 0, row: 11, w: 1, h: 1 }, item_Coil: { col: 1, row: 11, w: 1, h: 1 },
+    item_Gear: { col: 2, row: 11, w: 1, h: 1 }, item_IronBeam: { col: 3, row: 11, w: 1, h: 1 },
+    item_IronFrame: { col: 4, row: 11, w: 1, h: 1 }, item_Nails: { col: 5, row: 11, w: 1, h: 1 },
+    item_Motor: { col: 6, row: 11, w: 1, h: 1 }, item_WoodFrame: { col: 7, row: 11, w: 1, h: 1 },
+    item_Table: { col: 0, row: 12, w: 1, h: 1 }, item_Bench: { col: 1, row: 12, w: 1, h: 1 },
+    item_Window: { col: 2, row: 12, w: 1, h: 1 },
+    mayor: { col: 3, row: 12, w: 1, h: 1 }, gate: { col: 4, row: 12, w: 1, h: 1 },
+    plotpad: { col: 5, row: 12, w: 1, h: 1 },
   },
 };

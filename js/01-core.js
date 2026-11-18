@@ -1,7 +1,8 @@
 // State global. Satu-satunya sumber kebenaran. File ini tanpa DOM supaya
 // logika murni bisa dites headless di node.
 const TILE_W = 64, TILE_H = 32;
-const GRID_W = 16, GRID_H = 12;
+// Dimensi map AKTIF; berubah saat pindah map atau plot membesar.
+let GRID_W = 16, GRID_H = 12;
 const SAVE_KEY = 'indotopia-tycoon-save-v1';
 
 const S = {
@@ -17,13 +18,21 @@ const S = {
   pulses: new Map(), // "gx,gy" -> born, denyut saat diketuk
   beltT: 0,          // jam animasi conveyor
   time: 0,           // jam global detik
-  grid: [],          // [gy][gx] -> {t, obj, hp, regrowIn}
+  map: 'town',     // map aktif: 'town' (kota) atau 'plot' (lahan)
+  grid: [],          // grid map AKTIF: [gy][gx] -> {t, obj, hp, regrowIn}
+  maps: {},          // 'town'|'plot' -> {w, h, grid}; grid non-aktif disimpan di sini
+  expansion: 0,      // 0..4, tingkat ekspansi plot lewat Mayor
+  autoSeller: false,
+  autoSellerT: 0,
+  // Bangunan hanya ada di plot; koleksi ini selalu milik plot walau pemain di kota.
   machines: new Map(),   // "gx,gy" -> {id, dir, recipe, input:{}, output:{}, progress, stopped}
   conveyors: new Map(),  // "gx,gy" -> {id, dir, item, t}
   storages: new Map(),   // "gx,gy" -> {id, items:{}}
   walls: new Map(),      // "gx,gy" -> {id}
   decor: new Map(),      // "gx,gy" -> {id}
-  shop: { gx: 8, gy: 0 },
+  shop: { gx: 8, gy: 0 },       // di map kota
+  mayor: { gx: 5, gy: 1 },      // di map kota
+  plotPad: { gx: 8, gy: 10 },   // di map kota: injak untuk masuk ke plot
   player: {
     fx: 8.5, fy: 6.5, dir: 1, frame: 0, walkT: 0,
     path: [],            // [{gx, gy}] petak tujuan berurutan
@@ -47,16 +56,70 @@ function hash2(gx, gy) {
   return ((h ^ (h >> 16)) >>> 0) / 4294967295;
 }
 
-function newGrid() {
-  S.grid = [];
-  for (let gy = 0; gy < GRID_H; gy++) {
+function makeGrid(w, h) {
+  const g = [];
+  for (let gy = 0; gy < h; gy++) {
     const row = [];
-    for (let gx = 0; gx < GRID_W; gx++) row.push({ t: 'grass', obj: null, hp: 0, regrowIn: 0 });
-    S.grid.push(row);
+    for (let gx = 0; gx < w; gx++) row.push({ t: 'grass', obj: null, hp: 0, regrowIn: 0 });
+    g.push(row);
   }
+  return g;
+}
+
+function newGrid() {
+  S.grid = makeGrid(GRID_W, GRID_H);
+}
+
+// Gerbang keluar plot: tengah tepi bawah grid plot. Satu-satunya jalan
+// keluar, supaya tidak sengaja keluar saat kerja di pinggir lahan.
+function gatePos() {
+  const m = S.maps.plot;
+  return { gx: Math.floor(m.w / 2), gy: m.h - 1 };
 }
 
 function tileAt(gx, gy) { return inGrid(gx, gy) ? S.grid[gy][gx] : null; }
+
+// Tukar grid aktif tanpa DOM: dipakai muat simpan dan pindah map.
+function applyMap(name) {
+  const m = S.maps[name];
+  S.map = name;
+  S.grid = m.grid;
+  GRID_W = m.w; GRID_H = m.h;
+}
+
+// Pindah map: titik lahir tetap sesuai desain (masuk plot di depan
+// gerbang, kembali ke kota di samping kotak plot), bukan posisi lama.
+function switchMap(name) {
+  const p = S.player;
+  p.path = []; p.onArrive = null; p.working = null;
+  applyMap(name);
+  const pos = defaultSpawn(name);
+  p.fx = pos.fx; p.fy = pos.fy; p.dir = pos.dir;
+  if (typeof centerCamera === 'function' && typeof VW !== 'undefined') {
+    centerCamera(VW, VH);
+  }
+  TOAST(name === 'plot' ? 'Masuk ke lahanmu.' : 'Kembali ke kota.');
+  if (typeof UI !== 'undefined') UI.refreshHUD();
+  saveSoon();
+}
+
+function defaultSpawn(name) {
+  if (name === 'plot') {
+    const g = gatePos();
+    return { fx: g.gx + 0.5, fy: g.gy - 0.5, dir: 3 };
+  }
+  return { fx: S.plotPad.gx + 0.5, fy: S.plotPad.gy - 0.5, dir: 3 };
+}
+
+// Perbesar grid plot, bangunan lama tetap di koordinatnya.
+function expandPlotGrid(w, h) {
+  const old = S.maps.plot;
+  const g = makeGrid(w, h);
+  for (let gy = 0; gy < Math.min(old.h, h); gy++)
+    for (let gx = 0; gx < Math.min(old.w, w); gx++) g[gy][gx] = old.grid[gy][gx];
+  S.maps.plot = { w, h, grid: g };
+  if (S.map === 'plot') applyMap('plot');
+}
 
 // Kait umpan balik, diisi ulang oleh 13-ui.js di browser. Di node tetap no-op.
 let SFX = { play() {} };

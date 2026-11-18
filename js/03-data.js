@@ -3,35 +3,53 @@
 // (Fandom lama / NamuWiki) dan ditandai asalnya di komentar.
 
 // Item: id -> {name, color, price}. price null = tidak bisa dijual (PRD:
-// Coil dan Gear hanya komponen). Harga dari kolom jual wiki; yang tanpa
-// sumber wiki ditandai "turunan".
+// Coil dan Gear hanya komponen). Harga jual = harga PAPAN jual dari
+// screenshot Roblox Agus (keputusan Agus 22:25, bukan harga panel yang
+// kemungkinan sudah dikali 2 gamepass). Yang tidak teramati di papan
+// ditandai "turunan" dan nilainya dipertahankan dari versi lama.
 const ITEMS = {
-  Log:       { name: 'Log',        color: '#a8763e', price: 7 },
-  Pillar:    { name: 'Pillar',     color: '#8a5a33', price: 12 },
-  Plank:     { name: 'Plank',      color: '#c9a86a', price: 6 },
-  Firelog:   { name: 'Firelog',    color: '#e07b39', price: 6 },
-  Brick:     { name: 'Brick',      color: '#b06040', price: 30 },
-  Glass:     { name: 'Glass',      color: '#9fd4e8', price: 15 }, // turunan
-  IronOre:   { name: 'Iron Ore',   color: '#e07b39', price: 8 },  // turunan
-  CopperOre: { name: 'Copper Ore', color: '#4fae9d', price: 6 },  // turunan
-  TinOre:    { name: 'Tin Ore',    color: '#b8c4cc', price: 10 }, // turunan
-  Sand:      { name: 'Sand',       color: '#e8d9a0', price: 4 },  // turunan
-  Clay:      { name: 'Clay',       color: '#a5613f', price: 5 },  // turunan
-  Cotton:    { name: 'Cotton',     color: '#f2ede0', price: 25 },
-  IronIngot:   { name: 'Iron Ingot',   color: '#8d99a8', price: 24 },
+  Log:       { name: 'Log',        color: '#a8763e', price: 7 },   // papan
+  Pillar:    { name: 'Pillar',     color: '#8a5a33', price: 12 },  // papan
+  Plank:     { name: 'Plank',      color: '#c9a86a', price: 6 },   // papan
+  Firelog:   { name: 'Firelog',    color: '#e07b39', price: 11 },  // papan
+  Brick:     { name: 'Brick',      color: '#b06040', price: 30 },  // turunan
+  Glass:     { name: 'Glass',      color: '#9fd4e8', price: 15 },  // turunan
+  IronOre:   { name: 'Iron Ore',   color: '#e07b39', price: 8 },   // turunan
+  CopperOre: { name: 'Copper Ore', color: '#4fae9d', price: 6 },   // turunan
+  TinOre:    { name: 'Tin Ore',    color: '#b8c4cc', price: 10 },  // turunan
+  Sand:      { name: 'Sand',       color: '#e8d9a0', price: 4 },   // turunan
+  Clay:      { name: 'Clay',       color: '#a5613f', price: 5 },   // turunan
+  Cotton:    { name: 'Cotton',     color: '#f2ede0', price: 25 },  // papan
+  IronIngot:   { name: 'Iron Ingot',   color: '#8d99a8', price: 24 }, // papan
   CopperIngot: { name: 'Copper Ingot', color: '#e08a5a', price: 18 }, // turunan
   BronzeIngot: { name: 'Bronze Ingot', color: '#c98f2e', price: 50 }, // turunan
   Coil:      { name: 'Coil',       color: '#d97b4f', price: null },
   Gear:      { name: 'Gear',       color: '#c9a86a', price: null },
-  IronBeam:  { name: 'Iron Beam',  color: '#7d8894', price: 72 },
-  IronFrame: { name: 'Iron Frame', color: '#6e7683', price: 82 },
-  Nails:     { name: 'Nails',      color: '#b8b0a0', price: 25 },
-  Motor:     { name: 'Motor',      color: '#e8b64c', price: 225 }, // PRD: 200-250
-  WoodFrame: { name: 'Wood Frame', color: '#d9b06a', price: 28 },
-  Table:     { name: 'Table',      color: '#a8763e', price: 60 }, // turunan
-  Bench:     { name: 'Bench',      color: '#8a5a33', price: 45 }, // turunan
-  Window:    { name: 'Window',     color: '#9fd4e8', price: 45 }, // turunan
+  IronBeam:  { name: 'Iron Beam',  color: '#7d8894', price: 92 },  // papan
+  IronFrame: { name: 'Iron Frame', color: '#6e7683', price: 82 },  // turunan
+  Nails:     { name: 'Nails',      color: '#b8b0a0', price: 25 },  // turunan
+  Motor:     { name: 'Motor',      color: '#e8b64c', price: 225 }, // PRD: 200-250, turunan
+  WoodFrame: { name: 'Wood Frame', color: '#d9b06a', price: 47 },  // papan
+  Table:     { name: 'Table',      color: '#a8763e', price: 73 },  // papan (wood table)
+  Bench:     { name: 'Bench',      color: '#8a5a33', price: 70 },  // papan (wood bench)
+  Window:    { name: 'Window',     color: '#9fd4e8', price: 84 },  // papan
 };
+
+// Dua map. Kota tetap 16x12; plot mulai 16x12 lalu membesar tiap ekspansi
+// (ukuran dasar sama dengan grid v1 supaya simpan lama termigrasi utuh).
+const TOWN_W = 16, TOWN_H = 12;
+const PLOT_BASE_W = 16, PLOT_BASE_H = 12;
+// Rantai ekspansi Mayor: struktur dan harga ikut game asli.
+const EXPANSIONS = [
+  { name: 'Size',   cost: 200,  w: 18, h: 13 },
+  { name: 'Size+',  cost: 400,  w: 20, h: 14 },
+  { name: 'Size++', cost: 800,  w: 22, h: 15 },
+  { name: 'Size+++', cost: 2000, w: 24, h: 16 },
+];
+// Harga asli Auto Seller 175.000 terlalu jauh dari ekonomi harga papan;
+// 5.000 = keputusan turunan (target akhir yang terjangkau sesudah pabrik jalan).
+const AUTO_SELLER_COST = 5000;
+const AUTO_SELLER_EVERY = 5; // detik antar penjualan otomatis
 
 // Resep per mesin. in/out jumlah item, secs waktu crafting (Fandom lama).
 // Sawhorse: 1 kayu = 3 plank (NamuWiki, Advanced Saw); Pillar 2 turunan.
@@ -136,16 +154,19 @@ const HARVEST_TEXT = { // teks melayang panen, kunci = obj atau terrain
   oreTin: '+1 Tin Ore', sand: '+1 Sand', clay: '+1 Clay', cotton: '+1 Cotton',
 };
 
-// Peta awal ditaruh eksplisit supaya selalu sama.
+// Peta awal ditaruh eksplisit supaya selalu sama. Kota: toko, Mayor,
+// kotak plot, dan semua sumber daya. Plot: rumput kosong siap dibangun.
 function buildMap() {
-  newGrid();
   S.machines.clear(); S.conveyors.clear(); S.storages.clear();
   S.walls.clear(); S.decor.clear();
+  S.expansion = 0; S.autoSeller = false; S.autoSellerT = 0;
+
+  const town = makeGrid(TOWN_W, TOWN_H);
   const put = (list, obj) => list.forEach(([gx, gy]) => {
-    S.grid[gy][gx].obj = obj;
-    if (NODES[obj]) S.grid[gy][gx].hp = NODES[obj].hp;
+    town[gy][gx].obj = obj;
+    if (NODES[obj]) town[gy][gx].hp = NODES[obj].hp;
   });
-  const terrain = (list, t) => list.forEach(([gx, gy]) => { S.grid[gy][gx].t = t; });
+  const terrain = (list, t) => list.forEach(([gx, gy]) => { town[gy][gx].t = t; });
 
   put([[1, 1], [2, 1], [1, 3], [2, 4], [3, 2], [1, 5], [3, 5], [2, 2], [0, 2], [3, 1]], 'tree');
   put([[13, 2], [14, 3], [13, 4], [14, 1], [12, 2]], 'oreIron');
@@ -155,16 +176,25 @@ function buildMap() {
   put([[3, 3], [9, 6], [13, 7]], 'lantern');
   terrain([[12, 8], [13, 8], [13, 9], [14, 9], [12, 9], [14, 8]], 'sand');
   terrain([[1, 8], [2, 8], [2, 9], [3, 9], [1, 9], [0, 8]], 'clay');
-  S.grid[S.shop.gy][S.shop.gx].obj = 'shop';
+  town[S.shop.gy][S.shop.gx].obj = 'shop';
+  town[S.mayor.gy][S.mayor.gx].obj = 'mayor';
+  town[S.plotPad.gy][S.plotPad.gx].obj = 'plotpad';
+
+  S.maps = {
+    town: { w: TOWN_W, h: TOWN_H, grid: town },
+    plot: { w: PLOT_BASE_W, h: PLOT_BASE_H, grid: makeGrid(PLOT_BASE_W, PLOT_BASE_H) },
+  };
+  applyMap('town');
 }
 
 // Tutorial: satu sistem per langkah, bisa dilewati.
 const TUTORIAL = [
   { text: 'Ketuk pohon. Karakter akan berjalan dan menebang.', done: () => (S.stats.harvested.Log || 0) >= 1 },
   { text: 'Kumpulkan 5 Log.', done: () => (S.stats.harvested.Log || 0) >= 5 },
+  { text: 'Jalan ke kotak plot putih untuk masuk ke lahanmu.', done: () => S.map === 'plot' || [...S.machines.values()].length > 0 },
   { text: 'Buka BANGUN, taruh Sawhorse di rumput kosong.', done: () => [...S.machines.values()].some((m) => m.id === 'sawhorse') },
   { text: 'Ketuk Sawhorse, pilih resep, masukkan Log, berdiri di sampingnya.', done: () => (S.stats.crafted.Plank || 0) + (S.stats.crafted.Pillar || 0) >= 1 },
-  { text: 'Ketuk Toko, jual hasilmu.', done: () => Object.keys(S.stats.sold).length >= 1 },
+  { text: 'Keluar lewat gerbang, ketuk Toko, jual hasilmu.', done: () => Object.keys(S.stats.sold).length >= 1 },
   { text: 'Riset Carpenter di menu Bangun ($50).', done: () => !!S.unlocked.carpenter },
   { text: 'Bebas: kembangkan pabrikmu. Target: buat 1 Motor.', done: () => (S.stats.crafted.Motor || 0) >= 1 },
 ];

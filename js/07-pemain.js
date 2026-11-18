@@ -100,6 +100,8 @@ function updatePlayer(dt) {
     if (dist <= step) {
       p.fx = tx; p.fy = ty;
       p.path.shift();
+      // Injak kotak plot / gerbang: pindah map saat itu juga, jalur batal.
+      if (checkMapTrigger()) return;
       if (!p.path.length) {
         p.frame = 0;
         if (p.onArrive) { const cb = p.onArrive; p.onArrive = null; cb(); }
@@ -113,6 +115,7 @@ function updatePlayer(dt) {
 
   // Diam di samping sawhorse yang berjalan: ikut menebas (visual).
   p.frame = 0;
+  if (S.map !== 'plot') return;
   const cur = playerTile();
   for (const d of DIRS) {
     const m = S.machines.get(key(cur.gx + d.dx, cur.gy + d.dy));
@@ -125,38 +128,70 @@ function updatePlayer(dt) {
   }
 }
 
-// Tumbuh kembali simpul yang habis dipanen.
+// Injak pemicu pindah map: kotak plot di kota, gerbang di plot.
+function checkMapTrigger() {
+  const cur = playerTile();
+  if (S.map === 'town' && cur.gx === S.plotPad.gx && cur.gy === S.plotPad.gy) {
+    switchMap('plot');
+    return true;
+  }
+  if (S.map === 'plot') {
+    const g = gatePos();
+    if (cur.gx === g.gx && cur.gy === g.gy) {
+      switchMap('town');
+      return true;
+    }
+  }
+  return false;
+}
+
+// Tumbuh kembali simpul yang habis dipanen, di kedua map (simulasi jalan
+// terus walau pemain sedang di map lain).
 function updateRegrow(dt) {
-  for (let gy = 0; gy < GRID_H; gy++) {
-    for (let gx = 0; gx < GRID_W; gx++) {
-      const t = S.grid[gy][gx];
-      if (t.regrowIn > 0) {
-        t.regrowIn -= dt;
-        if (t.regrowIn <= 0 && t.obj && NODES[t.obj]) t.hp = NODES[t.obj].hp;
+  for (const name of ['town', 'plot']) {
+    const m = S.maps[name];
+    if (!m) continue;
+    for (let gy = 0; gy < m.h; gy++) {
+      for (let gx = 0; gx < m.w; gx++) {
+        const t = m.grid[gy][gx];
+        if (t.regrowIn > 0) {
+          t.regrowIn -= dt;
+          if (t.regrowIn <= 0 && t.obj && NODES[t.obj]) t.hp = NODES[t.obj].hp;
+        }
       }
     }
   }
 }
 
 // Keputusan ketuk: jalan, panen, atau buka panel sesudah sampai.
+// Bangunan hanya di plot; toko, Mayor, dan sumber daya hanya di kota.
 function interactAt(gx, gy) {
   const t = tileAt(gx, gy);
   const k = key(gx, gy);
 
-  if (S.machines.has(k)) {
-    goTo(gx, gy, () => UI.openInspect(gx, gy));
+  if (S.map === 'plot') {
+    if (S.machines.has(k)) {
+      goTo(gx, gy, () => UI.openInspect(gx, gy));
+      return;
+    }
+    if (S.storages.has(k)) {
+      goTo(gx, gy, () => UI.openStorage(gx, gy));
+      return;
+    }
+    if (S.conveyors.has(k) || S.walls.has(k) || S.decor.has(k)) {
+      UI.openInspect(gx, gy);
+      return;
+    }
+    goTo(gx, gy, null);
     return;
   }
-  if (S.storages.has(k)) {
-    goTo(gx, gy, () => UI.openStorage(gx, gy));
-    return;
-  }
-  if (S.conveyors.has(k) || S.walls.has(k) || S.decor.has(k)) {
-    UI.openInspect(gx, gy);
-    return;
-  }
+
   if (gx === S.shop.gx && gy === S.shop.gy) {
     goTo(gx, gy, () => UI.openShop());
+    return;
+  }
+  if (gx === S.mayor.gx && gy === S.mayor.gy) {
+    goTo(gx, gy, () => UI.openMayor());
     return;
   }
   if (t.obj && NODES[t.obj] && t.hp > 0) {
