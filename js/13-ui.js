@@ -293,7 +293,7 @@ const UI = {
     if (m && st) {
       st.textContent = m.stopped ? 'Dihentikan (Stop). Tekan Lanjutkan untuk jalan lagi.'
         : m.progress > 0 ? 'Sedang mengolah.'
-        : !inputsOk(m) ? 'Menunggu bahan yang cocok di Masuk.'
+        : !inputsOk(m) ? 'Menunggu bahan: ' + missingList(m) + '.'
         : !outputRoom(m) ? 'Output penuh — Ambil hasil atau sambung conveyor/storage.'
         : m.id === 'sawhorse' ? 'Sawhorse jalan bila karakter berdiri di sampingnya.'
         : 'Siap mengolah.';
@@ -495,19 +495,47 @@ const UI = {
   },
 };
 
+// Bahan masuk sebagian: berapa pun yang ada di tas boleh masuk, bahkan
+// 1 walau resep perlu 2. Mesin tetap diam sampai 1 ronde lengkap
+// terkumpul (inputsOk di canStart), jadi tidak ada yang berubah di
+// logika jalan mesin — yang berubah hanya pintunya.
 function depositTo(m) {
   const r = getRecipe(m);
   if (!r) return;
-  let moved = 0;
-  for (let round = 0; round < 5; round++) {
-    if (!Object.entries(r.in).every(([id, n]) => invCount(id) >= n)) break;
-    if (bufferTotal(m.input) + Object.values(r.in).reduce((a, b) => a + b, 0) > INPUT_CAP) break;
-    for (const [id, n] of Object.entries(r.in)) { invAdd(id, -n); m.input[id] = (m.input[id] || 0) + n; }
-    moved++;
+  const moved = [];
+  for (const [id, n] of Object.entries(r.in)) {
+    const room = INPUT_CAP - bufferTotal(m.input);
+    if (room <= 0) break;
+    const take = Math.min(invCount(id), room);
+    if (take <= 0) continue;
+    invAdd(id, -take);
+    m.input[id] = (m.input[id] || 0) + take;
+    moved.push(ITEMS[id].name + ' ' + take);
   }
-  if (moved) { SFX.play('place'); UI.toast('Bahan masuk: ' + moved + 'x resep'); UI.refreshHUD(); }
-  else { SFX.play('error'); UI.toast('Tidak ada bahan yang cocok di tas'); }
+  if (moved.length) {
+    SFX.play('place');
+    UI.toast('Bahan masuk: ' + moved.join(', ') + missingNote(m));
+    UI.refreshHUD();
+  } else {
+    SFX.play('error');
+    UI.toast(bufferTotal(m.input) >= INPUT_CAP ? 'Input mesin penuh' : 'Tidak ada bahan resep ini di tas');
+  }
   saveSoon();
+}
+
+// Bahan yang masih kurang untuk 1 ronde, supaya jelas apa yang dicari.
+function missingList(m) {
+  const r = getRecipe(m);
+  if (!r) return '';
+  return Object.entries(r.in)
+    .filter(([id, n]) => (m.input[id] || 0) < n)
+    .map(([id, n]) => ITEMS[id].name + ' ' + (n - (m.input[id] || 0)) + ' lagi')
+    .join(', ');
+}
+
+function missingNote(m) {
+  const miss = missingList(m);
+  return miss ? '. Kurang: ' + miss : '';
 }
 
 function takeFrom(m) {

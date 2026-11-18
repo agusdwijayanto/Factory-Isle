@@ -29,10 +29,14 @@ Live: https://agusdwijayanto.github.io/Indotopia/
 
 Tes: headless 71/71, Playwright 79/79 (HP 390x844 + desktop 1280x800), nol error konsol, nol overflow. Versi aset: ?v=7.
 
+## Sudah live — v8 (19 Nov 2026)
+
+- [x] Perbaikan deposit bahan: bahan masuk sebagian (berapa pun, bahkan 1), mesin diam sampai 1 ronde lengkap terkumpul; toast dan status panel menyebut bahan apa yang kurang. Berlaku untuk semua mesin (satu fungsi deposit).
+
 ## Di luar tahap ini (sesuai PRD)
 
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v7.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v8.
