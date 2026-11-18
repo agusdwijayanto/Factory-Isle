@@ -37,10 +37,14 @@ Tes: headless 71/71, Playwright 79/79 (HP 390x844 + desktop 1280x800), nol error
 
 - [x] Conveyor menarik dari mesin di belakang, kiri, dan kanan (prioritas belakang dulu). Depan tetap arah keluar.
 
+## Sudah live — v10 (19 Nov 2026)
+
+- [x] Deposit masuk semua: batas input dihapus, sekali tekan semua bahan resep di tas masuk, mesin jalan kalau 1 ronde lengkap. Pesan "Input mesin penuh" hilang.
+
 ## Di luar tahap ini (sesuai PRD)
 
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v9.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v10.

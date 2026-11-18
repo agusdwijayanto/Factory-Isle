@@ -495,18 +495,16 @@ const UI = {
   },
 };
 
-// Bahan masuk sebagian: berapa pun yang ada di tas boleh masuk, bahkan
-// 1 walau resep perlu 2. Mesin tetap diam sampai 1 ronde lengkap
-// terkumpul (inputsOk di canStart), jadi tidak ada yang berubah di
-// logika jalan mesin — yang berubah hanya pintunya.
+// Sekali tekan, semua bahan resep yang ada di tas masuk, berapa pun.
+// Buffer input tidak dibatasi: batas 30 dulu membuat satu bahan
+// menguasai buffer dan memblokir bahan lain (Carpenter macet di v8).
+// Mesin tetap diam sampai 1 ronde lengkap terkumpul (inputsOk).
 function depositTo(m) {
   const r = getRecipe(m);
   if (!r) return;
   const moved = [];
-  for (const [id, n] of Object.entries(r.in)) {
-    const room = INPUT_CAP - bufferTotal(m.input);
-    if (room <= 0) break;
-    const take = Math.min(invCount(id), room);
+  for (const [id] of Object.entries(r.in)) {
+    const take = invCount(id);
     if (take <= 0) continue;
     invAdd(id, -take);
     m.input[id] = (m.input[id] || 0) + take;
@@ -518,7 +516,7 @@ function depositTo(m) {
     UI.refreshHUD();
   } else {
     SFX.play('error');
-    UI.toast(bufferTotal(m.input) >= INPUT_CAP ? 'Input mesin penuh' : 'Tidak ada bahan resep ini di tas');
+    UI.toast('Tidak ada bahan resep ini di tas');
   }
   saveSoon();
 }

@@ -22,7 +22,7 @@ const Atlas = {
     this._ready = (async () => {
       let m = null;
       try {
-        const r = await fetch('assets/atlas-manifest.json?v=9');
+        const r = await fetch('assets/atlas-manifest.json?v=10');
         if (r.ok) m = await r.json();
       } catch (_) { /* file:// atau offline: pakai salinan darurat */ }
       this.manifest = m || MANIFEST_EMBEDDED;

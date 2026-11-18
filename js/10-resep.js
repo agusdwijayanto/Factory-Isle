@@ -1,5 +1,5 @@
 // Logika resep murni: tanpa DOM, bisa dites headless.
-const INPUT_CAP = 30, OUTPUT_CAP = 30;
+const OUTPUT_CAP = 30;
 
 function getRecipe(m) { return RECIPES[m.id][m.recipe] || null; }
 
@@ -49,10 +49,11 @@ function finishCraft(m, gx, gy) {
 }
 
 // Mesin hanya menerima material resep yang sedang dipilih (aturan wiki).
+// Tanpa batas jumlah: buffer input tidak dibatasi, supaya bahan dari
+// conveyor maupun dari tas tidak pernah tertahan di pintu masuk.
 function machineAccepts(m, itemId) {
   const r = getRecipe(m);
-  if (!r || !(itemId in r.in)) return false;
-  return bufferTotal(m.input) < INPUT_CAP;
+  return !!r && (itemId in r.in);
 }
 
 function recipeLabel(m) {
