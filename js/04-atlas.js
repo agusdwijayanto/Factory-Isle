@@ -7,6 +7,12 @@ const Atlas = {
   canvas: null,
   painters: {}, // nama sprite -> (g, ox, oy, cell, variant) => void
   _ready: null,
+  // Pelukis prosedural menggambar sampai ~10px di bawah alas sel (sudut depan
+  // kotak isometrik + bayangan). Tanpa ruang luapan, piksel itu merembes ke
+  // sel baris bawah dan muncul sebagai mangkuk di ubin tanah. Tiap baris
+  // atlas prosedural diberi bantalan 24px di bawah sel. Sprite atlas.png
+  // nanti harus muat di dalam selnya sendiri.
+  pad: 24,
 
   // Salinan darurat kalau fetch manifest gagal (mis. dibuka via file://).
   fallback: null, // diisi dari MANIFEST_EMBEDDED di bawah saat init
@@ -28,8 +34,9 @@ const Atlas = {
 
   build() {
     const m = this.manifest, cell = m.cell;
+    const stride = cell + this.pad;
     const cv = document.createElement('canvas');
-    cv.width = m.cols * cell; cv.height = m.rows * cell;
+    cv.width = m.cols * cell; cv.height = m.rows * stride;
     const g = cv.getContext('2d');
     for (const [name, s] of Object.entries(m.sprites)) {
       const paint = this.painters[name];
@@ -37,31 +44,33 @@ const Atlas = {
       if (s.frames && s.dirs) {
         for (let d = 0; d < s.dirs; d++)
           for (let f = 0; f < s.frames; f++)
-            paint(g, (s.col + f) * cell, (s.row + d) * cell, cell, { dir: d, frame: f });
+            paint(g, (s.col + f) * cell, (s.row + d) * stride, cell, { dir: d, frame: f });
       } else {
-        paint(g, s.col * cell, s.row * cell, cell, {});
+        paint(g, s.col * cell, s.row * stride, cell, {});
       }
     }
     this.canvas = cv;
   },
 
-  // Rect sel sprite di atlas. frame/dir hanya untuk sprite animasi.
+  // Rect sel sprite di atlas, termasuk ruang luapan di bawah sel.
+  // frame/dir hanya untuk sprite animasi.
   rect(name, frame = 0, dir = 0) {
     const s = this.manifest.sprites[name];
     if (!s) return null;
     const cell = this.manifest.cell;
     const col = s.col + (s.frames ? frame : 0);
     const row = s.row + (s.dirs ? dir : 0);
-    return { sx: col * cell, sy: row * cell, sw: s.w * cell, sh: s.h * cell };
+    return { sx: col * cell, sy: row * (cell + this.pad), sw: s.w * cell, sh: s.h * cell + this.pad, cellH: s.h * cell };
   },
 
-  // Gambar sprite dengan jangkar bawah-tengah di titik tanah (x, y) layar.
+  // Gambar sprite dengan alas sel di titik tanah (x, y) layar; luapan di
+  // bawah alas ikut tergambar, seperti sudut depan kotak isometrik.
   draw(ctx, name, x, y, scale, frame = 0, dir = 0, alpha = 1) {
     const r = this.rect(name, frame, dir);
     if (!r) return;
     const w = r.sw * scale, h = r.sh * scale;
     if (alpha !== 1) ctx.globalAlpha = alpha;
-    ctx.drawImage(this.canvas, r.sx, r.sy, r.sw, r.sh, x - w / 2, y - h, w, h);
+    ctx.drawImage(this.canvas, r.sx, r.sy, r.sw, r.sh, x - w / 2, y - r.cellH * scale, w, h);
     if (alpha !== 1) ctx.globalAlpha = 1;
   },
 
@@ -70,7 +79,7 @@ const Atlas = {
     const r = this.rect(name);
     if (!r) return;
     const w = r.sw * scale, h = r.sh * scale;
-    ctx.drawImage(this.canvas, r.sx, r.sy, r.sw, r.sh, x - w / 2, y - h / 2, w, h);
+    ctx.drawImage(this.canvas, r.sx, r.sy, r.sw, r.sh, x - w / 2, y - (r.cellH * scale) / 2, w, h);
   },
 };
 

@@ -24,9 +24,11 @@ function fitCanvas() {
 
 // ---------- Pelukis atlas: g = konteks atlas, (cx, gy) = tengah & alas ----------
 // Semua pelukis memakai skala 1 (sel 64px). Dipanggil Atlas.build.
+// Belah ketupat tanah 2:1 (64x32), BUKAN 64x64: ubin setinggi sel penuh
+// menumpuk seperti sisik dan tanah terlihat berbukit, bukan datar.
 function P_ground(g, cx, gy, color, dots) {
   g.beginPath();
-  g.moveTo(cx, gy - 32); g.lineTo(cx + 32, gy); g.lineTo(cx, gy + 32); g.lineTo(cx - 32, gy);
+  g.moveTo(cx, gy - 16); g.lineTo(cx + 32, gy); g.lineTo(cx, gy + 16); g.lineTo(cx - 32, gy);
   g.closePath(); g.fillStyle = color; g.fill();
   g.strokeStyle = 'rgba(0,0,0,0.22)'; g.lineWidth = 1; g.stroke();
   if (dots) { g.fillStyle = dots; g.beginPath(); g.arc(cx - 9, gy - 2, 1.6, 0, 6.29); g.fill(); g.beginPath(); g.arc(cx + 8, gy + 3, 1.4, 0, 6.29); g.fill(); }
@@ -415,14 +417,6 @@ function render() {
     ctx.beginPath(); ctx.arc(st.x * VW, st.y * VH, st.r, 0, 6.29); ctx.fill();
   }
   ctx.globalAlpha = 1;
-
-  const c0 = isoPoint(0, 0, S.cam), c1 = isoPoint(GRID_W, 0, S.cam);
-  const c2 = isoPoint(GRID_W, GRID_H, S.cam), c3 = isoPoint(0, GRID_H, S.cam);
-  ctx.fillStyle = 'rgba(0,0,0,0.35)';
-  ctx.beginPath();
-  ctx.moveTo(c0.x, c0.y + 8 * z); ctx.lineTo(c1.x, c1.y + 8 * z);
-  ctx.lineTo(c2.x, c2.y + 8 * z); ctx.lineTo(c3.x, c3.y + 8 * z);
-  ctx.closePath(); ctx.fill();
 
   const glows = [];
   const playerS = Math.floor(S.player.fx + S.player.fy);
