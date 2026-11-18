@@ -45,10 +45,18 @@ Tes: headless 71/71, Playwright 79/79 (HP 390x844 + desktop 1280x800), nol error
 
 - [x] Inclined Conveyor dihapus dari menu bangun, tinggal Conveyor saja. Yang sudah terpasang tetap jalan.
 
+## Sudah live — v12 (19 Nov 2026)
+
+- [x] Sawhorse jadi otomatis seperti mesin lain: tetap jalan walau karakter jauh dan walau pemain di kota. Teks lama soal berdiri di sampingnya dihapus (deskripsi, tutorial, panel, bantuan).
+- [x] Floater hasil mesin (+1/+3/+6) hanya tampil di lahan: floater menyimpan map asal, render melewati floater dari map lain. Hasil mesin yang selesai saat pemain di kota tetap ketempel plot.
+- [x] Tombol BANGUN disembunyikan di kota, hanya tampil di lahan. Menu bangun yang terbuka ikut tertutup saat kembali ke kota.
+
+Tes: headless 74/74, Playwright 82/82, nol error konsol. Versi aset: ?v=12.
+
 ## Di luar tahap ini (sesuai PRD)
 
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v11.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v12.

@@ -786,6 +786,7 @@ function render() {
   ctx.textAlign = 'center';
   ctx.font = '700 ' + Math.max(13, Math.round(14 * z)) + 'px system-ui, sans-serif';
   for (const f of S.floaters) {
+    if (f.map && f.map !== S.map) continue;
     const p = (S.time - f.born) / 0.9;
     if (p >= 1) continue;
     const { x, y } = tileCenter(f.gx, f.gy, S.cam);

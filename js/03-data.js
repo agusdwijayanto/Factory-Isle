@@ -89,7 +89,7 @@ const RECIPES = {
 };
 
 const MACHINES = {
-  sawhorse:   { name: 'Sawhorse',     desc: 'Potong manual dengan kapak. Berjalan hanya bila karakter di sampingnya.', color: '#a8763e', research: null },
+  sawhorse:   { name: 'Sawhorse',     desc: 'Potong kayu jadi Plank dan Pillar, jalan otomatis seperti mesin lain.', color: '#a8763e', research: null },
   splitter:   { name: 'Log Splitter', desc: 'Membelah log menjadi bahan bakar peleburan.', color: '#7a5230', research: null },
   carpenter:  { name: 'Carpenter',    desc: 'Crafting otomatis produk kayu dan furnitur.', color: '#c9a86a', research: { money: 50 } },
   oven:       { name: 'Oven',         desc: 'Tungku awal untuk bata dan kaca.', color: '#b06040', research: { money: 100 } },
@@ -192,7 +192,7 @@ const TUTORIAL = [
   { text: 'Kumpulkan 5 Log.', done: () => (S.stats.harvested.Log || 0) >= 5 },
   { text: 'Jalan ke kotak plot putih untuk masuk ke lahanmu.', done: () => S.map === 'plot' || [...S.machines.values()].length > 0 },
   { text: 'Buka BANGUN, taruh Sawhorse di rumput kosong.', done: () => [...S.machines.values()].some((m) => m.id === 'sawhorse') },
-  { text: 'Ketuk Sawhorse, pilih resep, masukkan Log, berdiri di sampingnya.', done: () => (S.stats.crafted.Plank || 0) + (S.stats.crafted.Pillar || 0) >= 1 },
+  { text: 'Ketuk Sawhorse, pilih resep, masukkan Log.', done: () => (S.stats.crafted.Plank || 0) + (S.stats.crafted.Pillar || 0) >= 1 },
   { text: 'Keluar lewat gerbang, ketuk Toko, jual hasilmu.', done: () => Object.keys(S.stats.sold).length >= 1 },
   { text: 'Riset Carpenter di menu Bangun ($50).', done: () => !!S.unlocked.carpenter },
   { text: 'Bebas: kembangkan pabrikmu. Target: buat 1 Motor.', done: () => (S.stats.crafted.Motor || 0) >= 1 },

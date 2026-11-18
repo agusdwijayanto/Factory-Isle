@@ -82,6 +82,12 @@ const UI = {
     $('money').textContent = '$' + fmt(S.money);
     $('mapname').textContent = S.map === 'plot' ? 'Lahan' : 'Kota';
     $('btn-tas').textContent = 'TAS (' + carriedTotal() + ')';
+    // Bangun hanya di lahan: tombol disembunyikan di kota.
+    $('btn-build').classList.toggle('hidden', S.map !== 'plot');
+    if (S.map !== 'plot') {
+      this.closePanel('build-menu');
+      if (S.placing) this.cancelPlacing();
+    }
   },
 
   // Satu panel dalam satu waktu: membuka panel lain menutup panel inspect/storage.
@@ -295,7 +301,6 @@ const UI = {
         : m.progress > 0 ? 'Sedang mengolah.'
         : !inputsOk(m) ? 'Menunggu bahan: ' + missingList(m) + '.'
         : !outputRoom(m) ? 'Output penuh — Ambil hasil atau sambung conveyor/storage.'
-        : m.id === 'sawhorse' ? 'Sawhorse jalan bila karakter berdiri di sampingnya.'
         : 'Siap mengolah.';
     }
   },

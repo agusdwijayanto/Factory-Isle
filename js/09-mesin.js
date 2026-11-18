@@ -1,12 +1,7 @@
-// Mesin dan conveyor. Mesin mengolah sendiri kalau bahannya ada;
-// sawhorse hanya jalan bila karakter berdiri di sampingnya (potong manual).
+// Mesin dan conveyor. Semua mesin mengolah sendiri kalau bahannya ada,
+// termasuk Sawhorse: tetap jalan walau pemain sedang di kota.
 function newMachine(id, dir) {
   return { id, dir, recipe: 0, input: {}, output: {}, progress: 0, stopped: false };
-}
-
-function adjacentToPlayer(gx, gy) {
-  const p = playerTile();
-  return Math.abs(p.gx - gx) + Math.abs(p.gy - gy) === 1;
 }
 
 function updateMachines(dt) {
@@ -17,8 +12,6 @@ function updateMachines(dt) {
       if (canStart(m)) { consumeInputs(m); m.progress = 0.001; }
       else continue;
     }
-    // Sawhorse: karakter harus di samping DI PLOT; di kota ia berhenti.
-    if (m.id === 'sawhorse' && (S.map !== 'plot' || !adjacentToPlayer(gx, gy))) continue;
     const r = getRecipe(m);
     m.progress += dt / r.secs;
     if (m.progress >= 1) {

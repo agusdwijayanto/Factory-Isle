@@ -42,7 +42,7 @@ function finishCraft(m, gx, gy) {
   m.output[r.out] = (m.output[r.out] || 0) + r.n;
   S.stats.crafted[r.out] = (S.stats.crafted[r.out] || 0) + r.n;
   if (gx !== undefined) {
-    addFloater(gx, gy, '+' + r.n + ' ' + ITEMS[r.out].name, '#5eff8a');
+    addFloater(gx, gy, '+' + r.n + ' ' + ITEMS[r.out].name, '#5eff8a', 'plot');
     S.pulses.set(key(gx, gy), S.time);
   }
   saveSoon();

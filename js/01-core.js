@@ -14,7 +14,7 @@ const S = {
   selected: null,    // "gx,gy" petak yang panelnya terbuka
   placing: null,     // {kind:'machine'|'conveyor'|'storage'|'wall'|'decor', id, fromKey?}
   placeDir: 0,
-  floaters: [],      // {gx, gy, text, color, born}
+  floaters: [],      // {gx, gy, text, color, born, map} map asal: hanya tampil di map itu
   pulses: new Map(), // "gx,gy" -> born, denyut saat diketuk
   beltT: 0,          // jam animasi conveyor
   time: 0,           // jam global detik
@@ -126,8 +126,12 @@ let SFX = { play() {} };
 let TOAST = () => {};
 let FLOATER_SINK = null; // diisi render agar addFloater bisa dipakai tes headless
 
-function addFloater(gx, gy, text, color) {
-  S.floaters.push({ gx, gy, text, color, born: S.time });
+function addFloater(gx, gy, text, color, map) {
+  // map = map asal floater; default map aktif saat dibuat. Mesin selalu
+  // di plot, jadi finishCraft mengisi 'plot' eksplisit: kalau tidak,
+  // hasil mesin yang selesai saat pemain di kota akan ketempel 'town'
+  // dan bocor lagi ke kota.
+  S.floaters.push({ gx, gy, text, color, born: S.time, map: map || S.map });
   if (S.floaters.length > 24) S.floaters.shift();
 }
 
