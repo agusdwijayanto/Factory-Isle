@@ -459,9 +459,13 @@ function render() {
       ctx.save();
       if (scale !== 1) { ctx.translate(x, y); ctx.scale(scale, scale); ctx.translate(-x, -y); }
       if (t.obj && t.obj !== 'shop') {
-        const sprite = t.obj === 'tree' && t.hp <= 0 ? 'stump' : t.obj;
-        Atlas.draw(ctx, sprite, x, y + 6 * z, z);
-        if (GLOWS[t.obj]) { const [dx, dy, r, a] = GLOWS[t.obj]; glows.push({ x: x + dx * z, y: y + dy * z, r: r * z, a }); }
+        // Node habis (hp 0) hilang sampai tumbuh lagi; pohon menyisakan tunggul.
+        const dead = NODES[t.obj] && t.hp <= 0;
+        if (!dead || t.obj === 'tree') {
+          const sprite = t.obj === 'tree' && dead ? 'stump' : t.obj;
+          Atlas.draw(ctx, sprite, x, y + 6 * z, z);
+          if (GLOWS[t.obj]) { const [dx, dy, r, a] = GLOWS[t.obj]; glows.push({ x: x + dx * z, y: y + dy * z, r: r * z, a }); }
+        }
       }
       if (t.obj === 'shop') Atlas.draw(ctx, 'shop', x, y + 6 * z, z);
       const m = S.machines.get(key(gx, gy));
