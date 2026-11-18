@@ -433,7 +433,10 @@ function render() {
 
       const conv = S.conveyors.get(key(gx, gy));
       if (conv) {
-        Atlas.draw(ctx, conv.id, x, y + 6 * z, z);
+        // Belt itu rata dengan lantai: pakai drawTile (jangkar tengah petak).
+        // draw() berjangkar alas sel, mengangkat belah ketupat belt 26px
+        // ke atas sehingga item dan panah alir terlihat ngambang di rumput.
+        Atlas.drawTile(ctx, conv.id, x, y, z);
         paintBeltFlow(x, y, z, conv.dir);
         if (conv.item) {
           const [ax, ay] = BELT_AXIS[conv.dir];
@@ -526,7 +529,8 @@ function render() {
     ctx.fillStyle = ok ? 'rgba(94,255,138,0.25)' : 'rgba(255,80,80,0.25)'; ctx.fill();
     ctx.strokeStyle = ok ? '#5eff8a' : '#ff5050'; ctx.lineWidth = 2; ctx.stroke();
     if (ok) {
-      Atlas.draw(ctx, S.placing.id, x, y + 6 * z, z, 0, 0, 0.55);
+      if (S.placing.kind === 'conveyor') Atlas.drawTile(ctx, S.placing.id, x, y, z, 0.55);
+      else Atlas.draw(ctx, S.placing.id, x, y + 6 * z, z, 0, 0, 0.55);
       if (S.placing.kind === 'machine' || S.placing.kind === 'conveyor') paintDirArrow(x, y, z, S.placeDir);
     }
   }

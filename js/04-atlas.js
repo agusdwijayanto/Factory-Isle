@@ -75,11 +75,13 @@ const Atlas = {
   },
 
   // Gambar ubin tanah: sel berisi belah ketupat, jangkar di tengah petak.
-  drawTile(ctx, name, x, y, scale) {
+  drawTile(ctx, name, x, y, scale, alpha = 1) {
     const r = this.rect(name);
     if (!r) return;
     const w = r.sw * scale, h = r.sh * scale;
+    if (alpha !== 1) ctx.globalAlpha = alpha;
     ctx.drawImage(this.canvas, r.sx, r.sy, r.sw, r.sh, x - w / 2, y - (r.cellH * scale) / 2, w, h);
+    if (alpha !== 1) ctx.globalAlpha = 1;
   },
 };
 
