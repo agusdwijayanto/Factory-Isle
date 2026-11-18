@@ -417,11 +417,6 @@ $('btn-burger').addEventListener('click', () => {
   if (m.classList.contains('hidden')) UI.openPanel('burger-menu');
   else m.classList.add('hidden');
 });
-$('btn-admin').addEventListener('click', () => {
-  const m = $('admin-panel');
-  if (m.classList.contains('hidden')) UI.openPanel('admin-panel');
-  else m.classList.add('hidden');
-});
 $('btn-skip').addEventListener('click', () => {
   S.tutDone = true;
   UI.toast('Tutorial dilewati');
