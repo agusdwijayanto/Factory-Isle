@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Indotopia — Mockup Tycoon Pabrik</title>
+<title>Indotopia — Tycoon Pabrik Isometrik</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="style.css?v=1">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 <canvas id="game"></canvas>
@@ -17,18 +17,19 @@
 </header>
 
 <nav id="burger-menu" class="panel hidden">
-  <div class="panel-title">Current World: MOCKUP</div>
-  <button data-act="Exit World">Exit World</button>
-  <button data-act="Respawn">Respawn</button>
-  <button data-act="Options">Options</button>
-  <button data-act="Store">Store</button>
-  <button data-act="Back">Back</button>
+  <div class="panel-title">Menu</div>
+  <button data-act="Pengaturan">Pengaturan</button>
+  <button data-act="Bantuan">Bantuan</button>
+  <button data-act="Admin">Admin</button>
+  <button data-act="Tutup">Tutup</button>
 </nav>
 
-<div id="hint">Seret untuk geser, cubit atau roda mouse untuk zoom, ketuk pohon atau bijih untuk panen.</div>
+<div id="hint">Ketuk petak untuk berjalan. Ketuk pohon, bijih, atau mesin untuk bekerja.</div>
 
 <footer id="buildbar">
-  <div id="target">Target: pasang 1 Conveyor</div>
+  <div id="target"><span id="target-text">Target: ketuk pohon.</span> <button id="btn-skip">Lewati</button></div>
+  <button id="btn-rotate" class="hidden">PUTAR</button>
+  <button id="btn-tas">TAS (0)</button>
   <button id="btn-build">BANGUN</button>
 </footer>
 
@@ -41,17 +42,59 @@
   <div id="build-items"></div>
 </section>
 
-<section id="machine-panel" class="panel hidden">
+<section id="inspect-panel" class="panel hidden">
   <div class="panel-head">
-    <div class="panel-title" id="mp-name">Mesin</div>
-    <button class="btn-x" data-close="machine-panel">X</button>
+    <div class="panel-title" id="insp-name">Periksa</div>
+    <button class="btn-x" data-close="inspect-panel">X</button>
   </div>
-  <div id="mp-desc" class="mp-desc"></div>
-  <div id="mp-recipe" class="mp-recipe"></div>
-  <div class="mp-bar"><div id="mp-progress"></div></div>
-  <div class="mp-actions">
-    <button id="mp-eject">Eject</button>
-    <button id="mp-stop">Stop</button>
+  <div id="insp-body"></div>
+</section>
+
+<section id="storage-panel" class="panel hidden">
+  <div class="panel-head">
+    <div class="panel-title" id="storage-name">Penyimpanan</div>
+    <button class="btn-x" data-close="storage-panel">X</button>
+  </div>
+  <div id="storage-body"></div>
+</section>
+
+<section id="shop-panel" class="panel hidden">
+  <div class="panel-head">
+    <div class="panel-title">Toko — Jual</div>
+    <button class="btn-x" data-close="shop-panel">X</button>
+  </div>
+  <div id="shop-body"></div>
+</section>
+
+<section id="tas-panel" class="panel hidden">
+  <div class="panel-head">
+    <div class="panel-title">Tas</div>
+    <button class="btn-x" data-close="tas-panel">X</button>
+  </div>
+  <div id="tas-body"></div>
+</section>
+
+<section id="settings-panel" class="panel hidden">
+  <div class="panel-head">
+    <div class="panel-title">Pengaturan</div>
+    <button class="btn-x" data-close="settings-panel">X</button>
+  </div>
+  <button id="btn-sound" class="menu-btn">Suara: Hidup</button>
+  <button id="btn-center" class="menu-btn">Pusatkan ke karakter</button>
+  <button id="btn-zoom-reset" class="menu-btn">Reset zoom &amp; kamera</button>
+</section>
+
+<section id="help-panel" class="panel hidden">
+  <div class="panel-head">
+    <div class="panel-title">Bantuan</div>
+    <button class="btn-x" data-close="help-panel">X</button>
+  </div>
+  <div class="help-text">
+    <p>Ketuk petak: karakter berjalan ke sana. Ketuk pohon, bijih, pasir, tanah liat, atau kapas: karakter memanen di tempat.</p>
+    <p>Ketuk mesin: karakter menghampiri dan panelnya terbuka. Masukkan bahan, mesin mengolah sendiri. Sawhorse hanya jalan bila karakter berdiri di sampingnya.</p>
+    <p>Conveyor mengalirkan item searah panah ke mesin atau penyimpanan di depannya.</p>
+    <p>Ketuk Toko: karakter berjalan ke toko untuk menjual. Coil dan Gear tidak dijual.</p>
+    <p>PC: WASD atau panah untuk berjalan, R memutar arah saat menaruh, Esc menutup panel.</p>
   </div>
 </section>
 
@@ -60,21 +103,28 @@
     <div class="panel-title">ADMIN</div>
     <button class="btn-x" data-close="admin-panel">X</button>
   </div>
-  <button data-admin="Tambah uang">Tambah uang</button>
-  <button data-admin="Tambah material">Tambah material</button>
-  <button data-admin="Buka semua resep">Buka semua resep</button>
-  <button data-admin="Selesaikan instan">Selesaikan instan</button>
-  <button data-admin="Reset simpan">Reset simpan</button>
+  <button data-admin="money">Tambah uang (+$1.000)</button>
+  <button data-admin="materials">Tambah material</button>
+  <button data-admin="unlock">Buka semua resep</button>
+  <button data-admin="finish">Selesaikan instan</button>
+  <button data-admin="reset">Reset simpan</button>
 </section>
 
 <div id="toast" class="hidden"></div>
 
-<script src="js/01-core.js?v=1"></script>
-<script src="js/02-iso.js?v=1"></script>
-<script src="js/03-render.js?v=1"></script>
-<script src="js/04-input.js?v=1"></script>
-<script src="js/05-ui.js?v=1"></script>
-<script src="js/06-mockup-data.js?v=1"></script>
-<script src="js/07-main.js?v=1"></script>
+<script src="js/01-core.js?v=2"></script>
+<script src="js/02-iso.js?v=2"></script>
+<script src="js/03-data.js?v=2"></script>
+<script src="js/04-atlas.js?v=2"></script>
+<script src="js/05-render.js?v=2"></script>
+<script src="js/06-input.js?v=2"></script>
+<script src="js/07-pemain.js?v=2"></script>
+<script src="js/08-gerak.js?v=2"></script>
+<script src="js/09-mesin.js?v=2"></script>
+<script src="js/10-resep.js?v=2"></script>
+<script src="js/11-ekonomi.js?v=2"></script>
+<script src="js/12-simpan.js?v=2"></script>
+<script src="js/13-ui.js?v=2"></script>
+<script src="js/14-main.js?v=2"></script>
 </body>
 </html>

@@ -1,8 +1,9 @@
 // Input sentuh + mouse + keyboard. Ketuk dibedakan dari seret lewat jarak
-// gerak, supaya geser kamera tidak ikut memanen atau membuka panel.
+// gerak. WASD/panah menggerakkan karakter, bukan kamera.
 const pointers = new Map();
 let downPos = null, dragged = false;
 let pinchD0 = 0, pinchZ0 = 1;
+let lastPan = null;
 
 function pinchDist() {
   const [a, b] = [...pointers.values()];
@@ -13,7 +14,6 @@ function pinchMid() {
   return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
 }
 
-// Zoom dengan jangkar: titik dunia di bawah jangkar harus tetap di tempat.
 function zoomAt(mx, my, newZoom) {
   const old = S.cam.zoom;
   newZoom = clampZoom(newZoom);
@@ -24,13 +24,11 @@ function zoomAt(mx, my, newZoom) {
 }
 
 cv.addEventListener('pointerdown', (e) => {
-  try { cv.setPointerCapture(e.pointerId); } catch (_) { /* pointer sintetis: abaikan */ }
+  try { cv.setPointerCapture(e.pointerId); } catch (_) { /* pointer sintetis */ }
   pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
   if (pointers.size === 1) { downPos = { x: e.clientX, y: e.clientY }; dragged = false; lastPan = { x: e.clientX, y: e.clientY }; }
   else if (pointers.size === 2) { pinchD0 = pinchDist(); pinchZ0 = S.cam.zoom; dragged = true; }
 });
-
-let lastPan = null; // posisi pointer sebelumnya, untuk delta seret manual
 
 cv.addEventListener('pointermove', (e) => {
   const p = pointers.get(e.pointerId);
@@ -43,9 +41,6 @@ cv.addEventListener('pointermove', (e) => {
   }
   if (pointers.size === 1 && downPos) {
     if (!dragged && Math.hypot(e.clientX - downPos.x, e.clientY - downPos.y) > 6) dragged = true;
-    // Delta manual, bukan movementX: movementX tidak konsisten di browser sentuh.
-    // lastPan hanya maju saat sudah menyeret, supaya gerakan sebelum ambang
-    // batas tidak hilang begitu seretan dimulai.
     if (dragged && lastPan) { S.cam.x += e.clientX - lastPan.x; S.cam.y += e.clientY - lastPan.y; }
     if (dragged) lastPan = { x: e.clientX, y: e.clientY };
   }
@@ -70,49 +65,72 @@ cv.addEventListener('wheel', (e) => {
 
 function handleTap(sx, sy) {
   const g = screenToGrid(sx, sy, S.cam);
-  if (!inGrid(g.gx, g.gy)) { UI.closeMachine(); return; }
-  const t = tileAt(g.gx, g.gy), k = key(g.gx, g.gy);
-
-  if (S.placing) {
-    if (canPlace(g.gx, g.gy)) {
-      S.machines.set(k, { id: S.placing, dir: 0 });
-      addFloater(g.gx, g.gy, 'Terpasang!', '#5eff8a');
-      UI.toast('Mockup: ' + MACHINES[S.placing].name + ' terpasang');
-      UI.cancelPlacing();
-    } else {
-      UI.toast('Tidak bisa ditaruh di sini');
-    }
-    return;
-  }
-
-  const m = S.machines.get(k);
-  if (m) { UI.openMachine(m.id, g.gx, g.gy); return; }
-  if (S.conveyors.has(k)) { UI.toast('Mockup: conveyor mengalirkan item'); return; }
-
-  const harvest = HARVEST[t.obj] || HARVEST[t.t];
-  if (harvest) {
-    S.pulses.set(k, S.time);
-    addFloater(g.gx, g.gy, harvest.text, harvest.color);
-    return;
-  }
-  UI.closeMachine();
+  if (!inGrid(g.gx, g.gy)) { UI.closeAll(); return; }
+  if (S.placing) { tryPlace(g.gx, g.gy); return; }
+  interactAt(g.gx, g.gy);
 }
 
-function addFloater(gx, gy, text, color) {
-  S.floaters.push({ gx, gy, text, color, born: S.time });
-  if (S.floaters.length > 24) S.floaters.shift();
+function tryPlace(gx, gy) {
+  const p = S.placing;
+  if (!canPlace(gx, gy, p)) { SFX.play('error'); UI.toast('Tidak bisa ditaruh di sini'); return; }
+  const cost = p.fromKey ? 0 : (BUILD_COST[p.id] || 0);
+  if (S.money < cost) { SFX.play('error'); UI.toast('Uang tidak cukup'); return; }
+  S.money -= cost;
+  placeThing(p, gx, gy);
+  SFX.play('place');
+  addFloater(gx, gy, 'Terpasang!', '#5eff8a');
+  UI.refreshHUD();
+  // Rantai conveyor/dinding/dekor: tetap mode taruh supaya bisa lanjut.
+  if (p.kind === 'machine' || p.kind === 'storage' || p.fromKey) UI.cancelPlacing();
 }
+
+function placeThing(p, gx, gy) {
+  const k = key(gx, gy);
+  if (p.fromKey) {
+    // Pindah: bawa state lama (mesin/storage) ke petak baru.
+    const old = p.kind === 'machine' ? S.machines.get(p.fromKey) : S.storages.get(p.fromKey);
+    if (p.kind === 'machine') { S.machines.delete(p.fromKey); old.dir = S.placeDir; S.machines.set(k, old); }
+    else { S.storages.delete(p.fromKey); S.storages.set(k, old); }
+    return;
+  }
+  if (p.kind === 'machine') S.machines.set(k, newMachine(p.id, S.placeDir));
+  else if (p.kind === 'conveyor') S.conveyors.set(k, { id: p.id, dir: S.placeDir, item: null, t: 0 });
+  else if (p.kind === 'storage') S.storages.set(k, { id: p.id, items: {} });
+  else if (p.kind === 'wall') S.walls.set(k, { id: p.id });
+  else if (p.kind === 'decor') S.decor.set(k, { id: p.id });
+  saveSoon();
+}
+
+const KEY_DIR = {
+  ArrowRight: 0, d: 0, D: 0,
+  ArrowDown: 1, s: 1, S: 1,
+  ArrowLeft: 2, a: 2, A: 2,
+  ArrowUp: 3, w: 3, W: 3,
+};
 
 document.addEventListener('keydown', (e) => {
-  const step = 48;
   if (e.key === 'Escape') {
     if (S.placing) UI.cancelPlacing();
     else UI.closeAll();
+    return;
   }
-  else if (e.key === 'ArrowLeft' || e.key === 'a') S.cam.x += step;
-  else if (e.key === 'ArrowRight' || e.key === 'd') S.cam.x -= step;
-  else if (e.key === 'ArrowUp' || e.key === 'w') S.cam.y += step;
-  else if (e.key === 'ArrowDown' || e.key === 's') S.cam.y -= step;
+  if (KEY_DIR[e.key] !== undefined) {
+    S.keys[KEY_DIR[e.key]] = true;
+    cancelWork();
+    e.preventDefault();
+    return;
+  }
+  if (e.key === 'r' || e.key === 'R') {
+    if (S.placing) { S.placeDir = (S.placeDir + 1) % 4; }
+  }
   else if (e.key === '+' || e.key === '=') zoomAt(VW / 2, VH / 2, S.cam.zoom * 1.15);
   else if (e.key === '-') zoomAt(VW / 2, VH / 2, S.cam.zoom / 1.15);
 });
+document.addEventListener('keyup', (e) => {
+  if (KEY_DIR[e.key] !== undefined) delete S.keys[KEY_DIR[e.key]];
+});
+
+function heldDir() {
+  for (let d = 0; d < 4; d++) if (S.keys[d]) return d;
+  return -1;
+}

@@ -1,0 +1,101 @@
+// Atlas: render membaca manifest, bukan posisi hardcode. Selama manifest
+// bilang source=procedural, atlas dibuat saat boot dari pelukis prosedural
+// (didaftarkan 05-render.js) mengikuti sel manifest. Nanti atlas.png Gemini
+// dengan tata letak sel yang sama tinggal menggantikan canvas ini.
+const Atlas = {
+  manifest: null,
+  canvas: null,
+  painters: {}, // nama sprite -> (g, ox, oy, cell, variant) => void
+  _ready: null,
+
+  // Salinan darurat kalau fetch manifest gagal (mis. dibuka via file://).
+  fallback: null, // diisi dari MANIFEST_EMBEDDED di bawah saat init
+
+  init() {
+    if (this._ready) return this._ready;
+    this._ready = (async () => {
+      let m = null;
+      try {
+        const r = await fetch('assets/atlas-manifest.json?v=2');
+        if (r.ok) m = await r.json();
+      } catch (_) { /* file:// atau offline: pakai salinan darurat */ }
+      this.manifest = m || MANIFEST_EMBEDDED;
+      this.build();
+      return this.manifest;
+    })();
+    return this._ready;
+  },
+
+  build() {
+    const m = this.manifest, cell = m.cell;
+    const cv = document.createElement('canvas');
+    cv.width = m.cols * cell; cv.height = m.rows * cell;
+    const g = cv.getContext('2d');
+    for (const [name, s] of Object.entries(m.sprites)) {
+      const paint = this.painters[name];
+      if (!paint) continue;
+      if (s.frames && s.dirs) {
+        for (let d = 0; d < s.dirs; d++)
+          for (let f = 0; f < s.frames; f++)
+            paint(g, (s.col + f) * cell, (s.row + d) * cell, cell, { dir: d, frame: f });
+      } else {
+        paint(g, s.col * cell, s.row * cell, cell, {});
+      }
+    }
+    this.canvas = cv;
+  },
+
+  // Rect sel sprite di atlas. frame/dir hanya untuk sprite animasi.
+  rect(name, frame = 0, dir = 0) {
+    const s = this.manifest.sprites[name];
+    if (!s) return null;
+    const cell = this.manifest.cell;
+    const col = s.col + (s.frames ? frame : 0);
+    const row = s.row + (s.dirs ? dir : 0);
+    return { sx: col * cell, sy: row * cell, sw: s.w * cell, sh: s.h * cell };
+  },
+
+  // Gambar sprite dengan jangkar bawah-tengah di titik tanah (x, y) layar.
+  draw(ctx, name, x, y, scale, frame = 0, dir = 0, alpha = 1) {
+    const r = this.rect(name, frame, dir);
+    if (!r) return;
+    const w = r.sw * scale, h = r.sh * scale;
+    if (alpha !== 1) ctx.globalAlpha = alpha;
+    ctx.drawImage(this.canvas, r.sx, r.sy, r.sw, r.sh, x - w / 2, y - h, w, h);
+    if (alpha !== 1) ctx.globalAlpha = 1;
+  },
+
+  // Gambar ubin tanah: sel berisi belah ketupat, jangkar di tengah petak.
+  drawTile(ctx, name, x, y, scale) {
+    const r = this.rect(name);
+    if (!r) return;
+    const w = r.sw * scale, h = r.sh * scale;
+    ctx.drawImage(this.canvas, r.sx, r.sy, r.sw, r.sh, x - w / 2, y - h / 2, w, h);
+  },
+};
+
+// Salinan darurat manifest, sama isinya dengan assets/atlas-manifest.json.
+const MANIFEST_EMBEDDED = {
+  name: 'indotopia-tycoon-atlas-v1', atlasFile: 'atlas.png', source: 'procedural',
+  cell: 64, cols: 8, rows: 10, anchor: 'bottom-center',
+  sprites: {
+    tree: { col: 0, row: 0, w: 1, h: 1 }, oreIron: { col: 1, row: 0, w: 1, h: 1 },
+    oreCopper: { col: 2, row: 0, w: 1, h: 1 }, oreTin: { col: 3, row: 0, w: 1, h: 1 },
+    cotton: { col: 4, row: 0, w: 1, h: 1 }, lantern: { col: 5, row: 0, w: 1, h: 1 },
+    flowers: { col: 6, row: 0, w: 1, h: 1 }, stump: { col: 7, row: 0, w: 1, h: 1 },
+    sawhorse: { col: 0, row: 1, w: 1, h: 1 }, carpenter: { col: 1, row: 1, w: 1, h: 1 },
+    oven: { col: 2, row: 1, w: 1, h: 1 }, smelter: { col: 3, row: 1, w: 1, h: 1 },
+    blacksmith: { col: 4, row: 1, w: 1, h: 1 }, splitter: { col: 5, row: 1, w: 1, h: 1 },
+    conveyor: { col: 6, row: 1, w: 1, h: 1 }, conveyorTilt: { col: 7, row: 1, w: 1, h: 1 },
+    wallWood: { col: 0, row: 2, w: 1, h: 1 }, wallIron: { col: 1, row: 2, w: 1, h: 1 },
+    box: { col: 2, row: 2, w: 1, h: 1 }, container: { col: 3, row: 2, w: 1, h: 1 },
+    rack: { col: 4, row: 2, w: 1, h: 1 }, crate: { col: 5, row: 2, w: 1, h: 1 },
+    axe: { col: 6, row: 2, w: 1, h: 1 }, pickaxe: { col: 7, row: 2, w: 1, h: 1 },
+    shovel: { col: 0, row: 3, w: 1, h: 1 },
+    grass0: { col: 1, row: 3, w: 1, h: 1 }, grass1: { col: 2, row: 3, w: 1, h: 1 },
+    grass2: { col: 3, row: 3, w: 1, h: 1 }, grass3: { col: 4, row: 3, w: 1, h: 1 },
+    sand: { col: 5, row: 3, w: 1, h: 1 }, clay: { col: 6, row: 3, w: 1, h: 1 },
+    shop: { col: 0, row: 4, w: 2, h: 2 },
+    player: { col: 0, row: 6, w: 1, h: 1, frames: 3, dirs: 4 },
+  },
+};

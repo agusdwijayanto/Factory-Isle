@@ -68,10 +68,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
   pointer-events: none;
 }
 #buildbar > * { pointer-events: auto; }
-#target {
-  font-size: 13px; color: #e8d9bd; background: rgba(16, 12, 26, .85);
-  border: 1px solid #8a5a33; border-radius: 8px; padding: 8px 10px;
-}
 #btn-build {
   min-height: 48px; padding: 0 22px; border-radius: 10px;
   background: #e07b39; border: 2px solid #ffd75e; color: #1c1208;
@@ -99,21 +95,58 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .build-item small { display: block; color: #c9a86a; font-size: 11px; }
 
 /* Panel mesin dan admin: kartu tengah. */
-#machine-panel, #admin-panel {
+#inspect-panel, #storage-panel, #shop-panel, #tas-panel, #admin-panel,
+#settings-panel, #help-panel {
   left: 50%; top: 50%; transform: translate(-50%, -50%);
-  width: min(420px, 92vw);
+  width: min(420px, 92vw); max-height: 78vh; overflow-y: auto;
 }
 .mp-desc { font-size: 14px; color: #e8d9bd; margin-bottom: 8px; }
 .mp-recipe { font-size: 13px; color: #ffd75e; margin-bottom: 10px; }
-.mp-bar { height: 12px; border-radius: 6px; background: #241a12; border: 1px solid #8a5a33; overflow: hidden; }
-#mp-progress { height: 100%; width: 0; background: #5eff8a; }
-#mp-progress.run { animation: mpbar 3s linear infinite; }
-@keyframes mpbar { from { width: 0; } to { width: 100%; } }
-.mp-actions { display: flex; gap: 8px; margin-top: 12px; }
+.mp-buffers { font-size: 13px; color: #e8d9bd; margin-bottom: 8px; }
+.mp-recipes { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.mp-recipes button {
+  min-height: 38px; padding: 0 10px; border-radius: 8px;
+  background: #2a1f16; border: 1px solid #8a5a33;
+}
+.mp-recipes button.on { background: #e07b39; color: #1c1208; font-weight: 700; border-color: #ffd75e; }
+.mp-bar { height: 12px; border-radius: 6px; background: #241a12; border: 1px solid #8a5a33; overflow: hidden; margin-bottom: 10px; }
+#insp-progress { height: 100%; width: 0; background: #5eff8a; }
+.mp-actions { display: flex; gap: 8px; margin-top: 8px; }
 .mp-actions button {
   flex: 1; min-height: 44px; border-radius: 8px;
   background: #2a1f16; border: 1px solid #8a5a33;
 }
+.shop-row {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  padding: 8px 0; border-bottom: 1px solid #3a2a1e; font-size: 14px;
+}
+.shop-btns { display: flex; gap: 6px; flex: none; }
+.shop-btns button {
+  min-width: 44px; min-height: 36px; padding: 0 10px; border-radius: 8px;
+  background: #2a1f16; border: 1px solid #8a5a33;
+}
+.build-item.locked { opacity: 0.75; border-style: dashed; }
+.menu-btn {
+  display: block; width: 100%; text-align: left;
+  min-height: 44px; margin-top: 8px; padding: 0 12px; border-radius: 8px;
+  background: #2a1f16; border: 1px solid #8a5a33;
+}
+.help-text p { font-size: 14px; line-height: 1.5; margin-bottom: 10px; color: #e8d9bd; }
+#target {
+  font-size: 13px; color: #e8d9bd; background: rgba(16, 12, 26, .85);
+  border: 1px solid #8a5a33; border-radius: 8px; padding: 8px 10px;
+  display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1 1 auto;
+}
+#target-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#btn-skip {
+  flex: none; min-height: 30px; padding: 0 10px; border-radius: 6px;
+  background: #3a2a1e; border: 1px solid #8a5a33; font-size: 12px;
+}
+#btn-tas, #btn-rotate {
+  min-height: 48px; padding: 0 14px; border-radius: 10px;
+  background: rgba(16, 12, 26, .92); border: 2px solid #8a5a33; font-weight: 700;
+}
+#btn-rotate { border-color: #ffd75e; color: #ffd75e; }
 
 #toast {
   position: fixed; left: 50%; bottom: 170px; transform: translateX(-50%); z-index: 30;
