@@ -109,7 +109,6 @@ const STORAGE_CAP = { box: 50, container: 200, rack: 500 };
 const CATEGORIES = [
   { id: 'conveyors', name: 'Conveyors', items: [
     { id: 'conveyor', kind: 'conveyor', name: 'Conveyor', sub: '$100', color: '#e8b64c' },
-    { id: 'conveyorTilt', kind: 'conveyor', name: 'Inclined Conveyor', sub: '$100', color: '#c98f2e' },
   ] },
   { id: 'machines', name: 'Machines', items: [
     { id: 'sawhorse', kind: 'machine', name: 'Sawhorse', sub: 'Gratis', color: '#a8763e' },
