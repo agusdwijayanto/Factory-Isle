@@ -32,11 +32,6 @@ function updateMachines(dt) {
 function frontCell(gx, gy, dir) {
   return { gx: gx + DIRS[dir].dx, gy: gy + DIRS[dir].dy };
 }
-function behindCell(gx, gy, dir) {
-  const back = (dir + 2) % 4;
-  return { gx: gx + DIRS[back].dx, gy: gy + DIRS[back].dy };
-}
-
 function updateConveyors(dt) {
   for (const [k, c] of S.conveyors) {
     const [gx, gy] = k.split(',').map(Number);
@@ -59,15 +54,18 @@ function updateConveyors(dt) {
         c.item = null; continue;
       }
     } else {
-      const b = behindCell(gx, gy, c.dir);
-      const m = S.machines.get(key(b.gx, b.gy));
-      if (m) {
+      // Tarik dari mesin di belakang, kiri, lalu kanan. Depan tidak:
+      // depan itu arah keluar.
+      const pullDirs = [(c.dir + 2) % 4, (c.dir + 3) % 4, (c.dir + 1) % 4];
+      for (const d of pullDirs) {
+        const m = S.machines.get(key(gx + DIRS[d].dx, gy + DIRS[d].dy));
+        if (!m) continue;
         const outId = Object.keys(m.output).find((id) => m.output[id] > 0);
-        if (outId) {
-          m.output[outId]--;
-          if (m.output[outId] <= 0) delete m.output[outId];
-          c.item = outId;
-        }
+        if (!outId) continue;
+        m.output[outId]--;
+        if (m.output[outId] <= 0) delete m.output[outId];
+        c.item = outId;
+        break;
       }
     }
   }
