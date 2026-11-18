@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Indotopia — Mockup Tycoon Pabrik</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<canvas id="game"></canvas>
+
+<header id="hud">
+  <button id="btn-burger" class="hud-btn" aria-label="Menu"><span></span><span></span><span></span></button>
+  <div id="money">$50</div>
+  <button id="btn-admin" class="hud-btn wide">ADMIN</button>
+</header>
+
+<nav id="burger-menu" class="panel hidden">
+  <div class="panel-title">Current World: MOCKUP</div>
+  <button data-act="Exit World">Exit World</button>
+  <button data-act="Respawn">Respawn</button>
+  <button data-act="Options">Options</button>
+  <button data-act="Store">Store</button>
+  <button data-act="Back">Back</button>
+</nav>
+
+<div id="hint">Seret untuk geser, cubit atau roda mouse untuk zoom, ketuk pohon atau bijih untuk panen.</div>
+
+<footer id="buildbar">
+  <div id="target">Target: pasang 1 Conveyor</div>
+  <button id="btn-build">BANGUN</button>
+</footer>
+
+<section id="build-menu" class="panel hidden">
+  <div class="panel-head">
+    <div class="panel-title">Bangun</div>
+    <button class="btn-x" data-close="build-menu">X</button>
+  </div>
+  <div id="build-tabs"></div>
+  <div id="build-items"></div>
+</section>
+
+<section id="machine-panel" class="panel hidden">
+  <div class="panel-head">
+    <div class="panel-title" id="mp-name">Mesin</div>
+    <button class="btn-x" data-close="machine-panel">X</button>
+  </div>
+  <div id="mp-desc" class="mp-desc"></div>
+  <div id="mp-recipe" class="mp-recipe"></div>
+  <div class="mp-bar"><div id="mp-progress"></div></div>
+  <div class="mp-actions">
+    <button id="mp-eject">Eject</button>
+    <button id="mp-stop">Stop</button>
+  </div>
+</section>
+
+<section id="admin-panel" class="panel hidden">
+  <div class="panel-head">
+    <div class="panel-title">ADMIN</div>
+    <button class="btn-x" data-close="admin-panel">X</button>
+  </div>
+  <button data-admin="Tambah uang">Tambah uang</button>
+  <button data-admin="Tambah material">Tambah material</button>
+  <button data-admin="Buka semua resep">Buka semua resep</button>
+  <button data-admin="Selesaikan instan">Selesaikan instan</button>
+  <button data-admin="Reset simpan">Reset simpan</button>
+</section>
+
+<div id="toast" class="hidden"></div>
+
+<script src="js/01-core.js?v=1"></script>
+<script src="js/02-iso.js?v=1"></script>
+<script src="js/03-render.js?v=1"></script>
+<script src="js/04-input.js?v=1"></script>
+<script src="js/05-ui.js?v=1"></script>
+<script src="js/06-mockup-data.js?v=1"></script>
+<script src="js/07-main.js?v=1"></script>
+</body>
+</html>
