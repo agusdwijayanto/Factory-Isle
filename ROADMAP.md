@@ -96,8 +96,16 @@ Tes: headless 126/126, Playwright 103/103, nol error konsol. Versi aset: ?v=15.
 
 Tes: headless 126/126, Playwright 103/103, nol error konsol. Versi aset: ?v=16.
 
+## Sudah live — v17 (19 Nov 2026)
+
+- [x] Perbaikan bug visual "gendong papan": karakter yang menghadap arah 1 diam (frame 0) ketumpuk belah ketupat rel abu-abu + palang merah di kepala, kelihatan seperti menggendong papan besar. Akar masalah: `railStop` di manifest atlas duduk di sel (0,7) — sel yang sama dengan sprite player frame 0 arah 1 — dan pelukisnya menimpa sel itu sesudah pelukis player (urutan `Object.entries` di `Atlas.build`). Bukan pelukis yang merembes, bukan urutan gambar.
+- [x] Perbaikan: `railStop` pindah ke sel kosong (3,7) di `assets/atlas-manifest.json` dan salinan darurat `MANIFEST_EMBEDDED` di `js/04-atlas.js` (dua baris). Sprite player sekarang bersih di semua arah dan frame; palang penahan gunung tetap di tempatnya.
+- [x] Tes regresi: tes headless sekarang memeriksa tidak ada dua sprite berbagi satu sel atlas, di file manifest maupun salinan darurat, plus `railStop` di luar blok sprite player.
+
+Tes: headless 129/129, Playwright 103/103, nol error konsol. Versi aset: ?v=17.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v16.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v17.

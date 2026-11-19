@@ -22,7 +22,7 @@ const Atlas = {
     this._ready = (async () => {
       let m = null;
       try {
-        const r = await fetch('assets/atlas-manifest.json?v=16');
+        const r = await fetch('assets/atlas-manifest.json?v=17');
         if (r.ok) m = await r.json();
       } catch (_) { /* file:// atau offline: pakai salinan darurat */ }
       this.manifest = m || MANIFEST_EMBEDDED;
@@ -142,6 +142,6 @@ const MANIFEST_EMBEDDED = {
     mountain: { col: 2, row: 13, w: 1, h: 1 }, station: { col: 3, row: 13, w: 1, h: 1 },
     train: { col: 4, row: 13, w: 1, h: 1 },
     road: { col: 5, row: 13, w: 1, h: 1 }, railX: { col: 6, row: 13, w: 1, h: 1 },
-    railY: { col: 7, row: 13, w: 1, h: 1 }, railStop: { col: 0, row: 7, w: 1, h: 1 },
+    railY: { col: 7, row: 13, w: 1, h: 1 }, railStop: { col: 3, row: 7, w: 1, h: 1 },
   },
 };
