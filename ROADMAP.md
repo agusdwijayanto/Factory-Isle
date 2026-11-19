@@ -288,14 +288,15 @@ Tes: headless 354/354, Playwright 192/192, nol error konsol. Versi aset: ?v=35.
 
 Tes: headless 407/407, Playwright 204/204, nol error konsol. Versi aset: ?v=36.
 
-## Sudah live — v37 (19 Nov 2026)
+## Sudah live — v38 (19 Nov 2026)
 
-- [x] Kapal bajak laut: Dyed Textiles 60 jadi 20 (tutup lubang arbitrase v36; keputusan Agus). Audit arbitrase 0 lubang. (`js/03-data-items.js`.)
+- [x] Panel kereta cuma dibuka dari klik kereta (lokomotifnya).
+- [x] Hapus: NPC Conductor di peron kota, papan jual di 4 map (kota, hutan, gunung, pelabuhan), bangunan stasiun biru di kota. Bagian jual di dalam panel kereta tetap ada. (`js/03-map-kota.js`, `js/03-map-hutan.js`, `js/03-map-gunung.js`, `js/03-map-pelabuhan.js`, `js/07-pemain.js`, `js/12-simpan.js`, `index.html`.)
 
-Tes: headless 407/407, Playwright 204/204, nol error konsol. Versi aset: ?v=37.
+Tes: headless 407/407, Playwright 204/204, nol error konsol. Versi aset: ?v=38.
 
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v37.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v38.

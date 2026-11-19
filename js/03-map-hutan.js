@@ -3,9 +3,8 @@ function buildForest() {
   const forest = makeGrid(MAP_W, MAP_H);
   put(forest, [[2, 2], [5, 2], [3, 4], [6, 3], [2, 6], [4, 7], [3, 9], [5, 10], [10, 4], [11, 8]], 'tree');
   put(forest, [[11, 2], [12, 2], [13, 2], [11, 3], [12, 3]], 'cotton');
-  // v36: tanaman pewarna liar (rantai Dye Can) + papan jual di samping peron.
+  // v36: tanaman pewarna liar (rantai Dye Can).
   put(forest, [[12, 5], [13, 5], [14, 5]], 'dyeplant');
-  forest[8][13].obj = 'sign';
   put(forest, [[10, 7]], 'lantern');
   // v35: pasir di tepian sungai utara (digali pakai sekop).
   terrain(forest, [[1, 1], [15, 1]], 'sand');

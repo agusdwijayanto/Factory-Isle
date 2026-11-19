@@ -309,11 +309,6 @@ function interactAt(gx, gy) {
     goTo(gx, gy, () => UI.openMayor());
     return;
   }
-  // v36: Conductor di peron + papan jual membuka panel kereta (toko keliling).
-  if (t.obj === 'conductor' || t.obj === 'sign') {
-    goTo(gx, gy, () => UI.openTrain());
-    return;
-  }
   // Naik kereta hanya dari kereta; peron cuma dekorasi, tidak bisa diklik.
   if (t.obj === 'train') {
     goTo(gx, gy, () => UI.openTrain());

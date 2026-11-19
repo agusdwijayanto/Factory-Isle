@@ -111,9 +111,7 @@ function loadGame() {
     || !SHOP_SPOTS.filter((s) => s.map === 'town').every((s) => S.maps.town.grid[s.gy][s.gx].obj === 'shop_' + s.id)
     || S.maps.town.grid[13][8].t !== 'road'
     || S.maps.town.grid[7][1].obj !== 'lantern'
-    || S.maps.town.grid[13][7].obj !== 'plotsign'
-    || S.maps.town.grid[8][17].obj !== 'station'
-    || S.maps.town.grid[8][16].obj !== 'conductor'); // v36: kota 20x14 + stasiun + Conductor (cek ukuran dulu supaya grid[13] tidak diakses di kota 16x12)
+    || S.maps.town.grid[13][7].obj !== 'plotsign');
   const forestStale = S.maps.forest && (S.maps.forest.grid[9][14].obj !== 'train' || S.maps.forest.grid[0][8].t !== 'bridge' || S.maps.forest.grid[5][12].obj !== 'dyeplant');
   const mountainStale = S.maps.mountain && (S.maps.mountain.grid[5][1].t !== 'water' || S.maps.mountain.grid[4][13].obj !== 'stone');
   const harborStale = S.maps.harbor && (S.maps.harbor.grid[2][12].obj !== 'shop_desert' || S.maps.harbor.grid[1][13].obj !== 'station'); // v36: desa gurun + stasiun

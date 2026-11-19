@@ -1,6 +1,5 @@
 // Kota 20x14 (v36, dulu 16x12): 6 toko, Mayor, jalan masuk lahan, sungai
-// di utara dengan jembatan ke gunung, clay di tepian, stasiun + Conductor
-// di timur dekat rel. Pecahan 03-data.js (v16).
+// di utara dengan jembatan ke gunung, clay di tepian. Pecahan 03-data.js (v16).
 function buildTown() {
   const town = makeGrid(TOWN_W, TOWN_H);
   terrain(town, Array.from({ length: TOWN_W }, (_, x) => [x, 0]), 'water');
@@ -11,12 +10,6 @@ function buildTown() {
   terrain(town, [[5, 8], [6, 8], [7, 8]], 'platform'); // peron (x=4, z=6-8)
   town[9][7].obj = 'train'; // kereta tetap di (7,9), di atas rel
   railXAt(town, 9, 0, TOWN_W - 1); // rel kiri-kanan penuh di baris peron
-  // v36: peron timur + stasiun kayu biru + Conductor di (16,8)/(17,8),
-  // papan jual di peron barat (5,8).
-  terrain(town, [[16, 8], [17, 8]], 'platform');
-  town[8][17].obj = 'station';
-  town[8][16].obj = 'conductor';
-  town[8][5].obj = 'sign';
   // jalan: kolom tengah (8) utara-selatan sampai jalan masuk lahan (8,13),
   // baris tengah (6) dan baris toko (2) dari tepi ke tepi
   roadAt(town, [

@@ -19,7 +19,6 @@ function buildMountain() {
   // tidak tembus ke atas — tidak ada map di utara gunung. Kereta di (7,9).
   terrain(mountain, [[6, 8], [8, 8]], 'platform');
   mountain[9][7].obj = 'train';
-  mountain[8][8].obj = 'sign'; // v36: papan jual di peron timur
   railYAt(mountain, 7, 8, 11);
   mountain[8][7].t = 'railStop'; // palang penahan di ujung rel paling atas
   roadAt(mountain, [
