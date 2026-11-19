@@ -22,19 +22,32 @@ Object.assign(UI, {
     const cat = CATEGORIES.find((c) => c.id === buildTab);
     for (const item of cat.items) {
       const b = el('button', null, 'build-item');
-      const sw = el('span', null, 'sw');
-      sw.style.background = item.color;
+      b.appendChild(this.buildIcon(item));
       const label = el('span');
       label.appendChild(document.createTextNode(item.name));
       const sub = el('small');
       const locked = item.kind === 'machine' && !S.unlocked[item.id];
       sub.textContent = locked ? 'Terkunci: riset ' + researchCostText(item.id) : item.sub;
       label.appendChild(sub);
-      b.appendChild(sw); b.appendChild(label);
+      b.appendChild(label);
       if (locked) b.classList.add('locked');
       b.addEventListener('click', () => this.pickBuildItem(item, locked));
       box.appendChild(b);
     }
+  },
+  // Ikon menu = gambar sprite yang sama dengan yang tertempel di lahan
+  // (Atlas.iconCanvas memotong sel atlas). Atlas belum siap = jatuh ke
+  // kotak warna lama, supaya menu tetap kebuka.
+  buildIcon(item) {
+    try {
+      if (typeof Atlas !== 'undefined' && Atlas.canvas) {
+        const c = Atlas.iconCanvas(item.id, 28);
+        if (c) return c; // null = sel belum ada, jatuh ke kotak warna
+      }
+    } catch (_) { /* jatuh ke kotak warna */ }
+    const sw = el('span', null, 'sw');
+    sw.style.background = item.color;
+    return sw;
   },
   pickBuildItem(item, locked) {
     if (locked) {

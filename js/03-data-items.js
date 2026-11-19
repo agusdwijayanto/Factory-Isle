@@ -35,6 +35,19 @@ const ITEMS = {
   Table:     { name: 'Table',      color: '#a8763e', price: 73 },  // papan (wood table)
   Bench:     { name: 'Bench',      color: '#8a5a33', price: 70 },  // papan (wood bench)
   Window:    { name: 'Window',     color: '#9fd4e8', price: 84 },  // papan
+  // v29: rantai tekstil + meriam. Harga jual ikut riset 4.2 (toko Textile
+  // beli / kapal bajak laut); Wheel/Mold/Barrel komponen saja (price null,
+  // seperti Coil/Gear). Cannon 1.500 = riset 4.2 ("Cannon s.d. 1.500"),
+  // tetap item jual termahal (berikutnya Motor 225).
+  Textiles:     { name: 'Textiles',      color: '#f2ede0', price: 35 },  // riset 4.2
+  DyedTextiles: { name: 'Dyed Textiles', color: '#e07b9d', price: 55 },  // riset 4.2
+  DyeCan:       { name: 'Dye Can',       color: '#4fae9d', price: 16 },  // riset 4.2
+  Wheel:        { name: 'Wheel',         color: '#8d99a8', price: null },
+  CannonMold:   { name: 'Cannon Casting Mold', color: '#e8d9a0', price: null },
+  CannonBarrel: { name: 'Cannon Barrel', color: '#3a3f47', price: null },
+  BronzeCannon: { name: 'Bronze Cannon', color: '#c98f2e', price: 1500 }, // riset 4.2
+  Bed:          { name: 'Bed',           color: '#a8763e', price: 109 }, // riset 4.2 (kapal bajak laut)
+  Piano:        { name: 'Piano',         color: '#2c2833', price: 360 }, // riset 4.2 (kapal 360; NamuWiki 350-400)
 };
 
 // Nama map untuk HUD.
@@ -58,7 +71,7 @@ const SHOPS = {
   carpenter:  { name: 'Carpenter',  sell: { Log: 7, Pillar: 12, Plank: 6, WoodFrame: 28 }, buy: {} },
   blacksmith: { name: 'Blacksmith', sell: { Firelog: 6, IronIngot: 24 }, buy: { Nails: 25 } },
   toolshop:   { name: 'Tool Shop',  sell: { IronBeam: 72 }, buy: {} },
-  textile:    { name: 'Textile',    sell: { Cotton: 25 }, buy: { Cotton: 25 } },
+  textile:    { name: 'Textile',    sell: { Cotton: 25, Textiles: 35, DyeCan: 16, DyedTextiles: 55 }, buy: { Cotton: 25, Textiles: 50, DyeCan: 24, DyedTextiles: 24 } }, // v29: stok riset 4.2 (jual ke pemain = buy, beli dari pemain = sell)
   exchange:   { name: 'Exchange',   sell: 'ALL', buy: { Log: 12, Pillar: 20, Plank: 10, Brick: 30, WoodFrame: 48, IronFrame: 83, IronBeam: 125, Coil: 38 } },
   harbor:     { name: 'Pelabuhan',  sell: harborSellTable(), buy: {} },
 };
@@ -129,6 +142,9 @@ const RECIPES = {
     { id: 'table', out: 'Table', n: 1, in: { WoodFrame: 1, Pillar: 1 }, secs: 25 },
     { id: 'bench', out: 'Bench', n: 1, in: { WoodFrame: 1, Pillar: 1 }, secs: 20 },
     { id: 'window', out: 'Window', n: 1, in: { WoodFrame: 1, Glass: 1 }, secs: 25 },
+    // v29: bahannya kini sudah ada semua (Textiles dari Textiles Machine).
+    { id: 'bed', out: 'Bed', n: 1, in: { Textiles: 2, Pillar: 2, WoodFrame: 2, Nails: 2, Plank: 4 }, secs: 60 },
+    { id: 'piano', out: 'Piano', n: 1, in: { IronFrame: 1, Bench: 1, Coil: 4, Table: 1 }, secs: 60 },
   ],
   oven: [
     { id: 'brick', out: 'Brick', n: 10, in: { Firelog: 3, Clay: 2 }, secs: 15 },
@@ -149,6 +165,40 @@ const RECIPES = {
     { id: 'nails', out: 'Nails', n: 10, in: { IronIngot: 1 }, secs: 20 }, // 10: NamuWiki
     { id: 'motor', out: 'Motor', n: 1, in: { Coil: 1, IronFrame: 1, Gear: 1 }, secs: 50 },
   ],
+  // v29: mesin baru. Electric Saw = resep Sawhorse 2x lebih cepat (3 dtk).
+  // Advanced Saw: 2 Log jadi 7 Plank 10 dtk (riset); Pillar 4 turunan simetris.
+  elecSaw: [
+    { id: 'plank',  out: 'Plank',  n: 3, in: { Log: 1 }, secs: 3 },
+    { id: 'pillar', out: 'Pillar', n: 2, in: { Log: 1 }, secs: 3 },
+  ],
+  advSaw: [
+    { id: 'plank',  out: 'Plank',  n: 7, in: { Log: 2 }, secs: 10 },
+    { id: 'pillar', out: 'Pillar', n: 4, in: { Log: 2 }, secs: 10 },
+  ],
+  textiles: [
+    { id: 'textiles', out: 'Textiles', n: 5, in: { Cotton: 50 }, secs: 7 },
+    { id: 'dyed', out: 'DyedTextiles', n: 5, in: { Textiles: 5, DyeCan: 1 }, secs: 10 },
+  ],
+  // Mining Drill: disederhanakan dari riset (tanpa Drill Head dan tanpa
+  // Steam Engine, keduanya belum ada) — angka pertama riset (Drill Head)
+  // dibuang, Firelog dipertahankan; waktu ikut riset.
+  drill: [
+    { id: 'iron',   out: 'IronOre',   n: 1, in: { Firelog: 3 }, secs: 30 },
+    { id: 'copper', out: 'CopperOre', n: 1, in: { Firelog: 2 }, secs: 20 },
+    { id: 'tin',    out: 'TinOre',    n: 1, in: { Firelog: 2 }, secs: 20 },
+    { id: 'clay',   out: 'Clay',      n: 1, in: { Firelog: 2 }, secs: 10 },
+    { id: 'sand',   out: 'Sand',      n: 1, in: { Firelog: 1 }, secs: 10 },
+  ],
+  // Construction Crafter: rantai meriam ikut riset 3.3; waktu dipilih
+  // sendiri (riset diam) — Barrel dan Cannon paling lama.
+  crafter: [
+    { id: 'wheel',  out: 'Wheel',        n: 1, in: { Coil: 1, WoodFrame: 1, Gear: 2, Log: 2 }, secs: 20 },
+    { id: 'mold',   out: 'CannonMold',   n: 1, in: { Sand: 5, IronFrame: 1 }, secs: 30 },
+    { id: 'barrel', out: 'CannonBarrel', n: 1, in: { BronzeIngot: 5, CannonMold: 2 }, secs: 90 },
+    { id: 'cannon', out: 'BronzeCannon', n: 1, in: { CannonBarrel: 1, Wheel: 4, WoodFrame: 1 }, secs: 120 },
+  ],
+  // Tree Generator dan Harvester tidak punya resep: perilakunya di
+  // 09-mesin.js (tanam/tebang otomatis), bukan crafting.
 };
 
 const MACHINES = {
@@ -158,6 +208,16 @@ const MACHINES = {
   oven:       { name: 'Oven',         desc: 'Tungku awal untuk bata dan kaca.', color: '#b06040', research: { money: 100 } },
   smelter:    { name: 'Smelter',      desc: 'Peleburan semua ingot dengan bahan bakar Firelog.', color: '#96553c', research: { money: 500, items: { Brick: 30 } } },
   blacksmith: { name: 'Blacksmith',   desc: 'Crafting otomatis komponen logam.', color: '#8d99a8', research: { money: 1000 } },
+  // v29: biaya riset mengikuti laporan wiki; yang tidak bisa dipanggul
+  // sebagai material (Advanced Saw di biaya Textiles Machine) diadaptasi
+  // jadi uang (lihat ROADMAP v29).
+  elecSaw:   { name: 'Electric Saw',   desc: 'Gergaji otomatis: Log jadi Plank dan Pillar 2x lebih cepat.', color: '#d8c25a', research: { money: 0, items: { Nails: 4 } } },
+  advSaw:    { name: 'Advanced Saw',   desc: 'Gergaji lanjutan: 2 Log jadi 7 Plank.', color: '#e8b64c', research: { money: 500, items: { Motor: 1, IronFrame: 1 } } },
+  textiles:  { name: 'Textiles Machine', desc: 'Kapas jadi kain, kain + Dye Can jadi kain celup.', color: '#f2ede0', research: { money: 500, items: { IronFrame: 1, Coil: 4 } } },
+  drill:     { name: 'Mining Drill',   desc: 'Menggali bijih otomatis dengan bahan bakar Firelog.', color: '#7d8894', research: { money: 500, items: { IronBeam: 2, Brick: 50, IronFrame: 1 } } },
+  harvester: { name: 'Harvester',      desc: 'Menebang pohon di lahan otomatis jadi Log.', color: '#4fae6b', research: { money: 1000, items: { Motor: 2 } } },
+  treeGen:   { name: 'Tree Generator', desc: 'Menumbuhkan pohon di petak rumput sebelah.', color: '#2f6b33', research: { money: 500, items: { WoodFrame: 4 } } },
+  crafter:   { name: 'Construction Crafter', desc: 'Membuat roda, cetakan meriam, dan Bronze Cannon.', color: '#8d99a8', research: { money: 2000 } },
 };
 
 // Biaya taruh bangunan. Mesin gratis sesudah riset; conveyor $100 (NamuWiki).
@@ -180,6 +240,13 @@ const CATEGORIES = [
     { id: 'oven', kind: 'machine', name: 'Oven', sub: 'Research $100', color: '#b06040' },
     { id: 'smelter', kind: 'machine', name: 'Smelter', sub: '$500 + 30 Brick', color: '#96553c' },
     { id: 'blacksmith', kind: 'machine', name: 'Blacksmith', sub: 'Research $1.000', color: '#8d99a8' },
+    { id: 'elecSaw', kind: 'machine', name: 'Electric Saw', sub: 'Research 4 Nails', color: '#d8c25a' },
+    { id: 'advSaw', kind: 'machine', name: 'Advanced Saw', sub: 'Research $500 + Motor + Iron Frame', color: '#e8b64c' },
+    { id: 'textiles', kind: 'machine', name: 'Textiles Machine', sub: 'Research $500 + Iron Frame + 4 Coil', color: '#f2ede0' },
+    { id: 'drill', kind: 'machine', name: 'Mining Drill', sub: 'Research $500 + 2 Beam, 50 Brick, 1 Frame', color: '#7d8894' },
+    { id: 'harvester', kind: 'machine', name: 'Harvester', sub: 'Research $1.000 + 2 Motor', color: '#4fae6b' },
+    { id: 'treeGen', kind: 'machine', name: 'Tree Generator', sub: 'Research $500 + 4 Wood Frame', color: '#2f6b33' },
+    { id: 'crafter', kind: 'machine', name: 'Construction Crafter', sub: 'Research $2.000', color: '#8d99a8' },
   ] },
   { id: 'storages', name: 'Storages', items: [
     { id: 'box', kind: 'storage', name: 'Wooden Box', sub: '$20, 50 slot', color: '#8a5a33' },

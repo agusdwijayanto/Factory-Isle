@@ -1,7 +1,9 @@
 // Logika resep murni: tanpa DOM, bisa dites headless.
 const OUTPUT_CAP = 30;
 
-function getRecipe(m) { return RECIPES[m.id][m.recipe] || null; }
+// Mesin tanpa resep (Tree Generator / Harvester) tidak punya RECIPES:
+// kembalikan null, jangan crash. Semua pemanggil sudah tahan null.
+function getRecipe(m) { const rs = RECIPES[m.id]; return rs ? rs[m.recipe] || null : null; }
 
 function bufferTotal(buf) {
   return Object.values(buf).reduce((a, b) => a + b, 0);

@@ -19,6 +19,7 @@ Object.assign(UI, {
     for (const m of S.machines.values()) {
       if (m.progress > 0 && !m.stopped) {
         const r = getRecipe(m);
+        if (!r) continue; // mesin tanpa resep tidak punya ETA crafting
         const left = Math.ceil((1 - m.progress) * r.secs);
         if (eta === null || left < eta.left) eta = { left, name: ITEMS[r.out].name };
       }

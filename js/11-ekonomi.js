@@ -64,9 +64,11 @@ function sellItem(id, qty) {
 function researchCostText(id) {
   const r = MACHINES[id].research;
   if (!r) return 'Gratis';
-  let s = '$' + fmt(r.money);
-  if (r.items) s += ' + ' + Object.entries(r.items).map(([i, n]) => n + ' ' + ITEMS[i].name).join(', ');
-  return s;
+  // Bagian uang dilewati kalau 0 (mis. Electric Saw yang cuma butuh Nails).
+  const parts = [];
+  if (r.money) parts.push('$' + fmt(r.money));
+  if (r.items) parts.push(Object.entries(r.items).map(([i, n]) => n + ' ' + ITEMS[i].name).join(', '));
+  return parts.join(' + ') || 'Gratis';
 }
 
 function canResearch(id) {

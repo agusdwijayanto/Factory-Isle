@@ -158,4 +158,92 @@ Object.assign(PAINTERS, {
     g.strokeStyle = 'rgba(255,255,255,0.8)'; g.lineWidth = 2;
     g.beginPath(); g.moveTo(cx - 8, cy + 8); g.lineTo(cx - 2, cy - 8); g.stroke();
   },
+  // v29: ikon barang baru (kain, kaleng cat, roda, cetakan, laras, meriam,
+  // tempat tidur, piano). Tengah di (cx, cy), muat di dalam sel 64.
+  item_Textiles: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#f2ede0';
+    g.fillRect(cx - 15, cy - 10, 30, 8); g.fillRect(cx - 15, cy, 30, 8); g.fillRect(cx - 15, cy + 10, 30, 8);
+    g.strokeStyle = '#d8d2c2'; g.lineWidth = 1.5;
+    for (const dy of [-10, 0, 10]) g.strokeRect(cx - 15, cy + dy, 30, 8);
+  },
+  item_DyedTextiles: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#e07b9d';
+    g.fillRect(cx - 15, cy - 10, 30, 8); g.fillRect(cx - 15, cy, 30, 8); g.fillRect(cx - 15, cy + 10, 30, 8);
+    g.strokeStyle = '#b85a78'; g.lineWidth = 1.5;
+    for (const dy of [-10, 0, 10]) g.strokeRect(cx - 15, cy + dy, 30, 8);
+    g.fillStyle = '#f2ede0'; g.fillRect(cx - 15, cy - 10, 30, 2);
+  },
+  item_DyeCan: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#8d99a8'; g.fillRect(cx - 11, cy - 14, 22, 30);
+    g.fillStyle = '#5d6773'; g.fillRect(cx - 11, cy - 14, 22, 5);
+    g.fillStyle = '#4fae9d'; g.fillRect(cx - 8, cy - 11, 16, 6);
+    g.fillStyle = '#4fae9d';
+    g.beginPath(); g.arc(cx + 4, cy + 14, 3, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx - 5, cy + 17, 2, 0, 6.29); g.fill();
+    g.strokeStyle = '#c9a86a'; g.lineWidth = 2;
+    g.beginPath(); g.moveTo(cx + 8, cy - 14); g.lineTo(cx + 8, cy + 2); g.stroke();
+  },
+  item_Wheel: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#3a3f47';
+    g.beginPath(); g.arc(cx, cy, 15, 0, 6.29); g.fill();
+    g.fillStyle = '#8d99a8';
+    g.beginPath(); g.arc(cx, cy, 10, 0, 6.29); g.fill();
+    g.strokeStyle = '#3a3f47'; g.lineWidth = 2.5;
+    for (let i = 0; i < 4; i++) {
+      const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
+      g.beginPath(); g.moveTo(cx, cy); g.lineTo(cx + Math.cos(a) * 10, cy + Math.sin(a) * 10); g.stroke();
+    }
+    g.fillStyle = '#5d6773'; g.beginPath(); g.arc(cx, cy, 3.5, 0, 6.29); g.fill();
+  },
+  item_CannonMold: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#e8d9a0';
+    g.beginPath();
+    g.moveTo(cx - 15, cy + 12); g.lineTo(cx - 10, cy - 12);
+    g.lineTo(cx + 10, cy - 12); g.lineTo(cx + 15, cy + 12); g.closePath(); g.fill();
+    g.fillStyle = '#3a3f47';
+    g.beginPath(); g.ellipse(cx, cy + 2, 7, 4, 0, 0, 6.29); g.fill();
+    g.fillRect(cx - 2, cy - 12, 4, 12);
+    g.strokeStyle = '#c9a86a'; g.lineWidth = 1.5;
+    g.beginPath(); g.moveTo(cx - 15, cy + 12); g.lineTo(cx + 15, cy + 12); g.stroke();
+  },
+  item_CannonBarrel: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#3a3f47'; g.fillRect(cx - 16, cy - 6, 32, 12);
+    g.fillStyle = '#5d6773'; g.fillRect(cx - 16, cy - 6, 32, 3);
+    g.fillStyle = '#2c2833';
+    g.fillRect(cx - 16, cy - 8, 5, 16); g.fillRect(cx - 2, cy - 8, 4, 16); g.fillRect(cx + 11, cy - 8, 5, 16);
+    g.fillStyle = '#c98f2e'; g.fillRect(cx - 16, cy - 6, 3, 12);
+  },
+  item_BronzeCannon: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#c98f2e';
+    g.beginPath(); g.ellipse(cx, cy - 6, 15, 5, -0.3, 0, 6.29); g.fill();
+    g.fillStyle = '#9a6a1e'; g.fillRect(cx - 14, cy - 4, 28, 4);
+    g.fillStyle = '#3a3f47';
+    g.beginPath(); g.arc(cx - 9, cy + 8, 5, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx + 9, cy + 8, 5, 0, 6.29); g.fill();
+    g.fillStyle = '#5f3d22'; g.fillRect(cx - 12, cy + 2, 24, 4);
+  },
+  item_Bed: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#7a5230'; g.fillRect(cx - 15, cy - 4, 30, 12);
+    g.fillStyle = '#f2ede0'; g.fillRect(cx - 15, cy - 8, 30, 8);
+    g.fillStyle = '#e07b9d'; g.fillRect(cx - 15, cy - 2, 30, 4);
+    g.fillStyle = '#a8763e'; g.fillRect(cx - 15, cy - 14, 4, 10); g.fillRect(cx + 11, cy - 14, 4, 10);
+    g.fillStyle = '#f2ede0'; g.fillRect(cx - 13, cy - 13, 10, 5);
+  },
+  item_Piano: (g, ox, oy) => {
+    const cx = ox + 32, cy = oy + 32;
+    g.fillStyle = '#2c2833';
+    g.fillRect(cx - 15, cy - 10, 30, 8); g.fillRect(cx - 15, cy - 2, 22, 10);
+    g.fillStyle = '#f2ede0'; g.fillRect(cx - 15, cy + 8, 22, 5);
+    g.fillStyle = '#2c2833';
+    for (let i = 0; i < 5; i++) g.fillRect(cx - 13 + i * 4, cy + 8, 2, 5);
+    g.fillRect(cx - 12, cy + 13, 3, 5); g.fillRect(cx + 9, cy + 13, 3, 5);
+  },
 });

@@ -22,7 +22,7 @@ const Atlas = {
     this._ready = (async () => {
       let m = null;
       try {
-        const r = await fetch('assets/atlas-manifest.json?v=20');
+        const r = await fetch('assets/atlas-manifest.json?v=29');
         if (r.ok) m = await r.json();
       } catch (_) { /* file:// atau offline: pakai salinan darurat */ }
       this.manifest = m || MANIFEST_EMBEDDED;
@@ -120,6 +120,10 @@ const MANIFEST_EMBEDDED = {
     grass0: { col: 1, row: 3, w: 1, h: 1 }, grass1: { col: 2, row: 3, w: 1, h: 1 },
     grass2: { col: 3, row: 3, w: 1, h: 1 }, grass3: { col: 4, row: 3, w: 1, h: 1 },
     sand: { col: 5, row: 3, w: 1, h: 1 }, clay: { col: 6, row: 3, w: 1, h: 1 },
+    crafter: { col: 7, row: 3, w: 1, h: 1 },
+    elecSaw: { col: 2, row: 4, w: 1, h: 1 }, advSaw: { col: 3, row: 4, w: 1, h: 1 },
+    textiles: { col: 4, row: 4, w: 1, h: 1 }, drill: { col: 5, row: 4, w: 1, h: 1 },
+    harvester: { col: 6, row: 4, w: 1, h: 1 }, treeGen: { col: 7, row: 4, w: 1, h: 1 },
     shop: { col: 0, row: 4, w: 2, h: 2 },
     player: { col: 0, row: 6, w: 1, h: 1, frames: 3, dirs: 4 },
     item_Log: { col: 2, row: 5, w: 1, h: 1 }, item_Pillar: { col: 3, row: 5, w: 1, h: 1 },
@@ -129,6 +133,11 @@ const MANIFEST_EMBEDDED = {
     item_TinOre: { col: 2, row: 10, w: 1, h: 1 }, item_Sand: { col: 3, row: 10, w: 1, h: 1 },
     item_Clay: { col: 4, row: 10, w: 1, h: 1 }, item_Cotton: { col: 5, row: 10, w: 1, h: 1 },
     item_IronIngot: { col: 6, row: 10, w: 1, h: 1 }, item_CopperIngot: { col: 7, row: 10, w: 1, h: 1 },
+    item_Textiles: { col: 3, row: 6, w: 1, h: 1 }, item_DyedTextiles: { col: 4, row: 6, w: 1, h: 1 },
+    item_DyeCan: { col: 5, row: 6, w: 1, h: 1 }, item_Wheel: { col: 6, row: 6, w: 1, h: 1 },
+    item_CannonMold: { col: 7, row: 6, w: 1, h: 1 },
+    item_CannonBarrel: { col: 5, row: 7, w: 1, h: 1 }, item_BronzeCannon: { col: 6, row: 7, w: 1, h: 1 },
+    item_Bed: { col: 7, row: 7, w: 1, h: 1 }, item_Piano: { col: 3, row: 8, w: 1, h: 1 },
     item_BronzeIngot: { col: 0, row: 11, w: 1, h: 1 }, item_Coil: { col: 1, row: 11, w: 1, h: 1 },
     item_Gear: { col: 2, row: 11, w: 1, h: 1 }, item_IronBeam: { col: 3, row: 11, w: 1, h: 1 },
     item_IronFrame: { col: 4, row: 11, w: 1, h: 1 }, item_Nails: { col: 5, row: 11, w: 1, h: 1 },

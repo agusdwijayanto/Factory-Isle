@@ -45,25 +45,33 @@ Object.assign(UI, {
     $('insp-name').textContent = MACHINES[m.id].name;
     body.appendChild(el('div', MACHINES[m.id].desc, 'mp-desc'));
     const recipes = RECIPES[m.id];
-    const row = el('div', null, 'mp-recipes');
-    recipes.forEach((r, i) => {
-      const b = el('button', null);
-      const icon = iconEl(r.out);
-      if (icon) b.appendChild(icon);
-      b.appendChild(document.createTextNode(ITEMS[r.out].name + ' x' + r.n));
-      if (i === m.recipe) b.className = 'on';
-      b.addEventListener('click', () => {
-        if (i !== m.recipe) {
-          for (const [id, n] of Object.entries(m.input)) invAdd(id, n);
-          m.input = {}; m.progress = 0;
-          m.recipe = i;
-          this.renderInspect();
-        }
+    if (recipes) {
+      const row = el('div', null, 'mp-recipes');
+      recipes.forEach((r, i) => {
+        const b = el('button', null);
+        const icon = iconEl(r.out);
+        if (icon) b.appendChild(icon);
+        b.appendChild(document.createTextNode(ITEMS[r.out].name + ' x' + r.n));
+        if (i === m.recipe) b.className = 'on';
+        b.addEventListener('click', () => {
+          if (i !== m.recipe) {
+            for (const [id, n] of Object.entries(m.input)) invAdd(id, n);
+            m.input = {}; m.progress = 0;
+            m.recipe = i;
+            this.renderInspect();
+          }
+        });
+        row.appendChild(b);
       });
-      row.appendChild(b);
-    });
-    body.appendChild(row);
-    body.appendChild(el('div', recipeLabel(m), 'mp-recipe'));
+      body.appendChild(row);
+      body.appendChild(el('div', recipeLabel(m), 'mp-recipe'));
+    } else {
+      // Mesin tanpa resep (Tree Generator / Harvester): jalan otomatis,
+      // tidak ada resep untuk dipilih dan tidak ada bahan untuk dimasukkan.
+      body.appendChild(el('div', m.id === 'treeGen'
+        ? 'Otomatis: menumbuhkan 1 pohon tiap 20 detik di petak rumput sebelah.'
+        : 'Otomatis: menebang pohon terdekat di lahan jadi 3 Log tiap 12 detik.', 'mp-recipe'));
+    }
     const buf = el('div', null, 'mp-buffers');
     buf.id = 'insp-buffers';
     body.appendChild(buf);
@@ -76,10 +84,10 @@ Object.assign(UI, {
     const status = el('div', null, 'mp-status');
     status.id = 'insp-status';
     body.appendChild(status);
-    body.appendChild(this.actionRow([
-      ['Masukkan bahan', () => { depositTo(m); this.renderInspect(); }],
-      ['Ambil hasil', () => { takeFrom(m); this.renderInspect(); this.refreshHUD(); }],
-    ]));
+    const acts1 = [];
+    if (recipes) acts1.push(['Masukkan bahan', () => { depositTo(m); this.renderInspect(); }]);
+    acts1.push(['Ambil hasil', () => { takeFrom(m); this.renderInspect(); this.refreshHUD(); }]);
+    body.appendChild(this.actionRow(acts1));
     body.appendChild(this.actionRow([
       ['Eject', () => { ejectMachine(m); SFX.play('place'); this.renderInspect(); this.refreshHUD(); }],
       [m.stopped ? 'Lanjutkan' : 'Stop', () => { m.stopped = !m.stopped; this.renderInspect(); saveSoon(); }],
@@ -129,6 +137,7 @@ Object.assign(UI, {
     }
     if (m && st) {
       st.textContent = m.stopped ? 'Dihentikan (Stop). Tekan Lanjutkan untuk jalan lagi.'
+        : !RECIPES[m.id] ? (m.id === 'treeGen' ? 'Menumbuhkan pohon di petak sebelah.' : 'Menebang pohon di lahan.')
         : m.progress > 0 ? 'Sedang mengolah.'
         : !inputsOk(m) ? 'Menunggu bahan: ' + missingList(m) + '.'
         : !outputRoom(m) ? 'Output penuh — Ambil hasil atau sambung conveyor/storage.'

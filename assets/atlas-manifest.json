@@ -8,6 +8,12 @@
   "rows": 14,
   "source": "procedural",
   "sprites": {
+    "advSaw": {
+      "col": 3,
+      "h": 1,
+      "row": 4,
+      "w": 1
+    },
     "axe": {
       "col": 6,
       "h": 1,
@@ -24,6 +30,12 @@
       "col": 2,
       "h": 1,
       "row": 2,
+      "w": 1
+    },
+    "bridge": {
+      "col": 7,
+      "h": 1,
+      "row": 12,
       "w": 1
     },
     "carpenter": {
@@ -62,16 +74,46 @@
       "row": 0,
       "w": 1
     },
+    "crafter": {
+      "col": 7,
+      "h": 1,
+      "row": 3,
+      "w": 1
+    },
     "crate": {
       "col": 5,
       "h": 1,
       "row": 2,
       "w": 1
     },
+    "dock": {
+      "col": 1,
+      "h": 1,
+      "row": 13,
+      "w": 1
+    },
+    "drill": {
+      "col": 5,
+      "h": 1,
+      "row": 4,
+      "w": 1
+    },
+    "elecSaw": {
+      "col": 2,
+      "h": 1,
+      "row": 4,
+      "w": 1
+    },
     "flowers": {
       "col": 6,
       "h": 1,
       "row": 0,
+      "w": 1
+    },
+    "gate": {
+      "col": 4,
+      "h": 1,
+      "row": 12,
       "w": 1
     },
     "grass0": {
@@ -98,10 +140,232 @@
       "row": 3,
       "w": 1
     },
+    "harvester": {
+      "col": 6,
+      "h": 1,
+      "row": 4,
+      "w": 1
+    },
+    "item_Bed": {
+      "col": 7,
+      "h": 1,
+      "row": 7,
+      "w": 1
+    },
+    "item_Bench": {
+      "col": 1,
+      "h": 1,
+      "row": 12,
+      "w": 1
+    },
+    "item_Brick": {
+      "col": 6,
+      "h": 1,
+      "row": 5,
+      "w": 1
+    },
+    "item_BronzeCannon": {
+      "col": 6,
+      "h": 1,
+      "row": 7,
+      "w": 1
+    },
+    "item_BronzeIngot": {
+      "col": 0,
+      "h": 1,
+      "row": 11,
+      "w": 1
+    },
+    "item_CannonBarrel": {
+      "col": 5,
+      "h": 1,
+      "row": 7,
+      "w": 1
+    },
+    "item_CannonMold": {
+      "col": 7,
+      "h": 1,
+      "row": 6,
+      "w": 1
+    },
+    "item_Clay": {
+      "col": 4,
+      "h": 1,
+      "row": 10,
+      "w": 1
+    },
+    "item_Coil": {
+      "col": 1,
+      "h": 1,
+      "row": 11,
+      "w": 1
+    },
+    "item_CopperIngot": {
+      "col": 7,
+      "h": 1,
+      "row": 10,
+      "w": 1
+    },
+    "item_CopperOre": {
+      "col": 1,
+      "h": 1,
+      "row": 10,
+      "w": 1
+    },
+    "item_Cotton": {
+      "col": 5,
+      "h": 1,
+      "row": 10,
+      "w": 1
+    },
+    "item_DyeCan": {
+      "col": 5,
+      "h": 1,
+      "row": 6,
+      "w": 1
+    },
+    "item_DyedTextiles": {
+      "col": 4,
+      "h": 1,
+      "row": 6,
+      "w": 1
+    },
+    "item_Firelog": {
+      "col": 5,
+      "h": 1,
+      "row": 5,
+      "w": 1
+    },
+    "item_Gear": {
+      "col": 2,
+      "h": 1,
+      "row": 11,
+      "w": 1
+    },
+    "item_Glass": {
+      "col": 7,
+      "h": 1,
+      "row": 5,
+      "w": 1
+    },
+    "item_IronBeam": {
+      "col": 3,
+      "h": 1,
+      "row": 11,
+      "w": 1
+    },
+    "item_IronFrame": {
+      "col": 4,
+      "h": 1,
+      "row": 11,
+      "w": 1
+    },
+    "item_IronIngot": {
+      "col": 6,
+      "h": 1,
+      "row": 10,
+      "w": 1
+    },
+    "item_IronOre": {
+      "col": 0,
+      "h": 1,
+      "row": 10,
+      "w": 1
+    },
+    "item_Log": {
+      "col": 2,
+      "h": 1,
+      "row": 5,
+      "w": 1
+    },
+    "item_Motor": {
+      "col": 6,
+      "h": 1,
+      "row": 11,
+      "w": 1
+    },
+    "item_Nails": {
+      "col": 5,
+      "h": 1,
+      "row": 11,
+      "w": 1
+    },
+    "item_Piano": {
+      "col": 3,
+      "h": 1,
+      "row": 8,
+      "w": 1
+    },
+    "item_Pillar": {
+      "col": 3,
+      "h": 1,
+      "row": 5,
+      "w": 1
+    },
+    "item_Plank": {
+      "col": 4,
+      "h": 1,
+      "row": 5,
+      "w": 1
+    },
+    "item_Sand": {
+      "col": 3,
+      "h": 1,
+      "row": 10,
+      "w": 1
+    },
+    "item_Table": {
+      "col": 0,
+      "h": 1,
+      "row": 12,
+      "w": 1
+    },
+    "item_Textiles": {
+      "col": 3,
+      "h": 1,
+      "row": 6,
+      "w": 1
+    },
+    "item_TinOre": {
+      "col": 2,
+      "h": 1,
+      "row": 10,
+      "w": 1
+    },
+    "item_Wheel": {
+      "col": 6,
+      "h": 1,
+      "row": 6,
+      "w": 1
+    },
+    "item_Window": {
+      "col": 2,
+      "h": 1,
+      "row": 12,
+      "w": 1
+    },
+    "item_WoodFrame": {
+      "col": 7,
+      "h": 1,
+      "row": 11,
+      "w": 1
+    },
     "lantern": {
       "col": 5,
       "h": 1,
       "row": 0,
+      "w": 1
+    },
+    "mayor": {
+      "col": 3,
+      "h": 1,
+      "row": 12,
+      "w": 1
+    },
+    "mountain": {
+      "col": 2,
+      "h": 1,
+      "row": 13,
       "w": 1
     },
     "oreCopper": {
@@ -134,6 +398,12 @@
       "row": 2,
       "w": 1
     },
+    "platform": {
+      "col": 0,
+      "h": 1,
+      "row": 13,
+      "w": 1
+    },
     "player": {
       "col": 0,
       "dirs": 4,
@@ -143,10 +413,46 @@
       "row": 6,
       "w": 1
     },
+    "plotpad": {
+      "col": 5,
+      "h": 1,
+      "row": 12,
+      "w": 1
+    },
     "rack": {
       "col": 4,
       "h": 1,
       "row": 2,
+      "w": 1
+    },
+    "railBend": {
+      "col": 4,
+      "h": 1,
+      "row": 7,
+      "w": 1
+    },
+    "railStop": {
+      "col": 3,
+      "h": 1,
+      "row": 7,
+      "w": 1
+    },
+    "railX": {
+      "col": 6,
+      "h": 1,
+      "row": 13,
+      "w": 1
+    },
+    "railY": {
+      "col": 7,
+      "h": 1,
+      "row": 13,
+      "w": 1
+    },
+    "road": {
+      "col": 5,
+      "h": 1,
+      "row": 13,
       "w": 1
     },
     "sand": {
@@ -185,16 +491,40 @@
       "row": 1,
       "w": 1
     },
+    "station": {
+      "col": 3,
+      "h": 1,
+      "row": 13,
+      "w": 1
+    },
     "stump": {
       "col": 7,
       "h": 1,
       "row": 0,
       "w": 1
     },
+    "textiles": {
+      "col": 4,
+      "h": 1,
+      "row": 4,
+      "w": 1
+    },
+    "train": {
+      "col": 4,
+      "h": 1,
+      "row": 13,
+      "w": 1
+    },
     "tree": {
       "col": 0,
       "h": 1,
       "row": 0,
+      "w": 1
+    },
+    "treeGen": {
+      "col": 7,
+      "h": 1,
+      "row": 4,
       "w": 1
     },
     "wallIron": {
@@ -209,245 +539,11 @@
       "row": 2,
       "w": 1
     },
-    "item_Log": {
-      "col": 2,
-      "row": 5,
-      "w": 1,
-      "h": 1
-    },
-    "item_Pillar": {
-      "col": 3,
-      "row": 5,
-      "w": 1,
-      "h": 1
-    },
-    "item_Plank": {
-      "col": 4,
-      "row": 5,
-      "w": 1,
-      "h": 1
-    },
-    "item_Firelog": {
-      "col": 5,
-      "row": 5,
-      "w": 1,
-      "h": 1
-    },
-    "item_Brick": {
-      "col": 6,
-      "row": 5,
-      "w": 1,
-      "h": 1
-    },
-    "item_Glass": {
-      "col": 7,
-      "row": 5,
-      "w": 1,
-      "h": 1
-    },
-    "item_IronOre": {
-      "col": 0,
-      "row": 10,
-      "w": 1,
-      "h": 1
-    },
-    "item_CopperOre": {
-      "col": 1,
-      "row": 10,
-      "w": 1,
-      "h": 1
-    },
-    "item_TinOre": {
-      "col": 2,
-      "row": 10,
-      "w": 1,
-      "h": 1
-    },
-    "item_Sand": {
-      "col": 3,
-      "row": 10,
-      "w": 1,
-      "h": 1
-    },
-    "item_Clay": {
-      "col": 4,
-      "row": 10,
-      "w": 1,
-      "h": 1
-    },
-    "item_Cotton": {
-      "col": 5,
-      "row": 10,
-      "w": 1,
-      "h": 1
-    },
-    "item_IronIngot": {
-      "col": 6,
-      "row": 10,
-      "w": 1,
-      "h": 1
-    },
-    "item_CopperIngot": {
-      "col": 7,
-      "row": 10,
-      "w": 1,
-      "h": 1
-    },
-    "item_BronzeIngot": {
-      "col": 0,
-      "row": 11,
-      "w": 1,
-      "h": 1
-    },
-    "item_Coil": {
-      "col": 1,
-      "row": 11,
-      "w": 1,
-      "h": 1
-    },
-    "item_Gear": {
-      "col": 2,
-      "row": 11,
-      "w": 1,
-      "h": 1
-    },
-    "item_IronBeam": {
-      "col": 3,
-      "row": 11,
-      "w": 1,
-      "h": 1
-    },
-    "item_IronFrame": {
-      "col": 4,
-      "row": 11,
-      "w": 1,
-      "h": 1
-    },
-    "item_Nails": {
-      "col": 5,
-      "row": 11,
-      "w": 1,
-      "h": 1
-    },
-    "item_Motor": {
-      "col": 6,
-      "row": 11,
-      "w": 1,
-      "h": 1
-    },
-    "item_WoodFrame": {
-      "col": 7,
-      "row": 11,
-      "w": 1,
-      "h": 1
-    },
-    "item_Table": {
-      "col": 0,
-      "row": 12,
-      "w": 1,
-      "h": 1
-    },
-    "item_Bench": {
-      "col": 1,
-      "row": 12,
-      "w": 1,
-      "h": 1
-    },
-    "item_Window": {
-      "col": 2,
-      "row": 12,
-      "w": 1,
-      "h": 1
-    },
-    "mayor": {
-      "col": 3,
-      "row": 12,
-      "w": 1,
-      "h": 1
-    },
-    "gate": {
-      "col": 4,
-      "row": 12,
-      "w": 1,
-      "h": 1
-    },
-    "plotpad": {
-      "col": 5,
-      "row": 12,
-      "w": 1,
-      "h": 1
-    },
     "water": {
       "col": 6,
+      "h": 1,
       "row": 12,
-      "w": 1,
-      "h": 1
-    },
-    "bridge": {
-      "col": 7,
-      "row": 12,
-      "w": 1,
-      "h": 1
-    },
-    "platform": {
-      "col": 0,
-      "row": 13,
-      "w": 1,
-      "h": 1
-    },
-    "dock": {
-      "col": 1,
-      "row": 13,
-      "w": 1,
-      "h": 1
-    },
-    "mountain": {
-      "col": 2,
-      "row": 13,
-      "w": 1,
-      "h": 1
-    },
-    "station": {
-      "col": 3,
-      "row": 13,
-      "w": 1,
-      "h": 1
-    },
-    "train": {
-      "col": 4,
-      "row": 13,
-      "w": 1,
-      "h": 1
-    },
-    "road": {
-      "col": 5,
-      "row": 13,
-      "w": 1,
-      "h": 1
-    },
-    "railX": {
-      "col": 6,
-      "row": 13,
-      "w": 1,
-      "h": 1
-    },
-    "railY": {
-      "col": 7,
-      "row": 13,
-      "w": 1,
-      "h": 1
-    },
-    "railStop": {
-      "col": 3,
-      "row": 7,
-      "w": 1,
-      "h": 1
-    },
-    "railBend": {
-      "col": 4,
-      "row": 7,
-      "w": 1,
-      "h": 1
+      "w": 1
     }
   }
 }
