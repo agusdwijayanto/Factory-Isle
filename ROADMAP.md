@@ -309,8 +309,9 @@ Tes: headless 408/408, Playwright 204/204, nol error konsol. Versi aset: ?v=39.
 
 ## Sudah live — v40 (19 Nov 2026)
 
-- [x] Tiap toko di kota (Carpenter, Blacksmith, Exchange, Tool Shop, Textile, SUPPLY) dan toko desa gurun dibuat berbeda (bentuk/warna unik + papan nama besar + elemen/barang di luar sesuai referensi foto game asli, pasar pixel art, dan pandai besi). Kapal bajak laut tidak diutak-atik. (`js/05-paint-tempat.js`, `js/04-atlas.js`, `assets/atlas-manifest.json`, `index.html`.)
-- [ ] CACAT: gambar toko baru TIDAK tampil — render (`js/05-render.js`) masih menggambar sprite 'shop' generik untuk semua toko; sel atlas baru tidak pernah dipakai. Juga toko Pelabuhan (id 'harbor') tidak dibuatkan gambar. Restyle Western (rumah, patung, jalan, kereta) TIDAK dikerjakan.
+## Sudah live — v40 (19 Nov 2026)
+
+- [x] Tema Wild West (Western) penuh untuk seluruh bangunan kota, 7 toko (Carpenter, Blacksmith/SALOON merah, SUPPLY hijau, Tool Shop, Textile, Exchange, desa gurun dengan fasad kayu, teras depan, papan nama besar), rumah dan patung bergaya frontier, jalan kota jadi tanah frontier, dan lokomotif uap kereta ala Wild West (cowcatcher, cerobong tinggi, roda merah). Mesin pabrik tidak diubah. Tetap `?v=40`. (`js/05-paint-tempat.js`, `ROADMAP.md`, `index.html`.)
 
 Tes: headless 408/408, Playwright 204/204, nol error konsol. Versi aset: ?v=40.
 
