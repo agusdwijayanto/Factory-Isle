@@ -166,8 +166,16 @@ Tes: headless 173/173, Playwright 110/110, nol error konsol. Versi aset: ?v=23.
 
 Tes: headless 180/180, Playwright 115/115, nol error konsol. Versi aset: ?v=24.
 
+## Sudah live — v25 (19 Nov 2026)
+
+- [x] Perubahan map Kota (perintah Agus, koordinat x/z): pad Lahan pindah dari (8,10) ke (8,11) = Agus (1,9) (`S.plotPad` di `js/01-core.js` — pemicu pindah, titik lahir kembali ke kota, dan penempatan pad ikut pindah); jalan baru x=2-4, z=9 (8,10),(8,9),(8,8) dengan rel x=3, z=9 (8,9) menimpa jalan — hasil akhir (8,10) jalan, (8,9) rel, (8,8) jalan; peron pindah dari (6,8)-(8,8) ke (5,8)-(7,8) = Agus (4, 6-8) (`js/03-map-kota.js`). Kereta tetap di (7,9) di atas rel, panel kereta tetap terbuka saat diklik.
+- [x] Migrasi simpan lama (`js/12-simpan.js`): simpan v2 lama ikut dibangun ulang kalau pad di (8,11) belum ada; progres pemain tetap.
+- [x] Tes regresi baru: headless memeriksa pad baru (8,11) = Agus (1,9), jalan/rel/peron baru, kereta tetap di (7,9), ketuk peron baru tidak membuka panel kereta, ketuk kereta tetap membuka, injak pad baru pindah ke Lahan, pad lama sudah mati, dan migrasi v25; Playwright memeriksa data + piksel (pad putih, jalan coklat muda, rel abu-abu, peron abu-abu biru) dan jalan ke pad baru. Dua cek lama yang mengunci pad (8,10) sebagai benar diperbaiki — itu sebabnya perubahan ini butuh penyesuaian tes.
+
+Tes: headless 190/190, Playwright 115/115, nol error konsol. Versi aset: ?v=25.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v24.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v25.

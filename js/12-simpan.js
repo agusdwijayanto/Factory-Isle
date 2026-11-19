@@ -62,12 +62,14 @@ function loadGame() {
     }
   }
   // Simpan v2 lama (sebelum jalan/rel v14, sebelum toko disebar v18,
-  // sebelum peron hutan pindah v19, sebelum air/jembatan/jalan v23):
+  // sebelum peron hutan pindah v19, sebelum air/jembatan/jalan v23,
+  // sebelum pad/peron kota pindah v25):
   // bangun ulang map statis supaya jalan, rel, posisi toko, posisi
-  // peron/kereta hutan, dan air/jembatan/jalan yang baru muncul;
-  // progres pemain (uang, tas, mesin, lahan) tetap.
+  // peron/kereta hutan, air/jembatan/jalan, dan posisi pad/peron kota
+  // yang baru muncul; progres pemain (uang, tas, mesin, lahan) tetap.
   const townStale = S.maps.town && (!S.maps.town.grid.flat().some((t) => t.t === 'road')
-    || !SHOP_SPOTS.filter((s) => s.map === 'town').every((s) => S.maps.town.grid[s.gy][s.gx].obj === 'shop_' + s.id));
+    || !SHOP_SPOTS.filter((s) => s.map === 'town').every((s) => S.maps.town.grid[s.gy][s.gx].obj === 'shop_' + s.id)
+    || S.maps.town.grid[11][8].obj !== 'plotpad');
   const forestStale = S.maps.forest && (S.maps.forest.grid[9][14].obj !== 'train' || S.maps.forest.grid[0][8].t !== 'bridge');
   const mountainStale = S.maps.mountain && S.maps.mountain.grid[5][1].t !== 'water';
   if (townStale || forestStale || mountainStale) {

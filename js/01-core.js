@@ -31,7 +31,7 @@ const S = {
   walls: new Map(),      // "gx,gy" -> {id}
   decor: new Map(),      // "gx,gy" -> {id}
   mayor: { gx: 5, gy: 1 },      // di map kota
-  plotPad: { gx: 8, gy: 10 },   // di map kota: injak untuk masuk ke plot
+  plotPad: { gx: 8, gy: 11 },   // di map kota: injak untuk masuk ke plot (x=1, z=9)
   player: {
     fx: 8.5, fy: 6.5, dir: 1, frame: 0, walkT: 0,
     path: [],            // [{gx, gy}] petak tujuan berurutan

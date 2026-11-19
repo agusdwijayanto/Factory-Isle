@@ -7,11 +7,12 @@ function buildTown() {
   for (const s of SHOP_SPOTS.filter((s) => s.map === 'town')) town[s.gy][s.gx].obj = 'shop_' + s.id;
   town[S.mayor.gy][S.mayor.gx].obj = 'mayor';
   town[S.plotPad.gy][S.plotPad.gx].obj = 'plotpad';
-  platform(town, 7, 9);
+  terrain(town, [[5, 8], [6, 8], [7, 8]], 'platform'); // peron (x=4, z=6-8)
+  town[9][7].obj = 'train'; // kereta tetap di (7,9), di atas rel
   railXAt(town, 9, 0, 15); // rel kiri-kanan penuh di baris peron
   // jalan: tulang utara-selatan, barat-timur, depan toko
   roadAt(town, [
-    ...rng(1, 7).map((gy) => [8, gy]),
+    ...rng(1, 10).map((gy) => [8, gy]), // kolom selatan sampai pad; (8,9) tetap rel
     ...rng(0, 8).map((gx) => [gx, 6]),
     ...rng(8, 15).map((gx) => [gx, 6]),
     ...rng(1, 14).map((gx) => [gx, 2]),
