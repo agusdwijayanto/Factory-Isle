@@ -86,10 +86,18 @@ Tes: headless 126/126, Playwright 103/103, nol error konsol. Versi aset: ?v=14.
 
 Tes: headless 126/126, Playwright 103/103, nol error konsol. Versi aset: ?v=15.
 
-## Di luar tahap ini (sesuai PRD)
+## Sudah live — v16 (19 Nov 2026)
+
+- [x] Pecah kode supaya maintenance gampang, tanpa ubah perilaku game sama sekali: angka, harga, resep, map, jalan, rel, toko, simpan v2, dan perilaku v12-v15 tetap persis. Tanpa module/import, tanpa bundler, tanpa build step — tetap `<script>` biasa berurutan, global dan nama fungsi sama, hanya pindah kode ke file lain.
+- [x] `03-data.js` (346 baris) dipecah jadi 8 file: `03-data-items.js` (216 baris: barang, toko, resep, mesin, node), `03-data-tutorial.js` (18 baris: tutorial + teks resep), `03-data-maps.js` (50 baris: bantuan bangun map + rakitan `buildStaticMaps`/`buildMap`), dan tiap zona map sendiri — `03-map-kota.js` (22), `03-map-hutan.js` (16), `03-map-gunung.js` (24), `03-map-pelabuhan.js` (16), `03-map-lahan.js` (7). File `03-data.js` lama dihapus.
+- [x] `05-render.js` (951 baris) dipecah jadi 11 file: `05-render-core.js` (26: kanvas + langit), `05-paint-helpers.js` (61: pembantu pelukis + wadah `PAINTERS`), pelukis per yang digambar — `05-paint-tanah.js` (86), `05-paint-node.js` (67), `05-paint-mesin.js` (129), `05-paint-alat.js` (28), `05-paint-tempat.js` (115), `05-paint-pemain.js` (30), `05-paint-item.js` (161) — lalu `05-render-overlay.js` (77: cahaya, belt, panah, karakter) dan `05-render.js` (204: loop render + aturan taruh).
+- [x] `13-ui.js` (698 baris) dipecah jadi 10 file: `13-ui-core.js` (112: pembantu DOM, suara, panel dasar), panel per file — `13-ui-build.js` (68), `13-ui-inspect.js` (145: panel periksa + ambil/masuk bahan), `13-ui-storage.js` (45), `13-ui-shop.js` (82), `13-ui-train.js` (29), `13-ui-tas.js` (21), `13-ui-mayor.js` (49), `13-ui-tick.js` (36) — dan `13-ui.js` (83: kait tombol statis).
+- [x] Urutan muat dijaga: `index.html` memuat 40 script `?v=16` berurutan; daftar file tes headless ikut diperbarui. Total 14 file js jadi 38 file, file terbesar sekarang 216 baris (`03-data-items.js`).
+
+Tes: headless 126/126, Playwright 103/103, nol error konsol. Versi aset: ?v=16.
 
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v15.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v16.
