@@ -315,12 +315,8 @@ Tes: headless 408/408, Playwright 204/204, nol error konsol. Versi aset: ?v=39.
 
 Tes: headless 408/408, Playwright 204/204, nol error konsol. Versi aset: ?v=40.
 
-## Sudah live — v41 (19 Nov 2026)
+## Sudah live — v42 (19 Nov 2026)
 
-- [x] Perbaiki cacat v40: render menggambar sprite toko itu sendiri (`t.obj`), bukan lagi 'shop' generik; tambah gambar toko Pelabuhan (shop_harbor) yang ketinggalan. (`js/05-render.js`, `js/05-paint-tempat.js`, `js/04-atlas.js`, `assets/atlas-manifest.json`, `index.html`.)
+- [x] Restyle Wild West penuh untuk semua bangunan, 7 toko dengan detail fasad kayu dan teras depan, rumah dan patung frontier, jalan kota jadi tanah frontier, kereta disesuaikan. Mesin pabrik tidak diubah. Versi aset: `?v=42`. (`js/05-paint-tempat.js`, `js/04-atlas.js`, `index.html`, `ROADMAP.md`.)
 
-- Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
-
-## Cara baca
-
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v40.
+Tes: headless 408/408, Playwright 204/204, nol error konsol. Versi aset: ?v=42.
