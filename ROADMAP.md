@@ -288,6 +288,12 @@ Tes: headless 354/354, Playwright 192/192, nol error konsol. Versi aset: ?v=35.
 
 Tes: headless 407/407, Playwright 204/204, nol error konsol. Versi aset: ?v=36.
 
+## Sudah live — v37 (19 Nov 2026)
+
+- [x] Kapal bajak laut: Dyed Textiles 60 jadi 20 (tutup lubang arbitrase v36; keputusan Agus). Audit arbitrase 0 lubang. (`js/03-data-items.js`.)
+
+Tes: headless 407/407, Playwright 204/204, nol error konsol. Versi aset: ?v=37.
+
 ## Sudah live — v38 (19 Nov 2026)
 
 - [x] Panel kereta cuma dibuka dari klik kereta (lokomotifnya).
