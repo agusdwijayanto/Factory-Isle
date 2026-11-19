@@ -213,8 +213,17 @@ Tes: headless 220/220, Playwright 129/129, nol error konsol. Versi aset: ?v=28.
 
 Tes: headless 259/259, Playwright 145/145, nol error konsol. Versi aset: ?v=29.
 
+## Sudah live — v30 (19 Nov 2026)
+
+- [x] Tutup arbitrase Dyed Textiles (perintah Agus, ikut saran Muse): toko Textile membeli Dyed Textiles dari pemain 55 jadi 16; harga jual toko ke pemain (24) tidak berubah. (`js/03-data-items.js`.)
+- [x] Audit arbitrase seluruh tabel harga (semua toko + Exchange harga papan + premi pelabuhan): ditemukan 5 lubang lain, semuanya dari premi pelabuhan (harga papan x1,2) yang membayar lebih dari harga beli termurah — Brick beli 30 jual pelabuhan 36 (+6), WoodFrame beli 48 jual 57 (+9), IronFrame beli 83 jual 99 (+16), Nails beli 25 jual 30 (+5), Cotton beli 25 jual 30 (+5). Ditutup dengan menaikkan harga toko menjual ke pemain di atas premi pelabuhan: Exchange Brick 30 jadi 37, WoodFrame 48 jadi 58, IronFrame 83 jadi 100; Blacksmith Nails 25 jadi 31; Textile Cotton 25 jadi 31. Harga papan (ITEMS.price) tidak diubah kecuali Dyed Textiles.
+- [x] Harga papan Dyed Textiles 55 jadi 16 (supaya lubang tertutup tuntas: Exchange dan pelabuhan ikut jadi 16 dan 20, keduanya di bawah harga beli toko 24). Angka 55 di riset adalah harga kapal bajak laut, bukan harga papan kota. Produksi tetap menguntungkan: 5 Dyed Textiles hasil crafting (1 Dye Can beli 24) dijual di pelabuhan 100. (`js/03-data-items.js`.)
+- [x] Tes regresi baru: audit headless memeriksa tiap barang yang bisa dibeli — harga jual termahal (semua toko + Exchange + pelabuhan) harus di bawah harga beli termurah; simulasi putaran penuh beli 1 Dyed Textiles (24) lalu jual di textile/Exchange/pelabuhan semuanya rugi (92/92/96); cek lama v29 yang mengunci harga 55 diperbarui. Cek lama beli Cotton di textile disesuaikan (62 jadi 2 Cotton).
+
+Tes: headless 265/265, Playwright 145/145, nol error konsol. Versi aset: ?v=30.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v29.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v30.

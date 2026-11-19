@@ -40,7 +40,7 @@ const ITEMS = {
   // seperti Coil/Gear). Cannon 1.500 = riset 4.2 ("Cannon s.d. 1.500"),
   // tetap item jual termahal (berikutnya Motor 225).
   Textiles:     { name: 'Textiles',      color: '#f2ede0', price: 35 },  // riset 4.2
-  DyedTextiles: { name: 'Dyed Textiles', color: '#e07b9d', price: 55 },  // riset 4.2
+  DyedTextiles: { name: 'Dyed Textiles', color: '#e07b9d', price: 16 },  // v30: papan 16 (bukan 55 harga kapal bajak laut di riset) supaya beli 24 di toko Textile tidak bisa dijual untung di Exchange/pelabuhan
   DyeCan:       { name: 'Dye Can',       color: '#4fae9d', price: 16 },  // riset 4.2
   Wheel:        { name: 'Wheel',         color: '#8d99a8', price: null },
   CannonMold:   { name: 'Cannon Casting Mold', color: '#e8d9a0', price: null },
@@ -58,6 +58,9 @@ const MAP_NAMES = { town: 'Kota', plot: 'Lahan', forest: 'Hutan', mountain: 'Gun
 // harga papan (ITEMS.price). Exchange membeli semua barang lain dengan
 // harga papan supaya loop jual v1 tetap utuh. Pelabuhan: harga premium =
 // yang terbesar antara harga riset gurun/kapal dan harga papan x1,2.
+// v30: harga toko menjual ke pemain (buy) selalu di atas harga tertinggi
+// toko membeli (sell, termasuk premi pelabuhan) supaya tidak ada arbitrase
+// beli di satu tempat lalu jual untung di tempat lain tanpa produksi.
 const HARBOR_RESEARCH = { WoodFrame: 32, Log: 8, Firelog: 12 };
 function harborSellTable() {
   const t = {};
@@ -69,10 +72,10 @@ function harborSellTable() {
 }
 const SHOPS = {
   carpenter:  { name: 'Carpenter',  sell: { Log: 7, Pillar: 12, Plank: 6, WoodFrame: 28 }, buy: {} },
-  blacksmith: { name: 'Blacksmith', sell: { Firelog: 6, IronIngot: 24 }, buy: { Nails: 25 } },
+  blacksmith: { name: 'Blacksmith', sell: { Firelog: 6, IronIngot: 24 }, buy: { Nails: 31 } }, // v30: 31 di atas premi pelabuhan 30
   toolshop:   { name: 'Tool Shop',  sell: { IronBeam: 72 }, buy: {} },
-  textile:    { name: 'Textile',    sell: { Cotton: 25, Textiles: 35, DyeCan: 16, DyedTextiles: 55 }, buy: { Cotton: 25, Textiles: 50, DyeCan: 24, DyedTextiles: 24 } }, // v29: stok riset 4.2 (jual ke pemain = buy, beli dari pemain = sell)
-  exchange:   { name: 'Exchange',   sell: 'ALL', buy: { Log: 12, Pillar: 20, Plank: 10, Brick: 30, WoodFrame: 48, IronFrame: 83, IronBeam: 125, Coil: 38 } },
+  textile:    { name: 'Textile',    sell: { Cotton: 25, Textiles: 35, DyeCan: 16, DyedTextiles: 16 }, buy: { Cotton: 31, Textiles: 50, DyeCan: 24, DyedTextiles: 24 } }, // v30: beli Dyed 55->16 (tutup arbitrase); Cotton 25->31 di atas premi pelabuhan 30
+  exchange:   { name: 'Exchange',   sell: 'ALL', buy: { Log: 12, Pillar: 20, Plank: 10, Brick: 37, WoodFrame: 58, IronFrame: 100, IronBeam: 125, Coil: 38 } }, // v30: Brick 37, WoodFrame 58, IronFrame 100, di atas premi pelabuhan (36/57/99)
   harbor:     { name: 'Pelabuhan',  sell: harborSellTable(), buy: {} },
 };
 // Posisi toko: obj di grid = 'shop_' + id. Toko kota disebar di sepanjang
