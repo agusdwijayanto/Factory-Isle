@@ -42,8 +42,12 @@ Object.assign(PAINTERS, {
     g.beginPath(); g.moveTo(ox + 18, oy + 32); g.lineTo(ox + 32, oy + 25); g.lineTo(ox + 46, oy + 32); g.lineTo(ox + 32, oy + 39); g.closePath(); g.stroke();
   },
   road: (g, ox, oy, c) => {
-    P_ground(g, ox + 32, oy + 32, '#b89a68');
-    g.fillStyle = 'rgba(120,90,40,0.5)';
+    // v43: tanah frontier — debu kemerahan + bekas roda wagon.
+    P_ground(g, ox + 32, oy + 32, '#a67c52');
+    g.strokeStyle = 'rgba(90,60,30,0.6)'; g.lineWidth = 2;
+    g.beginPath(); g.moveTo(ox + 20, oy + 25); g.lineTo(ox + 44, oy + 37); g.stroke();
+    g.beginPath(); g.moveTo(ox + 20, oy + 29); g.lineTo(ox + 44, oy + 41); g.stroke();
+    g.fillStyle = 'rgba(90,60,30,0.5)';
     [[-10, -3], [2, -6], [9, 2], [-3, 5], [6, 6]].forEach(([dx, dy]) => g.fillRect(ox + 32 + dx, oy + 32 + dy, 3, 3));
   },
   // Rel searah sumbu-x: garis baja sejajar diagonal belah ketupat, sambung antar petak.

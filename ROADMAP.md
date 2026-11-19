@@ -320,6 +320,17 @@ Tes: headless 408/408, Playwright 204/204, nol error konsol. Versi aset: ?v=40.
 
 Tes: headless 411/411, Playwright 204/204, nol error konsol. Versi aset: ?v=41.
 
+## Sudah live — v42 (19 Nov 2026)
+
+- [x] Restyle Western oleh Raphael: 7 toko berteras + warna baru (Exchange jadi SALOON merah, SUPPLY hijau), stasiun coklat-merah, kereta bercowcatcher + kabin kayu + cerobong tinggi, Mayor jadi koboi pria. (`js/05-paint-tempat.js`.)
+- [ ] CACAT: game TIDAK BISA BOOT — toko Pelabuhan masih memanggil `_paintShop` yang sudah diganti nama jadi `_paintWesternShop` (pageerror, `__ready` tidak pernah true). Jalan, rumah, dan patung TIDAK direstyle (tidak ada bangunan rumah di game; patung tidak diubah).
+
+Tes: headless 411/411, Playwright 204/204, nol error konsol. Versi aset: ?v=42.
+
+## Sudah live — v43 (19 Nov 2026)
+
+- [x] Perbaiki cacat v42: toko Pelabuhan memanggil `_paintWesternShop`; jalan jadi tanah frontier (debu kemerahan + bekas roda wagon); Mayor kembali ke perempuan pirang asli (foto Mayor). (`js/05-paint-tempat.js`, `js/05-paint-tanah.js`, `index.html`.)
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca

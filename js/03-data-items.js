@@ -472,6 +472,8 @@ const CONVEYOR_COLOR_HEX = { gold: '#e8b64c', purple: '#9a6a9a', red: '#c0392b',
 
 // Riwayat versi untuk tombol Book di dalam game (ringkasan ROADMAP.md).
 const CHANGELOG = [
+  ['v43', 'Perbaiki v42 yang merusak game: toko Pelabuhan memanggil _paintShop yang sudah tidak ada (game tidak bisa boot); jalan jadi tanah frontier; Mayor kembali ke perempuan pirang asli.'],
+  ['v42', 'Restyle Western: toko berteras + warna baru (Exchange jadi SALOON merah, SUPPLY hijau), stasiun coklat-merah, kereta bercowcatcher + kabin kayu + cerobong tinggi, Mayor jadi koboi.'],
   ['v41', 'Toko akhirnya benar-benar beda: render menggambar sprite toko itu sendiri, bukan lagi \'shop\' generik (v40 bikin gambarnya tapi tidak dipakai); tambah toko Pelabuhan (shop_harbor) yang ketinggalan di v40.'],
   ['v40', 'Tiap toko di kota dan desa gurun dibuat berbeda (bentuk/warna unik + papan nama besar + barang di luar ikut referensi foto game, pixel art, pandai besi).'],
   ['v39', 'Hapus stasiun desa gurun di Pelabuhan (13,1) — tidak ada lagi bangunan stasiun di game.'],

@@ -57,8 +57,8 @@ Object.assign(PAINTERS, {
     });
   },
   shop_exchange: (g, ox, oy) => {
-    // SALOON merah
-    PAINTERS._paintWesternShop(g, ox, oy, '#962d22', '#78281f', '#c0392b', '#922b21', 'SALOON / EXCHANGE', (g, cx, gy) => {
+    // SALOON merah (judul pendek saja — 'SALOON / EXCHANGE' 101px meluber dari papan 76px).
+    PAINTERS._paintWesternShop(g, ox, oy, '#962d22', '#78281f', '#c0392b', '#922b21', 'SALOON', (g, cx, gy) => {
       g.fillStyle = '#f1c40f'; g.fillRect(cx - 28, gy - 10, 8, 8);
       g.fillStyle = '#d4ac0d'; g.fillRect(cx + 20, gy - 12, 10, 8);
     });
@@ -90,7 +90,7 @@ Object.assign(PAINTERS, {
   },
   shop_harbor: (g, ox, oy) => {
     // v41: toko Pelabuhan (id 'harbor') ketinggalan di v40 — tanpa ini gambarnya hilang.
-    PAINTERS._paintShop(g, ox, oy, '#1a5276', '#154360', '#2e86c1', '#2471a3', 'HARBOR', (g, cx, gy) => {
+    PAINTERS._paintWesternShop(g, ox, oy, '#1a5276', '#154360', '#2e86c1', '#2471a3', 'HARBOR', (g, cx, gy) => {
       g.fillStyle = '#7fb3d5'; g.fillRect(cx - 28, gy - 12, 10, 8);
       g.fillStyle = '#aed6f1'; g.fillRect(cx + 20, gy - 12, 10, 8);
     });
@@ -153,21 +153,27 @@ Object.assign(PAINTERS, {
   },
   // ---------- Mayor, gerbang, kotak plot ----------
   mayor: (g, ox, oy) => {
+    // v43: kembali ke Mayor asli — perempuan rambut pirang, gaun biru-putih
+    // (foto Mayor). v42 mengubahnya jadi koboi pria, itu menyimpang dari aslinya.
     const cx = ox + 32, gy = oy + 62;
     P_shadow(g, cx, gy, 10);
-    g.fillStyle = '#5a3825'; // rompi koboi
+    g.fillStyle = '#2c4a7a'; // gaun
     g.beginPath();
-    g.moveTo(cx - 6, gy - 32); g.lineTo(cx + 6, gy - 32);
-    g.lineTo(cx + 10, gy); g.lineTo(cx - 10, gy);
+    g.moveTo(cx - 5, gy - 32); g.lineTo(cx + 5, gy - 32);
+    g.lineTo(cx + 11, gy); g.lineTo(cx - 11, gy);
     g.closePath(); g.fill();
-    g.fillStyle = '#d4ac0d'; // bintang sheriff
-    g.fillRect(cx - 2, gy - 20, 4, 4);
-    g.fillStyle = '#f0c8a0'; // muka
-    g.fillRect(cx - 8, gy - 30, 3, 9); g.fillRect(cx + 5, gy - 30, 3, 9);
-    g.beginPath(); g.arc(cx, gy - 36, 7, 0, 6.29); g.fill();
-    g.fillStyle = '#4a2e18'; // topi cowboy
-    g.fillRect(cx - 12, gy - 43, 24, 3);
-    g.fillRect(cx - 7, gy - 50, 14, 8);
+    g.fillStyle = '#e8e4f5'; // celemek putih
+    g.beginPath();
+    g.moveTo(cx - 3, gy - 30); g.lineTo(cx + 3, gy - 30);
+    g.lineTo(cx + 6, gy - 2); g.lineTo(cx - 6, gy - 2);
+    g.closePath(); g.fill();
+    g.fillStyle = '#f0c8a0'; // tangan + kepala
+    g.fillRect(cx - 9, gy - 30, 3, 9); g.fillRect(cx + 6, gy - 30, 3, 9);
+    g.beginPath(); g.arc(cx, gy - 38, 7, 0, 6.29); g.fill();
+    g.fillStyle = '#e8c860'; // rambut pirang
+    g.beginPath(); g.arc(cx, gy - 41, 8, Math.PI, 0); g.fill();
+    g.fillRect(cx - 8, gy - 41, 3, 10); g.fillRect(cx + 5, gy - 41, 3, 10);
+    g.fillStyle = '#2a1a10'; g.fillRect(cx - 3, gy - 39, 2, 2); g.fillRect(cx + 2, gy - 39, 2, 2);
   },
   gate: (g, ox, oy) => {
     const cx = ox + 32, gy = oy + 62;
