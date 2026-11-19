@@ -76,9 +76,9 @@ function paintMiniBar(x, y, z, frac) {
   ctx.fillRect(x - w / 2, y, w * Math.min(1, Math.max(0, frac)), h);
 }
 
-// Penggaris koordinat x/z: angka di luar belah ketupat map, di margin
-// gelap — x di sisi kiri (naik ke atas), z di sisi bawah (ke kanan).
-// Ikut zoom dan ukuran map aktif; petak yang di luar layar dilewati.
+// Penggaris koordinat x/z: angka DI DALAM petak pinggir map — x di
+// tengah petak kolom kiri (0,gy), z di tengah petak baris bawah
+// (gx,GRID_H-1). Ikut zoom dan ukuran map aktif; petak di luar layar dilewati.
 function paintRuler() {
   if (S.settings.ruler === false) return; // saklar Pengaturan, tanpa kunci = ON
   const z = S.cam.zoom;
@@ -86,19 +86,16 @@ function paintRuler() {
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.6)';
   ctx.fillStyle = '#9aa3ad';
-  const off = 10 * z;
   for (let gy = 0; gy < GRID_H; gy++) {
     const { x, y } = tileCenter(0, gy, S.cam);
-    const lx = x - (TILE_W / 2) * z - off, ly = y;
-    if (lx < -20 || lx > VW + 20 || ly < -20 || ly > VH + 20) continue;
+    if (x < -20 || x > VW + 20 || y < -20 || y > VH + 20) continue;
     const s = String(GRID_H - gy);
-    ctx.strokeText(s, lx, ly); ctx.fillText(s, lx, ly);
+    ctx.strokeText(s, x, y); ctx.fillText(s, x, y);
   }
   for (let gx = 1; gx < GRID_W; gx++) { // z mulai dari 2: angka 1 di pojok sudah diwakili label x
     const { x, y } = tileCenter(gx, GRID_H - 1, S.cam);
-    const lx = x, ly = y + (TILE_H / 2) * z + off;
-    if (lx < -20 || lx > VW + 20 || ly < -20 || ly > VH + 20) continue;
+    if (x < -20 || x > VW + 20 || y < -20 || y > VH + 20) continue;
     const s = String(gx + 1);
-    ctx.strokeText(s, lx, ly); ctx.fillText(s, lx, ly);
+    ctx.strokeText(s, x, y); ctx.fillText(s, x, y);
   }
 }

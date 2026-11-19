@@ -141,8 +141,15 @@ Tes: headless 151/151, Playwright 107/107, nol error konsol. Versi aset: ?v=20.
 
 Tes: headless 159/159, Playwright 110/110, nol error konsol. Versi aset: ?v=21.
 
+## Sudah live — v22 (19 Nov 2026)
+
+- [x] Angka penggaris koordinat pindah ke DALAM petak pinggir (perintah Agus: bukan di garis/sumbu di luar map, tapi di bloknya): `paintRuler()` di `js/05-render-overlay.js` sekarang menggambar angka tepat di tengah petak (0,gy) untuk x 1-12 dan (gx,GRID_H-1) untuk z 2-16; angka 1 tetap sekali di pojok. Gaya sama (abu-abu #9aa3ad, tebal, tepi gelap tipis), ikut zoom dan ukuran map aktif, hormat saklar Koordinat di Pengaturan (OFF = tidak ada angka).
+- [x] Tes regresi baru: headless memeriksa posisi label persis sama dengan tengah petak (1 di (0,11), 16 di (15,11), 12 di (0,0)); Playwright memeriksa piksel label abu-abu ada di tengah petak dan tidak ada di posisi luar map yang lama (HP + desktop).
+
+Tes: headless 162/162, Playwright 110/110, nol error konsol. Versi aset: ?v=22.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v21.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v22.
