@@ -157,8 +157,15 @@ Tes: headless 162/162, Playwright 110/110, nol error konsol. Versi aset: ?v=22.
 
 Tes: headless 173/173, Playwright 110/110, nol error konsol. Versi aset: ?v=23.
 
+## Sudah live — v24 (19 Nov 2026)
+
+- [x] Bug spawn Hutan -> Gunung (laporan Agus): pemain lahir di (2,5) x/z, seharusnya (2,7). Akar masalah: titik lahir tetap di `MAP_EXITS` (`js/03-data-items.js`) masih (4,10) — petak yang sejak v23 jadi rumput. Perbaikan: spawn pindah ke (6,10) = Agus (2,7), di atas jalan selatan gunung. Arah balik (Gunung (4,11) -> Hutan, lahir (8,1)) dan transisi lain tidak diubah.
+- [x] Tes regresi baru: headless dan Playwright menegaskan posisi lahir Hutan -> Gunung (6,10) di atas jalan + label penggarisnya (2,7), dan pintu balik tetap jalan. Dua cek lama yang mengunci spawn (4,10) sebagai benar diperbaiki — itu sebabnya bug ini lolos.
+
+Tes: headless 176/176, Playwright 112/112, nol error konsol. Versi aset: ?v=24.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v23.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v24.

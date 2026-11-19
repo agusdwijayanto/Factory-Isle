@@ -84,7 +84,7 @@ const MAP_EXITS = {
     { gx: 15, gy: 6, to: 'harbor', sx: 1, sy: 6 },
   ],
   forest: [
-    { gx: 8, gy: 0, to: 'mountain', sx: 4, sy: 10 },
+    { gx: 8, gy: 0, to: 'mountain', sx: 6, sy: 10 }, // lahir di jalan selatan gunung (x=2, z=7)
     { gx: 15, gy: 6, to: 'town', sx: 1, sy: 6 },
   ],
   mountain: [
