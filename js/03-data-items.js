@@ -114,7 +114,7 @@ const SHOPS = {
   // harga Textile 24 sudah ada (jangan ubah harga lama, perintah Agus).
   // Perbaikan: naikkan beli Dyed di Textile jadi 65, atau batasi stok.
   desert:     { name: 'Desert Village', sell: { WoodFrame: 32, Log: 8, Firelog: 12, Wheel: 293 }, buy: {} },
-  pirate:     { name: 'Kapal Bajak Laut', sell: { DyedTextiles: 60, Bed: 109, Engine: 185, Piano: 360 }, buy: {} },
+  pirate:     { name: 'Kapal Bajak Laut', sell: { DyedTextiles: 20, Bed: 109, Engine: 185, Piano: 360 }, buy: {} }, // v37: Dyed 60->20 tutup arbitrase (premium pelabuhan: papan 16 x 1,2 = 19,2 dibulatkan 20)
 };
 // Posisi toko: obj di grid = 'shop_' + id. Toko kota disebar di sepanjang
 // jalan toko (y=2): x = 1, 4, 7, 11, 14. x=8 tetap kosong (jalan ke
@@ -473,6 +473,7 @@ const CONVEYOR_COLOR_HEX = { gold: '#e8b64c', purple: '#9a6a9a', red: '#c0392b',
 // Riwayat versi untuk tombol Book di dalam game (ringkasan ROADMAP.md).
 const CHANGELOG = [
   ['v36', 'Stasiun + Conductor di kota (20x14), toko SUPPLY, desa gurun + kapal bajak laut di pelabuhan, rantai emas, benih + palem + renang, Sorter, Storage Barrel/Crane/Rack Advanced, Ore Generator, Drill Head, rantai pewarna, kapak Steel, Grinding Wheel, kereta jadi toko, conveyor berwarna, batas item 150, biaya slot + ekspansi per save.'],
+  ['v37', 'Kapal bajak laut: Dyed Textiles 60 jadi 20 (tutup lubang arbitrase v36 — beli $24 di Textile, jual $60 di kapal = untung $36; harga baru ikut rumus premium pelabuhan papan 16 x 1,2 = 19,2 dibulatkan ke atas 20).'],
   ['v35', 'Wagon (jalan lv1, wagon lv2, kereta lv3), perkakas, patung + Housing, badge, 4 slot save.'],
   ['v34', 'Pintu keluar lahan tetap di Agus (1,9) di semua ukuran; tombol melayang X/PUTAR/centang di dekat petak hantu.'],
   ['v33', 'Conveyor tidak lagi macet: backpressure frontAccepts; conveyor macet bisa dihapus (+$100).'],

@@ -284,12 +284,18 @@ Tes: headless 354/354, Playwright 192/192, nol error konsol. Versi aset: ?v=35.
 - [x] Kereta jadi toko keliling: papan jual di peron tiap map (kota (5,8), hutan (13,8), gunung (8,8), pelabuhan (6,6)); panel kereta kini ada bagian jual (harga papan, tombol 1/10/Semua). Pohon Oak/Pine: jenis pohon dengan tahap tumbuh, terikat sistem benih. Tombol Book di burger menu: panel changelog riwayat versi dari ROADMAP. Conveyor berwarna: pilih warna jalur (Emas default, Ungu/Merah/Hijau/Oranye/Biru) lewat panel periksa conveyor, visual saja, tersimpan di entri conveyor. (`js/03-data-items.js`, `js/03-map-hutan.js`, `js/03-map-gunung.js`, `js/03-map-pelabuhan.js`, `js/13-ui-book.js`, `js/13-ui-train.js`, `js/13-ui-inspect.js`, `js/05-render.js`, `js/05-render-overlay.js`.)
 - [x] Perbaikan yang membuat suite lolos (bukan perbaikan gameplay umum): BFS (findPath) tidak lagi melewati petak keluar map saat jalan ke target lain — node Gold/Stone v36 di Gunung menutup rute langsung ke bijih (10,2) sehingga BFS memutar lewat pintu (15,10) dan pemain malah pindah map; pintu tetap bisa dituju sebagai target. (`js/08-gerak.js`.)
 - [x] Tes regresi baru: headless memeriksa badge Cannon (+ migrasi), Conductor + papan jual, harga SUPPLY/desert/pirate, rantai emas, Stone + Drill Head + Grinding Wheel + Tin Can, rantai pewarna, Ore Generator + Crane, kapasitas storage + resep Rack Advanced, filter Sorter + frontAccepts, warna conveyor, gali tunggul + tanam + tumbuh bertahap, pulau palem + renang, batas item 150 (+ Admin lewat), biaya slot + ekspansi per save, kapak Steel, jual ke kereta, BFS tidak lewat pintu; Playwright memeriksa panel Book, Conductor + jual ke kereta, desa gurun + kapal bajak laut, renang, tanam benih, Sorter + filter + warna, plus screenshot stasiun dan desa gurun. Tes lama disesuaikan (kota 20x14, jalan masuk (8,13), burger 7 tombol, Machines 16, atlas 128 sprite, ekspansi slot 1 $100, slot 2 $25.000).
-- [ ] LUBANG ARBITRASE YANG DIDOKUMENTASIKAN (belum ditutup, jangan diubah diam-diam): Dyed Textiles beli $24 di Textile, jual $60 di kapal bajak laut = untung $36 tanpa produksi. Harga kapal ikut NamuWiki (asli), harga Textile ikut v30 (jangan diubah). Perbaikan yang diusulkan: naikkan harga beli Dyed Textiles di Textile jadi $65, atau beri batas stok toko. Audit v30 kini mengizinkan satu pengecualian ini saja.
+- [x] LUBANG ARBITRASE DITUTUP (v37, keputusan Agus "Kapal jadi $20"): Dyed Textiles kapal bajak laut 60 jadi 20 (ikut rumus premium pelabuhan: papan 16 x 1,2 = 19,2 dibulatkan ke atas 20). Beli termurah $24 (Textile) kini di atas harga jual kapal $20 — tidak ada untung. Audit 0 lubang.
 
 Tes: headless 407/407, Playwright 204/204, nol error konsol. Versi aset: ?v=36.
+
+## Sudah live — v37 (19 Nov 2026)
+
+- [x] Kapal bajak laut: Dyed Textiles 60 jadi 20 (tutup lubang arbitrase v36; keputusan Agus). Audit arbitrase 0 lubang. (`js/03-data-items.js`.)
+
+Tes: headless 407/407, Playwright 204/204, nol error konsol. Versi aset: ?v=37.
 
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v36.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v37.
