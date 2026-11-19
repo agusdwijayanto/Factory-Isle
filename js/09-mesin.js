@@ -89,6 +89,19 @@ function harvestNearestTree(m, gx, gy) {
 function frontCell(gx, gy, dir) {
   return { gx: gx + DIRS[dir].dx, gy: gy + DIRS[dir].dy };
 }
+// Depan bisa menerima barang ini? Syaratnya sama dengan cabang dorong:
+// conveyor kosong, mesin yang menerima barangnya, atau storage yang muat.
+function frontAccepts(gx, gy, dir, itemId) {
+  const f = frontCell(gx, gy, dir);
+  const fk = key(f.gx, f.gy);
+  const nextConv = S.conveyors.get(fk);
+  if (nextConv && !nextConv.item) return true;
+  const m = S.machines.get(fk);
+  if (m && machineAccepts(m, itemId)) return true;
+  const st = S.storages.get(fk);
+  if (st && bufferTotal(st.items) < STORAGE_CAP[st.id]) return true;
+  return false;
+}
 function updateConveyors(dt) {
   for (const [k, c] of S.conveyors) {
     const [gx, gy] = k.split(',').map(Number);
@@ -112,12 +125,16 @@ function updateConveyors(dt) {
       }
     } else {
       // Tarik dari mesin di belakang, kiri, lalu kanan. Depan tidak:
-      // depan itu arah keluar.
+      // depan itu arah keluar. Hanya tarik barang yang bisa diantar ke
+      // depan: conveyor yang sudah bawa barang tidak bisa narik lagi,
+      // jadi sekali nyangkut dengan barang yang ditolak depannya,
+      // rantainya mati selamanya. Barang yang belum bisa diantar
+      // dibiarkan di output mesin sampai depan kosong (backpressure).
       const pullDirs = [(c.dir + 2) % 4, (c.dir + 3) % 4, (c.dir + 1) % 4];
       for (const d of pullDirs) {
         const m = S.machines.get(key(gx + DIRS[d].dx, gy + DIRS[d].dy));
         if (!m) continue;
-        const outId = Object.keys(m.output).find((id) => m.output[id] > 0);
+        const outId = Object.keys(m.output).find((id) => m.output[id] > 0 && frontAccepts(gx, gy, c.dir, id));
         if (!outId) continue;
         m.output[outId]--;
         if (m.output[outId] <= 0) delete m.output[outId];

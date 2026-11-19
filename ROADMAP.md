@@ -241,8 +241,16 @@ Tes: headless 280/280, Playwright 152/152, nol error konsol. Versi aset: ?v=31.
 
 Tes: headless 287/287, Playwright 165/165, nol error konsol. Versi aset: ?v=32.
 
+## Sudah live — v33 (19 Nov 2026)
+
+- [x] Conveyor tidak nyangkut lagi (bug laporan Agus, drill dua arah: Firelog tidak bisa masuk, IronOre tidak bisa keluar): updateConveyors() dulu menarik barang apa saja dari output mesin tanpa mengecek depannya — sekali nyangkut (contoh Log di depan drill, IronOre di depan rumput kosong) conveyor tidak pernah narik lagi dan rantai mati. Sekarang cabang tarik hanya mengambil barang yang bisa diantar ke depan (conveyor kosong, mesin yang menerima, atau storage yang muat); kalau depan buntu, barang dibiarkan di output mesin sampai depan kosong (backpressure, bukan deadlock). Drill, resep, dan harga tidak diubah. (`js/09-mesin.js`.)
+- [x] Conveyor yang sudah macet di save lama bisa dihapus: ketuk conveyor membuka panel periksa dengan tombol Hapus (+$100 refund) — sudah ada sejak dulu, diverifikasi lewat tes Playwright (ketuk -> panel Conveyor -> Hapus -> conveyor hilang, uang +$100). Agus hapus conveyor macetnya sendiri dari game.
+- [x] Tes regresi baru: headless memeriksa conveyor tidak menarik Log kalau depannya drill, tetap menarik Firelog, rantai penuh TreeGen > Harvester > Conveyor > Splitter > Conveyor > Drill tetap jalan (Firelog 110 masuk drill, 5 Iron Ore keluar), conveyor menunggu saat depan penuh lalu narik sesudah kosong, IronOre tidak ditarik kalau depannya buntu, IronOre mengalir ke storage sesudah storage ditaruh di depan; Playwright memeriksa yang sama di browser plus ketuk conveyor -> panel -> Hapus + refund.
+
+Tes: headless 296/296, Playwright 169/169, nol error konsol. Versi aset: ?v=33.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v32.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v33.
