@@ -92,7 +92,7 @@ const MAP_EXITS = {
   ],
 };
 // Peron kereta tiap map: [gx, gy] petak tengah peron, titik lahir naik kereta.
-const TRAIN_SPAWN = { town: [7, 9], forest: [7, 9], mountain: [7, 9], harbor: [7, 7] };
+const TRAIN_SPAWN = { town: [7, 8], forest: [7, 8], mountain: [6, 8], harbor: [7, 6] };
 
 // Dua map. Kota tetap 16x12; plot mulai 16x12 lalu membesar tiap ekspansi
 // (ukuran dasar sama dengan grid v1 supaya simpan lama termigrasi utuh).
@@ -218,20 +218,28 @@ const HARVEST_TEXT = { // teks melayang panen, kunci = obj atau terrain
 // Gunung: pegunungan, bijih, hulu sungai. Pelabuhan: laut, pantai pasir,
 // dermaga. Plot: rumput kosong siap dibangun.
 const MAP_W = 16, MAP_H = 12;
-function buildMap() {
-  S.machines.clear(); S.conveyors.clear(); S.storages.clear();
-  S.walls.clear(); S.decor.clear();
-  S.expansion = 0; S.autoSeller = false; S.autoSellerT = 0;
+// Bantuan bangun map, dipakai buildMap dan migrasi simpan lama (12-simpan.js).
+const rng = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
+const put = (g, list, obj) => list.forEach(([gx, gy]) => {
+  g[gy][gx].obj = obj;
+  if (NODES[obj]) g[gy][gx].hp = NODES[obj].hp;
+});
+const terrain = (g, list, t) => list.forEach(([gx, gy]) => { g[gy][gx].t = t; });
+// Jalan hanya di rumput kosong: jangan tutup resource, toko, atau rel.
+const roadAt = (g, list) => list.forEach(([gx, gy]) => {
+  const t = g[gy][gx];
+  if (t.t === 'grass' && !t.obj) t.t = 'road';
+});
+const railXAt = (g, gy, x0, x1) => { for (let x = x0; x <= x1; x++) if (g[gy][x].t === 'grass') g[gy][x].t = 'railX'; };
+const railYAt = (g, gx, y0, y1) => { for (let y = y0; y <= y1; y++) if (g[y][gx].t === 'grass') g[y][gx].t = 'railY'; };
+// Peron di samping rel (baris py-1); kereta di atas rel (baris py).
+const platform = (g, px, py) => {
+  terrain(g, [[px - 1, py - 1], [px, py - 1], [px + 1, py - 1]], 'platform');
+  g[py][px].obj = 'train';
+};
 
-  const put = (g, list, obj) => list.forEach(([gx, gy]) => {
-    g[gy][gx].obj = obj;
-    if (NODES[obj]) g[gy][gx].hp = NODES[obj].hp;
-  });
-  const terrain = (g, list, t) => list.forEach(([gx, gy]) => { g[gy][gx].t = t; });
-  const platform = (g, px, py) => {
-    terrain(g, [[px - 1, py], [px, py], [px + 1, py]], 'platform');
-    g[py - 1][px].obj = 'train';
-  };
+// Map statis (kota, hutan, gunung, pelabuhan); lahan dibangun terpisah.
+function buildStaticMaps() {
 
   // ---- Kota 16x12 ----
   const town = makeGrid(TOWN_W, TOWN_H);
@@ -240,8 +248,15 @@ function buildMap() {
   for (const s of SHOP_SPOTS.filter((s) => s.map === 'town')) town[s.gy][s.gx].obj = 'shop_' + s.id;
   town[S.mayor.gy][S.mayor.gx].obj = 'mayor';
   town[S.plotPad.gy][S.plotPad.gx].obj = 'plotpad';
-  put(town, [[2, 8]], 'station');
   platform(town, 7, 9);
+  railXAt(town, 9, 0, 15); // rel kiri-kanan penuh di baris peron
+  // jalan: tulang utara-selatan, barat-timur, depan toko
+  roadAt(town, [
+    ...rng(1, 7).map((gy) => [8, gy]),
+    ...rng(0, 8).map((gx) => [gx, 6]),
+    ...rng(8, 15).map((gx) => [gx, 6]),
+    ...rng(2, 14).map((gx) => [gx, 2]),
+  ]);
   put(town, [[3, 3], [9, 6], [12, 8]], 'lantern');
   terrain(town, [[6, 1], [7, 1], [9, 1], [10, 1]], 'clay');
 
@@ -251,6 +266,13 @@ function buildMap() {
   put(forest, [[11, 2], [12, 2], [13, 2], [11, 3], [12, 3]], 'cotton');
   put(forest, [[10, 7]], 'lantern');
   platform(forest, 7, 9);
+  railXAt(forest, 9, 7, 15);
+  railYAt(forest, 9, 0, 9); // rel L: timur ke utara
+  roadAt(forest, [
+    ...rng(0, 6).map((gy) => [8, gy]),
+    ...rng(8, 15).map((gx) => [gx, 6]),
+    [7, 6], [7, 7],
+  ]);
 
   // ---- Gunung 16x12 ----
   const mountain = makeGrid(MAP_W, MAP_H);
@@ -261,7 +283,15 @@ function buildMap() {
   put(mountain, [[12, 6], [13, 7], [11, 7]], 'oreCopper');
   put(mountain, [[9, 8], [10, 9], [12, 9]], 'oreTin');
   put(mountain, [[9, 6]], 'lantern');
-  platform(mountain, 7, 9);
+  // Peron mengapit rel: rel penuh atas-bawah di x=7, kereta di (7,9).
+  terrain(mountain, [[6, 8], [8, 8]], 'platform');
+  mountain[9][7].obj = 'train';
+  railYAt(mountain, 7, 0, 11);
+  roadAt(mountain, [
+    ...rng(4, 12).map((gx) => [gx, 10]),
+    ...rng(5, 7).map((gy) => [6, gy]),
+    [6, 9], [6, 10],
+  ]);
 
   // ---- Pelabuhan 16x12 ----
   const harbor = makeGrid(MAP_W, MAP_H);
@@ -270,18 +300,29 @@ function buildMap() {
   terrain(harbor, [[14, 8], [15, 8], [14, 9], [15, 9]], 'water');
   terrain(harbor, [[7, 10], [8, 10]], 'dock'); // dermaga menjorok ke laut
   for (const s of SHOP_SPOTS.filter((s) => s.map === 'harbor')) harbor[s.gy][s.gx].obj = 'shop_' + s.id;
-  put(harbor, [[2, 8]], 'station');
   platform(harbor, 7, 7);
+  railXAt(harbor, 7, 0, 8); // rel barat sampai peron
+  terrain(harbor, rng(0, 9).map((gy) => [15, gy]), 'water'); // laut di sisi kanan
+  roadAt(harbor, [...rng(0, 5).map((gx) => [gx, 6]), [7, 8], [7, 9]]);
   put(harbor, [[9, 5]], 'lantern');
   terrain(harbor, [[2, 9], [4, 9], [6, 9], [10, 9], [12, 9], [13, 9]], 'sand');
 
-  S.maps = {
+  return {
     town: { w: TOWN_W, h: TOWN_H, grid: town },
     forest: { w: MAP_W, h: MAP_H, grid: forest },
     mountain: { w: MAP_W, h: MAP_H, grid: mountain },
     harbor: { w: MAP_W, h: MAP_H, grid: harbor },
-    plot: { w: PLOT_BASE_W, h: PLOT_BASE_H, grid: makeGrid(PLOT_BASE_W, PLOT_BASE_H) },
   };
+}
+
+function buildMap() {
+  S.machines.clear(); S.conveyors.clear(); S.storages.clear();
+  S.walls.clear(); S.decor.clear();
+  S.expansion = 0; S.autoSeller = false; S.autoSellerT = 0;
+  const sm = buildStaticMaps();
+  const plot = makeGrid(PLOT_BASE_W, PLOT_BASE_H);
+  roadAt(plot, [[8, 7], [8, 8], [8, 9], [8, 10]]); // jalan pendek gerbang ke tengah
+  S.maps = { ...sm, plot: { w: PLOT_BASE_W, h: PLOT_BASE_H, grid: plot } };
   applyMap('town');
 }
 

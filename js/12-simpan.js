@@ -61,6 +61,12 @@ function loadGame() {
       if (S.maps[name]) S.maps[name] = restoreNodes(saved, S.maps[name].w, S.maps[name].h);
     }
   }
+  // Simpan v2 lama (sebelum jalan/rel v14): bangun ulang map statis supaya
+  // jalan dan rel muncul; progres pemain (uang, tas, mesin, lahan) tetap.
+  if (S.maps.town && !S.maps.town.grid.flat().some((t) => t.t === 'road')) {
+    const sm = buildStaticMaps();
+    for (const [name, m] of Object.entries(sm)) S.maps[name] = m;
+  }
   applyMap(S.maps[data.map] ? data.map : 'town');
   if (data.player) {
     S.player.fx = data.player.fx; S.player.fy = data.player.fy; S.player.dir = data.player.dir;

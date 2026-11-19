@@ -171,7 +171,7 @@ function updateRegrow(dt) {
 }
 
 // Keputusan ketuk: jalan, panen, atau buka panel sesudah sampai.
-// Bangunan hanya di plot; toko, Mayor, stasiun, dan sumber daya ada di
+// Bangunan hanya di plot; toko, Mayor, peron kereta, dan sumber daya ada di
 // mapnya masing-masing.
 function interactAt(gx, gy) {
   const t = tileAt(gx, gy);
