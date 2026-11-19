@@ -61,12 +61,14 @@ function loadGame() {
       if (S.maps[name]) S.maps[name] = restoreNodes(saved, S.maps[name].w, S.maps[name].h);
     }
   }
-  // Simpan v2 lama (sebelum jalan/rel v14, sebelum toko disebar v18):
-  // bangun ulang map statis supaya jalan, rel, dan posisi toko baru muncul;
-  // progres pemain (uang, tas, mesin, lahan) tetap.
+  // Simpan v2 lama (sebelum jalan/rel v14, sebelum toko disebar v18,
+  // sebelum peron hutan pindah v19): bangun ulang map statis supaya
+  // jalan, rel, posisi toko, dan posisi peron/kereta hutan yang baru
+  // muncul; progres pemain (uang, tas, mesin, lahan) tetap.
   const townStale = S.maps.town && (!S.maps.town.grid.flat().some((t) => t.t === 'road')
     || !SHOP_SPOTS.filter((s) => s.map === 'town').every((s) => S.maps.town.grid[s.gy][s.gx].obj === 'shop_' + s.id));
-  if (townStale) {
+  const forestStale = S.maps.forest && S.maps.forest.grid[9][14].obj !== 'train';
+  if (townStale || forestStale) {
     const sm = buildStaticMaps();
     for (const [name, m] of Object.entries(sm)) S.maps[name] = m;
   }

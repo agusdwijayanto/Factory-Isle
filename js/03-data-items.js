@@ -96,7 +96,7 @@ const MAP_EXITS = {
   ],
 };
 // Peron kereta tiap map: [gx, gy] petak tengah peron, titik lahir naik kereta.
-const TRAIN_SPAWN = { town: [7, 8], forest: [7, 8], mountain: [6, 8], harbor: [7, 6] };
+const TRAIN_SPAWN = { town: [7, 8], forest: [14, 8], mountain: [6, 8], harbor: [7, 6] };
 
 // Dua map. Kota tetap 16x12; plot mulai 16x12 lalu membesar tiap ekspansi
 // (ukuran dasar sama dengan grid v1 supaya simpan lama termigrasi utuh).

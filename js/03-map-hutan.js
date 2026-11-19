@@ -4,13 +4,15 @@ function buildForest() {
   put(forest, [[2, 2], [5, 2], [3, 4], [6, 3], [2, 6], [4, 7], [3, 9], [5, 10], [10, 4], [11, 8]], 'tree');
   put(forest, [[11, 2], [12, 2], [13, 2], [11, 3], [12, 3]], 'cotton');
   put(forest, [[10, 7]], 'lantern');
-  platform(forest, 7, 9);
-  railXAt(forest, 9, 7, 15);
+  railXAt(forest, 9, 9, 15);
   railYAt(forest, 9, 0, 9); // rel L: timur ke utara
+  terrain(forest, [[9, 9]], 'railBend'); // tikungan L di pertemuan rel
+  terrain(forest, [[14, 8]], 'platform'); // peron baru 1 kotak (x=4,z=15)
+  forest[9][14].obj = 'train'; // kereta di rel depan peron (x=3,z=15)
   roadAt(forest, [
     ...rng(0, 6).map((gy) => [8, gy]),
     ...rng(8, 15).map((gx) => [gx, 6]),
-    [7, 6], [7, 7],
+    [14, 7], // jalan di belakang peron baru (x=5,z=15)
   ]);
   return forest;
 }

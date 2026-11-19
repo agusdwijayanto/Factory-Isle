@@ -67,6 +67,18 @@ Object.assign(PAINTERS, {
       g.beginPath(); g.moveTo(ox + x1, oy + y1); g.lineTo(ox + x2, oy + y2); g.stroke();
     });
   },
+  // Tikungan L: kaki timur (arah railX) bertemu kaki utara (arah railY).
+  railBend: (g, ox, oy, c) => {
+    P_ground(g, ox + 32, oy + 32, '#6e6a72');
+    g.strokeStyle = '#d7dbe0'; g.lineWidth = 2;
+    g.beginPath(); g.moveTo(ox + 32, oy + 35); g.lineTo(ox + 44, oy + 41); g.stroke();
+    g.beginPath(); g.moveTo(ox + 32, oy + 29); g.lineTo(ox + 51, oy + 38); g.stroke();
+    g.beginPath(); g.moveTo(ox + 32, oy + 35); g.lineTo(ox + 51, oy + 26); g.stroke();
+    g.beginPath(); g.moveTo(ox + 32, oy + 29); g.lineTo(ox + 44, oy + 23); g.stroke();
+    g.strokeStyle = '#4a464e'; g.lineWidth = 3;
+    g.beginPath(); g.moveTo(ox + 42, oy + 32); g.lineTo(ox + 38, oy + 40); g.stroke();
+    g.beginPath(); g.moveTo(ox + 38, oy + 24); g.lineTo(ox + 42, oy + 32); g.stroke();
+  },
   // Ujung rel (terminus): rel seperti railY + palang merah di ujung atas.
   railStop: (g, ox, oy, c) => {
     P_ground(g, ox + 32, oy + 32, '#6e6a72');

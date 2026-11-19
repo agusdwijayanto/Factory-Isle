@@ -113,8 +113,18 @@ Tes: headless 129/129, Playwright 103/103, nol error konsol. Versi aset: ?v=17.
 
 Tes: headless 140/140, Playwright 105/105, nol error konsol. Versi aset: ?v=18.
 
+## Sudah live — v19 (19 Nov 2026)
+
+- [x] Pindah peron/kereta hutan ke kanan bawah (koordinat x/z Agus, konversi gx=z-1, gy=12-x): peron baru 1 kotak di (14,8) (x=4,z=15), jalan baru 1 kotak di (14,7) tepat di belakang peron (x=5,z=15), kereta pindah ke rel (14,9) tepat di depan peron (x=3,z=15). Titik lahir penumpang naik kereta (TRAIN_SPAWN hutan) ikut pindah ke (14,8) supaya turun di peron baru.
+- [x] Belokan rel di tikungan L hutan (9,9) (x=3,z=10): terrain baru `railBend` + pelukis sudut yang menyambungkan kaki timur (arah railX) dengan kaki utara (arah railY), sel atlas kosong (4,7). Rel mendatar dan rel tegak sekarang kelihatan belok, bukan dua potong lurus yang ketemu.
+- [x] Peron lama (6,8),(7,8),(8,8), rel depan lama (7,9),(8,9), dan jalan lama (7,6),(7,7) dihapus (kembali jadi rumput). Rel hutan sekarang: railX x=10-15 di baris 9, railY y=0-8 di kolom x=9. Map lain (kota, gunung, pelabuhan, lahan) tidak disentuh; peron baru tetap abu-abu polos, klik peron tetap tidak membuka panel (aturan v18).
+- [x] Simpan v18 ikut termigrasi: simpan lama yang kereta hutannya masih di posisi lama dibangun ulang map statisnya; uang, tas, mesin, dan lahan tetap.
+- [x] Tes regresi: posisi baru peron/kereta/jalan/belokan hutan + peron/rel/jalan lama sudah tidak ada, ketuk peron/kereta hutan di posisi baru, migrasi simpan lama, dan railBend di luar blok sprite player.
+
+Tes: headless 145/145, Playwright 105/105, nol error konsol. Versi aset: ?v=19.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v18.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v19.
