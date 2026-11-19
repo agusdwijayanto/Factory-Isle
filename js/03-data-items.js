@@ -79,7 +79,7 @@ const SHOP_SPOTS = [
 // gerbang v12.
 const MAP_EXITS = {
   town: [
-    { gx: 8, gy: 0, to: 'mountain', sx: 12, sy: 10 }, // jembatan ke gunung
+    { gx: 8, gy: 0, to: 'mountain', sx: 15, sy: 10 }, // jembatan ke gunung, lahir di ujung timur jalan selatan (x=2, z=16)
     { gx: 0, gy: 6, to: 'forest', sx: 14, sy: 6 },
     { gx: 15, gy: 6, to: 'harbor', sx: 1, sy: 6 },
   ],

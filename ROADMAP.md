@@ -174,8 +174,16 @@ Tes: headless 180/180, Playwright 115/115, nol error konsol. Versi aset: ?v=24.
 
 Tes: headless 190/190, Playwright 115/115, nol error konsol. Versi aset: ?v=25.
 
+## Sudah live — v26 (19 Nov 2026)
+
+- [x] Spawn Kota -> Gunung pindah (perintah Agus): dari (12,10) ke (15,10) = Agus (2,16), ujung timur jalan selatan gunung (`MAP_EXITS` di `js/03-data-items.js`, entri jembatan kota (8,0)). Jembatan kota (8,0) tidak diubah.
+- [x] Tidak memantul balik: petak lahir baru (15,10) sama dengan pintu Gunung -> Kota (v24), tapi `checkMapTrigger()` hanya dipanggil saat tiba di petak baru lewat jalur jalan (`js/07-pemain.js`), bukan saat lahir atau diam — pemain yang lahir di (15,10) tetap di Gunung; melangkah keluar lalu kembali menginjak (15,10) tetap pindah ke Kota lahir (8,1) = Agus (11,9).
+- [x] Tes regresi baru: headless dan Playwright menegaskan lahir Kota -> Gunung di (15,10) di atas jalan + label penggarisnya (2,16), diam di atas pintu tidak memantul balik, melangkah ke (14,10) tetap di Gunung, dan kembali injak (15,10) pindah ke Kota. Cek lama yang mengunci spawn (12,10) sebagai benar diperbaiki.
+
+Tes: headless 194/194, Playwright 116/116, nol error konsol. Versi aset: ?v=26.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v25.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v26.
