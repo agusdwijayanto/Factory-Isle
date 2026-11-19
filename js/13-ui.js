@@ -39,6 +39,11 @@ $('btn-sound').addEventListener('click', () => {
   $('btn-sound').textContent = 'Suara: ' + (S.settings.sound ? 'Hidup' : 'Mati');
   saveSoon();
 });
+$('btn-ruler').addEventListener('click', () => {
+  S.settings.ruler = !S.settings.ruler;
+  $('btn-ruler').textContent = 'Koordinat: ' + (S.settings.ruler ? 'Hidup' : 'Mati');
+  saveSoon();
+});
 $('btn-center').addEventListener('click', () => {
   const p = S.player;
   const c = isoPoint(p.fx, p.fy, { x: 0, y: 0, zoom: S.cam.zoom });

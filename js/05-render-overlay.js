@@ -80,6 +80,7 @@ function paintMiniBar(x, y, z, frac) {
 // gelap — x di sisi kiri (naik ke atas), z di sisi bawah (ke kanan).
 // Ikut zoom dan ukuran map aktif; petak yang di luar layar dilewati.
 function paintRuler() {
+  if (S.settings.ruler === false) return; // saklar Pengaturan, tanpa kunci = ON
   const z = S.cam.zoom;
   ctx.font = '700 ' + Math.max(10, Math.round(11 * z)) + 'px system-ui, sans-serif';
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -93,7 +94,7 @@ function paintRuler() {
     const s = String(GRID_H - gy);
     ctx.strokeText(s, lx, ly); ctx.fillText(s, lx, ly);
   }
-  for (let gx = 0; gx < GRID_W; gx++) {
+  for (let gx = 1; gx < GRID_W; gx++) { // z mulai dari 2: angka 1 di pojok sudah diwakili label x
     const { x, y } = tileCenter(gx, GRID_H - 1, S.cam);
     const lx = x, ly = y + (TILE_H / 2) * z + off;
     if (lx < -20 || lx > VW + 20 || ly < -20 || ly > VH + 20) continue;

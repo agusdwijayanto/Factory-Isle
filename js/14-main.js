@@ -35,6 +35,7 @@ Atlas.init().then(() => {
   UI.refreshHUD();
   UI.setHint(HINT_HOME);
   $('btn-sound').textContent = 'Suara: ' + (S.settings.sound ? 'Hidup' : 'Mati');
+  $('btn-ruler').textContent = 'Koordinat: ' + (S.settings.ruler !== false ? 'Hidup' : 'Mati');
   requestAnimationFrame(frame);
   window.__ready = true;
 });

@@ -132,8 +132,17 @@ Tes: headless 145/145, Playwright 105/105, nol error konsol. Versi aset: ?v=19.
 
 Tes: headless 151/151, Playwright 107/107, nol error konsol. Versi aset: ?v=20.
 
+## Sudah live — v21 (19 Nov 2026)
+
+- [x] Belokan rel hutan akhirnya tampil: akar masalahnya di `js/05-render.js` — pemetaan tanah ke sprite (rantai ternary) tidak memuat `railBend`, jadi petak belokan (9,9) jatuh ke default rumput walau sprite atlasnya ada. Perbaikan: rantai ternary diekstrak jadi fungsi `groundSprite(t, gx, gy)` dan `railBend` ditambahkan ke pemetaannya. Piksel tengah petak belokan terbaca #6e6a72 (abu-abu rel), bukan hijau rumput; rel hutan sekarang nyambung tanpa putus.
+- [x] Angka "1" cukup satu di pojok kiri bawah: label z penggaris mulai dari 2 (lewati z=1), label x tetap 1-12 — angka 1 di pojok sudah diwakili label x. Tes headless memastikan angka "1" hanya tergambar sekali dari 27 label (x 1-12 + z 2-16).
+- [x] Saklar koordinat di Pengaturan: tombol "Koordinat: Hidup/Mati" di panel Pengaturan, default ON, tersimpan di save (`S.settings.ruler`; simpan lama tanpa kunci ini default ON). `paintRuler()` tidak menggambar apa-apa saat OFF.
+- [x] Tes regresi baru: headless memeriksa setiap terrain yang dipakai di semua map punya sprite sendiri (bukan jatuh ke rumput diam-diam) dan sprite-nya ada di manifest; Playwright memeriksa piksel belokan (abu-abu, bukan rumput) dan saklar koordinat hidup-mati.
+
+Tes: headless 159/159, Playwright 110/110, nol error konsol. Versi aset: ?v=21.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v20.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v21.

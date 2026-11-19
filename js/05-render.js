@@ -3,6 +3,18 @@
 // Daftarkan semua pelukis ke Atlas sesudah semua file paint dimuat.
 Object.assign(Atlas.painters, PAINTERS);
 
+// Petak tanah -> sprite atlas. Tiap terrain wajib punya cabang di sini;
+// yang tidak punya jatuh ke rumput diam-diam (pernah menelan railBend).
+function groundSprite(t, gx, gy) {
+  return t === 'sand' ? 'sand' : t === 'clay' ? 'clay'
+    : t === 'water' ? 'water' : t === 'bridge' ? 'bridge'
+    : t === 'platform' ? 'platform' : t === 'dock' ? 'dock'
+    : t === 'road' ? 'road' : t === 'railX' ? 'railX'
+    : t === 'railY' ? 'railY' : t === 'railStop' ? 'railStop'
+    : t === 'railBend' ? 'railBend'
+    : 'grass' + Math.floor(hash2(gx, gy) * 4);
+}
+
 function render() {
   const z = S.cam.zoom;
   const bg = ctx.createLinearGradient(0, 0, 0, VH);
@@ -27,12 +39,7 @@ function render() {
       const t = S.grid[gy][gx];
       const { x, y } = tileCenter(gx, gy, S.cam);
       if (x < -90 || x > VW + 90 || y < -90 || y > VH + 90) continue;
-      const ground = t.t === 'sand' ? 'sand' : t.t === 'clay' ? 'clay'
-        : t.t === 'water' ? 'water' : t.t === 'bridge' ? 'bridge'
-        : t.t === 'platform' ? 'platform' : t.t === 'dock' ? 'dock'
-        : t.t === 'road' ? 'road' : t.t === 'railX' ? 'railX'
-        : t.t === 'railY' ? 'railY' : t.t === 'railStop' ? 'railStop'
-        : 'grass' + Math.floor(hash2(gx, gy) * 4);
+      const ground = groundSprite(t.t, gx, gy);
       Atlas.drawTile(ctx, ground, x, y, z);
 
       const conv = onPlot ? S.conveyors.get(key(gx, gy)) : null;

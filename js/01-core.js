@@ -41,7 +41,7 @@ const S = {
   },
   tut: 0, tutDone: false,
   stats: { harvested: {}, crafted: {}, sold: {} },
-  settings: { sound: true },
+  settings: { sound: true, ruler: true },
   keys: {},
 };
 

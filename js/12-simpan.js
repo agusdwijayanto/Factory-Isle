@@ -78,7 +78,7 @@ function loadGame() {
   }
   S.tut = data.tut || 0; S.tutDone = !!data.tutDone;
   S.stats = data.stats || { harvested: {}, crafted: {}, sold: {} };
-  S.settings = data.settings || { sound: true };
+  S.settings = Object.assign({ sound: true, ruler: true }, data.settings || {}); // simpan lama tanpa kunci ruler = ON
   return true;
 }
 
