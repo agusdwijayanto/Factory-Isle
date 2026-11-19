@@ -472,6 +472,8 @@ const CONVEYOR_COLOR_HEX = { gold: '#e8b64c', purple: '#9a6a9a', red: '#c0392b',
 
 // Riwayat versi untuk tombol Book di dalam game (ringkasan ROADMAP.md).
 const CHANGELOG = [
+  ['v40', 'Tiap toko di kota dan desa gurun dibuat berbeda (bentuk/warna unik + papan nama besar + barang di luar ikut referensi foto game, pixel art, pandai besi).'],
+  ['v39', 'Hapus objek stasiun di Pelabuhan (13,1) dan cek harborStale.'],
   ['v36', 'Stasiun + Conductor di kota (20x14), toko SUPPLY, desa gurun + kapal bajak laut di pelabuhan, rantai emas, benih + palem + renang, Sorter, Storage Barrel/Crane/Rack Advanced, Ore Generator, Drill Head, rantai pewarna, kapak Steel, Grinding Wheel, kereta jadi toko, conveyor berwarna, batas item 150, biaya slot + ekspansi per save.'],
   ['v37', 'Kapal bajak laut: Dyed Textiles 60 jadi 20 (tutup lubang arbitrase v36 — beli $24 di Textile, jual $60 di kapal = untung $36; harga baru ikut rumus premium pelabuhan papan 16 x 1,2 = 19,2 dibulatkan ke atas 20).'],
   ['v38', 'Panel kereta cuma dibuka dari klik kereta (lokomotifnya); hapus NPC Conductor, papan jual di 4 map, dan stasiun biru kota. Bagian jual di dalam panel kereta tetap ada.'],

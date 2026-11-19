@@ -307,8 +307,14 @@ Tes: headless 407/407, Playwright 204/204, nol error konsol. Versi aset: ?v=38.
 
 Tes: headless 408/408, Playwright 204/204, nol error konsol. Versi aset: ?v=39.
 
+## Sudah live — v40 (19 Nov 2026)
+
+- [x] Tiap toko di kota (Carpenter, Blacksmith, Exchange, Tool Shop, Textile, SUPPLY) dan toko desa gurun dibuat berbeda (bentuk/warna unik + papan nama besar + elemen/barang di luar sesuai referensi foto game asli, pasar pixel art, dan pandai besi). Kapal bajak laut tidak diutak-atik. (`js/05-paint-tempat.js`, `js/04-atlas.js`, `assets/atlas-manifest.json`, `index.html`.)
+
+Tes: headless 407/407, Playwright 204/204, nol error konsol. Versi aset: ?v=40.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v39.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v40.

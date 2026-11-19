@@ -19,6 +19,67 @@ Object.assign(PAINTERS, {
     g.fillStyle = '#ffd75e'; g.font = '800 10px system-ui, sans-serif';
     g.textAlign = 'center'; g.fillText('TOKO', cx, gy - 51);
   },
+  _paintShop(g, ox, oy, c1, c2, r1, r2, title, extraFn) {
+    const cx = ox + 64, gy = oy + 126;
+    P_shadow(g, cx, gy, 34);
+    P_isoBox(g, cx, gy, 84, 34, c1, c2, '#3a1c12');
+    P_isoBox(g, cx, gy - 34, 70, 22, r1, r2, '#2a1f16');
+    g.fillStyle = r1;
+    g.beginPath();
+    g.moveTo(cx - 42, gy - 34); g.lineTo(cx, gy - 56); g.lineTo(cx + 42, gy - 34);
+    g.lineTo(cx + 42, gy - 28); g.lineTo(cx, gy - 50); g.lineTo(cx - 42, gy - 28);
+    g.closePath(); g.fill();
+    g.fillStyle = '#2a1f16'; g.fillRect(cx - 12, gy - 26, 24, 26);
+    g.fillStyle = '#ffd75e'; g.fillRect(cx - 9, gy - 23, 18, 8);
+    if (extraFn) extraFn(g, cx, gy);
+    g.fillStyle = '#2a1f16'; g.fillRect(cx - 36, gy - 64, 72, 16);
+    g.strokeStyle = '#ffd75e'; g.lineWidth = 1.5; g.strokeRect(cx - 36, gy - 64, 72, 16);
+    g.fillStyle = '#ffd75e'; g.font = '800 8.5px system-ui, sans-serif';
+    g.textAlign = 'center'; g.fillText(title, cx, gy - 52);
+  },
+  shop_carpenter: (g, ox, oy) => {
+    PAINTERS._paintShop(g, ox, oy, '#a0522d', '#8b4513', '#cd853f', '#deb887', 'CARPENTER', (g, cx, gy) => {
+      g.fillStyle = '#d2b48c'; g.fillRect(cx - 28, gy - 12, 14, 8);
+      g.fillStyle = '#8b4513'; g.fillRect(cx - 26, gy - 10, 10, 4);
+    });
+  },
+  shop_blacksmith: (g, ox, oy) => {
+    PAINTERS._paintShop(g, ox, oy, '#555555', '#333333', '#3b4252', '#2e3440', 'BLACKSMITH', (g, cx, gy) => {
+      g.fillStyle = '#e67e22'; g.fillRect(cx - 30, gy - 16, 12, 14);
+      g.fillStyle = '#e74c3c'; g.fillRect(cx - 28, gy - 12, 8, 8);
+      g.fillStyle = '#222222'; g.fillRect(cx + 18, gy - 10, 10, 6);
+    });
+  },
+  shop_exchange: (g, ox, oy) => {
+    PAINTERS._paintShop(g, ox, oy, '#2e4057', '#1d2d44', '#f39c12', '#d68910', 'EXCHANGE', (g, cx, gy) => {
+      g.fillStyle = '#f1c40f'; g.fillRect(cx - 28, gy - 10, 8, 8);
+      g.fillStyle = '#d4ac0d'; g.fillRect(cx + 20, gy - 12, 10, 8);
+    });
+  },
+  shop_toolshop: (g, ox, oy) => {
+    PAINTERS._paintShop(g, ox, oy, '#34495e', '#2c3e50', '#7f8c8d', '#95a5a6', 'TOOL SHOP', (g, cx, gy) => {
+      g.fillStyle = '#bdc3c7'; g.fillRect(cx - 26, gy - 14, 4, 12);
+      g.fillStyle = '#e74c3c'; g.fillRect(cx - 28, gy - 14, 8, 4);
+    });
+  },
+  shop_textile: (g, ox, oy) => {
+    PAINTERS._paintShop(g, ox, oy, '#fdfefe', '#eaeded', '#e74c3c', '#3498db', 'TEXTILE', (g, cx, gy) => {
+      g.fillStyle = '#ffffff'; g.fillRect(cx - 28, gy - 12, 10, 8);
+      g.fillStyle = '#9b59b6'; g.fillRect(cx + 20, gy - 12, 10, 8);
+    });
+  },
+  shop_supply: (g, ox, oy) => {
+    PAINTERS._paintShop(g, ox, oy, '#f39c12', '#d35400', '#c0392b', '#962d22', 'SUPPLY', (g, cx, gy) => {
+      g.fillStyle = '#784212'; g.fillRect(cx - 28, gy - 12, 8, 10);
+      g.fillStyle = '#b9770e'; g.fillRect(cx + 20, gy - 12, 10, 10);
+    });
+  },
+  shop_desert: (g, ox, oy) => {
+    PAINTERS._paintShop(g, ox, oy, '#d4ac0d', '#b7950b', '#ca6f1e', '#b9770e', 'DESERT', (g, cx, gy) => {
+      g.fillStyle = '#a04000'; g.beginPath(); g.arc(cx - 24, gy - 8, 5, 0, 6.29); g.fill();
+      g.fillStyle = '#dc7633'; g.beginPath(); g.arc(cx + 22, gy - 8, 5, 0, 6.29); g.fill();
+    });
+  },
   mountain: (g, ox, oy) => {
     const cx = ox + 32, gy = oy + 62;
     P_shadow(g, cx, gy, 18);

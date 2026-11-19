@@ -22,7 +22,7 @@ const Atlas = {
     this._ready = (async () => {
       let m = null;
       try {
-        const r = await fetch('assets/atlas-manifest.json?v=39');
+        const r = await fetch('assets/atlas-manifest.json?v=40');
         if (r.ok) m = await r.json();
       } catch (_) { /* file:// atau offline: pakai salinan darurat */ }
       this.manifest = m || MANIFEST_EMBEDDED;
@@ -102,7 +102,7 @@ const Atlas = {
 // Salinan darurat manifest, sama isinya dengan assets/atlas-manifest.json.
 const MANIFEST_EMBEDDED = {
   name: 'indotopia-tycoon-atlas-v1', atlasFile: 'atlas.png', source: 'procedural',
-  cell: 64, cols: 8, rows: 18, anchor: 'bottom-center',
+  cell: 64, cols: 8, rows: 22, anchor: 'bottom-center',
   sprites: {
     tree: { col: 0, row: 0, w: 1, h: 1 }, oreIron: { col: 1, row: 0, w: 1, h: 1 },
     oreCopper: { col: 2, row: 0, w: 1, h: 1 }, oreTin: { col: 3, row: 0, w: 1, h: 1 },
@@ -165,5 +165,12 @@ const MANIFEST_EMBEDDED = {
     treeOak: { col: 0, row: 15, w: 1, h: 1 }, treePine: { col: 1, row: 15, w: 1, h: 1 }, palm: { col: 2, row: 15, w: 1, h: 1 }, dyeplant: { col: 3, row: 15, w: 1, h: 1 }, sapling: { col: 4, row: 15, w: 1, h: 1 }, ship: { col: 5, row: 15, w: 1, h: 1 }, sign: { col: 6, row: 15, w: 1, h: 1 },
     item_GoldOre: { col: 0, row: 16, w: 1, h: 1 }, item_GoldIngot: { col: 1, row: 16, w: 1, h: 1 }, item_GoldPlate: { col: 2, row: 16, w: 1, h: 1 }, item_Stone: { col: 3, row: 16, w: 1, h: 1 }, item_Dye: { col: 4, row: 16, w: 1, h: 1 }, item_DyeFlower: { col: 5, row: 16, w: 1, h: 1 }, item_TinCan: { col: 6, row: 16, w: 1, h: 1 }, item_GrindingWheel: { col: 7, row: 16, w: 1, h: 1 },
     item_SeedOak: { col: 0, row: 17, w: 1, h: 1 }, item_SeedPine: { col: 1, row: 17, w: 1, h: 1 }, item_SeedPalm: { col: 2, row: 17, w: 1, h: 1 }, item_SeedCotton: { col: 3, row: 17, w: 1, h: 1 }, item_SeedDye: { col: 4, row: 17, w: 1, h: 1 }, item_Rack: { col: 5, row: 17, w: 1, h: 1 }, item_Barrel: { col: 6, row: 17, w: 1, h: 1 }, item_RackAdv: { col: 7, row: 17, w: 1, h: 1 },
+    shop_carpenter: { col: 0, row: 18, w: 2, h: 2 },
+    shop_blacksmith: { col: 2, row: 18, w: 2, h: 2 },
+    shop_toolshop: { col: 4, row: 18, w: 2, h: 2 },
+    shop_textile: { col: 6, row: 18, w: 2, h: 2 },
+    shop_exchange: { col: 0, row: 20, w: 2, h: 2 },
+    shop_supply: { col: 2, row: 20, w: 2, h: 2 },
+    shop_desert: { col: 4, row: 20, w: 2, h: 2 },
   },
 };
