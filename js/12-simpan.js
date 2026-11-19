@@ -9,6 +9,9 @@ let saveBlocked = false; // reset: cegah pagehide menulis ulang simpan yang baru
 // terakhir yang dimuat (0 = tidak ada slot dimuat).
 const SLOT_KEYS = [null, SAVE_KEY, SAVE_KEY + '-s2', SAVE_KEY + '-s3', SAVE_KEY + '-s4'];
 const SLOT_META_KEY = SAVE_KEY + '-slot';
+// v36: slot mana yang sudah dibuka (dibayar) — disimpan terpisah dari data
+// slot, supaya slot yang dihapus (reset) tetap dihitung terbuka.
+const SLOT_UNLOCK_KEY = SAVE_KEY + '-unlocked';
 function slotKey(slot) { return SLOT_KEYS[slot] || SAVE_KEY; }
 function currentSlotFromMeta() {
   try {
@@ -29,7 +32,7 @@ function slotInfo(slot) {
 function saveSoon() { saveDirty = true; }
 
 function flatNodes(grid) {
-  return grid.flat().map((t) => ({ t: t.t, obj: t.obj, hp: t.hp, regrowIn: t.regrowIn }));
+  return grid.flat().map((t) => ({ t: t.t, obj: t.obj, hp: t.hp, regrowIn: t.regrowIn, stage: t.stage || 0, growIn: t.growIn || 0 }));
 }
 
 function saveGame() {
@@ -59,7 +62,7 @@ function restoreNodes(saved, fallbackW, fallbackH) {
   (saved.nodes || []).forEach((n, i) => {
     const w = saved.w || fallbackW;
     const t = g[Math.floor(i / w)][i % w];
-    if (t) { t.t = n.t; t.obj = n.obj; t.hp = n.hp; t.regrowIn = n.regrowIn; }
+    if (t) { t.t = n.t; t.obj = n.obj; t.hp = n.hp; t.regrowIn = n.regrowIn; t.stage = n.stage || 0; t.growIn = n.growIn || 0; }
   });
   return { w: saved.w || fallbackW, h: saved.h || fallbackH, grid: g };
 }
@@ -80,7 +83,7 @@ function loadGame() {
   S.tools = Object.assign({ axe: 1, shovel: 1, pickaxe: 1 }, data.tools || {});
   S.badges = data.badges || {};
   // Simpan lama: badge diberikan untuk resep yang sudah terbuka.
-  for (const id of Object.keys(BADGES)) if (S.unlocked[id]) S.badges[id] = true;
+  for (const [mid, bid] of Object.entries(RESEARCH_BADGE)) if (S.unlocked[mid]) S.badges[bid] = true;
   S.wagon = data.wagon || null;
   S.machines = new Map(data.machines || []);
   S.conveyors = new Map(data.conveyors || []);
@@ -103,20 +106,24 @@ function loadGame() {
   // Lahan dibangun ulang terpisah (bukan bagian buildStaticMaps) dan
   // hanya kalau petak keluarnya masih lama, supaya simpan yang sudah
   // baru tidak dibangun ulang tiap muat.
-  const townStale = S.maps.town && (!S.maps.town.grid.flat().some((t) => t.t === 'road')
+  const townStale = S.maps.town && (S.maps.town.w !== TOWN_W || S.maps.town.h !== TOWN_H
+    || !S.maps.town.grid.flat().some((t) => t.t === 'road')
     || !SHOP_SPOTS.filter((s) => s.map === 'town').every((s) => S.maps.town.grid[s.gy][s.gx].obj === 'shop_' + s.id)
-    || S.maps.town.grid[11][8].t !== 'road'
+    || S.maps.town.grid[13][8].t !== 'road'
     || S.maps.town.grid[7][1].obj !== 'lantern'
-    || S.maps.town.grid[11][7].obj !== 'plotsign'); // v35: tanda plot di (7,11)
-  const forestStale = S.maps.forest && (S.maps.forest.grid[9][14].obj !== 'train' || S.maps.forest.grid[0][8].t !== 'bridge');
-  const mountainStale = S.maps.mountain && S.maps.mountain.grid[5][1].t !== 'water';
+    || S.maps.town.grid[13][7].obj !== 'plotsign'
+    || S.maps.town.grid[8][17].obj !== 'station'
+    || S.maps.town.grid[8][16].obj !== 'conductor'); // v36: kota 20x14 + stasiun + Conductor (cek ukuran dulu supaya grid[13] tidak diakses di kota 16x12)
+  const forestStale = S.maps.forest && (S.maps.forest.grid[9][14].obj !== 'train' || S.maps.forest.grid[0][8].t !== 'bridge' || S.maps.forest.grid[5][12].obj !== 'dyeplant');
+  const mountainStale = S.maps.mountain && (S.maps.mountain.grid[5][1].t !== 'water' || S.maps.mountain.grid[4][13].obj !== 'stone');
+  const harborStale = S.maps.harbor && (S.maps.harbor.grid[2][12].obj !== 'shop_desert' || S.maps.harbor.grid[1][13].obj !== 'station'); // v36: desa gurun + stasiun
   // Jalan keluar harus satu-satunya petak jalan, tepat di gerbang (8, h-1).
   // Simpan lama hasil ekspansi anchoring kiri-atas punya jalan ketinggalan
   // di (8,11) sementara gerbangnya sudah di bawahnya.
   const pg = S.maps.plot ? gatePos() : null;
   const plotStale = S.maps.plot && (S.maps.plot.grid[pg.gy][pg.gx].t !== 'road'
     || S.maps.plot.grid.flat().filter((t) => t.t === 'road').length !== 1);
-  if (townStale || forestStale || mountainStale) {
+  if (townStale || forestStale || mountainStale || harborStale) {
     const sm = buildStaticMaps();
     for (const [name, m] of Object.entries(sm)) S.maps[name] = m;
   }
@@ -163,9 +170,33 @@ function resetLiveState() {
   S.player.path = []; S.player.onArrive = null; S.player.working = null;
 }
 // Muat slot n: simpan slot sekarang dulu, lalu muat target (kosong = baru).
-// Kembalikan 'loaded' / 'fresh'.
+// Kembalikan 'loaded' / 'fresh' / 'locked' (uang tidak cukup buka slot).
+// v36: buka slot 2/3/4 bayar (SLOT_UNLOCK_COST, wiki Plots); slot dengan
+// data dihitung sudah terbuka; biaya dipotong dari uang slot sekarang.
+function slotUnlocked(n) {
+  if (n <= 1) return true;
+  if (readSlotData(n)) return true;
+  try {
+    const u = JSON.parse(localStorage.getItem(SLOT_UNLOCK_KEY) || '{}');
+    return !!u[n];
+  } catch (_) { return false; }
+}
+function buySlot(n) {
+  if (n <= 1 || slotUnlocked(n)) return true;
+  const cost = SLOT_UNLOCK_COST[n];
+  if (!adminOn() && S.money < cost) return false;
+  if (!adminOn()) S.money -= cost;
+  try {
+    const u = JSON.parse(localStorage.getItem(SLOT_UNLOCK_KEY) || '{}');
+    u[n] = true;
+    localStorage.setItem(SLOT_UNLOCK_KEY, JSON.stringify(u));
+  } catch (_) { /* abaikan */ }
+  saveSoon();
+  return true;
+}
 function loadSlot(n) {
   if (n < 1 || n > 4) return null;
+  if (n > 1 && !slotUnlocked(n) && !buySlot(n)) return 'locked';
   if (S.saveSlot) saveGame();
   const data = readSlotData(n);
   S.saveSlot = n;

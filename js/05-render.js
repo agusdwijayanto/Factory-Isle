@@ -47,7 +47,7 @@ function render() {
         // draw() berjangkar alas sel, mengangkat belah ketupat belt 26px
         // ke atas sehingga item dan panah alir terlihat ngambang di rumput.
         Atlas.drawTile(ctx, conv.id, x, y, z);
-        paintBeltFlow(x, y, z, conv.dir);
+        paintBeltFlow(x, y, z, conv.dir, conv.color);
         if (conv.item) {
           const [ax, ay] = BELT_AXIS[conv.dir];
           const len = Math.hypot(ax, ay);
@@ -69,14 +69,18 @@ function render() {
       ctx.save();
       if (scale !== 1) { ctx.translate(x, y); ctx.scale(scale, scale); ctx.translate(-x, -y); }
       if (t.obj && !t.obj.startsWith('shop')) {
-        // Node habis (hp 0) hilang sampai tumbuh lagi; pohon menyisakan tunggul.
-        const dead = NODES[t.obj] && t.hp <= 0;
-        if (!dead || t.obj === 'tree') {
-          const sprite = t.obj === 'tree' && dead ? 'stump' : t.obj;
+        // Node habis (hp 0) hilang sampai tumbuh lagi; pohon/kapas/dye
+        // menyisakan tunggul (digali sekop jadi benih). Tanaman muda
+        // (growIn > 0) digambar mengecil sesuai tahap tumbuhnya.
+        const isYoung = PLANT_GROWTH[t.obj] && t.growIn > 0;
+        const dead = NODES[t.obj] && t.hp <= 0 && !isYoung;
+        if (!dead || DIGGABLE[t.obj]) {
+          const sprite = isYoung ? t.obj : (dead ? 'stump' : t.obj);
+          const gs = isYoung ? growthScale(t) : 1;
           if (sprite === 'plotpad') {
             Atlas.drawTile(ctx, 'plotpad', x, y, z);
           } else {
-            Atlas.draw(ctx, sprite, x, y + 6 * z, z);
+            Atlas.draw(ctx, sprite, x, y + 6 * z, z * gs);
             if (t.obj === 'mayor') {
               ctx.font = '700 ' + Math.max(11, Math.round(12 * z)) + 'px system-ui, sans-serif';
               ctx.textAlign = 'center';
@@ -91,12 +95,20 @@ function render() {
               ctx.strokeText('Stasiun', x, y - 56 * z);
               ctx.fillStyle = '#ffd75e'; ctx.fillText('Stasiun', x, y - 56 * z);
             }
+            if (t.obj === 'conductor') {
+              ctx.font = '700 ' + Math.max(11, Math.round(12 * z)) + 'px system-ui, sans-serif';
+              ctx.textAlign = 'center';
+              ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.7)';
+              ctx.strokeText('Conductor', x, y - 56 * z);
+              ctx.fillStyle = '#ffd75e'; ctx.fillText('Conductor', x, y - 56 * z);
+            }
           }
           if (GLOWS[t.obj]) { const [dx, dy, r, a] = GLOWS[t.obj]; glows.push({ x: x + dx * z, y: y + dy * z, r: r * z, a }); }
         }
       }
       if (t.obj && t.obj.startsWith('shop')) {
-        Atlas.draw(ctx, 'shop', x, y + 6 * z, z);
+        // v36: kapal bajak laut digambar sebagai kapal, bukan toko.
+        Atlas.draw(ctx, t.obj === 'shop_pirate' ? 'ship' : 'shop', x, y + 6 * z, z);
         const label = SHOPS[t.obj.slice(5)] ? SHOPS[t.obj.slice(5)].name : '';
         ctx.font = '700 ' + Math.max(11, Math.round(12 * z)) + 'px system-ui, sans-serif';
         ctx.textAlign = 'center';
@@ -177,6 +189,8 @@ function render() {
     ctx.strokeStyle = ok ? '#5eff8a' : '#ff5050'; ctx.lineWidth = 2; ctx.stroke();
     if (ok) {
       if (S.placing.kind === 'conveyor') Atlas.drawTile(ctx, S.placing.id, x, y, z, 0.55);
+      // v36: hantu benih digambar sebagai kecambah (bukan ikon tas).
+      else if (S.placing.kind === 'seed') Atlas.draw(ctx, 'sapling', x, y + 6 * z, z, 0, 0, 0.55);
       else Atlas.draw(ctx, S.placing.id, x, y + 6 * z, z, 0, 0, 0.55);
       if (S.placing.kind === 'machine' || S.placing.kind === 'conveyor') paintDirArrow(x, y, z, S.placeDir);
     }

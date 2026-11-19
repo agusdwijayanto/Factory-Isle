@@ -19,6 +19,24 @@ Object.assign(UI, {
       row.appendChild(b);
       body.appendChild(row);
     }
+    // v36: kereta jadi toko keliling — jual barang ke kereta harga papan.
+    const sellable = Object.keys(S.inv).filter((id) => S.inv[id] > 0 && sellPrice(id) !== null);
+    if (sellable.length) {
+      body.appendChild(el('div', 'Jual ke kereta (harga papan):', 'mp-desc'));
+      for (const id of sellable) {
+        const row = el('div', null, 'shop-row');
+        const left = el('span', null, 'shop-item');
+        try { if (Atlas.canvas) left.appendChild(Atlas.iconCanvas('item_' + id, 28)); } catch (_) { /* abaikan */ }
+        left.appendChild(document.createTextNode(ITEMS[id].name + ' x' + S.inv[id] + ' — $' + sellPrice(id)));
+        row.appendChild(left);
+        for (const n of [1, 10, 0]) {
+          const b = el('button', n === 0 ? 'Semua' : String(n));
+          b.addEventListener('click', () => { sellItem(id, n === 0 ? (S.inv[id] || 0) : n); this.renderTrain(); });
+          row.appendChild(b);
+        }
+        body.appendChild(row);
+      }
+    }
   },
   rideTrain(dest) {
     const [gx, gy] = TRAIN_SPAWN[dest];

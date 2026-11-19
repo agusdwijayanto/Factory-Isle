@@ -34,7 +34,11 @@ Object.assign(UI, {
       const statuePlaced = item.kind === 'statue' && [...S.decor.values()].some((d) => d.id === item.id);
       const housing = item.kind === 'statue' ? '' : ' · Housing ' + housingCostOf({ kind: item.kind, id: item.id });
       sub.textContent = locked ? 'Terkunci: riset ' + researchCostText(item.id)
-        : statuePlaced ? 'Sudah ditaruh' : item.sub + housing;
+        : statuePlaced ? 'Sudah ditaruh'
+        // v36: Storage Rack Advanced ditempatkan dari item di tas (dibuat
+        // di Construction Crafter), bukan dibeli dengan uang.
+        : item.id === 'rackAdv' ? (invCount('RackAdv') > 0 ? 'Taruh (' + invCount('RackAdv') + ' di tas)' : 'Buat di Construction Crafter') + housing
+        : item.sub + housing;
       label.appendChild(sub);
       b.appendChild(label);
       if (locked || statuePlaced) b.classList.add('locked');
@@ -78,6 +82,12 @@ Object.assign(UI, {
     if (S.map !== 'plot') {
       SFX.play('error');
       this.toast('Bangun hanya di lahanmu. Masuk lewat ujung jalan di selatan kota.');
+      return;
+    }
+    // v36: Storage Rack Advanced butuh item di tas (kecuali Mode Admin).
+    if (item.id === 'rackAdv' && !adminOn() && invCount('RackAdv') <= 0) {
+      SFX.play('error');
+      this.toast('Buat dulu di Construction Crafter (1 Engine + 1 Rack + 4 Barrel).');
       return;
     }
     S.placing = { kind: item.kind, id: item.id };

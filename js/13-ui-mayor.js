@@ -14,10 +14,11 @@ Object.assign(UI, {
     const list = el('div', null, 'mayor-list');
     EXPANSIONS.forEach((ex, i) => {
       const done = i < S.expansion;
+      const cost = expCost(S.saveSlot, i); // v36: biaya ekspansi naik per save
       const row = el('div', null, 'mayor-row');
-      row.appendChild(el('span', (done ? '✓ ' : '') + ex.name + ' — ' + ex.w + 'x' + ex.h + ' ($' + fmt(ex.cost) + ')'));
+      row.appendChild(el('span', (done ? '✓ ' : '') + ex.name + ' — ' + ex.w + 'x' + ex.h + ' ($' + fmt(cost) + ')'));
       const b = el('button', done ? 'Terbeli' : 'Beli');
-      b.disabled = done || i !== S.expansion || (!adminOn() && S.money < ex.cost);
+      b.disabled = done || i !== S.expansion || (!adminOn() && S.money < cost);
       b.addEventListener('click', () => {
         if (buyExpansion()) {
           SFX.play('success');

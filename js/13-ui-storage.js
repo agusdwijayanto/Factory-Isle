@@ -10,7 +10,7 @@ Object.assign(UI, {
   renderStorage() {
     const st = S.storages.get(inspectKey);
     if (!st) return this.closeAll();
-    $('storage-name').textContent = st.id === 'box' ? 'Wooden Box' : st.id === 'container' ? 'Container' : 'Storage Rack';
+    $('storage-name').textContent = { box: 'Wooden Box', container: 'Container', rack: 'Storage Rack', barrel: 'Storage Barrel', rackAdv: 'Storage Rack Advanced' }[st.id] || 'Storage';
     const body = $('storage-body');
     body.innerHTML = '';
     const line = el('div', null, 'mp-desc');

@@ -17,8 +17,30 @@ Object.assign(UI, {
     if (m) return this.renderMachineInspect(m, gx, gy, body);
     const c = S.conveyors.get(inspectKey);
     if (c) {
-      $('insp-name').textContent = c.id === 'conveyorTilt' ? 'Inclined Conveyor' : 'Conveyor';
-      body.appendChild(el('div', 'Mengalirkan item searah panah.', 'mp-desc'));
+      $('insp-name').textContent = c.id === 'conveyorTilt' ? 'Inclined Conveyor' : c.id === 'sorter' ? 'Sorter' : 'Conveyor';
+      body.appendChild(el('div', c.id === 'sorter' ? 'Hanya melewatkan 1 jenis barang (pilih di bawah).' : 'Mengalirkan item searah panah.', 'mp-desc'));
+      // v36: warna conveyor (visual saja) — border tombol = warnanya.
+      const colorRow = el('div', null, 'mp-recipes');
+      for (const [cid, cname] of Object.entries(CONVEYOR_COLOR_NAMES)) {
+        const b = el('button', cname);
+        if ((c.color || 'gold') === cid) b.className = 'on';
+        b.style.borderColor = CONVEYOR_COLOR_HEX[cid];
+        b.addEventListener('click', () => { c.color = cid === 'gold' ? null : cid; saveSoon(); this.renderInspect(); });
+        colorRow.appendChild(b);
+      }
+      body.appendChild(colorRow);
+      // v36: Sorter — pilih 1 jenis barang yang dilewatkan (null = semua).
+      if (c.id === 'sorter') {
+        const filterRow = el('div', null, 'mp-recipes');
+        const choices = [null, 'Log', 'Plank', 'Firelog', 'IronOre', 'CopperOre', 'TinOre', 'Sand', 'Clay', 'Cotton', 'IronIngot', 'Brick', 'WoodFrame'];
+        for (const fid of choices) {
+          const b = el('button', fid === null ? 'Semua' : ITEMS[fid].name);
+          if ((c.filter || null) === fid) b.className = 'on';
+          b.addEventListener('click', () => { c.filter = fid; saveSoon(); this.renderInspect(); });
+          filterRow.appendChild(b);
+        }
+        body.appendChild(filterRow);
+      }
       body.appendChild(this.actionRow([
         ['Putar', () => { c.dir = (c.dir + 1) % 4; saveSoon(); }],
         ['Hapus (+$100)', () => { S.money += 100; S.conveyors.delete(inspectKey); this.closeMachine(); this.refreshHUD(); saveSoon(); }],
@@ -67,11 +89,16 @@ Object.assign(UI, {
       body.appendChild(row);
       body.appendChild(el('div', recipeLabel(m), 'mp-recipe'));
     } else {
-      // Mesin tanpa resep (Tree Generator / Harvester): jalan otomatis,
-      // tidak ada resep untuk dipilih dan tidak ada bahan untuk dimasukkan.
-      body.appendChild(el('div', m.id === 'treeGen'
-        ? 'Otomatis: menumbuhkan 1 pohon tiap 20 detik di petak rumput sebelah.'
-        : 'Otomatis: menebang pohon terdekat di lahan jadi 3 Log tiap 12 detik.', 'mp-recipe'));
+      // Mesin tanpa resep (Tree Generator / Harvester / Ore Generator /
+      // Storage Crane): jalan otomatis, tidak ada resep untuk dipilih dan
+      // tidak ada bahan untuk dimasukkan.
+      const AUTO_TEXT = {
+        treeGen: 'Otomatis: menumbuhkan 1 pohon tiap 20 detik di petak rumput sebelah.',
+        harvester: 'Otomatis: menebang pohon terdekat di lahan jadi 3 Log tiap 12 detik.',
+        oreGen: 'Otomatis: menghasilkan 1 bijih (Iron/Copper/Tin bergiliran) tiap 20 detik ke output.',
+        crane: 'Otomatis: mengambil 1 barang dari storage di sebelah tiap 5 detik ke output.',
+      };
+      body.appendChild(el('div', AUTO_TEXT[m.id] || 'Otomatis.', 'mp-recipe'));
     }
     const buf = el('div', null, 'mp-buffers');
     buf.id = 'insp-buffers';
@@ -138,10 +165,11 @@ Object.assign(UI, {
     }
     if (m && st) {
       st.textContent = m.stopped ? 'Dihentikan (Stop). Tekan Lanjutkan untuk jalan lagi.'
-        : !RECIPES[m.id] ? (m.id === 'treeGen' ? 'Menumbuhkan pohon di petak sebelah.' : 'Menebang pohon di lahan.')
+        : !RECIPES[m.id] ? (m.id === 'treeGen' ? 'Menumbuhkan pohon di petak sebelah.' : m.id === 'oreGen' ? 'Menghasilkan bijih ke output.' : m.id === 'crane' ? 'Mengambil barang dari storage sebelah.' : 'Menebang pohon di lahan.')
         : m.progress > 0 ? 'Sedang mengolah.'
         : !inputsOk(m) ? 'Menunggu bahan: ' + missingList(m) + '.'
         : !outputRoom(m) ? 'Output penuh — Ambil hasil atau sambung conveyor/storage.'
+        : !canStart(m) ? 'Batas item aktif 150 tercapai — jual/simpan barang.'
         : 'Siap mengolah.';
     }
   },

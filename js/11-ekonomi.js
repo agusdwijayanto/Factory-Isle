@@ -90,7 +90,7 @@ function doResearch(id) {
     if (r.items) for (const [i, n] of Object.entries(r.items)) invAdd(i, -n);
   }
   S.unlocked[id] = true;
-  awardBadge(id); // v35: badge diberikan saat resep dibuka
+  awardBadge(RESEARCH_BADGE[id] || id); // v35: badge diberikan saat resep dibuka (crafter -> badge Cannon)
   saveSoon();
   return true;
 }
@@ -106,10 +106,12 @@ function awardBadge(id) {
 }
 
 // Beli/upgrade perkakas di Tool Shop. Tingkat 0->1 (dasar), 1->2 (bronze),
-// 2->3 (iron). Kapak dasar sudah dimiliki sejak awal (tingkat 1).
+// 2->3 (iron), 3->4 (steel, hanya kapak — NamuWiki $2.500). Kapak dasar
+// sudah dimiliki sejak awal (tingkat 1).
 function toolNextCost(toolId) {
   const lvl = S.tools[toolId] || 0;
-  if (lvl >= 3) return null;
+  const max = toolId === 'axe' ? 4 : 3;
+  if (lvl >= max) return null;
   return TOOL_UPGRADE_COST[lvl];
 }
 function buyTool(toolId) {
@@ -196,14 +198,23 @@ function wagonUnload(id, n) {
 }
 
 // ---- Mayor: ekspansi plot berurutan, lalu Auto Seller ----
+// v36: biaya ekspansi naik per save (wiki Plots) — pengali SLOT_EXP_MULT
+// terhadap harga dasar; slot 1 total $1.700, slot 2 $3.400, slot 3 $8.500,
+// slot 4 $17.000.
+function expCost(slot, idx) {
+  return Math.round(EXPANSIONS[idx].cost * (SLOT_EXP_MULT[slot] || 1));
+}
+
 function nextExpansion() {
   return S.expansion < EXPANSIONS.length ? EXPANSIONS[S.expansion] : null;
 }
 
 function buyExpansion() {
   const e = nextExpansion();
-  if (!e || (!adminOn() && S.money < e.cost)) return false;
-  if (!adminOn()) S.money -= e.cost;
+  if (!e) return false;
+  const cost = expCost(S.saveSlot, S.expansion);
+  if (!adminOn() && S.money < cost) return false;
+  if (!adminOn()) S.money -= cost;
   S.expansion++;
   expandPlotGrid(e.w, e.h);
   saveSoon();

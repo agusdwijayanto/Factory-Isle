@@ -76,10 +76,14 @@ function confirmPlace() {
   if (!S.placing || !S.placeSpot) return;
   const gx = S.placeSpot.gx, gy = S.placeSpot.gy;
   const p = S.placing;
-  if (S.map !== 'plot') { SFX.play('error'); UI.toast('Bangun hanya di lahanmu. Masuk lewat jalan selatan kota.'); return; }
+  if (S.map !== 'plot') { SFX.play('error'); UI.toast(p.kind === 'seed' ? 'Tanam hanya di lahanmu.' : 'Bangun hanya di lahanmu. Masuk lewat jalan selatan kota.'); return; }
   if (!canPlace(gx, gy, p)) { SFX.play('error'); UI.toast('Tidak bisa ditaruh di sini'); return; }
   const cost = p.fromKey ? 0 : (BUILD_COST[p.id] || 0);
   if (!adminOn() && S.money < cost) { SFX.play('error'); UI.toast('Uang tidak cukup'); return; }
+  // v36: Storage Rack Advanced ditempatkan dari item di tas (dibuat di
+  // Construction Crafter), bukan dibeli dengan uang; benih harus ada di tas.
+  if (p.id === 'rackAdv' && !adminOn() && invCount('RackAdv') <= 0) { SFX.play('error'); UI.toast('Buat dulu di Construction Crafter (1 Engine + 1 Rack + 4 Barrel).'); return; }
+  if (p.kind === 'seed' && invCount(p.id) <= 0) { SFX.play('error'); UI.toast('Tidak ada benih ' + ITEMS[p.id].name + ' di tas.'); return; }
   if (!p.fromKey && !adminOn() && housingUsed() + housingCostOf(p) > housingMax()) {
     SFX.play('error');
     UI.toast('Housing penuh (' + housingUsed() + '/' + housingMax() + ') — bangun patung untuk menambah batas.');
@@ -88,12 +92,14 @@ function confirmPlace() {
   if (!adminOn()) S.money -= cost; // Mode Admin: duit infinite, bangun gratis
   placeThing(p, gx, gy);
   SFX.play('place');
-  addFloater(gx, gy, 'Terpasang!', '#5eff8a');
+  if (p.kind !== 'seed') addFloater(gx, gy, 'Terpasang!', '#5eff8a'); // benih sudah punya floater sendiri
   UI.refreshHUD();
   S.placeSpot = null;
   // Rantai conveyor/dinding/dekor: tetap mode taruh supaya bisa lanjut.
   // Mesin/storage/patung: sekali taruh langsung selesai (patung cuma satu tiap jenis).
   if (p.kind === 'machine' || p.kind === 'storage' || p.kind === 'statue' || p.fromKey) UI.cancelPlacing();
+  // v36: benih habis = keluar dari mode tanam.
+  if (p.kind === 'seed' && invCount(p.id) <= 0) UI.cancelPlacing();
 }
 
 function placeThing(p, gx, gy) {
@@ -106,8 +112,12 @@ function placeThing(p, gx, gy) {
     return;
   }
   if (p.kind === 'machine') S.machines.set(k, newMachine(p.id, S.placeDir));
-  else if (p.kind === 'conveyor') S.conveyors.set(k, { id: p.id, dir: S.placeDir, item: null, t: 0 });
-  else if (p.kind === 'storage') S.storages.set(k, { id: p.id, items: {} });
+  else if (p.kind === 'conveyor') S.conveyors.set(k, { id: p.id, dir: S.placeDir, item: null, t: 0, filter: null, color: null });
+  else if (p.kind === 'storage') {
+    if (p.id === 'rackAdv' && !adminOn()) invAdd('RackAdv', -1); // taruh dari tas, bukan beli
+    S.storages.set(k, { id: p.id, items: {} });
+  }
+  else if (p.kind === 'seed') plantSeed(gx, gy, p.id);
   else if (p.kind === 'wall') S.walls.set(k, { id: p.id });
   else if (p.kind === 'decor') S.decor.set(k, { id: p.id });
   else if (p.kind === 'statue') S.decor.set(k, { id: p.id }); // patung disimpan sebagai dekor

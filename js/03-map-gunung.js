@@ -8,6 +8,9 @@ function buildMountain() {
   put(mountain, [[10, 2], [12, 3], [11, 4], [13, 2], [10, 5]], 'oreIron');
   put(mountain, [[12, 6], [13, 7], [11, 7]], 'oreCopper');
   put(mountain, [[9, 8], [10, 9], [12, 9]], 'oreTin');
+  // v36: batu (Drill Head + Grinding Wheel) dan Gold Ore (rantai emas).
+  put(mountain, [[13, 4], [14, 3]], 'stone');
+  put(mountain, [[8, 2], [10, 3], [13, 5]], 'goldOre');
   // v35: dua bijih tambahan (ditambang pakai pickaxe).
   put(mountain, [[9, 3]], 'oreIron');
   put(mountain, [[12, 8]], 'oreCopper');
@@ -16,6 +19,7 @@ function buildMountain() {
   // tidak tembus ke atas — tidak ada map di utara gunung. Kereta di (7,9).
   terrain(mountain, [[6, 8], [8, 8]], 'platform');
   mountain[9][7].obj = 'train';
+  mountain[8][8].obj = 'sign'; // v36: papan jual di peron timur
   railYAt(mountain, 7, 8, 11);
   mountain[8][7].t = 'railStop'; // palang penahan di ujung rel paling atas
   roadAt(mountain, [

@@ -45,6 +45,7 @@ document.querySelectorAll('#burger-menu [data-act]').forEach((b) => {
     else if (act === 'Admin') UI.openPanel('admin-panel');
     else if (act === 'Plot') UI.openPlot();
     else if (act === 'Badge') UI.openBadges();
+    else if (act === 'Book') UI.openBook();
   });
 });
 $('btn-sound').addEventListener('click', () => {

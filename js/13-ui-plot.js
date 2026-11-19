@@ -17,17 +17,25 @@ Object.assign(UI, {
     for (let n = 1; n <= 4; n++) {
       const info = slotInfo(n);
       const row = el('div', null, 'mayor-row');
+      // v36: slot 2/3/4 yang kosong dan masih terkunci harus dibayar dulu.
+      const locked = !info && n > 1 && !slotUnlocked(n);
       const label = info
         ? 'Slot ' + n + ' — $' + fmt(info.money) + ', lahan ' + info.w + 'x' + info.h + ', ekspansi ' + info.expansion + (n === S.saveSlot ? ' (dimuat)' : '')
+        : locked ? 'Slot ' + n + ' — Terkunci ($' + fmt(SLOT_UNLOCK_COST[n]) + ')'
         : 'Slot ' + n + ' — Kosong';
       row.appendChild(el('span', label));
       const btns = el('span', null, 'shop-btns');
-      const bLoad = el('button', 'Muat');
+      const bLoad = el('button', locked ? 'Buka ($' + fmt(SLOT_UNLOCK_COST[n]) + ')' : 'Muat');
       bLoad.disabled = n === S.saveSlot;
       bLoad.addEventListener('click', () => {
         const r = loadSlot(n);
-        SFX.play('success');
-        this.toast(r === 'fresh' ? 'Slot ' + n + ' baru.' : 'Slot ' + n + ' dimuat.');
+        if (r === 'locked') {
+          SFX.play('error');
+          this.toast('Uang tidak cukup untuk membuka Slot ' + n + ' ($' + fmt(SLOT_UNLOCK_COST[n]) + ').');
+        } else {
+          SFX.play('success');
+          this.toast(r === 'fresh' ? 'Slot ' + n + ' baru.' : 'Slot ' + n + ' dimuat.');
+        }
         this.renderPlot(); this.refreshHUD();
       });
       btns.appendChild(bLoad);

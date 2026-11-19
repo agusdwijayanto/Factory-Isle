@@ -49,6 +49,46 @@ function startHarvest(gx, gy) {
   };
 }
 
+// v36: gali tunggul dengan sekop — tunggul hilang, jadi benih. Tanaman
+// muda (growIn > 0) tidak bisa digali, tunggu dewasa dulu.
+function digStump(gx, gy) {
+  const t = tileAt(gx, gy);
+  if (!t.obj || !DIGGABLE[t.obj] || t.hp > 0 || t.growIn > 0) return;
+  if ((S.tools.shovel || 0) <= 0) {
+    TOAST('Beli Sekop dulu di Tool Shop.');
+    return;
+  }
+  const seed = STUMP_SEED[t.obj];
+  t.obj = null; t.hp = 0; t.regrowIn = 0; t.stage = 0; t.growIn = 0;
+  if (seed) {
+    invAdd(seed, 1);
+    addFloater(gx, gy, '+1 ' + ITEMS[seed].name, ITEMS[seed].color);
+  }
+  SFX.play('chop');
+  saveSoon();
+}
+
+// v36: tanam benih di rumput lahan — pohon tumbuh bertahap (stage/growIn).
+function plantSeed(gx, gy, seedId) {
+  const t = tileAt(gx, gy);
+  const sp = SEED_PLANTS[seedId];
+  if (!sp || !t || t.t !== 'grass' || t.obj) return false;
+  if (invCount(seedId) <= 0) return false;
+  invAdd(seedId, -1);
+  t.obj = sp.obj; t.hp = 0; t.stage = 0; t.growIn = sp.secs; t.regrowIn = 0;
+  addFloater(gx, gy, 'Ditanam: ' + ITEMS[seedId].name, '#4fae6b');
+  SFX.play('place');
+  saveSoon();
+  return true;
+}
+
+// v36: skala gambar tanaman muda (0.45..1) dari tahap tumbuhnya.
+function growthScale(t) {
+  const g = PLANT_GROWTH[t.obj];
+  if (!g || t.growIn <= 0) return 1;
+  return 0.45 + 0.55 * Math.min(1, (t.stage + 1) / g.stages);
+}
+
 // Naik/turun wagon: ketuk wagon menaikkan kalau belum naik, menurunkan
 // kalau sedang naik. Wagon parkir di petak saat turun.
 function toggleWagon() {
@@ -82,6 +122,15 @@ function harvestTick(w) {
 function updatePlayer(dt) {
   const p = S.player;
   if (p.swing > 0) p.swing -= dt;
+  // v36: berenang — wagon tidak bisa masuk air, pemain turun otomatis
+  // (wagon tinggal di petak darat terakhir).
+  if (isRiding()) {
+    const cur = playerTile();
+    if (inGrid(cur.gx, cur.gy) && S.grid[cur.gy][cur.gx].t === 'water') {
+      S.wagon.riding = false;
+      UI.toast('Turun dari wagon untuk berenang.');
+    }
+  }
   // v35: naik wagon, wagon ikut petak pemain tiap tick (di awal supaya
   // tetap ikut walau cabang jalan di bawah return duluan).
   if (isRiding()) {
@@ -121,7 +170,10 @@ function updatePlayer(dt) {
     const dx = tx - p.fx, dy = ty - p.fy;
     const dist = Math.hypot(dx, dy);
     // v35: naik wagon = jalan lebih cepat (lv2; jalan kaki lv1, kereta lv3 instan).
-    const speed = isRiding() ? WALK_SPEED * wagonSpeedMult() : WALK_SPEED;
+    // v36: berenang setengah kecepatan (air = petak tempat pemain berdiri).
+    const cur = playerTile();
+    const onWater = inGrid(cur.gx, cur.gy) && S.grid[cur.gy][cur.gx].t === 'water';
+    const speed = isRiding() ? WALK_SPEED * wagonSpeedMult() : (onWater ? WALK_SPEED * 0.5 : WALK_SPEED);
     const step = speed * dt;
     p.dir = dirToward(p.fx, p.fy, tx, ty);
     p.walkT += dt;
@@ -194,6 +246,20 @@ function updateRegrow(dt) {
           t.regrowIn -= dt;
           if (t.regrowIn <= 0 && t.obj && NODES[t.obj]) t.hp = NODES[t.obj].hp;
         }
+        // v36: tanaman dari benih tumbuh bertahap; dewasa = hp penuh.
+        if (t.growIn > 0 && t.obj && PLANT_GROWTH[t.obj]) {
+          t.growIn -= dt;
+          if (t.growIn <= 0) {
+            const g = PLANT_GROWTH[t.obj];
+            t.stage++;
+            if (t.stage >= g.stages) {
+              t.hp = NODES[t.obj].hp;
+              t.growIn = 0;
+            } else {
+              t.growIn = g.secs;
+            }
+          }
+        }
       }
     }
   }
@@ -243,6 +309,11 @@ function interactAt(gx, gy) {
     goTo(gx, gy, () => UI.openMayor());
     return;
   }
+  // v36: Conductor di peron + papan jual membuka panel kereta (toko keliling).
+  if (t.obj === 'conductor' || t.obj === 'sign') {
+    goTo(gx, gy, () => UI.openTrain());
+    return;
+  }
   // Naik kereta hanya dari kereta; peron cuma dekorasi, tidak bisa diklik.
   if (t.obj === 'train') {
     goTo(gx, gy, () => UI.openTrain());
@@ -250,6 +321,11 @@ function interactAt(gx, gy) {
   }
   if (t.obj && NODES[t.obj] && t.hp > 0) {
     goTo(gx, gy, () => startHarvest(gx, gy));
+    return;
+  }
+  // v36: tunggul (hp 0, bukan tanaman muda) digali sekop jadi benih.
+  if (t.obj && DIGGABLE[t.obj] && t.hp <= 0 && t.growIn <= 0) {
+    goTo(gx, gy, () => digStump(gx, gy));
     return;
   }
   if (!t.obj && NODES[t.t]) {

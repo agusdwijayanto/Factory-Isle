@@ -5,7 +5,7 @@
   "cols": 8,
   "name": "indotopia-tycoon-atlas-v1",
   "notes": "Selama source=procedural, atlas dibuat saat boot dari pelukis prosedural di 05-render.js mengikuti posisi sel di bawah. Nanti sprite Gemini disusun jadi atlas.png dengan tata letak sel yang SAMA, lalu source diganti menjadi atlas.png tanpa mengubah kode render.",
-  "rows": 14,
+  "rows": 18,
   "source": "procedural",
   "sprites": {
     "advSaw": {
@@ -19,6 +19,18 @@
       "h": 1,
       "row": 2,
       "w": 1
+    },
+    "badge": {
+      "col": 5,
+      "h": 1,
+      "row": 9,
+      "w": 1
+    },
+    "barrel": {
+      "col": 2,
+      "row": 14,
+      "w": 1,
+      "h": 1
     },
     "blacksmith": {
       "col": 4,
@@ -50,6 +62,12 @@
       "row": 3,
       "w": 1
     },
+    "conductor": {
+      "col": 0,
+      "row": 14,
+      "w": 1,
+      "h": 1
+    },
     "container": {
       "col": 3,
       "h": 1,
@@ -80,6 +98,12 @@
       "row": 3,
       "w": 1
     },
+    "crane": {
+      "col": 3,
+      "row": 14,
+      "w": 1,
+      "h": 1
+    },
     "crate": {
       "col": 5,
       "h": 1,
@@ -97,6 +121,12 @@
       "h": 1,
       "row": 4,
       "w": 1
+    },
+    "dyeplant": {
+      "col": 3,
+      "row": 15,
+      "w": 1,
+      "h": 1
     },
     "elecSaw": {
       "col": 2,
@@ -145,6 +175,12 @@
       "h": 1,
       "row": 4,
       "w": 1
+    },
+    "item_Barrel": {
+      "col": 6,
+      "row": 17,
+      "w": 1,
+      "h": 1
     },
     "item_Bed": {
       "col": 7,
@@ -218,11 +254,23 @@
       "row": 10,
       "w": 1
     },
+    "item_Dye": {
+      "col": 4,
+      "row": 16,
+      "w": 1,
+      "h": 1
+    },
     "item_DyeCan": {
       "col": 5,
       "h": 1,
       "row": 6,
       "w": 1
+    },
+    "item_DyeFlower": {
+      "col": 5,
+      "row": 16,
+      "w": 1,
+      "h": 1
     },
     "item_DyedTextiles": {
       "col": 4,
@@ -247,6 +295,30 @@
       "h": 1,
       "row": 5,
       "w": 1
+    },
+    "item_GoldIngot": {
+      "col": 1,
+      "row": 16,
+      "w": 1,
+      "h": 1
+    },
+    "item_GoldOre": {
+      "col": 0,
+      "row": 16,
+      "w": 1,
+      "h": 1
+    },
+    "item_GoldPlate": {
+      "col": 2,
+      "row": 16,
+      "w": 1,
+      "h": 1
+    },
+    "item_GrindingWheel": {
+      "col": 7,
+      "row": 16,
+      "w": 1,
+      "h": 1
     },
     "item_IronBeam": {
       "col": 3,
@@ -308,11 +380,59 @@
       "row": 5,
       "w": 1
     },
+    "item_Rack": {
+      "col": 5,
+      "row": 17,
+      "w": 1,
+      "h": 1
+    },
+    "item_RackAdv": {
+      "col": 7,
+      "row": 17,
+      "w": 1,
+      "h": 1
+    },
     "item_Sand": {
       "col": 3,
       "h": 1,
       "row": 10,
       "w": 1
+    },
+    "item_SeedCotton": {
+      "col": 3,
+      "row": 17,
+      "w": 1,
+      "h": 1
+    },
+    "item_SeedDye": {
+      "col": 4,
+      "row": 17,
+      "w": 1,
+      "h": 1
+    },
+    "item_SeedOak": {
+      "col": 0,
+      "row": 17,
+      "w": 1,
+      "h": 1
+    },
+    "item_SeedPalm": {
+      "col": 2,
+      "row": 17,
+      "w": 1,
+      "h": 1
+    },
+    "item_SeedPine": {
+      "col": 1,
+      "row": 17,
+      "w": 1,
+      "h": 1
+    },
+    "item_Stone": {
+      "col": 3,
+      "row": 16,
+      "w": 1,
+      "h": 1
     },
     "item_Table": {
       "col": 0,
@@ -325,6 +445,12 @@
       "h": 1,
       "row": 6,
       "w": 1
+    },
+    "item_TinCan": {
+      "col": 6,
+      "row": 16,
+      "w": 1,
+      "h": 1
     },
     "item_TinOre": {
       "col": 2,
@@ -362,6 +488,12 @@
       "row": 12,
       "w": 1
     },
+    "mixer": {
+      "col": 6,
+      "row": 14,
+      "w": 1,
+      "h": 1
+    },
     "mountain": {
       "col": 2,
       "h": 1,
@@ -373,6 +505,12 @@
       "h": 1,
       "row": 0,
       "w": 1
+    },
+    "oreGen": {
+      "col": 5,
+      "row": 14,
+      "w": 1,
+      "h": 1
     },
     "oreIron": {
       "col": 1,
@@ -391,6 +529,12 @@
       "h": 1,
       "row": 1,
       "w": 1
+    },
+    "palm": {
+      "col": 2,
+      "row": 15,
+      "w": 1,
+      "h": 1
     },
     "pickaxe": {
       "col": 7,
@@ -419,11 +563,23 @@
       "row": 12,
       "w": 1
     },
+    "plotsign": {
+      "col": 6,
+      "h": 1,
+      "row": 9,
+      "w": 1
+    },
     "rack": {
       "col": 4,
       "h": 1,
       "row": 2,
       "w": 1
+    },
+    "rackAdv": {
+      "col": 4,
+      "row": 14,
+      "w": 1,
+      "h": 1
     },
     "railBend": {
       "col": 4,
@@ -461,11 +617,23 @@
       "row": 3,
       "w": 1
     },
+    "sapling": {
+      "col": 4,
+      "row": 15,
+      "w": 1,
+      "h": 1
+    },
     "sawhorse": {
       "col": 0,
       "h": 1,
       "row": 1,
       "w": 1
+    },
+    "ship": {
+      "col": 5,
+      "row": 15,
+      "w": 1,
+      "h": 1
     },
     "shop": {
       "col": 0,
@@ -479,11 +647,23 @@
       "row": 3,
       "w": 1
     },
+    "sign": {
+      "col": 6,
+      "row": 15,
+      "w": 1,
+      "h": 1
+    },
     "smelter": {
       "col": 3,
       "h": 1,
       "row": 1,
       "w": 1
+    },
+    "sorter": {
+      "col": 1,
+      "row": 14,
+      "w": 1,
+      "h": 1
     },
     "splitter": {
       "col": 5,
@@ -496,6 +676,42 @@
       "h": 1,
       "row": 13,
       "w": 1
+    },
+    "statueLiberty": {
+      "col": 4,
+      "h": 1,
+      "row": 9,
+      "w": 1
+    },
+    "statueLion": {
+      "col": 5,
+      "h": 1,
+      "row": 8,
+      "w": 1
+    },
+    "statueLumber": {
+      "col": 7,
+      "h": 1,
+      "row": 8,
+      "w": 1
+    },
+    "statueMiner": {
+      "col": 6,
+      "h": 1,
+      "row": 8,
+      "w": 1
+    },
+    "statueSmith": {
+      "col": 3,
+      "h": 1,
+      "row": 9,
+      "w": 1
+    },
+    "stone": {
+      "col": 7,
+      "row": 14,
+      "w": 1,
+      "h": 1
     },
     "stump": {
       "col": 7,
@@ -527,6 +743,24 @@
       "row": 4,
       "w": 1
     },
+    "treeOak": {
+      "col": 0,
+      "row": 15,
+      "w": 1,
+      "h": 1
+    },
+    "treePine": {
+      "col": 1,
+      "row": 15,
+      "w": 1,
+      "h": 1
+    },
+    "wagon": {
+      "col": 4,
+      "h": 1,
+      "row": 8,
+      "w": 1
+    },
     "wallIron": {
       "col": 1,
       "h": 1,
@@ -543,54 +777,6 @@
       "col": 6,
       "h": 1,
       "row": 12,
-      "w": 1
-    },
-    "wagon": {
-      "col": 4,
-      "h": 1,
-      "row": 8,
-      "w": 1
-    },
-    "statueLion": {
-      "col": 5,
-      "h": 1,
-      "row": 8,
-      "w": 1
-    },
-    "statueMiner": {
-      "col": 6,
-      "h": 1,
-      "row": 8,
-      "w": 1
-    },
-    "statueLumber": {
-      "col": 7,
-      "h": 1,
-      "row": 8,
-      "w": 1
-    },
-    "statueSmith": {
-      "col": 3,
-      "h": 1,
-      "row": 9,
-      "w": 1
-    },
-    "statueLiberty": {
-      "col": 4,
-      "h": 1,
-      "row": 9,
-      "w": 1
-    },
-    "badge": {
-      "col": 5,
-      "h": 1,
-      "row": 9,
-      "w": 1
-    },
-    "plotsign": {
-      "col": 6,
-      "h": 1,
-      "row": 9,
       "w": 1
     }
   }

@@ -20,12 +20,13 @@ function glow(x, y, r, alpha) {
   ctx.globalAlpha = 1;
 }
 
-function paintBeltFlow(x, y, z, dir) {
+// v36: warna panah alir ikut warna conveyor (emas = default).
+function paintBeltFlow(x, y, z, dir, color) {
   const [ax, ay] = BELT_AXIS[dir];
   const len = Math.hypot(ax, ay), ux = ax / len, uy = ay / len;
   ctx.save();
   diamondPath(x, y, TILE_W * 0.72 * z, TILE_H * 0.72 * z); ctx.clip();
-  ctx.fillStyle = '#e8b64c';
+  ctx.fillStyle = CONVEYOR_COLOR_HEX[color] || '#e8b64c';
   const spacing = 16 * z, off = (S.beltT * 18 * z) % spacing;
   for (let k = -2; k <= 2; k++) {
     const cx = x + ux * (k * spacing + off), cy = y + uy * (k * spacing + off);

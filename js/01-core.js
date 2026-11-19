@@ -20,7 +20,7 @@ const S = {
   beltT: 0,          // jam animasi conveyor
   time: 0,           // jam global detik
   map: 'town',     // map aktif: 'town' (kota), 'forest', 'mountain', 'harbor', 'plot'
-  grid: [],          // grid map AKTIF: [gy][gx] -> {t, obj, hp, regrowIn}
+  grid: [],          // grid map AKTIF: [gy][gx] -> {t, obj, hp, regrowIn, stage, growIn}
   maps: {},          // nama map -> {w, h, grid}; grid non-aktif disimpan di sini
   expansion: 0,      // 0..4, tingkat ekspansi plot lewat Mayor
   autoSeller: false,
@@ -33,7 +33,7 @@ const S = {
   walls: new Map(),      // "gx,gy" -> {id}
   decor: new Map(),      // "gx,gy" -> {id}
   mayor: { gx: 5, gy: 1 },      // di map kota
-  plotPad: { gx: 8, gy: 11 },   // di map kota: injak untuk masuk ke plot (x=1, z=9)
+  plotPad: { gx: 8, gy: 13 },   // di map kota: injak untuk masuk ke plot (x=1, z=9)
   player: {
     fx: 8.5, fy: 6.5, dir: 1, frame: 0, walkT: 0,
     path: [],            // [{gx, gy}] petak tujuan berurutan
@@ -76,7 +76,7 @@ function makeGrid(w, h) {
   const g = [];
   for (let gy = 0; gy < h; gy++) {
     const row = [];
-    for (let gx = 0; gx < w; gx++) row.push({ t: 'grass', obj: null, hp: 0, regrowIn: 0 });
+    for (let gx = 0; gx < w; gx++) row.push({ t: 'grass', obj: null, hp: 0, regrowIn: 0, stage: 0, growIn: 0 });
     g.push(row);
   }
   return g;

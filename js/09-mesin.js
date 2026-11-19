@@ -4,7 +4,10 @@
 // mereka di bawah, memakai m.progress sebagai pewaktu siklus.
 const TREEGEN_SECS = 20;   // sekali tumbuh 1 pohon (dipilih sendiri)
 const HARVESTER_SECS = 12; // sekali tebang 1 pohon jadi 3 Log (dipilih sendiri)
+const OREGEN_SECS = 20;    // sekali hasilkan 1 bijih (dipilih sendiri)
+const CRANE_SECS = 5;      // sekali ambil 1 barang dari storage (dipilih sendiri)
 const HARVEST_LOGS = 3;    // hasil 1 pohon penuh, sama seperti ditebang pemain
+const ORE_CYCLE = ['IronOre', 'CopperOre', 'TinOre']; // giliran Ore Generator
 
 function newMachine(id, dir) {
   return { id, dir, recipe: 0, input: {}, output: {}, progress: 0, stopped: false };
@@ -14,7 +17,7 @@ function updateMachines(dt) {
   for (const [k, m] of S.machines) {
     if (m.stopped) continue;
     const [gx, gy] = k.split(',').map(Number);
-    if (m.id === 'treeGen' || m.id === 'harvester') { updateAutoMachine(m, gx, gy, dt); continue; }
+    if (m.id === 'treeGen' || m.id === 'harvester' || m.id === 'oreGen' || m.id === 'crane') { updateAutoMachine(m, gx, gy, dt); continue; }
     if (m.progress <= 0) {
       if (canStart(m)) { consumeInputs(m); m.progress = adminOn() ? 1 : 0.001; } // Mode Admin: crafting instan
       else continue;
@@ -32,12 +35,46 @@ function updateMachines(dt) {
 // Siklus mesin tanpa resep: pewaktu jalan terus; gagal (tidak ada petak /
 // tidak ada pohon) berarti coba lagi siklus berikut, bukan macet.
 function updateAutoMachine(m, gx, gy, dt) {
-  m.progress += dt / (m.id === 'treeGen' ? TREEGEN_SECS : HARVESTER_SECS);
+  const secs = m.id === 'treeGen' ? TREEGEN_SECS : m.id === 'harvester' ? HARVESTER_SECS : m.id === 'oreGen' ? OREGEN_SECS : CRANE_SECS;
+  m.progress += dt / secs;
   if (m.progress < 1) return;
   m.progress = 0;
+  // v36: mesin yang menghasilkan barang berhenti kalau item aktif sudah 150
+  // (pohon Tree Generator bukan barang, tidak kena batas). Admin bebas.
+  if (m.id !== 'treeGen' && !adminOn() && activeItemCount() >= ACTIVE_ITEM_LIMIT) return;
   if (m.id === 'treeGen') growTree(gx, gy);
-  else harvestNearestTree(m, gx, gy);
+  else if (m.id === 'harvester') harvestNearestTree(m, gx, gy);
+  else if (m.id === 'oreGen') genOre(m);
+  else cranePull(m, gx, gy);
   SFX.play('craft');
+}
+
+// Ore Generator: hasilkan 1 bijih ke output, bergiliran Iron/Copper/Tin.
+function genOre(m) {
+  const id = ORE_CYCLE[(m.oreIdx || 0) % ORE_CYCLE.length];
+  m.oreIdx = ((m.oreIdx || 0) + 1) % ORE_CYCLE.length;
+  m.output[id] = (m.output[id] || 0) + 1;
+  saveSoon();
+  return true;
+}
+
+// Storage Crane: ambil 1 barang dari storage di sebelah (belakang, kiri,
+// kanan) ke output. Output dibatasi cap 30 seperti mesin lain.
+function cranePull(m, gx, gy) {
+  if (bufferTotal(m.output) >= OUTPUT_CAP) return false;
+  const pullDirs = [(m.dir + 2) % 4, (m.dir + 3) % 4, (m.dir + 1) % 4];
+  for (const d of pullDirs) {
+    const st = S.storages.get(key(gx + DIRS[d].dx, gy + DIRS[d].dy));
+    if (!st) continue;
+    const id = Object.keys(st.items).find((x) => st.items[x] > 0);
+    if (!id) continue;
+    st.items[id]--;
+    if (st.items[id] <= 0) delete st.items[id];
+    m.output[id] = (m.output[id] || 0) + 1;
+    saveSoon();
+    return true;
+  }
+  return false;
 }
 
 // Tree Generator: tanam 1 pohon di petak rumput kosong pertama yang
@@ -95,7 +132,11 @@ function frontAccepts(gx, gy, dir, itemId) {
   const f = frontCell(gx, gy, dir);
   const fk = key(f.gx, f.gy);
   const nextConv = S.conveyors.get(fk);
-  if (nextConv && !nextConv.item) return true;
+  // v36: Sorter di depan hanya menerima barang sesuai filternya.
+  if (nextConv && !nextConv.item) {
+    if (nextConv.id === 'sorter' && nextConv.filter && nextConv.filter !== itemId) return false;
+    return true;
+  }
   const m = S.machines.get(fk);
   if (m && machineAccepts(m, itemId)) return true;
   const st = S.storages.get(fk);
@@ -112,7 +153,8 @@ function updateConveyors(dt) {
       const f = frontCell(gx, gy, c.dir);
       const fk = key(f.gx, f.gy);
       const nextConv = S.conveyors.get(fk);
-      if (nextConv && !nextConv.item) { nextConv.item = c.item; c.item = null; continue; }
+      // v36: dorong ke Sorter hanya kalau barangnya cocok dengan filter.
+      if (nextConv && !nextConv.item && (!nextConv.filter || nextConv.filter === c.item)) { nextConv.item = c.item; c.item = null; continue; }
       const m = S.machines.get(fk);
       if (m && machineAccepts(m, c.item)) {
         m.input[c.item] = (m.input[c.item] || 0) + 1;
@@ -134,7 +176,7 @@ function updateConveyors(dt) {
       for (const d of pullDirs) {
         const m = S.machines.get(key(gx + DIRS[d].dx, gy + DIRS[d].dy));
         if (!m) continue;
-        const outId = Object.keys(m.output).find((id) => m.output[id] > 0 && frontAccepts(gx, gy, c.dir, id));
+        const outId = Object.keys(m.output).find((id) => m.output[id] > 0 && (!c.filter || c.filter === id) && frontAccepts(gx, gy, c.dir, id));
         if (!outId) continue;
         m.output[outId]--;
         if (m.output[outId] <= 0) delete m.output[outId];
@@ -162,6 +204,8 @@ function finishAllInstant() {
       // satu siklusnya langsung.
       if (m.id === 'treeGen') { growTree(gx, gy); continue; }
       if (m.id === 'harvester') { harvestNearestTree(m, gx, gy); continue; }
+      if (m.id === 'oreGen') { genOre(m); continue; }
+      if (m.id === 'crane') { cranePull(m, gx, gy); continue; }
       finishCraft(m, gx, gy);
     }
   }

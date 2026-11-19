@@ -22,7 +22,7 @@ const Atlas = {
     this._ready = (async () => {
       let m = null;
       try {
-        const r = await fetch('assets/atlas-manifest.json?v=35');
+        const r = await fetch('assets/atlas-manifest.json?v=36');
         if (r.ok) m = await r.json();
       } catch (_) { /* file:// atau offline: pakai salinan darurat */ }
       this.manifest = m || MANIFEST_EMBEDDED;
@@ -102,7 +102,7 @@ const Atlas = {
 // Salinan darurat manifest, sama isinya dengan assets/atlas-manifest.json.
 const MANIFEST_EMBEDDED = {
   name: 'indotopia-tycoon-atlas-v1', atlasFile: 'atlas.png', source: 'procedural',
-  cell: 64, cols: 8, rows: 14, anchor: 'bottom-center',
+  cell: 64, cols: 8, rows: 18, anchor: 'bottom-center',
   sprites: {
     tree: { col: 0, row: 0, w: 1, h: 1 }, oreIron: { col: 1, row: 0, w: 1, h: 1 },
     oreCopper: { col: 2, row: 0, w: 1, h: 1 }, oreTin: { col: 3, row: 0, w: 1, h: 1 },
@@ -160,5 +160,10 @@ const MANIFEST_EMBEDDED = {
     statueLumber: { col: 7, row: 8, w: 1, h: 1 },
     statueSmith: { col: 3, row: 9, w: 1, h: 1 }, statueLiberty: { col: 4, row: 9, w: 1, h: 1 },
     badge: { col: 5, row: 9, w: 1, h: 1 }, plotsign: { col: 6, row: 9, w: 1, h: 1 },
+    // v36: baris 14-17 baru (Conductor, mesin/storage, pohon benih, kapal, papan, ikon barang baru).
+    conductor: { col: 0, row: 14, w: 1, h: 1 }, sorter: { col: 1, row: 14, w: 1, h: 1 }, barrel: { col: 2, row: 14, w: 1, h: 1 }, crane: { col: 3, row: 14, w: 1, h: 1 }, rackAdv: { col: 4, row: 14, w: 1, h: 1 }, oreGen: { col: 5, row: 14, w: 1, h: 1 }, mixer: { col: 6, row: 14, w: 1, h: 1 }, stone: { col: 7, row: 14, w: 1, h: 1 },
+    treeOak: { col: 0, row: 15, w: 1, h: 1 }, treePine: { col: 1, row: 15, w: 1, h: 1 }, palm: { col: 2, row: 15, w: 1, h: 1 }, dyeplant: { col: 3, row: 15, w: 1, h: 1 }, sapling: { col: 4, row: 15, w: 1, h: 1 }, ship: { col: 5, row: 15, w: 1, h: 1 }, sign: { col: 6, row: 15, w: 1, h: 1 },
+    item_GoldOre: { col: 0, row: 16, w: 1, h: 1 }, item_GoldIngot: { col: 1, row: 16, w: 1, h: 1 }, item_GoldPlate: { col: 2, row: 16, w: 1, h: 1 }, item_Stone: { col: 3, row: 16, w: 1, h: 1 }, item_Dye: { col: 4, row: 16, w: 1, h: 1 }, item_DyeFlower: { col: 5, row: 16, w: 1, h: 1 }, item_TinCan: { col: 6, row: 16, w: 1, h: 1 }, item_GrindingWheel: { col: 7, row: 16, w: 1, h: 1 },
+    item_SeedOak: { col: 0, row: 17, w: 1, h: 1 }, item_SeedPine: { col: 1, row: 17, w: 1, h: 1 }, item_SeedPalm: { col: 2, row: 17, w: 1, h: 1 }, item_SeedCotton: { col: 3, row: 17, w: 1, h: 1 }, item_SeedDye: { col: 4, row: 17, w: 1, h: 1 }, item_Rack: { col: 5, row: 17, w: 1, h: 1 }, item_Barrel: { col: 6, row: 17, w: 1, h: 1 }, item_RackAdv: { col: 7, row: 17, w: 1, h: 1 },
   },
 };

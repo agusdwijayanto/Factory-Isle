@@ -14,6 +14,21 @@ Object.assign(UI, {
       left.appendChild(document.createTextNode(ITEMS[id].name));
       row.appendChild(left);
       row.appendChild(el('span', 'x' + S.inv[id]));
+      // v36: tanam benih di rumput lahan (hanya di lahan, tombol Tanam).
+      if (SEED_PLANTS[id] && S.map === 'plot') {
+        const b = el('button', 'Tanam');
+        b.addEventListener('click', () => {
+          S.placing = { kind: 'seed', id };
+          S.placeDir = 0; S.placeSpot = null;
+          this.closePanel('tas-panel');
+          $('btn-rotate').classList.remove('hidden');
+          $('btn-place-cancel').classList.remove('hidden');
+          $('btn-place-ok').classList.remove('hidden');
+          this.positionPlaceButtons();
+          this.setHint('Ketuk petak rumput untuk menanam ' + ITEMS[id].name + ', lalu centang.');
+        });
+        row.appendChild(b);
+      }
       // v35: muat barang tas ke peti wagon (kalau wagon ada dan muat).
       if (S.wagon) {
         const b = el('button', 'Muat');
@@ -27,6 +42,8 @@ Object.assign(UI, {
       }
       body.appendChild(row);
     }
+    // v36: batas item aktif — mesin berhenti kalau barang di dunia sudah 150.
+    body.appendChild(el('div', 'Item aktif: ' + activeItemCount() + ' / ' + ACTIVE_ITEM_LIMIT + ' (output mesin + conveyor; storage, peti wagon, dan tas tidak dihitung).', 'mp-desc'));
     // v35: isi peti wagon + tombol ambil kembali ke tas.
     if (S.wagon) {
       body.appendChild(el('div', 'Peti Wagon (' + wagonItemsTotal() + '/' + wagonCap() + '):', 'mp-desc'));

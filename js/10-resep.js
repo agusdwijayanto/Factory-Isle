@@ -28,8 +28,21 @@ function outputRoom(m) {
   return r && bufferTotal(m.output) < OUTPUT_CAP;
 }
 
+// v36: jumlah barang aktif di dunia (wiki: mesin berhenti kalau sudah
+// 150, tidak termasuk yang di dalam chest) — output mesin + barang di
+// conveyor. Bukan storage, bukan peti wagon, bukan tas.
+function activeItemCount() {
+  let n = 0;
+  for (const m of S.machines.values()) n += bufferTotal(m.output);
+  for (const c of S.conveyors.values()) if (c.item) n++;
+  return n;
+}
+
 function canStart(m) {
-  return !m.stopped && inputsOk(m) && outputRoom(m);
+  if (m.stopped || !inputsOk(m) || !outputRoom(m)) return false;
+  // v36: batas item aktif 150 — Admin tidak kena batas (infinite).
+  if (!adminOn() && activeItemCount() >= ACTIVE_ITEM_LIMIT) return false;
+  return true;
 }
 
 function consumeInputs(m) {
