@@ -3,7 +3,7 @@
 function buildMountain() {
   const mountain = makeGrid(MAP_W, MAP_H);
   put(mountain, [[0, 0], [2, 0], [4, 0], [6, 0], [8, 0], [10, 0], [12, 0], [14, 0], [1, 1], [15, 1]], 'mountain');
-  terrain(mountain, [[1, 2], [1, 3], [1, 4]], 'water'); // hulu sungai
+  terrain(mountain, rng(2, 11).map((gy) => [1, gy]), 'water'); // hulu sungai memanjang ke selatan
   terrain(mountain, [[2, 3], [2, 4]], 'clay');
   put(mountain, [[10, 2], [12, 3], [11, 4], [13, 2], [10, 5]], 'oreIron');
   put(mountain, [[12, 6], [13, 7], [11, 7]], 'oreCopper');
@@ -16,9 +16,9 @@ function buildMountain() {
   railYAt(mountain, 7, 8, 11);
   mountain[8][7].t = 'railStop'; // palang penahan di ujung rel paling atas
   roadAt(mountain, [
-    ...rng(4, 12).map((gx) => [gx, 10]),
+    ...rng(6, 15).map((gx) => [gx, 10]), // jalan selatan: (4,10),(5,10) dihapus, lanjut ke timur (13-15,10)
     ...rng(5, 7).map((gy) => [6, gy]),
-    [6, 9], [6, 10],
+    [6, 9], [6, 10], [6, 11],
   ]);
   return mountain;
 }

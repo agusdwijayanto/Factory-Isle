@@ -148,8 +148,17 @@ Tes: headless 159/159, Playwright 110/110, nol error konsol. Versi aset: ?v=21.
 
 Tes: headless 162/162, Playwright 110/110, nol error konsol. Versi aset: ?v=22.
 
+## Sudah live — v23 (19 Nov 2026)
+
+- [x] Perbaikan map Gunung (perintah Agus, koordinat x/z): air hulu sungai memanjang ke selatan jadi 10 petak (x=1-10, z=2; `js/03-map-gunung.js`); jalan baru x=1, z=7 (6,11) dan x=2, z=14-16 (13,10),(14,10),(15,10); jalan lama x=2, z=5-6 (4,10),(5,10) dihapus jadi rumput. Titik lahir dari hutan (4,10) kini rumput, tetap bisa dilewati.
+- [x] Perbaikan map Hutan (perintah Agus, koordinat x/z): air di tepi utara penuh 15 petak (x=12, z=2-16); jembatan di (8,0) menimpa air — satu-satunya jalan ke gunung, bisa dilewati; rel di (9,0) menimpa air — ujung utara kolom rel hutan tetap nyambung (`js/03-map-hutan.js`). Urutan air dulu, baru jembatan dan rel.
+- [x] Migrasi simpan lama (`js/12-simpan.js`): simpan v2 lama ikut dibangun ulang kalau air gunung di (1,5) belum ada atau jembatan hutan di (8,0) belum ada; progres pemain tetap.
+- [x] Tes regresi baru: headless memeriksa petak-petak baru, jalan yang bisa dilewati (air menghalangi, jembatan tidak), BFS ke jembatan, pindah map lewat jembatan, dan migrasi v23; Playwright memeriksa data + piksel (air biru, jembatan coklat, rel abu-abu, jalan coklat muda, rumput hijau).
+
+Tes: headless 173/173, Playwright 110/110, nol error konsol. Versi aset: ?v=23.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v22.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v23.
