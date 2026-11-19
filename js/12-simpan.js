@@ -22,7 +22,7 @@ function saveGame() {
       storages: [...S.storages], walls: [...S.walls], decor: [...S.decor],
       player: { fx: S.player.fx, fy: S.player.fy, dir: S.player.dir },
       maps,
-      tut: S.tut, tutDone: S.tutDone, stats: S.stats, settings: S.settings,
+      tut: S.tut, tutDone: S.tutDone, tutStarted: S.tutStarted, stats: S.stats, settings: S.settings,
     };
     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
     saveDirty = false;
@@ -96,6 +96,9 @@ function loadGame() {
     S.player.fx = data.player.fx; S.player.fy = data.player.fy; S.player.dir = data.player.dir;
   }
   S.tut = data.tut || 0; S.tutDone = !!data.tutDone;
+  // Simpan lama tanpa kunci tutStarted: yang sudah di tengah tutorial
+  // dianggap sudah mulai (ajakan tidak nongol lagi).
+  S.tutStarted = !!data.tutStarted || S.tut > 0;
   S.stats = data.stats || { harvested: {}, crafted: {}, sold: {} };
   S.settings = Object.assign({ sound: true, ruler: true }, data.settings || {}); // simpan lama tanpa kunci ruler = ON
   return true;

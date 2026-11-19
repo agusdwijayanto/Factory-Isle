@@ -231,8 +231,18 @@ Tes: headless 265/265, Playwright 145/145, nol error konsol. Versi aset: ?v=30.
 
 Tes: headless 280/280, Playwright 152/152, nol error konsol. Versi aset: ?v=31.
 
+## Sudah live — v32 (19 Nov 2026)
+
+- [x] Tutorial pindah dari bar kiri bawah ke panel kecil di tengah layar (perintah Agus, disetujui "betulll"): bar #target + tombol Lewati dihapus (div, handler, CSS, tulisan tick). Panel #tut-panel muncul pas awal main kalau tutorial belum selesai: teks ajakan + tombol Lewati dan Lanjut. Lewati = tutorial mati total (tutDone), panel hilang, tidak muncul lagi. Lanjut = tutorial jalan, 8 langkah TETAP SAMA (isi/syarat tidak diubah), tiap langkah tampil di panel, tombol Lewati tetap ada buat skip sisanya. Kalau tutDone, panel tidak muncul sama sekali. (`index.html`, `style.css`, `js/01-core.js`, `js/03-data-tutorial.js`, `js/12-simpan.js`, `js/13-ui-core.js`, `js/13-ui-tick.js`, `js/13-ui.js`.)
+- [x] Panel tembus ketuk kecuali tombolnya (pointer-events none, tombol auto), supaya tidak menutupi petak dan tombol penting saat main. Tombol dibuat kecil dan di tengah (min-width 110px, bukan selebar panel) supaya ketukan petak di balik panel tidak nyasar ke Lewati — ketukan nyasar sempat mematikan tutorial di tengah tes Playwright sebelum perbaikan ini.
+- [x] Keadaan baru S.tutStarted (sudah menjawab ajakan atau belum), tersimpan di save; simpan lama yang sudah di tengah tutorial dianggap sudah mulai (ajakan tidak nongol lagi).
+- [x] ETA crafting tetap tampil di panel selama tutorial jalan; sesudah tutorial selesai tidak ada lagi tampilan ETA (bar target yang dulu menampilkannya sudah dihapus).
+- [x] Tes regresi baru: headless memeriksa panel ajakan di save baru, Lanjut menampilkan langkah 1, tombol Lanjut hilang sesudah mulai, langkah maju ke 2 saat syarat terpenuhi, Lewati menyembunyikan panel, simpan memuat tutStarted + tut; Playwright memeriksa panel tengah + kecil di save baru, Lanjut, langkah maju, Lewati, panel tidak muncul sesudah reload kalau tutDone, plus screenshot panel ajakan dan langkah 1.
+
+Tes: headless 287/287, Playwright 165/165, nol error konsol. Versi aset: ?v=32.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v31.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v32.

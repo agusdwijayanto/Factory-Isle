@@ -6,7 +6,7 @@ const HINT_HOME = 'Ketuk petak untuk berjalan. Ketuk pohon, bijih, atau mesin un
 let toastTimer = 0;
 let buildTab = 'machines';
 let inspectKey = null; // petak yang sedang diperiksa
-let lastTargetText = '';
+let lastTutText = '';
 
 // Suara WebAudio tanpa aset: nada pendek per kejadian.
 const SFXImpl = {

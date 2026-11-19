@@ -1,7 +1,7 @@
-// Tick UI: tutorial maju, teks target, simpan otomatis.
+// Tick UI: tutorial maju, teks panel tutorial, simpan otomatis.
 // Pecahan 13-ui.js (v16).
 Object.assign(UI, {
-  // ---- Tutorial + target ----
+  // ---- Tutorial + panel ----
   tick(dt) {
     // Tutorial maju sendiri saat syarat langkah terpenuhi.
     if (!S.tutDone && S.tut < TUTORIAL.length && TUTORIAL[S.tut].done()) {
@@ -11,9 +11,7 @@ Object.assign(UI, {
       if (S.tut >= TUTORIAL.length) S.tutDone = true;
       saveSoon();
     }
-    let text;
-    if (S.tutDone) text = 'Bebas: kembangkan pabrikmu. Target: buat 1 Motor.';
-    else text = 'Target: ' + TUTORIAL[Math.min(S.tut, TUTORIAL.length - 1)].text;
+    // Panel tutorial di tengah: ajakan dulu, lalu tiap langkah.
     // ETA: sisa waktu crafting terdekat yang sedang berjalan.
     let eta = null;
     for (const m of S.machines.values()) {
@@ -24,10 +22,20 @@ Object.assign(UI, {
         if (eta === null || left < eta.left) eta = { left, name: ITEMS[r.out].name };
       }
     }
-    if (eta) text += ' | ' + eta.name + ' selesai dalam ' + eta.left + ' dtk';
-    if (text !== lastTargetText) {
-      lastTargetText = text;
-      $('target-text').textContent = text;
+    const panel = $('tut-panel');
+    if (S.tutDone) {
+      panel.classList.add('hidden');
+    } else {
+      panel.classList.remove('hidden');
+      let text;
+      if (!S.tutStarted) text = TUT_INTRO;
+      else text = 'Target: ' + TUTORIAL[Math.min(S.tut, TUTORIAL.length - 1)].text;
+      if (eta) text += ' | ' + eta.name + ' selesai dalam ' + eta.left + ' dtk';
+      if (text !== lastTutText) {
+        lastTutText = text;
+        $('tut-text').textContent = text;
+      }
+      $('btn-tut-next').classList.toggle('hidden', S.tutStarted);
     }
     this.updateInspectLive();
     // Simpan otomatis throttled.

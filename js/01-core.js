@@ -41,7 +41,7 @@ const S = {
     working: null,       // {kind, gx, gy, swingsLeft, swingT, node}
     tool: 'axe', swing: 0,
   },
-  tut: 0, tutDone: false,
+  tut: 0, tutDone: false, tutStarted: false,
   stats: { harvested: {}, crafted: {}, sold: {} },
   settings: { sound: true, ruler: true },
   keys: {},

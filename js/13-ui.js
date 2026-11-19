@@ -15,9 +15,18 @@ $('btn-burger').addEventListener('click', () => {
   if (m.classList.contains('hidden')) UI.openPanel('burger-menu');
   else m.classList.add('hidden');
 });
-$('btn-skip').addEventListener('click', () => {
+// Panel tutorial di tengah: Lewati mematikan tutorial total,
+// Lanjut memulai langkah 1 (panel lalu menampilkan tiap langkah).
+$('btn-tut-skip').addEventListener('click', () => {
   S.tutDone = true;
+  S.tutStarted = true;
+  $('tut-panel').classList.add('hidden');
   UI.toast('Tutorial dilewati');
+  saveSoon();
+});
+$('btn-tut-next').addEventListener('click', () => {
+  S.tutStarted = true;
+  $('btn-tut-next').classList.add('hidden');
   saveSoon();
 });
 document.querySelectorAll('[data-close]').forEach((b) => {

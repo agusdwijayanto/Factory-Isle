@@ -1,6 +1,7 @@
 // Tutorial dan teks resep.
 // Pecahan 03-data.js (v16).
 // Tutorial: satu sistem per langkah, bisa dilewati.
+const TUT_INTRO = 'Mau belajar main dulu? Ikuti 8 langkah singkat, dari menebang pohon sampai membuat Motor.';
 const TUTORIAL = [
   { text: 'Jalan ke ujung barat kota untuk masuk ke Hutan, ketuk pohon.', done: () => (S.stats.harvested.Log || 0) >= 1 },
   { text: 'Kumpulkan 5 Log.', done: () => (S.stats.harvested.Log || 0) >= 5 },
