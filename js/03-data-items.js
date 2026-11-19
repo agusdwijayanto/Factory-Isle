@@ -62,13 +62,15 @@ const SHOPS = {
   exchange:   { name: 'Exchange',   sell: 'ALL', buy: { Log: 12, Pillar: 20, Plank: 10, Brick: 30, WoodFrame: 48, IronFrame: 83, IronBeam: 125, Coil: 38 } },
   harbor:     { name: 'Pelabuhan',  sell: harborSellTable(), buy: {} },
 };
-// Posisi toko: obj di grid = 'shop_' + id.
+// Posisi toko: obj di grid = 'shop_' + id. Toko kota disebar di sepanjang
+// jalan toko (y=2): x = 1, 4, 7, 11, 14. x=8 tetap kosong (jalan ke
+// jembatan), tidak ada toko di rel/peron atau di pintu keluar.
 const SHOP_SPOTS = [
-  { map: 'town', gx: 2, gy: 1, id: 'carpenter' },
-  { map: 'town', gx: 11, gy: 3, id: 'blacksmith' }, // bukan di (8,1): petak itu jalan menuju jembatan
+  { map: 'town', gx: 1, gy: 1, id: 'carpenter' },
+  { map: 'town', gx: 4, gy: 3, id: 'blacksmith' },
+  { map: 'town', gx: 7, gy: 3, id: 'exchange' },
   { map: 'town', gx: 11, gy: 1, id: 'toolshop' },
   { map: 'town', gx: 14, gy: 1, id: 'textile' },
-  { map: 'town', gx: 14, gy: 3, id: 'exchange' },
   { map: 'harbor', gx: 8, gy: 3, id: 'harbor' },
 ];
 

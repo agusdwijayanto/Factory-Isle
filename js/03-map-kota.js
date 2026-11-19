@@ -14,7 +14,7 @@ function buildTown() {
     ...rng(1, 7).map((gy) => [8, gy]),
     ...rng(0, 8).map((gx) => [gx, 6]),
     ...rng(8, 15).map((gx) => [gx, 6]),
-    ...rng(2, 14).map((gx) => [gx, 2]),
+    ...rng(1, 14).map((gx) => [gx, 2]),
   ]);
   put(town, [[3, 3], [9, 6], [12, 8]], 'lantern');
   terrain(town, [[6, 1], [7, 1], [9, 1], [10, 1]], 'clay');

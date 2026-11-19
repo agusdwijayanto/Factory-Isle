@@ -203,7 +203,8 @@ function interactAt(gx, gy) {
     goTo(gx, gy, () => UI.openMayor());
     return;
   }
-  if (t.obj === 'station' || t.obj === 'train' || t.t === 'platform') {
+  // Naik kereta hanya dari kereta; peron cuma dekorasi, tidak bisa diklik.
+  if (t.obj === 'train') {
     goTo(gx, gy, () => UI.openTrain());
     return;
   }

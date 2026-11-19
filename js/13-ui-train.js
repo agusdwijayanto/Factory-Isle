@@ -1,7 +1,7 @@
 // Panel kereta: pilih tujuan, naik. Pecahan 13-ui.js (v16).
 Object.assign(UI, {
   // ---- Kereta ----
-  // Naik dari peron mana saja; tujuan yang sedang dituju tidak ditawarkan.
+  // Naik dari kereta; tujuan yang sedang dituju tidak ditawarkan.
   openTrain() {
     this.renderTrain();
     this.openPanel('train-panel');

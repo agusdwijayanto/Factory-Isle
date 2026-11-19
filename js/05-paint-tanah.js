@@ -29,12 +29,9 @@ Object.assign(PAINTERS, {
       g.moveTo(ox + 24, oy + 32 + dy); g.lineTo(ox + 32, oy + 28 + dy); g.lineTo(ox + 40, oy + 32 + dy); g.lineTo(ox + 32, oy + 36 + dy); g.closePath(); g.fill();
     }
   },
+  // Peron cuma dekorasi: abu-abu polos, tanpa aksen.
   platform: (g, ox, oy, c) => {
     P_ground(g, ox + 32, oy + 32, '#8d99a8');
-    g.strokeStyle = '#ffd75e'; g.lineWidth = 2;
-    g.beginPath(); g.moveTo(ox + 4, oy + 32); g.lineTo(ox + 32, oy + 18); g.stroke();
-    g.strokeStyle = '#5d6773'; g.lineWidth = 1.5;
-    g.beginPath(); g.moveTo(ox + 8, oy + 36); g.lineTo(ox + 56, oy + 36); g.stroke();
   },
   dock: (g, ox, oy, c) => {
     P_ground(g, ox + 32, oy + 32, '#2a6db0');

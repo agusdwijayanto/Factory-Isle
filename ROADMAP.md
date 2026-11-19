@@ -104,8 +104,17 @@ Tes: headless 126/126, Playwright 103/103, nol error konsol. Versi aset: ?v=16.
 
 Tes: headless 129/129, Playwright 103/103, nol error konsol. Versi aset: ?v=17.
 
+## Sudah live — v18 (19 Nov 2026)
+
+- [x] Naik kereta cukup klik kereta saja, berlaku di semua map (kota, hutan, gunung, pelabuhan). Klik peron tidak lagi membuka panel kereta — peron cuma dekorasi, warnanya abu-abu polos saja (pelukis peron disederhanakan jadi satu belah ketupat abu-abu, garis aksen kuning dan garis gelap dihapus). Cek `station` yang sudah mati sejak v14 ikut dihapus dari ketuk dan halangan jalan.
+- [x] Toko kota disebar di sepanjang jalan toko (y=2): Carpenter (1,1), Blacksmith (4,3), Exchange (7,3), Tool Shop (11,1), Textile (14,1) — jarak min 3 petak, tidak menutup jalan ke jembatan (x=8), pintu keluar (y=6), atau rel (y=9). Jalan depan toko diperpanjang ke x=1. Harga dan isi tiap toko tidak berubah.
+- [x] Simpan v17 ikut termigrasi: simpan lama yang tokonya masih numpuk dibangun ulang map statisnya supaya toko pindah ke posisi baru; uang, tas, mesin, dan lahan tetap.
+- [x] Tes regresi: ketuk peron tidak membuka panel kereta dan ketuk kereta membuka panel, di keempat map (headless; Playwright di hutan dan kota); jarak antar toko kota min 3 petak; migrasi toko lama.
+
+Tes: headless 140/140, Playwright 105/105, nol error konsol. Versi aset: ?v=18.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v17.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v18.
