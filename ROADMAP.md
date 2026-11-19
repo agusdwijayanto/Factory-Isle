@@ -257,8 +257,20 @@ Tes: headless 296/296, Playwright 169/169, nol error konsol. Versi aset: ?v=33.
 
 Tes: headless 313/313, Playwright 177/177, nol error konsol. Versi aset: ?v=34.
 
+## Sudah live — v35 (19 Nov 2026)
+
+- [x] Wagon = transportasi (referensi gambar 1 yang disetujui Agus, kecepatan jalan kaki lv1, wagon lv2, kereta lv3): beli $100 di menu Plot, muncul di depan lahan (8,10); ketuk wagon untuk naik (jalan lebih cepat, wagon ikut petak pemain), ketuk lagi untuk turun. Naik tingkat wagon lv2 $500 / lv3 $1.500 / lv4 $4.000 (peti 5/10/20/40, kecepatan naik), kuda speed+ $100 lalu speed++ $500 (pengali 1,6/2,0/2,5), respawn $5. Peti wagon di panel Tas (Muat/Ambil). Tampilan ikut gambar referensi: kuda cokelat + gerobak kayu berisi peti. (`js/01-core.js`, `js/03-data-items.js`, `js/05-paint-node.js`, `js/07-pemain.js`, `js/11-ekonomi.js`, `js/13-ui-tas.js`, `js/13-ui-plot.js`.)
+- [x] Perkakas: kapak, sekop, pickaxe — ketiganya dasar gratis sejak awal (pola kapak ikut ketiganya, tanpa daya tahan); upgrade Bronze $250 lalu Iron $1.000 di Tool Shop (Trading Post, kota seberang Blacksmith), upgrade bikin panen lebih cepat (ayunan berkurang). Panen butuh perkakas yang tepat: pohon pakai kapak, bijih pakai pickaxe, pasir/tanah liat pakai sekop; tanpa perkakas, panen tidak mulai + toast "Beli X dulu di Tool Shop". Tool Shop juga jual/beli Iron Beam, Engine ($192), Drill Head ($141) ikut wiki. (`js/03-data-items.js`, `js/07-pemain.js`, `js/11-ekonomi.js`, `js/13-ui-shop.js`.)
+- [x] Node sumber daya di dunia: tumpukan pasir di tepi sungai Hutan (1,1)/(15,1) dan Pelabuhan, bijih besi (9,3) + tembaga (12,8) tambahan di Gunung; hasil masuk tas. (`js/03-map-hutan.js`, `js/03-map-gunung.js`.)
+- [x] Patung + Housing: batas Housing default 600, tiap bangunan menambah housing (mesin 10, conveyor 2, storage 5, dinding/dekor 1, patung 0) dan angkanya tampil di menu Bangun; 5 patung di kategori Statues (Lion +50/$500, Miner +100/$1.000, Lumberjack +100/$1.000, Blacksmiths +150/$2.000, Liberty +200/$5.000), tiap patung hanya bisa ditaruh sekali; kalau housing penuh, bangunan baru ditolak + toast. Mode Admin melewati batas. (`js/01-core.js`, `js/03-data-items.js`, `js/05-render.js`, `js/13-ui-build.js`, `js/13-ui-inspect.js`.)
+- [x] Badge: diberikan saat membuka resep — Carpenter, Blacksmith, Harvester, Mining Drill (Mode Admin memberi keempatnya); daftar badge di panel Badge (burger menu) dengan status Didapat/Belum. Research tetap jadi cara membuka resep; badge hanya penanda pencapaian. (`js/11-ekonomi.js`, `js/13-ui-badge.js`.)
+- [x] 4 save: menu Plot (tanda kuning di depan lahan + tombol Plot di burger) — 4 slot save, tiap slot punya 4 tingkat ukuran ikut sistem Mayor; Muat (slot sekarang disimpan dulu), Lepas (simpan lalu kosong, autosave berhenti), Reset per slot (Barang / Bangunan / Upgrade lahan, bisa untuk slot lain tanpa memuatnya), respawn wagon $5. Simpan lama (indotopia-tycoon-save-v2) menjadi slot 1 otomatis, lengkap dengan badge dari resep yang sudah dibuka. (`js/12-simpan.js`, `js/13-ui-plot.js`, `js/03-map-kota.js`.)
+- [x] Tes regresi baru: headless memeriksa perkakas (default, biaya, ayunan, beli/upgrade, gerbang panen), wagon (beli, naik tingkat, kuda, naik/turun, ikut pemain, lebih cepat, peti, respawn), housing (biaya, patung, penuh menolak, Admin lewat), badge (riset + Admin), slot (simpan/muat/lepas/reset per bagian/migrasi), plotsign; Playwright memeriksa menu Plot, beli + naik/turun wagon, Tool Shop, patung Lion, panel Badge, pindah slot, plus screenshot wagon dan patung. Dua tes lama disesuaikan (burger 4 jadi 6 tombol, kategori bangun 5 jadi 6) dan satu tabrakan petak tes diperbaiki (storage box v33 di (12,5)).
+
+Tes: headless 354/354, Playwright 192/192, nol error konsol. Versi aset: ?v=35.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v34.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v35.

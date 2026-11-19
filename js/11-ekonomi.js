@@ -90,8 +90,109 @@ function doResearch(id) {
     if (r.items) for (const [i, n] of Object.entries(r.items)) invAdd(i, -n);
   }
   S.unlocked[id] = true;
+  awardBadge(id); // v35: badge diberikan saat resep dibuka
   saveSoon();
   return true;
+}
+
+// ---- v35: badge, perkakas, wagon ----
+// Badge hanya penanda pencapaian; tidak membuka apa-apa.
+function awardBadge(id) {
+  if (BADGES[id] && !S.badges[id]) {
+    S.badges[id] = true;
+    TOAST('Badge didapat: ' + BADGES[id].name + '!');
+    saveSoon();
+  }
+}
+
+// Beli/upgrade perkakas di Tool Shop. Tingkat 0->1 (dasar), 1->2 (bronze),
+// 2->3 (iron). Kapak dasar sudah dimiliki sejak awal (tingkat 1).
+function toolNextCost(toolId) {
+  const lvl = S.tools[toolId] || 0;
+  if (lvl >= 3) return null;
+  return TOOL_UPGRADE_COST[lvl];
+}
+function buyTool(toolId) {
+  const cost = toolNextCost(toolId);
+  if (cost === null) return false;
+  if (!adminOn() && S.money < cost) return false;
+  if (!adminOn()) S.money -= cost;
+  S.tools[toolId] = (S.tools[toolId] || 0) + 1;
+  saveSoon();
+  return true;
+}
+
+// Beli wagon $100: muncul di lahan, satu petak di depan gerbang.
+function buyWagon() {
+  if (S.wagon) return false;
+  if (!adminOn() && S.money < WAGON_BUY_COST) return false;
+  if (!adminOn()) S.money -= WAGON_BUY_COST;
+  const spot = wagonSpawnSpot();
+  S.wagon = { map: 'plot', gx: spot.gx, gy: spot.gy, level: 1, horses: 0, items: {}, riding: false };
+  saveSoon();
+  return true;
+}
+// Petak lahir wagon: (8,10) di lahan, atau rumput kosong terdekat.
+function wagonSpawnSpot() {
+  const grid = S.maps.plot.grid;
+  if (grid[10] && grid[10][8].t === 'grass' && !grid[10][8].obj && !S.machines.has('8,10')) return { gx: 8, gy: 10 };
+  for (let gy = 0; gy < S.maps.plot.h; gy++)
+    for (let gx = 0; gx < S.maps.plot.w; gx++) {
+      const t = grid[gy][gx];
+      if (t.t === 'grass' && !t.obj && !S.machines.has(key(gx, gy))) return { gx, gy };
+    }
+  return { gx: 8, gy: 10 };
+}
+// Naik tingkat wagon (kapasitas naik). Kembalikan false kalau sudah maks.
+function upgradeWagon() {
+  if (!S.wagon || S.wagon.level >= WAGON_LEVELS.length) return false;
+  const cost = WAGON_LEVELS[S.wagon.level].cost;
+  if (!adminOn() && S.money < cost) return false;
+  if (!adminOn()) S.money -= cost;
+  S.wagon.level++;
+  saveSoon();
+  return true;
+}
+// Beli kuda (kecepatan wagon naik): 0->1 kuda $100, 1->2 kuda $500.
+function buyHorse() {
+  if (!S.wagon || S.wagon.horses >= 2) return false;
+  const cost = WAGON_HORSE_COST[S.wagon.horses];
+  if (!adminOn() && S.money < cost) return false;
+  if (!adminOn()) S.money -= cost;
+  S.wagon.horses++;
+  saveSoon();
+  return true;
+}
+// Respawn wagon $5: pindah ke petak lahir di lahan (dipakai kalau wagon
+// parkir jauh atau nyangkut di ujung map).
+function respawnWagon() {
+  if (!S.wagon) return false;
+  if (!adminOn() && S.money < WAGON_RESPAWN_COST) return false;
+  if (!adminOn()) S.money -= WAGON_RESPAWN_COST;
+  const spot = wagonSpawnSpot();
+  S.wagon.map = 'plot'; S.wagon.gx = spot.gx; S.wagon.gy = spot.gy; S.wagon.riding = false;
+  saveSoon();
+  return true;
+}
+// Muat barang tas ke peti wagon (dibatasi kapasitas), dan sebaliknya.
+function wagonLoad(id, n) {
+  if (!S.wagon) return 0;
+  const take = Math.min(n, invCount(id), wagonCap() - wagonItemsTotal());
+  if (take <= 0) return 0;
+  invAdd(id, -take);
+  S.wagon.items[id] = (S.wagon.items[id] || 0) + take;
+  saveSoon();
+  return take;
+}
+function wagonUnload(id, n) {
+  if (!S.wagon) return 0;
+  const take = Math.min(n, S.wagon.items[id] || 0);
+  if (take <= 0) return 0;
+  S.wagon.items[id] -= take;
+  if (S.wagon.items[id] <= 0) delete S.wagon.items[id];
+  invAdd(id, take);
+  saveSoon();
+  return take;
 }
 
 // ---- Mayor: ekspansi plot berurutan, lalu Auto Seller ----
@@ -131,6 +232,7 @@ function setAdminMode(on) {
   S.admin = !!on;
   if (S.admin) {
     Object.keys(MACHINES).forEach((id) => { S.unlocked[id] = true; });
+    Object.keys(BADGES).forEach((id) => { S.badges[id] = true; }); // v35: semua badge ikut terbuka
     applyMaxExpansion();
     TOAST('Mode Admin ON: duit, bahan, dan riset infinite');
   } else {

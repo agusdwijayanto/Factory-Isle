@@ -48,6 +48,10 @@ const ITEMS = {
   BronzeCannon: { name: 'Bronze Cannon', color: '#c98f2e', price: 1500 }, // riset 4.2
   Bed:          { name: 'Bed',           color: '#a8763e', price: 109 }, // riset 4.2 (kapal bajak laut)
   Piano:        { name: 'Piano',         color: '#2c2833', price: 360 }, // riset 4.2 (kapal 360; NamuWiki 350-400)
+  // v35: komponen Toko Perkakas (wiki Tools Shop): dijual toko ke pemain
+  // 192/141, harga papan di bawahnya supaya tidak ada arbitrase (aturan v30).
+  Engine:       { name: 'Engine',        color: '#7d8894', price: 150 }, // turunan, di bawah harga toko 192
+  DrillHead:    { name: 'Drill Head',    color: '#c98f2e', price: 110 }, // turunan, di bawah harga toko 141
 };
 
 // Nama map untuk HUD.
@@ -73,7 +77,7 @@ function harborSellTable() {
 const SHOPS = {
   carpenter:  { name: 'Carpenter',  sell: { Log: 7, Pillar: 12, Plank: 6, WoodFrame: 28 }, buy: {} },
   blacksmith: { name: 'Blacksmith', sell: { Firelog: 6, IronIngot: 24 }, buy: { Nails: 31 } }, // v30: 31 di atas premi pelabuhan 30
-  toolshop:   { name: 'Tool Shop',  sell: { IronBeam: 72 }, buy: {} },
+  toolshop:   { name: 'Tool Shop',  sell: { IronBeam: 72 }, buy: { IronBeam: 150, Engine: 192, DrillHead: 141 } }, // v35: jual Iron Beam/Engine/Drill Head (wiki Tools Shop: 103/192/141); Iron Beam 150 di atas beli Exchange 125 supaya tidak ada arbitrase (aturan v30)
   textile:    { name: 'Textile',    sell: { Cotton: 25, Textiles: 35, DyeCan: 16, DyedTextiles: 16 }, buy: { Cotton: 31, Textiles: 50, DyeCan: 24, DyedTextiles: 24 } }, // v30: beli Dyed 55->16 (tutup arbitrase); Cotton 25->31 di atas premi pelabuhan 30
   exchange:   { name: 'Exchange',   sell: 'ALL', buy: { Log: 12, Pillar: 20, Plank: 10, Brick: 37, WoodFrame: 58, IronFrame: 100, IronBeam: 125, Coil: 38 } }, // v30: Brick 37, WoodFrame 58, IronFrame 100, di atas premi pelabuhan (36/57/99)
   harbor:     { name: 'Pelabuhan',  sell: harborSellTable(), buy: {} },
@@ -229,6 +233,7 @@ const BUILD_COST = {
   conveyor: 100, conveyorTilt: 100,
   box: 20, container: 60, rack: 150,
   wallWood: 10, wallIron: 30, lantern: 15, flowers: 5,
+  statueLion: 500, statueMiner: 1000, statueLumber: 1000, statueSmith: 2000, statueLiberty: 5000,
 };
 const STORAGE_CAP = { box: 50, container: 200, rack: 500 };
 
@@ -264,6 +269,13 @@ const CATEGORIES = [
     { id: 'wallWood', kind: 'wall', name: 'Wood Wall', sub: '$10', color: '#7a5230' },
     { id: 'wallIron', kind: 'wall', name: 'Iron Wall', sub: '$30', color: '#5d6773' },
   ] },
+  { id: 'statues', name: 'Statues', items: [
+    { id: 'statueLion', kind: 'statue', name: 'Lion', sub: '+50 Housing, $500', color: '#c98f2e' },
+    { id: 'statueMiner', kind: 'statue', name: 'Miner', sub: '+100 Housing, $1.000', color: '#8d99a8' },
+    { id: 'statueLumber', kind: 'statue', name: 'Lumberjack', sub: '+100 Housing, $1.000', color: '#2f6b33' },
+    { id: 'statueSmith', kind: 'statue', name: 'Blacksmiths', sub: '+150 Housing, $2.000', color: '#6e7683' },
+    { id: 'statueLiberty', kind: 'statue', name: 'Liberty', sub: '+200 Housing, $5.000', color: '#4fae9d' },
+  ] },
 ];
 
 // Perkakas: node apa ditebang dengan apa, berapa ayunan, hasil per ayunan.
@@ -284,5 +296,51 @@ const NODES = {
 const HARVEST_TEXT = { // teks melayang panen, kunci = obj atau terrain
   tree: '+1 Log', oreIron: '+1 Iron Ore', oreCopper: '+1 Copper Ore',
   oreTin: '+1 Tin Ore', sand: '+1 Sand', clay: '+1 Clay', cotton: '+1 Cotton',
+};
+
+// ---- v35: perkakas, wagon, patung + housing, badge ----
+// Perkakas: tingkat 0 = belum punya, 1 = dasar, 2 = bronze, 3 = iron.
+// Harga ikut wiki (bronze $250, iron $1.000); dasar sekop/pickaxe $100
+// turunan (kapak dasar gratis sejak awal). Naik tingkat mengurangi ayunan.
+const TOOL_LEVEL_NAMES = ['Belum punya', 'Dasar', 'Bronze', 'Iron'];
+const TOOL_UPGRADE_COST = { 0: 100, 1: 250, 2: 1000 }; // biaya 0->1, 1->2, 2->3
+// Ayunan panen = ayunan node dikurangi bonus tingkat (minimal 1).
+function swingsFor(node, toolLevel) {
+  return Math.max(1, node.swings - Math.max(0, toolLevel - 1));
+}
+
+// Wagon: tingkat kapasitas (biaya turunan) + kuda (kecepatan, ikut wiki:
+// speed+ $100, 2 kuda speed++ $500). Kecepatan jalan kaki lv1 = 1x,
+// wagon lv2 = pengali di bawah, kereta lv3 = perjalanan instan.
+const WAGON_BUY_COST = 100;
+const WAGON_RESPAWN_COST = 5;
+const WAGON_LEVELS = [
+  { cap: 5, cost: 100 },
+  { cap: 10, cost: 500 },
+  { cap: 20, cost: 1500 },
+  { cap: 40, cost: 4000 },
+];
+const WAGON_HORSE_COST = { 0: 100, 1: 500 }; // 0->1 kuda, 1->2 kuda
+const WAGON_SPEED_MULT = [1.6, 2.0, 2.5]; // kuda 0, 1, 2
+
+// Housing: batas dasar 600 (wiki Plots), tiap bangunan menambah pemakaian;
+// patung menambah batas. Angka pemakaian turunan (mesin paling berat).
+const HOUSING_BASE = 600;
+const HOUSING_COST = { machine: 10, conveyor: 2, storage: 5, wall: 1, decor: 1, statue: 0 };
+const STATUES = {
+  statueLion:    { name: 'Lion',       bonus: 50,  cost: 500 },
+  statueMiner:   { name: 'Miner',      bonus: 100, cost: 1000 },
+  statueLumber:  { name: 'Lumberjack', bonus: 100, cost: 1000 },
+  statueSmith:   { name: 'Blacksmiths', bonus: 150, cost: 2000 },
+  statueLiberty: { name: 'Liberty',    bonus: 200, cost: 5000 },
+};
+
+// Badge: diberikan saat resep dibuka (research). Research tetap jadi cara
+// membuka; badge hanya penanda pencapaian (bukan kunci baru).
+const BADGES = {
+  carpenter:  { name: 'Carpenter',  desc: 'Membuka resep Carpenter' },
+  blacksmith: { name: 'Blacksmith', desc: 'Membuka resep Blacksmith' },
+  harvester:  { name: 'Harvester',  desc: 'Membuka resep Harvester' },
+  drill:      { name: 'Mining Drill', desc: 'Membuka resep Mining Drill' },
 };
 

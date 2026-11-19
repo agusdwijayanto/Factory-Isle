@@ -80,6 +80,11 @@ function confirmPlace() {
   if (!canPlace(gx, gy, p)) { SFX.play('error'); UI.toast('Tidak bisa ditaruh di sini'); return; }
   const cost = p.fromKey ? 0 : (BUILD_COST[p.id] || 0);
   if (!adminOn() && S.money < cost) { SFX.play('error'); UI.toast('Uang tidak cukup'); return; }
+  if (!p.fromKey && !adminOn() && housingUsed() + housingCostOf(p) > housingMax()) {
+    SFX.play('error');
+    UI.toast('Housing penuh (' + housingUsed() + '/' + housingMax() + ') — bangun patung untuk menambah batas.');
+    return;
+  }
   if (!adminOn()) S.money -= cost; // Mode Admin: duit infinite, bangun gratis
   placeThing(p, gx, gy);
   SFX.play('place');
@@ -87,7 +92,8 @@ function confirmPlace() {
   UI.refreshHUD();
   S.placeSpot = null;
   // Rantai conveyor/dinding/dekor: tetap mode taruh supaya bisa lanjut.
-  if (p.kind === 'machine' || p.kind === 'storage' || p.fromKey) UI.cancelPlacing();
+  // Mesin/storage/patung: sekali taruh langsung selesai (patung cuma satu tiap jenis).
+  if (p.kind === 'machine' || p.kind === 'storage' || p.kind === 'statue' || p.fromKey) UI.cancelPlacing();
 }
 
 function placeThing(p, gx, gy) {
@@ -104,6 +110,7 @@ function placeThing(p, gx, gy) {
   else if (p.kind === 'storage') S.storages.set(k, { id: p.id, items: {} });
   else if (p.kind === 'wall') S.walls.set(k, { id: p.id });
   else if (p.kind === 'decor') S.decor.set(k, { id: p.id });
+  else if (p.kind === 'statue') S.decor.set(k, { id: p.id }); // patung disimpan sebagai dekor
   saveSoon();
 }
 

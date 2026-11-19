@@ -34,8 +34,9 @@ Object.assign(UI, {
     }
     const d = S.decor.get(inspectKey);
     if (d) {
-      $('insp-name').textContent = d.id === 'lantern' ? 'Lantern' : 'Flowers';
-      body.appendChild(el('div', 'Hiasan.', 'mp-desc'));
+      // v35: patung juga disimpan sebagai dekor; namanya dari STATUES.
+      $('insp-name').textContent = STATUES[d.id] ? STATUES[d.id].name : (d.id === 'lantern' ? 'Lantern' : 'Flowers');
+      body.appendChild(el('div', STATUES[d.id] ? 'Patung: +' + STATUES[d.id].bonus + ' Housing.' : 'Hiasan.', 'mp-desc'));
       body.appendChild(this.actionRow([['Hapus', () => { S.decor.delete(inspectKey); this.closeMachine(); saveSoon(); }]]));
       return;
     }

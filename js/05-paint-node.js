@@ -64,4 +64,111 @@ Object.assign(PAINTERS, {
       g.beginPath(); g.arc(cx + dx, gy + dy, 3, 0, 6.29); g.fill();
     });
   },
+  // ---- v35: wagon, patung, badge, tanda plot ----
+  // Wagon ikut referensi gambar 1: kuda menarik gerbong kayu berisi peti.
+  wagon: (g, ox, oy) => {
+    const cx = ox + 32, gy = oy + 62;
+    P_shadow(g, cx, gy, 16);
+    // Kuda di depan kanan.
+    g.fillStyle = '#8a5a33';
+    g.beginPath(); g.ellipse(cx + 12, gy - 16, 9, 6, 0, 0, 6.29); g.fill(); // badan
+    g.beginPath(); g.arc(cx + 20, gy - 24, 4.5, 0, 6.29); g.fill(); // kepala
+    g.fillStyle = '#6a4526'; g.fillRect(cx + 18, gy - 30, 4, 6); // telinga/leher
+    g.strokeStyle = '#6a4526'; g.lineWidth = 2;
+    [[8, -10], [14, -10], [10, -10], [16, -10]].forEach(([dx, dy]) => {
+      g.beginPath(); g.moveTo(cx + dx, gy - 12); g.lineTo(cx + dx, gy); g.stroke();
+    });
+    // Gerbong kayu di belakang kiri + peti.
+    g.fillStyle = '#a8763e'; g.fillRect(cx - 22, gy - 14, 24, 12);
+    g.fillStyle = '#7a5230'; g.fillRect(cx - 22, gy - 14, 24, 3);
+    g.fillStyle = '#c9a86a'; g.fillRect(cx - 18, gy - 22, 12, 8);
+    g.fillStyle = '#5d6773';
+    g.beginPath(); g.arc(cx - 16, gy - 1, 4, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx - 4, gy - 1, 4, 0, 6.29); g.fill();
+    // Tali kuda ke gerbong.
+    g.strokeStyle = '#5f3d22'; g.lineWidth = 1.5;
+    g.beginPath(); g.moveTo(cx + 4, gy - 16); g.lineTo(cx + 2, gy - 12); g.stroke();
+  },
+  // Patung: alas batu + sosok, beda warna/siluet tiap patung.
+  _statueBase: (g, ox, oy) => {
+    const cx = ox + 32, gy = oy + 62;
+    P_shadow(g, cx, gy, 12);
+    g.fillStyle = '#8d99a8'; g.fillRect(cx - 11, gy - 6, 22, 6);
+    g.fillStyle = '#6e7683'; g.fillRect(cx - 9, gy - 10, 18, 4);
+  },
+  statueLion: (g, ox, oy) => {
+    PAINTERS._statueBase(g, ox, oy);
+    const cx = ox + 32, gy = oy + 62;
+    g.fillStyle = '#c98f2e';
+    g.beginPath(); g.ellipse(cx, gy - 20, 9, 6, 0, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx + 8, gy - 26, 5, 0, 6.29); g.fill();
+    g.fillStyle = '#a8763e'; g.fillRect(cx - 8, gy - 16, 16, 6);
+  },
+  statueMiner: (g, ox, oy) => {
+    PAINTERS._statueBase(g, ox, oy);
+    const cx = ox + 32, gy = oy + 62;
+    g.fillStyle = '#8d99a8';
+    g.fillRect(cx - 4, gy - 32, 8, 22);
+    g.beginPath(); g.arc(cx, gy - 36, 5, 0, 6.29); g.fill();
+    g.strokeStyle = '#7a5230'; g.lineWidth = 2.5;
+    g.beginPath(); g.moveTo(cx + 4, gy - 28); g.lineTo(cx + 12, gy - 36); g.stroke();
+    g.fillStyle = '#ffd75e'; g.fillRect(cx - 2, gy - 42, 4, 3);
+  },
+  statueLumber: (g, ox, oy) => {
+    PAINTERS._statueBase(g, ox, oy);
+    const cx = ox + 32, gy = oy + 62;
+    g.fillStyle = '#2f6b33';
+    g.fillRect(cx - 4, gy - 32, 8, 22);
+    g.beginPath(); g.arc(cx, gy - 36, 5, 0, 6.29); g.fill();
+    g.strokeStyle = '#7a5230'; g.lineWidth = 2.5;
+    g.beginPath(); g.moveTo(cx - 4, gy - 28); g.lineTo(cx - 12, gy - 38); g.stroke();
+    g.fillStyle = '#8d99a8';
+    g.beginPath(); g.moveTo(cx - 12, gy - 38); g.lineTo(cx - 6, gy - 34); g.lineTo(cx - 10, gy - 30); g.closePath(); g.fill();
+  },
+  statueSmith: (g, ox, oy) => {
+    PAINTERS._statueBase(g, ox, oy);
+    const cx = ox + 32, gy = oy + 62;
+    g.fillStyle = '#6e7683';
+    g.fillRect(cx - 4, gy - 32, 8, 22);
+    g.beginPath(); g.arc(cx, gy - 36, 5, 0, 6.29); g.fill();
+    g.strokeStyle = '#7a5230'; g.lineWidth = 2.5;
+    g.beginPath(); g.moveTo(cx + 4, gy - 28); g.lineTo(cx + 12, gy - 40); g.stroke();
+    g.fillStyle = '#3a3f47'; g.fillRect(cx + 10, gy - 42, 6, 4);
+  },
+  statueLiberty: (g, ox, oy) => {
+    PAINTERS._statueBase(g, ox, oy);
+    const cx = ox + 32, gy = oy + 62;
+    g.fillStyle = '#4fae9d';
+    g.fillRect(cx - 4, gy - 34, 8, 24);
+    g.beginPath(); g.arc(cx, gy - 38, 5, 0, 6.29); g.fill();
+    g.strokeStyle = '#4fae9d'; g.lineWidth = 2.5;
+    g.beginPath(); g.moveTo(cx + 4, gy - 30); g.lineTo(cx + 12, gy - 42); g.stroke();
+    g.fillStyle = '#ffd75e';
+    g.beginPath(); g.arc(cx + 12, gy - 44, 3, 0, 6.29); g.fill();
+  },
+  badge: (g, ox, oy) => {
+    const cx = ox + 32, gy = oy + 62;
+    g.fillStyle = '#ffd75e';
+    g.beginPath(); g.arc(cx, gy - 24, 11, 0, 6.29); g.fill();
+    g.strokeStyle = '#c98f2e'; g.lineWidth = 2;
+    g.beginPath(); g.arc(cx, gy - 24, 11, 0, 6.29); g.stroke();
+    g.beginPath(); g.arc(cx, gy - 24, 6, 0, 6.29); g.stroke();
+    g.fillStyle = '#c98f2e';
+    g.beginPath(); g.moveTo(cx, gy - 30); g.lineTo(cx + 2, gy - 26); g.lineTo(cx + 6, gy - 26);
+    g.lineTo(cx + 3, gy - 23); g.lineTo(cx + 4, gy - 19); g.lineTo(cx, gy - 21);
+    g.lineTo(cx - 4, gy - 19); g.lineTo(cx - 3, gy - 23); g.lineTo(cx - 6, gy - 26);
+    g.lineTo(cx - 2, gy - 26); g.closePath(); g.fill();
+    g.strokeStyle = '#d97b4f'; g.lineWidth = 3;
+    g.beginPath(); g.moveTo(cx - 5, gy - 14); g.lineTo(cx - 8, gy - 4); g.stroke();
+    g.beginPath(); g.moveTo(cx + 5, gy - 14); g.lineTo(cx + 8, gy - 4); g.stroke();
+  },
+  plotsign: (g, ox, oy) => {
+    const cx = ox + 32, gy = oy + 62;
+    P_shadow(g, cx, gy, 8);
+    g.fillStyle = '#7a5230'; g.fillRect(cx - 2, gy - 30, 4, 30);
+    g.fillStyle = '#ffd75e'; g.fillRect(cx - 14, gy - 42, 28, 16);
+    g.strokeStyle = '#7a5230'; g.lineWidth = 2; g.strokeRect(cx - 14, gy - 42, 28, 16);
+    g.fillStyle = '#3a2a1a'; g.font = '700 10px system-ui, sans-serif'; g.textAlign = 'center';
+    g.fillText('PLOT', cx, gy - 31);
+  },
 });

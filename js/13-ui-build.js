@@ -19,6 +19,9 @@ Object.assign(UI, {
   renderBuildItems() {
     const box = $('build-items');
     box.innerHTML = '';
+    // v35: pemakaian housing selalu terlihat di atas daftar.
+    const h = el('div', 'Housing: ' + housingUsed() + ' / ' + housingMax(), 'mp-desc');
+    box.appendChild(h);
     const cat = CATEGORIES.find((c) => c.id === buildTab);
     for (const item of cat.items) {
       const b = el('button', null, 'build-item');
@@ -27,11 +30,15 @@ Object.assign(UI, {
       label.appendChild(document.createTextNode(item.name));
       const sub = el('small');
       const locked = item.kind === 'machine' && !S.unlocked[item.id];
-      sub.textContent = locked ? 'Terkunci: riset ' + researchCostText(item.id) : item.sub;
+      // v35: patung cuma satu tiap jenis; kalau sudah ditaruh, terkunci.
+      const statuePlaced = item.kind === 'statue' && [...S.decor.values()].some((d) => d.id === item.id);
+      const housing = item.kind === 'statue' ? '' : ' · Housing ' + housingCostOf({ kind: item.kind, id: item.id });
+      sub.textContent = locked ? 'Terkunci: riset ' + researchCostText(item.id)
+        : statuePlaced ? 'Sudah ditaruh' : item.sub + housing;
       label.appendChild(sub);
       b.appendChild(label);
-      if (locked) b.classList.add('locked');
-      b.addEventListener('click', () => this.pickBuildItem(item, locked));
+      if (locked || statuePlaced) b.classList.add('locked');
+      b.addEventListener('click', () => this.pickBuildItem(item, locked || statuePlaced));
       box.appendChild(b);
     }
   },
@@ -51,6 +58,12 @@ Object.assign(UI, {
   },
   pickBuildItem(item, locked) {
     if (locked) {
+      // Patung yang sudah ditaruh bukan riset: cukup beri tahu.
+      if (item.kind === 'statue') {
+        SFX.play('error');
+        this.toast(STATUES[item.id].name + ' sudah ditaruh (satu tiap jenis).');
+        return;
+      }
       if (doResearch(item.id)) {
         SFX.play('success');
         this.toast(MACHINES[item.id].name + ' terbuka!');

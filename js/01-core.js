@@ -45,6 +45,12 @@ const S = {
   stats: { harvested: {}, crafted: {}, sold: {} },
   settings: { sound: true, ruler: true },
   keys: {},
+  // v35: perkakas (tingkat 0-3; semua dasar gratis sejak awal, seperti
+  // kapak; upgrade bronze $250, iron $1.000 ikut wiki untuk ketiganya).
+  tools: { axe: 1, shovel: 1, pickaxe: 1 },
+  badges: {},           // badgeId -> true
+  wagon: null,          // {map, gx, gy, level, horses, items:{}, riding}
+  saveSlot: 1,          // 1..4; 0 = tidak ada slot dimuat
 };
 
 const key = (gx, gy) => gx + ',' + gy;
@@ -99,6 +105,41 @@ function applyMap(name) {
   GRID_W = m.w; GRID_H = m.h;
 }
 
+// ---- v35: housing, wagon ----
+// Pemakaian housing: tiap bangunan menambah angka; patung tidak memakai.
+function housingUsed() {
+  let n = S.machines.size * HOUSING_COST.machine
+    + S.conveyors.size * HOUSING_COST.conveyor
+    + S.storages.size * HOUSING_COST.storage
+    + S.walls.size * HOUSING_COST.wall;
+  for (const d of S.decor.values()) if (!STATUES[d.id]) n += HOUSING_COST.decor;
+  return n;
+}
+// Batas housing: dasar 600 + bonus patung yang sudah ditaruh.
+function housingMax() {
+  let m = HOUSING_BASE;
+  for (const d of S.decor.values()) if (STATUES[d.id]) m += STATUES[d.id].bonus;
+  return m;
+}
+// Biaya housing satu item bangun (dipakai canPlace + confirmPlace).
+function housingCostOf(placing) {
+  if (!placing) return 0;
+  if (placing.kind === 'statue') return HOUSING_COST.statue;
+  return HOUSING_COST[placing.kind] || 0;
+}
+// Kapasitas peti wagon; wagon belum dibeli = 0.
+function wagonCap() {
+  return S.wagon ? WAGON_LEVELS[S.wagon.level - 1].cap : 0;
+}
+function wagonItemsTotal() {
+  return S.wagon ? bufferTotal(S.wagon.items) : 0;
+}
+// Pengali kecepatan saat naik wagon (kuda 0/1/2). Jalan kaki = 1x.
+function wagonSpeedMult() {
+  return S.wagon ? WAGON_SPEED_MULT[S.wagon.horses] : 1;
+}
+function isRiding() { return !!(S.wagon && S.wagon.riding); }
+
 // Pindah map: titik lahir tetap sesuai desain (masuk plot di depan
 // jalan keluar, kembali ke kota di samping jalan masuk), bukan posisi lama.
 // spawn {fx, fy} opsional: pintu keluar dan kereta mengisi titik lahirnya.
@@ -108,6 +149,11 @@ function switchMap(name, spawn) {
   applyMap(name);
   const pos = spawn || defaultSpawn(name);
   p.fx = pos.fx; p.fy = pos.fy; p.dir = pos.dir === undefined ? 3 : pos.dir;
+  // Naik wagon ikut pindah map: wagon muncul di samping pemain di map baru.
+  if (isRiding()) {
+    S.wagon.map = name;
+    S.wagon.gx = Math.floor(p.fx); S.wagon.gy = Math.floor(p.fy);
+  }
   if (typeof centerCamera === 'function' && typeof VW !== 'undefined') {
     centerCamera(VW, VH);
   }

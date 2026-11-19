@@ -78,5 +78,36 @@ Object.assign(UI, {
         body.appendChild(row);
       }
     }
+    // v35: Tool Shop jual + upgrade perkakas (kapak, sekop, pickaxe).
+    if (shopId === 'toolshop') {
+      body.appendChild(el('div', 'Perkakas (upgrade = tebang/gali/tambang lebih cepat, tanpa daya tahan):', 'mp-desc'));
+      for (const toolId of ['axe', 'shovel', 'pickaxe']) {
+        const lvl = S.tools[toolId] || 0;
+        const cost = toolNextCost(toolId);
+        const row = el('div', null, 'shop-row');
+        const left = el('span', null, 'shop-item');
+        // Ikon perkakas di atlas bernama 'axe'/'shovel'/'pickaxe' (bukan item_...).
+        try { if (Atlas.canvas) left.appendChild(Atlas.iconCanvas(toolId, 28)); } catch (_) { /* abaikan */ }
+        left.appendChild(document.createTextNode(TOOLS[toolId].name + ' — ' + TOOL_LEVEL_NAMES[lvl] + (cost === null ? '' : '  ($' + fmt(cost) + ')')));
+        row.appendChild(left);
+        const btns = el('span', null, 'shop-btns');
+        const b = el('button', cost === null ? 'Maks' : (lvl === 0 ? 'Beli' : 'Upgrade'));
+        b.disabled = cost === null || (!adminOn() && S.money < cost);
+        b.addEventListener('click', () => {
+          if (buyTool(toolId)) {
+            SFX.play('success');
+            this.toast(TOOLS[toolId].name + ' sekarang ' + TOOL_LEVEL_NAMES[S.tools[toolId]] + '!');
+          } else {
+            SFX.play('error');
+            this.toast('Uang tidak cukup.');
+          }
+          this.renderShop(shopId);
+          this.refreshHUD();
+        });
+        btns.appendChild(b);
+        row.appendChild(btns);
+        body.appendChild(row);
+      }
+    }
   },
 });

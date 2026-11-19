@@ -98,7 +98,7 @@ const UI = {
   // Satu panel dalam satu waktu: membuka panel lain menutup panel inspect/storage.
   openPanel(id) {
     ['build-menu', 'inspect-panel', 'storage-panel', 'shop-panel', 'tas-panel',
-     'burger-menu', 'admin-panel', 'settings-panel', 'help-panel', 'mayor-panel', 'train-panel'].forEach((p) => {
+     'burger-menu', 'admin-panel', 'settings-panel', 'help-panel', 'mayor-panel', 'train-panel', 'plot-panel', 'badge-panel'].forEach((p) => {
       if (p !== id) $(p).classList.add('hidden');
     });
     if (id !== 'inspect-panel' && id !== 'storage-panel') { inspectKey = null; S.selected = null; }
@@ -107,7 +107,7 @@ const UI = {
   closePanel(id) { $(id).classList.add('hidden'); },
   closeAll() {
     ['build-menu', 'inspect-panel', 'storage-panel', 'shop-panel', 'tas-panel',
-     'burger-menu', 'admin-panel', 'settings-panel', 'help-panel', 'mayor-panel', 'train-panel'].forEach((id) => this.closePanel(id));
+     'burger-menu', 'admin-panel', 'settings-panel', 'help-panel', 'mayor-panel', 'train-panel', 'plot-panel', 'badge-panel'].forEach((id) => this.closePanel(id));
     S.selected = null; inspectKey = null;
     if (S.placing) this.cancelPlacing();
   },

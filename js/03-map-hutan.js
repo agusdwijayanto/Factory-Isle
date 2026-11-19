@@ -4,6 +4,8 @@ function buildForest() {
   put(forest, [[2, 2], [5, 2], [3, 4], [6, 3], [2, 6], [4, 7], [3, 9], [5, 10], [10, 4], [11, 8]], 'tree');
   put(forest, [[11, 2], [12, 2], [13, 2], [11, 3], [12, 3]], 'cotton');
   put(forest, [[10, 7]], 'lantern');
+  // v35: pasir di tepian sungai utara (digali pakai sekop).
+  terrain(forest, [[1, 1], [15, 1]], 'sand');
   // Sungai di tepi utara: air dulu, baru jembatan dan rel menimpa air.
   terrain(forest, rng(1, 15).map((gx) => [gx, 0]), 'water');
   terrain(forest, [[8, 0]], 'bridge'); // jembatan ke gunung, satu-satunya jalan menyeberang

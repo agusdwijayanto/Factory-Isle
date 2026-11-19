@@ -34,13 +34,34 @@ function startHarvest(gx, gy) {
   const nodeKey = t.obj || t.t;
   const node = NODES[nodeKey];
   if (!node) return;
+  // v35: panen butuh perkakas yang benar; tanpa perkakas, tidak mulai.
+  const lvl = S.tools[node.tool] || 0;
+  if (lvl <= 0) {
+    TOAST('Beli ' + TOOLS[node.tool].name + ' dulu di Tool Shop.');
+    return;
+  }
   const p = S.player;
   p.tool = node.tool;
   faceTile(gx, gy);
   p.working = {
     kind: 'harvest', gx, gy, nodeKey,
-    swingsLeft: node.swings, swingT: 0,
+    swingsLeft: swingsFor(node, lvl), swingT: 0,
   };
+}
+
+// Naik/turun wagon: ketuk wagon menaikkan kalau belum naik, menurunkan
+// kalau sedang naik. Wagon parkir di petak saat turun.
+function toggleWagon() {
+  if (!S.wagon) return;
+  S.wagon.riding = !S.wagon.riding;
+  if (S.wagon.riding) {
+    const cur = playerTile();
+    S.wagon.map = S.map; S.wagon.gx = cur.gx; S.wagon.gy = cur.gy;
+    TOAST('Naik wagon — jalan lebih cepat.');
+  } else {
+    TOAST('Turun dari wagon.');
+  }
+  saveSoon();
 }
 
 function harvestTick(w) {
@@ -61,6 +82,12 @@ function harvestTick(w) {
 function updatePlayer(dt) {
   const p = S.player;
   if (p.swing > 0) p.swing -= dt;
+  // v35: naik wagon, wagon ikut petak pemain tiap tick (di awal supaya
+  // tetap ikut walau cabang jalan di bawah return duluan).
+  if (isRiding()) {
+    const cur = playerTile();
+    S.wagon.map = S.map; S.wagon.gx = cur.gx; S.wagon.gy = cur.gy;
+  }
 
   // Bekerja: ayunan berkala sampai selesai.
   if (p.working) {
@@ -93,7 +120,9 @@ function updatePlayer(dt) {
     const tx = next.gx + 0.5, ty = next.gy + 0.5;
     const dx = tx - p.fx, dy = ty - p.fy;
     const dist = Math.hypot(dx, dy);
-    const step = WALK_SPEED * dt;
+    // v35: naik wagon = jalan lebih cepat (lv2; jalan kaki lv1, kereta lv3 instan).
+    const speed = isRiding() ? WALK_SPEED * wagonSpeedMult() : WALK_SPEED;
+    const step = speed * dt;
     p.dir = dirToward(p.fx, p.fy, tx, ty);
     p.walkT += dt;
     p.frame = Math.floor(p.walkT * 6) % 3;
@@ -176,6 +205,17 @@ function updateRegrow(dt) {
 function interactAt(gx, gy) {
   const t = tileAt(gx, gy);
   const k = key(gx, gy);
+
+  // v35: ketuk wagon = naik/turun (di map mana pun wagon berada).
+  if (S.wagon && S.wagon.map === S.map && S.wagon.gx === gx && S.wagon.gy === gy) {
+    goTo(gx, gy, () => toggleWagon());
+    return;
+  }
+  // v35: tanda kuning di depan lahan membuka menu plot (save + wagon).
+  if (S.map === 'town' && t.obj === 'plotsign') {
+    goTo(gx, gy, () => UI.openPlot());
+    return;
+  }
 
   if (S.map === 'plot') {
     if (S.machines.has(k)) {

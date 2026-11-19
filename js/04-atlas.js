@@ -22,7 +22,7 @@ const Atlas = {
     this._ready = (async () => {
       let m = null;
       try {
-        const r = await fetch('assets/atlas-manifest.json?v=29');
+        const r = await fetch('assets/atlas-manifest.json?v=35');
         if (r.ok) m = await r.json();
       } catch (_) { /* file:// atau offline: pakai salinan darurat */ }
       this.manifest = m || MANIFEST_EMBEDDED;
@@ -153,5 +153,12 @@ const MANIFEST_EMBEDDED = {
     road: { col: 5, row: 13, w: 1, h: 1 }, railX: { col: 6, row: 13, w: 1, h: 1 },
     railY: { col: 7, row: 13, w: 1, h: 1 }, railStop: { col: 3, row: 7, w: 1, h: 1 },
     railBend: { col: 4, row: 7, w: 1, h: 1 },
+    // v35: sel kosong baris 8-9 (baris 8: Piano di kolom 3; baris 9: bekas
+    // baris player habis di baris 9, kolom 3-7 kosong).
+    wagon: { col: 4, row: 8, w: 1, h: 1 },
+    statueLion: { col: 5, row: 8, w: 1, h: 1 }, statueMiner: { col: 6, row: 8, w: 1, h: 1 },
+    statueLumber: { col: 7, row: 8, w: 1, h: 1 },
+    statueSmith: { col: 3, row: 9, w: 1, h: 1 }, statueLiberty: { col: 4, row: 9, w: 1, h: 1 },
+    badge: { col: 5, row: 9, w: 1, h: 1 }, plotsign: { col: 6, row: 9, w: 1, h: 1 },
   },
 };

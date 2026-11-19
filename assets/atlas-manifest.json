@@ -544,6 +544,54 @@
       "h": 1,
       "row": 12,
       "w": 1
+    },
+    "wagon": {
+      "col": 4,
+      "h": 1,
+      "row": 8,
+      "w": 1
+    },
+    "statueLion": {
+      "col": 5,
+      "h": 1,
+      "row": 8,
+      "w": 1
+    },
+    "statueMiner": {
+      "col": 6,
+      "h": 1,
+      "row": 8,
+      "w": 1
+    },
+    "statueLumber": {
+      "col": 7,
+      "h": 1,
+      "row": 8,
+      "w": 1
+    },
+    "statueSmith": {
+      "col": 3,
+      "h": 1,
+      "row": 9,
+      "w": 1
+    },
+    "statueLiberty": {
+      "col": 4,
+      "h": 1,
+      "row": 9,
+      "w": 1
+    },
+    "badge": {
+      "col": 5,
+      "h": 1,
+      "row": 9,
+      "w": 1
+    },
+    "plotsign": {
+      "col": 6,
+      "h": 1,
+      "row": 9,
+      "w": 1
     }
   }
 }

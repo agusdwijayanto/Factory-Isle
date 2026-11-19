@@ -8,6 +8,9 @@ function buildMountain() {
   put(mountain, [[10, 2], [12, 3], [11, 4], [13, 2], [10, 5]], 'oreIron');
   put(mountain, [[12, 6], [13, 7], [11, 7]], 'oreCopper');
   put(mountain, [[9, 8], [10, 9], [12, 9]], 'oreTin');
+  // v35: dua bijih tambahan (ditambang pakai pickaxe).
+  put(mountain, [[9, 3]], 'oreIron');
+  put(mountain, [[12, 8]], 'oreCopper');
   put(mountain, [[9, 6]], 'lantern');
   // Peron mengapit rel: rel dari bawah berhenti di peron (terminus),
   // tidak tembus ke atas — tidak ada map di utara gunung. Kereta di (7,9).

@@ -129,6 +129,10 @@ function render() {
         Atlas.draw(ctx, d.id, x, y + 6 * z, z);
         if (GLOWS[d.id]) { const [dx, dy, r, a] = GLOWS[d.id]; glows.push({ x: x + dx * z, y: y + dy * z, r: r * z, a }); }
       }
+      // v35: wagon digambar di petaknya (ikut pemain saat ditunggangi).
+      if (S.wagon && S.wagon.map === S.map && S.wagon.gx === gx && S.wagon.gy === gy) {
+        Atlas.draw(ctx, 'wagon', x, y + 6 * z, z);
+      }
       ctx.restore();
     }
     if (!playerDrawn && s >= playerS) { paintPlayer(); playerDrawn = true; }
@@ -201,6 +205,7 @@ function render() {
 }
 
 // Aturan taruh: hanya di plot, rumput kosong; gerbang tidak boleh ditutup.
+// v35: housing penuh juga menolak (pindah tidak menambah housing).
 function canPlace(gx, gy, placing) {
   if (S.map !== 'plot') return false;
   const t = tileAt(gx, gy);
@@ -209,6 +214,7 @@ function canPlace(gx, gy, placing) {
   if (gx === g.gx && gy === g.gy) return false;
   const k = key(gx, gy);
   if (S.machines.has(k) || S.storages.has(k) || S.walls.has(k) || S.decor.has(k) || S.conveyors.has(k)) return false;
+  if (placing && !placing.fromKey && !adminOn() && housingUsed() + housingCostOf(placing) > housingMax()) return false;
   if (placing && placing.kind === 'conveyor') return t.t === 'grass';
   return t.t === 'grass';
 }
