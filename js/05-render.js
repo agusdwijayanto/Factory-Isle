@@ -164,9 +164,12 @@ function render() {
     ctx.strokeStyle = '#7fb8ff'; ctx.lineWidth = 2.5; ctx.stroke();
   }
 
-  if (S.placing && S.hover && inGrid(S.hover.gx, S.hover.gy)) {
-    const { x, y } = tileCenter(S.hover.gx, S.hover.gy, S.cam);
-    const ok = canPlace(S.hover.gx, S.hover.gy, S.placing);
+  // Bayangan di petak yang DIPILIH (placeSpot); kalau belum dipilih, ikut hover.
+  // placeSpot menang supaya di HP yang tidak ada hover pun bayangan kelihatan.
+  const gp = S.placing && (S.placeSpot || S.hover);
+  if (gp && inGrid(gp.gx, gp.gy)) {
+    const { x, y } = tileCenter(gp.gx, gp.gy, S.cam);
+    const ok = canPlace(gp.gx, gp.gy, S.placing);
     diamondPath(x, y, TILE_W * z, TILE_H * z);
     ctx.fillStyle = ok ? 'rgba(94,255,138,0.25)' : 'rgba(255,80,80,0.25)'; ctx.fill();
     ctx.strokeStyle = ok ? '#5eff8a' : '#ff5050'; ctx.lineWidth = 2; ctx.stroke();

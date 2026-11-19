@@ -8,6 +8,8 @@ $('btn-build').addEventListener('click', () => {
 });
 $('btn-tas').addEventListener('click', () => UI.openTas());
 $('btn-rotate').addEventListener('click', () => { S.placeDir = (S.placeDir + 1) % 4; });
+$('btn-place-cancel').addEventListener('click', () => UI.cancelPlacing());
+$('btn-place-ok').addEventListener('click', () => confirmPlace());
 $('btn-burger').addEventListener('click', () => {
   const m = $('burger-menu');
   if (m.classList.contains('hidden')) UI.openPanel('burger-menu');

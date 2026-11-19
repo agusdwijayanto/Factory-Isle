@@ -89,9 +89,12 @@ Object.assign(UI, {
       ['Pindah', () => {
         S.placing = { kind: 'machine', id: m.id, fromKey: inspectKey };
         S.placeDir = m.dir;
+        S.placeSpot = null;
         this.closeMachine();
         $('btn-rotate').classList.remove('hidden');
-        this.setHint('Ketuk petak baru untuk ' + MACHINES[m.id].name + '.');
+        $('btn-place-cancel').classList.remove('hidden');
+        $('btn-place-ok').classList.remove('hidden');
+        this.setHint('Ketuk petak baru untuk ' + MACHINES[m.id].name + '. Centang pindah, X batal, PUTAR arah.');
       }],
       ['Hapus', () => {
         ejectMachine(m);

@@ -66,11 +66,15 @@ cv.addEventListener('wheel', (e) => {
 function handleTap(sx, sy) {
   const g = screenToGrid(sx, sy, S.cam);
   if (!inGrid(g.gx, g.gy)) { UI.closeAll(); return; }
-  if (S.placing) { tryPlace(g.gx, g.gy); return; }
+  // Saat menaruh, ketuk cuma memilih petak bayangan; centang baru taro.
+  if (S.placing) { S.placeSpot = { gx: g.gx, gy: g.gy }; return; }
   interactAt(g.gx, g.gy);
 }
 
-function tryPlace(gx, gy) {
+// Taruh di petak bayangan yang dipilih. Tanpa petak dipilih tidak berbuat apa-apa.
+function confirmPlace() {
+  if (!S.placing || !S.placeSpot) return;
+  const gx = S.placeSpot.gx, gy = S.placeSpot.gy;
   const p = S.placing;
   if (S.map !== 'plot') { SFX.play('error'); UI.toast('Bangun hanya di lahanmu. Masuk lewat kotak plot.'); return; }
   if (!canPlace(gx, gy, p)) { SFX.play('error'); UI.toast('Tidak bisa ditaruh di sini'); return; }
@@ -81,6 +85,7 @@ function tryPlace(gx, gy) {
   SFX.play('place');
   addFloater(gx, gy, 'Terpasang!', '#5eff8a');
   UI.refreshHUD();
+  S.placeSpot = null;
   // Rantai conveyor/dinding/dekor: tetap mode taruh supaya bisa lanjut.
   if (p.kind === 'machine' || p.kind === 'storage' || p.fromKey) UI.cancelPlacing();
 }

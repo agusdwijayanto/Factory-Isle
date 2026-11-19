@@ -182,8 +182,16 @@ Tes: headless 190/190, Playwright 115/115, nol error konsol. Versi aset: ?v=25.
 
 Tes: headless 194/194, Playwright 116/116, nol error konsol. Versi aset: ?v=26.
 
+## Sudah live — v27 (19 Nov 2026)
+
+- [x] Alur bangun baru di lahan (perintah Agus): ketuk petak cuma menempelkan bayangan, belum taro. Tiga tombol tampil selama mode menaruh: X (batal, merah), PUTAR (arah, sudah ada), centang ✓ (baru taro di petak bayangan, hijau). Ketuk petak lain memindahkan bayangan; centang tanpa petak dipilih tidak berbuat apa-apa; centang di petak yang tidak bisa ditaruh tetap ditolak dengan pesan yang sama; Esc tetap batal. Bayangan digambar di petak yang dipilih (bukan cuma hover) supaya kelihatan di HP. Sesudah taro mesin/storage mode selesai; conveyor tetap berantai (bayangan kosong lagi sesudah centang). Pindah mesin dari panel inspect ikut alur baru yang sama. (`S.placeSpot` di `js/01-core.js`; `handleTap`/`confirmPlace` di `js/06-input.js`; bayangan di `js/05-render.js`; tombol di `index.html` + `style.css` + `js/13-ui.js`; `pickBuildItem`/`cancelPlacing` di `js/13-ui-build.js`; alur Pindah di `js/13-ui-inspect.js`.)
+- [x] Spawn Kota -> Gunung pindah lagi (tambahan Agus, dilipat ke v27): dari (15,10) ke (14,10) = Agus (2,15), satu petak di barat pintu Gunung -> Kota, masih di atas jalan (`MAP_EXITS` di `js/03-data-items.js`, entri jembatan kota (8,0)). Jembatan kota (8,0) tidak diubah; diam di (14,10) tetap di Gunung, injak pintu (15,10) tetap pindah ke Kota lahir (8,1).
+- [x] Tes regresi baru: headless dan Playwright menegaskan ketuk petak cuma bayangan, centang menaruh, X/Escape batal tanpa menaruh, PUTAR memutar arah, ketuk petak lain memindah bayangan, centang di gerbang ditolak, conveyor tetap berantai, pindah mesin ikut alur baru, dan spawn baru (14,10) = Agus (2,15). Cek lama yang mengunci ketuk-langsung-taro dan spawn (15,10) diperbaiki.
+
+Tes: headless 205/205, Playwright 127/127, nol error konsol. Versi aset: ?v=27.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v26.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v27.

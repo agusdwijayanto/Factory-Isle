@@ -56,13 +56,19 @@ Object.assign(UI, {
     }
     S.placing = { kind: item.kind, id: item.id };
     S.placeDir = 0;
+    S.placeSpot = null;
     this.closePanel('build-menu');
     $('btn-rotate').classList.remove('hidden');
-    this.setHint('Ketuk petak rumput kosong untuk menaruh ' + item.name + '. PUTAR untuk arah, Esc batal.');
+    $('btn-place-cancel').classList.remove('hidden');
+    $('btn-place-ok').classList.remove('hidden');
+    this.setHint('Ketuk petak rumput kosong untuk bayangan ' + item.name + '. Centang menaruh, X batal, PUTAR arah.');
   },
   cancelPlacing() {
     S.placing = null;
+    S.placeSpot = null;
     $('btn-rotate').classList.add('hidden');
+    $('btn-place-cancel').classList.add('hidden');
+    $('btn-place-ok').classList.add('hidden');
     this.setHint(HINT_HOME);
   },
 });

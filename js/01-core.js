@@ -13,6 +13,7 @@ const S = {
   hover: null,       // {gx, gy} petak di bawah kursor
   selected: null,    // "gx,gy" petak yang panelnya terbuka
   placing: null,     // {kind:'machine'|'conveyor'|'storage'|'wall'|'decor', id, fromKey?}
+  placeSpot: null,  // {gx, gy} petak bayangan yang dipilih saat menaruh; centang baru taro
   placeDir: 0,
   floaters: [],      // {gx, gy, text, color, born, map} map asal: hanya tampil di map itu
   pulses: new Map(), // "gx,gy" -> born, denyut saat diketuk

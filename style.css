@@ -164,11 +164,13 @@ button { font: inherit; color: inherit; cursor: pointer; }
   flex: none; min-height: 30px; padding: 0 10px; border-radius: 6px;
   background: #3a2a1e; border: 1px solid #8a5a33; font-size: 12px;
 }
-#btn-tas, #btn-rotate {
+#btn-tas, #btn-rotate, #btn-place-cancel, #btn-place-ok {
   min-height: 48px; padding: 0 14px; border-radius: 10px;
   background: rgba(16, 12, 26, .92); border: 2px solid #8a5a33; font-weight: 700;
 }
 #btn-rotate { border-color: #ffd75e; color: #ffd75e; }
+#btn-place-cancel { border-color: #ff8a8a; color: #ff8a8a; }
+#btn-place-ok { border-color: #5eff8a; color: #5eff8a; }
 
 #toast {
   position: fixed; left: 50%; bottom: 170px; transform: translateX(-50%); z-index: 30;
