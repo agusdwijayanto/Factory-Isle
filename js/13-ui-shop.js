@@ -64,7 +64,7 @@ Object.assign(UI, {
             const bought = buyItem(shopId, id, n);
             if (bought > 0) {
               SFX.play('coin');
-              this.toast('Terbeli ' + bought + ' ' + ITEMS[id].name + ' (-$' + fmt(price * bought) + ')');
+              this.toast('Terbeli ' + bought + ' ' + ITEMS[id].name + ' (-$' + fmt(adminOn() ? 0 : price * bought) + ')');
             } else {
               SFX.play('error');
               this.toast('Uang tidak cukup.');

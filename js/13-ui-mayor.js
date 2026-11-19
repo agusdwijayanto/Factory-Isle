@@ -17,7 +17,7 @@ Object.assign(UI, {
       const row = el('div', null, 'mayor-row');
       row.appendChild(el('span', (done ? '✓ ' : '') + ex.name + ' — ' + ex.w + 'x' + ex.h + ' ($' + fmt(ex.cost) + ')'));
       const b = el('button', done ? 'Terbeli' : 'Beli');
-      b.disabled = done || i !== S.expansion || S.money < ex.cost;
+      b.disabled = done || i !== S.expansion || (!adminOn() && S.money < ex.cost);
       b.addEventListener('click', () => {
         if (buyExpansion()) {
           SFX.play('success');

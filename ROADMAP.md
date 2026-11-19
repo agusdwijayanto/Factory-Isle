@@ -222,8 +222,17 @@ Tes: headless 259/259, Playwright 145/145, nol error konsol. Versi aset: ?v=29.
 
 Tes: headless 265/265, Playwright 145/145, nol error konsol. Versi aset: ?v=30.
 
+## Sudah live — v31 (19 Nov 2026)
+
+- [x] Mode Admin jadi saklar on/off (perintah Agus, disetujui "betulll"): tombol "Mode Admin: OFF/ON" di bagian atas panel Admin, keadaan tersimpan di save (tetap on sesudah reload). Lima tombol Admin lama tetap ada dan tetap jalan. (`index.html`, `style.css`, `js/13-ui.js`, `js/12-simpan.js`.)
+- [x] Saat Mode Admin ON: duit infinite (belanja/riset/bangun/ekspansi tidak mengurangi uang, S.money tidak diubah, HUD menampilkan ∞); semua bangun terbuka (semua mesin + resep tanpa riset); bahan baku infinite (crafting tidak mengurangi buffer input mesin, deposit menyalin bahan tanpa mengurangi tas); crafting instan (crafting baru langsung selesai di tick yang sama); ekspansi lahan langsung maks (24x16). Mesin tanpa resep tidak berubah perilakunya. (`js/01-core.js`, `js/11-ekonomi.js`, `js/10-resep.js`, `js/09-mesin.js`, `js/06-input.js`, `js/13-ui-inspect.js`, `js/13-ui-shop.js`, `js/13-ui-mayor.js`, `js/13-ui-core.js`.)
+- [x] Saat Mode Admin OFF: aturan normal kembali (uang, material, dan waktu crafting berkurang lagi). Yang sudah didapat saat on TETAP: uang di angka aslinya, mesin yang terbuka tetap terbuka, ekspansi lahan tetap di maks (tidak dikecilkan lagi).
+- [x] Tes regresi baru: headless memeriksa saklar default OFF, ON membuka semua mesin + lahan maks, beli/riset/bangun tanpa uang, crafting instan tanpa mengurangi bahan (Log yang sama mengolah dua kali), crafting jalan walau input kosong, OFF aturan normal kembali, yang didapat saat on tetap, simpan memuat mode admin ON; Playwright memeriksa saklar lewat UI, HUD ∞, deposit menyalin bahan (tas tetap 5 Log), OFF kembali normal, dan mode tersimpan sesudah reload (ON tetap ON, OFF tetap OFF).
+
+Tes: headless 280/280, Playwright 152/152, nol error konsol. Versi aset: ?v=31.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v30.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v31.

@@ -16,7 +16,7 @@ function updateMachines(dt) {
     const [gx, gy] = k.split(',').map(Number);
     if (m.id === 'treeGen' || m.id === 'harvester') { updateAutoMachine(m, gx, gy, dt); continue; }
     if (m.progress <= 0) {
-      if (canStart(m)) { consumeInputs(m); m.progress = 0.001; }
+      if (canStart(m)) { consumeInputs(m); m.progress = adminOn() ? 1 : 0.001; } // Mode Admin: crafting instan
       else continue;
     }
     const r = getRecipe(m);

@@ -87,4 +87,11 @@ document.querySelectorAll('#admin-panel [data-admin]').forEach((b) => {
     saveSoon();
   });
 });
+// Saklar Mode Admin (on/off). Efeknya di setAdminMode (11-ekonomi.js);
+// tombol lama di atas tetap ada dan tetap jalan.
+$('admin-toggle').addEventListener('click', () => {
+  setAdminMode(!S.admin);
+  SFX.play('success');
+  UI.refreshHUD();
+});
 TOAST = (msg) => UI.toast(msg);

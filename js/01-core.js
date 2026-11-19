@@ -24,6 +24,7 @@ const S = {
   maps: {},          // nama map -> {w, h, grid}; grid non-aktif disimpan di sini
   expansion: 0,      // 0..4, tingkat ekspansi plot lewat Mayor
   autoSeller: false,
+  admin: false,      // Mode Admin: saklar on/off (duit/bahan infinite, riset terbuka, crafting instan)
   autoSellerT: 0,
   // Bangunan hanya ada di plot; koleksi ini selalu milik plot walau pemain di kota.
   machines: new Map(),   // "gx,gy" -> {id, dir, recipe, input:{}, output:{}, progress, stopped}
@@ -48,6 +49,10 @@ const S = {
 
 const key = (gx, gy) => gx + ',' + gy;
 const inGrid = (gx, gy) => gx >= 0 && gy >= 0 && gx < GRID_W && gy < GRID_H;
+
+// Mode Admin hidup atau tidak. Satu-satunya gerbang: semua titik yang
+// menghemat uang/bahan/waktu saat mode on memeriksa ini.
+function adminOn() { return !!S.admin; }
 
 // Label penggaris x/z Agus (1-based, nol di pojok kiri bawah map):
 // x naik ke atas, z naik ke kanan bawah. Pakai GRID_H hidup supaya

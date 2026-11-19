@@ -38,9 +38,10 @@ function buyItem(shopId, id, qty) {
   const shop = SHOPS[shopId];
   const price = shop && shop.buy ? shop.buy[id] : undefined;
   if (price === undefined) return 0;
-  const n = Math.max(0, Math.min(qty, Math.floor(S.money / price)));
+  // Mode Admin: duit infinite — beli berapa pun tanpa potong uang.
+  const n = adminOn() ? qty : Math.max(0, Math.min(qty, Math.floor(S.money / price)));
   if (n <= 0) return 0;
-  S.money -= price * n;
+  if (!adminOn()) S.money -= price * n;
   invAdd(id, n);
   saveSoon();
   return n;
@@ -74,6 +75,7 @@ function researchCostText(id) {
 function canResearch(id) {
   if (S.unlocked[id]) return false;
   const r = MACHINES[id].research;
+  if (adminOn()) return true; // bahan + duit infinite
   if (!r) return true;
   if (S.money < r.money) return false;
   if (r.items && !Object.entries(r.items).every(([i, n]) => invCount(i) >= n)) return false;
@@ -83,7 +85,7 @@ function canResearch(id) {
 function doResearch(id) {
   if (!canResearch(id)) return false;
   const r = MACHINES[id].research;
-  if (r) {
+  if (r && !adminOn()) {
     S.money -= r.money;
     if (r.items) for (const [i, n] of Object.entries(r.items)) invAdd(i, -n);
   }
@@ -99,8 +101,8 @@ function nextExpansion() {
 
 function buyExpansion() {
   const e = nextExpansion();
-  if (!e || S.money < e.cost) return false;
-  S.money -= e.cost;
+  if (!e || (!adminOn() && S.money < e.cost)) return false;
+  if (!adminOn()) S.money -= e.cost;
   S.expansion++;
   expandPlotGrid(e.w, e.h);
   saveSoon();
@@ -108,15 +110,43 @@ function buyExpansion() {
 }
 
 function canBuyAutoSeller() {
-  return !S.autoSeller && S.expansion >= EXPANSIONS.length && S.money >= AUTO_SELLER_COST;
+  return !S.autoSeller && S.expansion >= EXPANSIONS.length && (adminOn() || S.money >= AUTO_SELLER_COST);
 }
 
 function buyAutoSeller() {
   if (!canBuyAutoSeller()) return false;
-  S.money -= AUTO_SELLER_COST;
+  if (!adminOn()) S.money -= AUTO_SELLER_COST;
   S.autoSeller = true;
   saveSoon();
   return true;
+}
+
+// Mode Admin: saklar on/off. ON: buka semua mesin + lahan maks.
+// Duit/bahan infinite dan crafting instan ditegakkan di titik pakainya
+// (buyItem/doResearch/confirmPlace/consumeInputs/updateMachines),
+// bukan di sini, supaya tiap titik tetap terbaca sendiri.
+// OFF: aturan normal kembali; yang sudah didapat saat on TETAP
+// (uang di angka aslinya, mesin tetap terbuka, lahan tetap maks).
+function setAdminMode(on) {
+  S.admin = !!on;
+  if (S.admin) {
+    Object.keys(MACHINES).forEach((id) => { S.unlocked[id] = true; });
+    applyMaxExpansion();
+    TOAST('Mode Admin ON: duit, bahan, dan riset infinite');
+  } else {
+    TOAST('Mode Admin OFF: aturan normal kembali');
+  }
+  saveSoon();
+}
+
+// Ekspansi lahan sampai maks tanpa bayar (dipakai Mode Admin ON).
+function applyMaxExpansion() {
+  let e;
+  while ((e = nextExpansion())) {
+    S.expansion++;
+    expandPlotGrid(e.w, e.h);
+  }
+  saveSoon();
 }
 
 // Auto Seller: tiap beberapa detik menjual isi output mesin dan storage

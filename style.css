@@ -47,12 +47,14 @@ button { font: inherit; color: inherit; cursor: pointer; }
   min-width: 36px; min-height: 36px; border-radius: 8px;
   background: #3a2a1e; border: 1px solid #e07b39; font-weight: 700;
 }
-.panel button[data-act], #admin-panel button[data-admin] {
+.panel button[data-act], #admin-panel button[data-admin], #admin-toggle {
   display: block; width: 100%; text-align: left;
   min-height: 44px; margin-top: 8px; padding: 0 12px; border-radius: 8px;
   background: #2a1f16; border: 1px solid #8a5a33;
 }
-.panel button[data-act]:active, #admin-panel button[data-admin]:active { background: #4a3220; }
+.panel button[data-act]:active, #admin-panel button[data-admin]:active, #admin-toggle:active { background: #4a3220; }
+/* Saklar Mode Admin ON: emas, supaya keadaan langsung kelihatan. */
+#admin-toggle.on { background: #5a3a12; border-color: #ffd75e; color: #ffd75e; font-weight: 700; }
 
 #burger-menu { top: 60px; left: 10px; width: 230px; }
 #burger-menu button:first-of-type { margin-top: 10px; }

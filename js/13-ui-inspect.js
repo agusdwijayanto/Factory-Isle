@@ -168,7 +168,7 @@ function depositTo(m) {
   for (const [id] of Object.entries(r.in)) {
     const take = invCount(id);
     if (take <= 0) continue;
-    invAdd(id, -take);
+    if (!adminOn()) invAdd(id, -take); // Mode Admin: bahan disalin, tas tidak berkurang
     m.input[id] = (m.input[id] || 0) + take;
     moved.push(ITEMS[id].name + ' ' + take);
   }
@@ -176,6 +176,9 @@ function depositTo(m) {
     SFX.play('place');
     UI.toast('Bahan masuk: ' + moved.join(', ') + missingNote(m));
     UI.refreshHUD();
+  } else if (adminOn()) {
+    SFX.play('place');
+    UI.toast('Mode Admin: bahan infinite, mesin jalan tanpa deposit');
   } else {
     SFX.play('error');
     UI.toast('Tidak ada bahan resep ini di tas');

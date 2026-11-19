@@ -17,7 +17,7 @@ function saveGame() {
     for (const [name, m] of Object.entries(S.maps)) maps[name] = { w: m.w, h: m.h, nodes: flatNodes(m.grid) };
     const data = {
       v: 2, money: S.money, inv: S.inv, unlocked: S.unlocked,
-      map: S.map, expansion: S.expansion, autoSeller: S.autoSeller,
+      map: S.map, expansion: S.expansion, autoSeller: S.autoSeller, admin: S.admin,
       machines: [...S.machines], conveyors: [...S.conveyors],
       storages: [...S.storages], walls: [...S.walls], decor: [...S.decor],
       player: { fx: S.player.fx, fy: S.player.fy, dir: S.player.dir },
@@ -49,6 +49,7 @@ function loadGame() {
   S.unlocked = data.unlocked || { sawhorse: true, splitter: true };
   S.expansion = data.expansion || 0;
   S.autoSeller = !!data.autoSeller;
+  S.admin = !!data.admin; // simpan lama tanpa kunci admin = OFF
   S.machines = new Map(data.machines || []);
   S.conveyors = new Map(data.conveyors || []);
   S.storages = new Map(data.storages || []);

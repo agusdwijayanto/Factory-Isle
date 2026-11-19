@@ -12,6 +12,7 @@ function bufferTotal(buf) {
 function inputsOk(m) {
   const r = getRecipe(m);
   if (!r) return false;
+  if (adminOn()) return true; // bahan baku infinite: mesin selalu punya bahan
   return Object.entries(r.in).every(([id, n]) => (m.input[id] || 0) >= n);
 }
 
@@ -32,6 +33,7 @@ function canStart(m) {
 }
 
 function consumeInputs(m) {
+  if (adminOn()) return; // bahan baku infinite: crafting tidak mengurangi apa-apa
   const r = getRecipe(m);
   for (const [id, n] of Object.entries(r.in)) {
     m.input[id] -= n;

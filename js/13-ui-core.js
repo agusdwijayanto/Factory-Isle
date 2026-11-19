@@ -81,7 +81,10 @@ const UI = {
   setHint(text) { $('hint').textContent = text; },
 
   refreshHUD() {
-    $('money').textContent = '$' + fmt(S.money);
+    $('money').textContent = adminOn() ? '∞' : '$' + fmt(S.money);
+    // Label saklar Mode Admin ikut keadaan (refreshHUD dipanggil tiap aksi).
+    const at = $('admin-toggle');
+    if (at) { at.textContent = adminOn() ? 'Mode Admin: ON' : 'Mode Admin: OFF'; at.classList.toggle('on', adminOn()); }
     $('mapname').textContent = MAP_NAMES[S.map] || 'Kota';
     $('btn-tas').textContent = 'TAS (' + carriedTotal() + ')';
     // Bangun hanya di lahan: tombol disembunyikan di kota.
