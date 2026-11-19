@@ -165,9 +165,19 @@ button { font: inherit; color: inherit; cursor: pointer; }
   background: #2a1f16; border: 1px solid #8a5a33;
 }
 .help-text p { font-size: 14px; line-height: 1.5; margin-bottom: 10px; color: #e8d9bd; }
-#btn-tas, #btn-rotate, #btn-place-cancel, #btn-place-ok {
+#btn-tas {
   min-height: 48px; padding: 0 14px; border-radius: 10px;
   background: rgba(16, 12, 26, .92); border: 2px solid #8a5a33; font-weight: 700;
+}
+/* Klaster tombol taruh melayang (v34): bulat, di dekat bayangan, bukan di bar bawah. */
+#place-btns {
+  position: fixed; left: -9999px; top: -9999px; z-index: 30;
+  display: flex; gap: 8px;
+}
+#place-btns button {
+  width: 44px; height: 44px; min-height: 44px; padding: 0; border-radius: 50%;
+  background: rgba(16, 12, 26, .92); border: 2px solid #8a5a33;
+  font-weight: 700; font-size: 20px;
 }
 #btn-rotate { border-color: #ffd75e; color: #ffd75e; }
 #btn-place-cancel { border-color: #ff8a8a; color: #ff8a8a; }

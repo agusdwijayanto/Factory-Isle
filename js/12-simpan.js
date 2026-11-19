@@ -77,7 +77,12 @@ function loadGame() {
     || S.maps.town.grid[7][1].obj !== 'lantern');
   const forestStale = S.maps.forest && (S.maps.forest.grid[9][14].obj !== 'train' || S.maps.forest.grid[0][8].t !== 'bridge');
   const mountainStale = S.maps.mountain && S.maps.mountain.grid[5][1].t !== 'water';
-  const plotStale = S.maps.plot && (S.maps.plot.grid[11][8].t !== 'road' || S.maps.plot.grid[10][8].t !== 'grass');
+  // Jalan keluar harus satu-satunya petak jalan, tepat di gerbang (8, h-1).
+  // Simpan lama hasil ekspansi anchoring kiri-atas punya jalan ketinggalan
+  // di (8,11) sementara gerbangnya sudah di bawahnya.
+  const pg = S.maps.plot ? gatePos() : null;
+  const plotStale = S.maps.plot && (S.maps.plot.grid[pg.gy][pg.gx].t !== 'road'
+    || S.maps.plot.grid.flat().filter((t) => t.t === 'road').length !== 1);
   if (townStale || forestStale || mountainStale) {
     const sm = buildStaticMaps();
     for (const [name, m] of Object.entries(sm)) S.maps[name] = m;
@@ -85,10 +90,11 @@ function loadGame() {
   if (plotStale) {
     // Lahan: petak keluar jadi jalan, sisanya rumput — di ukuran lahan
     // saat ini (ekspansi ikut terjaga), supaya jalan keluar tetap di
-    // tengah tepi bawah yang baru.
+    // gerbang (8, h-1) = Agus (1,9).
     const m = S.maps.plot;
     const g = makeGrid(m.w, m.h);
-    roadAt(g, [[Math.floor(m.w / 2), m.h - 1]]);
+    const gp = gatePos();
+    roadAt(g, [[gp.gx, gp.gy]]);
     S.maps.plot = { w: m.w, h: m.h, grid: g };
   }
   applyMap(S.maps[data.map] ? data.map : 'town');

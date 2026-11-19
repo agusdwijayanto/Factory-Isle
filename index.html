@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Indotopia — Tycoon Pabrik Isometrik</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="style.css?v=33">
+<link rel="stylesheet" href="style.css?v=34">
 </head>
 <body>
 <canvas id="game"></canvas>
@@ -27,12 +27,15 @@
 <div id="hint">Ketuk petak untuk berjalan. Ketuk pohon, bijih, atau mesin untuk bekerja.</div>
 
 <footer id="buildbar">
-  <button id="btn-place-cancel" class="hidden">X</button>
-  <button id="btn-rotate" class="hidden">PUTAR</button>
-  <button id="btn-place-ok" class="hidden">✓</button>
   <button id="btn-tas">TAS (0)</button>
   <button id="btn-build">BANGUN</button>
 </footer>
+
+<div id="place-btns">
+  <button id="btn-place-cancel" class="hidden">X</button>
+  <button id="btn-rotate" class="hidden">↻</button>
+  <button id="btn-place-ok" class="hidden">✓</button>
+</div>
 
 <section id="build-menu" class="panel hidden">
   <div class="panel-head">
@@ -145,45 +148,45 @@
   </div>
 </section>
 
-<script src="js/01-core.js?v=33"></script>
-<script src="js/02-iso.js?v=33"></script>
-<script src="js/03-data-items.js?v=33"></script>
-<script src="js/03-data-tutorial.js?v=33"></script>
-<script src="js/03-data-maps.js?v=33"></script>
-<script src="js/03-map-kota.js?v=33"></script>
-<script src="js/03-map-hutan.js?v=33"></script>
-<script src="js/03-map-gunung.js?v=33"></script>
-<script src="js/03-map-pelabuhan.js?v=33"></script>
-<script src="js/03-map-lahan.js?v=33"></script>
-<script src="js/04-atlas.js?v=33"></script>
-<script src="js/05-render-core.js?v=33"></script>
-<script src="js/05-paint-helpers.js?v=33"></script>
-<script src="js/05-paint-tanah.js?v=33"></script>
-<script src="js/05-paint-node.js?v=33"></script>
-<script src="js/05-paint-mesin.js?v=33"></script>
-<script src="js/05-paint-alat.js?v=33"></script>
-<script src="js/05-paint-tempat.js?v=33"></script>
-<script src="js/05-paint-pemain.js?v=33"></script>
-<script src="js/05-paint-item.js?v=33"></script>
-<script src="js/05-render-overlay.js?v=33"></script>
-<script src="js/05-render.js?v=33"></script>
-<script src="js/06-input.js?v=33"></script>
-<script src="js/07-pemain.js?v=33"></script>
-<script src="js/08-gerak.js?v=33"></script>
-<script src="js/09-mesin.js?v=33"></script>
-<script src="js/10-resep.js?v=33"></script>
-<script src="js/11-ekonomi.js?v=33"></script>
-<script src="js/12-simpan.js?v=33"></script>
-<script src="js/13-ui-core.js?v=33"></script>
-<script src="js/13-ui-build.js?v=33"></script>
-<script src="js/13-ui-inspect.js?v=33"></script>
-<script src="js/13-ui-storage.js?v=33"></script>
-<script src="js/13-ui-shop.js?v=33"></script>
-<script src="js/13-ui-train.js?v=33"></script>
-<script src="js/13-ui-tas.js?v=33"></script>
-<script src="js/13-ui-mayor.js?v=33"></script>
-<script src="js/13-ui-tick.js?v=33"></script>
-<script src="js/13-ui.js?v=33"></script>
-<script src="js/14-main.js?v=33"></script>
+<script src="js/01-core.js?v=34"></script>
+<script src="js/02-iso.js?v=34"></script>
+<script src="js/03-data-items.js?v=34"></script>
+<script src="js/03-data-tutorial.js?v=34"></script>
+<script src="js/03-data-maps.js?v=34"></script>
+<script src="js/03-map-kota.js?v=34"></script>
+<script src="js/03-map-hutan.js?v=34"></script>
+<script src="js/03-map-gunung.js?v=34"></script>
+<script src="js/03-map-pelabuhan.js?v=34"></script>
+<script src="js/03-map-lahan.js?v=34"></script>
+<script src="js/04-atlas.js?v=34"></script>
+<script src="js/05-render-core.js?v=34"></script>
+<script src="js/05-paint-helpers.js?v=34"></script>
+<script src="js/05-paint-tanah.js?v=34"></script>
+<script src="js/05-paint-node.js?v=34"></script>
+<script src="js/05-paint-mesin.js?v=34"></script>
+<script src="js/05-paint-alat.js?v=34"></script>
+<script src="js/05-paint-tempat.js?v=34"></script>
+<script src="js/05-paint-pemain.js?v=34"></script>
+<script src="js/05-paint-item.js?v=34"></script>
+<script src="js/05-render-overlay.js?v=34"></script>
+<script src="js/05-render.js?v=34"></script>
+<script src="js/06-input.js?v=34"></script>
+<script src="js/07-pemain.js?v=34"></script>
+<script src="js/08-gerak.js?v=34"></script>
+<script src="js/09-mesin.js?v=34"></script>
+<script src="js/10-resep.js?v=34"></script>
+<script src="js/11-ekonomi.js?v=34"></script>
+<script src="js/12-simpan.js?v=34"></script>
+<script src="js/13-ui-core.js?v=34"></script>
+<script src="js/13-ui-build.js?v=34"></script>
+<script src="js/13-ui-inspect.js?v=34"></script>
+<script src="js/13-ui-storage.js?v=34"></script>
+<script src="js/13-ui-shop.js?v=34"></script>
+<script src="js/13-ui-train.js?v=34"></script>
+<script src="js/13-ui-tas.js?v=34"></script>
+<script src="js/13-ui-mayor.js?v=34"></script>
+<script src="js/13-ui-tick.js?v=34"></script>
+<script src="js/13-ui.js?v=34"></script>
+<script src="js/14-main.js?v=34"></script>
 </body>
 </html>

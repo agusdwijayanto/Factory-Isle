@@ -80,11 +80,13 @@ function newGrid() {
   S.grid = makeGrid(GRID_W, GRID_H);
 }
 
-// Gerbang keluar plot: tengah tepi bawah grid plot. Satu-satunya jalan
+// Gerbang keluar plot: kolom 8 tepi bawah grid plot (Agus (1,9), sejajar
+// pad kota). Kolom TETAP 8 di semua ukuran lahan — tidak ikut melebar —
+// supaya jalan keluar tidak bergeser saat ekspansi. Satu-satunya jalan
 // keluar, supaya tidak sengaja keluar saat kerja di pinggir lahan.
 function gatePos() {
   const m = S.maps.plot;
-  return { gx: Math.floor(m.w / 2), gy: m.h - 1 };
+  return { gx: 8, gy: m.h - 1 };
 }
 
 function tileAt(gx, gy) { return inGrid(gx, gy) ? S.grid[gy][gx] : null; }
@@ -123,12 +125,19 @@ function defaultSpawn(name) {
   return { fx: 8.5, fy: 6.5, dir: 3 };
 }
 
-// Perbesar grid plot, bangunan lama tetap di koordinatnya.
+// Perbesar grid plot: tepi bawah dan tepi kiri TETAP, supaya jalan keluar
+// (Agus (1,9), petak (8, h-1)) tidak bergeser dan tidak ada jalan yang
+// ketinggalan di tengah lahan. Kolom baru tumbuh ke kanan (z membesar),
+// baris baru tumbuh ke atas (x membesar). Isi grid lama ikut turun
+// bersama jangkar bawahnya; mesin (koordinat mutlak di S.machines) tetap
+// di petaknya, tanah di bawahnya tetap rumput karena jalan cuma satu
+// petak dan tidak bisa dibangun di atasnya.
 function expandPlotGrid(w, h) {
   const old = S.maps.plot;
   const g = makeGrid(w, h);
-  for (let gy = 0; gy < Math.min(old.h, h); gy++)
-    for (let gx = 0; gx < Math.min(old.w, w); gx++) g[gy][gx] = old.grid[gy][gx];
+  const dy = h - old.h; // jangkar bawah: baris lama turun sejauh selisih tinggi
+  for (let gy = 0; gy < old.h; gy++)
+    for (let gx = 0; gx < old.w; gx++) g[gy + dy][gx] = old.grid[gy][gx];
   S.maps.plot = { w, h, grid: g };
   if (S.map === 'plot') applyMap('plot');
 }

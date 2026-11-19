@@ -249,8 +249,16 @@ Tes: headless 287/287, Playwright 165/165, nol error konsol. Versi aset: ?v=32.
 
 Tes: headless 296/296, Playwright 169/169, nol error konsol. Versi aset: ?v=33.
 
+## Sudah live — v34 (19 Nov 2026)
+
+- [x] Jalan keluar lahan tetap di Agus (1,9) di semua ukuran (perintah Agus, GAS): ekspansi dulu menempel grid lama di pojok kiri atas sehingga gerbang (floor(w/2)) geser z 9 ke 13 dan jalan lama ketinggalan di tengah lahan. Sekarang gatePos() tetap (8, h-1) di semua ukuran; expandPlotGrid menyalin grid lama dengan tepi bawah dan tepi kiri tetap (offset gy = selisih tinggi) sehingga jalan lama mendarat di gerbang baru, kolom baru tumbuh ke kanan (z membesar), baris baru ke atas (x membesar). Migrasi simpan lama di loadGame: lahan dianggap basi kalau jalan tidak tepat satu petak di gerbang, lalu dibangun ulang di ukuran ekspansinya (ekspansi tetap terjaga). (`js/01-core.js`, `js/12-simpan.js`.)
+- [x] Tombol X / putar / centang melayang di dekat bayangan (referensi gambar 2 yang disetujui Agus): tiga tombol bulat (X merah, ↻ emas, ✓ hijau) pindah dari bar bawah ke klaster `#place-btns` yang posisinya mengikuti petak bayangan tiap frame (kanan bayangan, pindah ke kiri kalau mentok tepi; ikut hover kalau belum ada bayangan; tengah bawah kalau tidak ada juga; dijepit ke dalam layar supaya tidak keluar di HP). Id dan handler sama (btn-place-cancel, btn-rotate, btn-place-ok); teks hint ikut diperbarui. (`index.html`, `style.css`, `js/13-ui-tick.js`, `js/13-ui-build.js`, `js/13-ui-inspect.js`.)
+- [x] Tes regresi baru: headless memeriksa gerbang Agus (1,9) + satu jalan di gerbang + jalan lama jadi rumput di semua ukuran 18x13, 20x14, 22x15, 24x16, migrasi simpan lama (jalan ketinggalan di (8,11) pindah ke gerbang (8,12)), dan posisi tombol (kanan bayangan, pindah kiri saat mentok, tengah bawah tanpa bayangan, diam saat tidak menaruh); Playwright memeriksa ekspansi maks + gerbang di browser, tombol bulat + melayang, putar/centang/X lewat klik nyata, plus screenshot lahan 24x16 dan klaster tombol. Satu tes lama diperbaiki: ketuk jalan keluar HP sesudah ekspansi 18x13 pindah dari (9,12) ke (8,12) karena gerbang lama (9,12) sudah tidak berlaku.
+
+Tes: headless 313/313, Playwright 177/177, nol error konsol. Versi aset: ?v=34.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v33.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v34.

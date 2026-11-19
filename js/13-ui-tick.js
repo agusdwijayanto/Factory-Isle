@@ -38,8 +38,34 @@ Object.assign(UI, {
       $('btn-tut-next').classList.toggle('hidden', S.tutStarted);
     }
     this.updateInspectLive();
+    this.positionPlaceButtons();
     // Simpan otomatis throttled.
     saveTimer += dt;
     if (saveDirty && saveTimer > 5) { saveTimer = 0; saveGame(); }
+  },
+  // Tombol taruh melayang di dekat bayangan (v34): klaster bulat X / putar /
+  // centang mengikuti petak bayangan; kalau belum ada bayangan, ikut hover;
+  // kalau tidak ada juga, diam di tengah bawah supaya tetap terjangkau.
+  // Dijepit ke dalam layar supaya tidak keluar di HP.
+  positionPlaceButtons() {
+    if (typeof window === 'undefined') return; // headless: tidak ada layar
+    const wrap = $('place-btns');
+    if (!wrap || !S.placing) return;
+    const W = window.innerWidth, H = window.innerHeight;
+    const CW = 148, CH = 44, M = 8; // 3 tombol 44px + 2 celah 8px
+    const spot = S.placeSpot || (S.hover && { gx: S.hover.gx, gy: S.hover.gy });
+    let x, y;
+    if (spot) {
+      const c = tileCenter(spot.gx, spot.gy, S.cam);
+      x = c.x + 40; // kanan bayangan
+      if (x + CW > W - M) x = c.x - 40 - CW; // mentok kanan: pindah ke kiri bayangan
+      y = c.y - CH / 2;
+    } else {
+      x = (W - CW) / 2; y = H - 76; // belum ada petak: tengah bawah (posisi lama)
+    }
+    x = Math.max(M, Math.min(x, W - CW - M));
+    y = Math.max(M, Math.min(y, H - CH - M));
+    wrap.style.left = x + 'px';
+    wrap.style.top = y + 'px';
   },
 });

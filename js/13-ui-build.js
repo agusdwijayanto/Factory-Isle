@@ -74,7 +74,7 @@ Object.assign(UI, {
     $('btn-rotate').classList.remove('hidden');
     $('btn-place-cancel').classList.remove('hidden');
     $('btn-place-ok').classList.remove('hidden');
-    this.setHint('Ketuk petak rumput kosong untuk bayangan ' + item.name + '. Centang menaruh, X batal, PUTAR arah.');
+    this.setHint('Ketuk petak rumput kosong untuk bayangan ' + item.name + '. Centang menaruh, X batal, tombol putar.');
   },
   cancelPlacing() {
     S.placing = null;

@@ -102,7 +102,7 @@ Object.assign(UI, {
         $('btn-rotate').classList.remove('hidden');
         $('btn-place-cancel').classList.remove('hidden');
         $('btn-place-ok').classList.remove('hidden');
-        this.setHint('Ketuk petak baru untuk ' + MACHINES[m.id].name + '. Centang pindah, X batal, PUTAR arah.');
+        this.setHint('Ketuk petak baru untuk ' + MACHINES[m.id].name + '. Centang pindah, X batal, tombol putar.');
       }],
       ['Hapus', () => {
         ejectMachine(m);
