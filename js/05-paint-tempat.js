@@ -80,6 +80,13 @@ Object.assign(PAINTERS, {
       g.fillStyle = '#dc7633'; g.beginPath(); g.arc(cx + 22, gy - 8, 5, 0, 6.29); g.fill();
     });
   },
+  shop_harbor: (g, ox, oy) => {
+    // v41: toko Pelabuhan (id 'harbor') ketinggalan di v40 — tanpa ini gambarnya hilang.
+    PAINTERS._paintShop(g, ox, oy, '#1a5276', '#154360', '#2e86c1', '#2471a3', 'HARBOR', (g, cx, gy) => {
+      g.fillStyle = '#7fb3d5'; g.fillRect(cx - 28, gy - 12, 10, 8);
+      g.fillStyle = '#aed6f1'; g.fillRect(cx + 20, gy - 12, 10, 8);
+    });
+  },
   mountain: (g, ox, oy) => {
     const cx = ox + 32, gy = oy + 62;
     P_shadow(g, cx, gy, 18);

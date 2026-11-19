@@ -107,8 +107,9 @@ function render() {
         }
       }
       if (t.obj && t.obj.startsWith('shop')) {
-        // v36: kapal bajak laut digambar sebagai kapal, bukan toko.
-        Atlas.draw(ctx, t.obj === 'shop_pirate' ? 'ship' : 'shop', x, y + 6 * z, z);
+        // v41: gambar sprite toko itu sendiri (shop_carpenter, shop_blacksmith, ...),
+        // bukan lagi 'shop' generik — v40 bikin gambarnya tapi render masih pakai yang lama.
+        Atlas.draw(ctx, t.obj === 'shop_pirate' ? 'ship' : t.obj, x, y + 6 * z, z);
         const label = SHOPS[t.obj.slice(5)] ? SHOPS[t.obj.slice(5)].name : '';
         ctx.font = '700 ' + Math.max(11, Math.round(12 * z)) + 'px system-ui, sans-serif';
         ctx.textAlign = 'center';

@@ -785,6 +785,7 @@
     "shop_textile": { "col": 6, "row": 18, "w": 2, "h": 2 },
     "shop_exchange": { "col": 0, "row": 20, "w": 2, "h": 2 },
     "shop_supply": { "col": 2, "row": 20, "w": 2, "h": 2 },
-    "shop_desert": { "col": 4, "row": 20, "w": 2, "h": 2 }
+    "shop_desert": { "col": 4, "row": 20, "w": 2, "h": 2 },
+    "shop_harbor": { "col": 6, "row": 20, "w": 2, "h": 2 }
   }
 }

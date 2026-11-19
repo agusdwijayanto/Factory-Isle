@@ -310,8 +310,13 @@ Tes: headless 408/408, Playwright 204/204, nol error konsol. Versi aset: ?v=39.
 ## Sudah live — v40 (19 Nov 2026)
 
 - [x] Tiap toko di kota (Carpenter, Blacksmith, Exchange, Tool Shop, Textile, SUPPLY) dan toko desa gurun dibuat berbeda (bentuk/warna unik + papan nama besar + elemen/barang di luar sesuai referensi foto game asli, pasar pixel art, dan pandai besi). Kapal bajak laut tidak diutak-atik. (`js/05-paint-tempat.js`, `js/04-atlas.js`, `assets/atlas-manifest.json`, `index.html`.)
+- [ ] CACAT: gambar toko baru TIDAK tampil — render (`js/05-render.js`) masih menggambar sprite 'shop' generik untuk semua toko; sel atlas baru tidak pernah dipakai. Juga toko Pelabuhan (id 'harbor') tidak dibuatkan gambar. Restyle Western (rumah, patung, jalan, kereta) TIDAK dikerjakan.
 
-Tes: headless 407/407, Playwright 204/204, nol error konsol. Versi aset: ?v=40.
+Tes: headless 408/408, Playwright 204/204, nol error konsol. Versi aset: ?v=40.
+
+## Sudah live — v41 (19 Nov 2026)
+
+- [x] Perbaiki cacat v40: render menggambar sprite toko itu sendiri (`t.obj`), bukan lagi 'shop' generik; tambah gambar toko Pelabuhan (shop_harbor) yang ketinggalan. (`js/05-render.js`, `js/05-paint-tempat.js`, `js/04-atlas.js`, `assets/atlas-manifest.json`, `index.html`.)
 
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 

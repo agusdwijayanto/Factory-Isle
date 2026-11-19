@@ -472,12 +472,12 @@ const CONVEYOR_COLOR_HEX = { gold: '#e8b64c', purple: '#9a6a9a', red: '#c0392b',
 
 // Riwayat versi untuk tombol Book di dalam game (ringkasan ROADMAP.md).
 const CHANGELOG = [
+  ['v41', 'Toko akhirnya benar-benar beda: render menggambar sprite toko itu sendiri, bukan lagi \'shop\' generik (v40 bikin gambarnya tapi tidak dipakai); tambah toko Pelabuhan (shop_harbor) yang ketinggalan di v40.'],
   ['v40', 'Tiap toko di kota dan desa gurun dibuat berbeda (bentuk/warna unik + papan nama besar + barang di luar ikut referensi foto game, pixel art, pandai besi).'],
-  ['v39', 'Hapus objek stasiun di Pelabuhan (13,1) dan cek harborStale.'],
-  ['v36', 'Stasiun + Conductor di kota (20x14), toko SUPPLY, desa gurun + kapal bajak laut di pelabuhan, rantai emas, benih + palem + renang, Sorter, Storage Barrel/Crane/Rack Advanced, Ore Generator, Drill Head, rantai pewarna, kapak Steel, Grinding Wheel, kereta jadi toko, conveyor berwarna, batas item 150, biaya slot + ekspansi per save.'],
-  ['v37', 'Kapal bajak laut: Dyed Textiles 60 jadi 20 (tutup lubang arbitrase v36 — beli $24 di Textile, jual $60 di kapal = untung $36; harga baru ikut rumus premium pelabuhan papan 16 x 1,2 = 19,2 dibulatkan ke atas 20).'],
-  ['v38', 'Panel kereta cuma dibuka dari klik kereta (lokomotifnya); hapus NPC Conductor, papan jual di 4 map, dan stasiun biru kota. Bagian jual di dalam panel kereta tetap ada.'],
   ['v39', 'Hapus stasiun desa gurun di Pelabuhan (13,1) — tidak ada lagi bangunan stasiun di game.'],
+  ['v38', 'Panel kereta cuma dibuka dari klik kereta (lokomotifnya); hapus NPC Conductor, papan jual di 4 map, dan stasiun biru kota. Bagian jual di dalam panel kereta tetap ada.'],
+  ['v37', 'Kapal bajak laut: Dyed Textiles 60 jadi 20 (tutup lubang arbitrase v36 — beli $24 di Textile, jual $60 di kapal = untung $36; harga baru ikut rumus premium pelabuhan papan 16 x 1,2 = 19,2 dibulatkan ke atas 20).'],
+  ['v36', 'Stasiun + Conductor di kota (20x14), toko SUPPLY, desa gurun + kapal bajak laut di pelabuhan, rantai emas, benih + palem + renang, Sorter, Storage Barrel/Crane/Rack Advanced, Ore Generator, Drill Head, rantai pewarna, kapak Steel, Grinding Wheel, kereta jadi toko, conveyor berwarna, batas item 150, biaya slot + ekspansi per save.'],
   ['v35', 'Wagon (jalan lv1, wagon lv2, kereta lv3), perkakas, patung + Housing, badge, 4 slot save.'],
   ['v34', 'Pintu keluar lahan tetap di Agus (1,9) di semua ukuran; tombol melayang X/PUTAR/centang di dekat petak hantu.'],
   ['v33', 'Conveyor tidak lagi macet: backpressure frontAccepts; conveyor macet bisa dihapus (+$100).'],

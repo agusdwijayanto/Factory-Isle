@@ -22,7 +22,7 @@ const Atlas = {
     this._ready = (async () => {
       let m = null;
       try {
-        const r = await fetch('assets/atlas-manifest.json?v=40');
+        const r = await fetch('assets/atlas-manifest.json?v=41');
         if (r.ok) m = await r.json();
       } catch (_) { /* file:// atau offline: pakai salinan darurat */ }
       this.manifest = m || MANIFEST_EMBEDDED;
@@ -172,5 +172,6 @@ const MANIFEST_EMBEDDED = {
     shop_exchange: { col: 0, row: 20, w: 2, h: 2 },
     shop_supply: { col: 2, row: 20, w: 2, h: 2 },
     shop_desert: { col: 4, row: 20, w: 2, h: 2 },
+    shop_harbor: { col: 6, row: 20, w: 2, h: 2 },
   },
 };
