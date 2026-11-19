@@ -188,6 +188,8 @@ function render() {
     ctx.fillStyle = f.color; ctx.fillText(f.text, x, fy);
   }
   ctx.globalAlpha = 1;
+
+  paintRuler(); // penggaris x/z di luar map, di atas vignette supaya kebaca
 }
 
 // Aturan taruh: hanya di plot, rumput kosong; gerbang tidak boleh ditutup.

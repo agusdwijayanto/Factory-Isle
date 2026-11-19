@@ -48,6 +48,11 @@ const S = {
 const key = (gx, gy) => gx + ',' + gy;
 const inGrid = (gx, gy) => gx >= 0 && gy >= 0 && gx < GRID_W && gy < GRID_H;
 
+// Label penggaris x/z Agus (1-based, nol di pojok kiri bawah map):
+// x naik ke atas, z naik ke kanan bawah. Pakai GRID_H hidup supaya
+// ikut besar map (lahan membesar tiap ekspansi).
+function coordLabel(gx, gy) { return { x: GRID_H - gy, z: gx + 1 }; }
+
 // Hash deterministik: variasi visual stabil tiap muat ulang, tanpa RNG.
 function hash2(gx, gy) {
   let h = (gx * 374761393 + gy * 668265263) | 0;

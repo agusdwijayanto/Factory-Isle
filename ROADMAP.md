@@ -123,8 +123,17 @@ Tes: headless 140/140, Playwright 105/105, nol error konsol. Versi aset: ?v=18.
 
 Tes: headless 145/145, Playwright 105/105, nol error konsol. Versi aset: ?v=19.
 
+## Sudah live — v20 (19 Nov 2026)
+
+- [x] Penggaris koordinat x/z global: angka tampil di luar belah ketupat map, di margin gelap — x di sisi kiri (naik ke atas, 1-12), z di sisi bawah (ke kanan, 1-16). Rumus label Agus (1-based, nol di kiri bawah): x = GRID_H - gy, z = gx + 1. Berlaku di semua map (kota, hutan, gunung, pelabuhan, lahan); ikut zoom kamera dan ukuran map aktif (GRID_W/GRID_H hidup, jadi ikut lahan yang membesar tiap ekspansi). Selalu tampil, kecil dan abu-abu (#9aa3ad) dengan garis tepi gelap tipis, tidak menutupi petak, HUD, atau tombol.
+- [x] Implementasi: helper murni `coordLabel(gx, gy)` di `js/01-core.js`, pelukis `paintRuler()` di `js/05-render-overlay.js` (duduk di luar titik kiri petak (0,gy) untuk x dan di bawah titik bawah petak (gx,GRID_H-1) untuk z, petak di luar layar dilewati), dipanggil di akhir `render()` di `js/05-render.js` sesudah vignette dan floater supaya tetap kebaca.
+- [x] Catatan: di HP portrait zoom bawaan (lebar/760) belah ketupat sedikit lebih lebar dari layar — petak dan label di ujung kiri (x=1,2 dan z=1,2) ikut terpotong seperti petaknya sendiri, dan muncul saat kamera digeser ke kanan; di desktop semua angka muat. Ini perilaku zoom bawaan yang sudah ada, bukan dari penggaris.
+- [x] Tes regresi: rumus label di beberapa petak termasuk (0,11)=x1 z1, (15,0)=x12 z16, dan ikut besar map (headless); `paintRuler` + `coordLabel` ada di halaman (Playwright).
+
+Tes: headless 151/151, Playwright 107/107, nol error konsol. Versi aset: ?v=20.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v19.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v20.
