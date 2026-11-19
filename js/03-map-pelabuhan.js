@@ -11,9 +11,8 @@ function buildHarbor() {
   platform(harbor, 7, 7);
   railXAt(harbor, 7, 0, 8); // rel barat sampai peron
   terrain(harbor, rng(0, 9).map((gy) => [15, gy]), 'water'); // laut di sisi kanan
-  // v36: desa gurun (pasir) + stasiun di (13,1).
+  // v36: desa gurun (pasir).
   terrain(harbor, [...rng(10, 14).flatMap((gx) => rng(0, 4).map((gy) => [gx, gy]))], 'sand');
-  harbor[1][13].obj = 'station';
   // v36: pulau palem — 3 petak rumput di laut tenggara, 2 palem, 1 petak
   // kosong untuk mendarat (14,11); air berkurang 42 jadi 39.
   terrain(harbor, [[14, 10], [15, 10], [14, 11]], 'grass');

@@ -114,7 +114,7 @@ function loadGame() {
     || S.maps.town.grid[13][7].obj !== 'plotsign');
   const forestStale = S.maps.forest && (S.maps.forest.grid[9][14].obj !== 'train' || S.maps.forest.grid[0][8].t !== 'bridge' || S.maps.forest.grid[5][12].obj !== 'dyeplant');
   const mountainStale = S.maps.mountain && (S.maps.mountain.grid[5][1].t !== 'water' || S.maps.mountain.grid[4][13].obj !== 'stone');
-  const harborStale = S.maps.harbor && (S.maps.harbor.grid[2][12].obj !== 'shop_desert' || S.maps.harbor.grid[1][13].obj !== 'station'); // v36: desa gurun + stasiun
+  const harborStale = S.maps.harbor && (S.maps.harbor.grid[2][12].obj !== 'shop_desert'); // v36: desa gurun
   // Jalan keluar harus satu-satunya petak jalan, tepat di gerbang (8, h-1).
   // Simpan lama hasil ekspansi anchoring kiri-atas punya jalan ketinggalan
   // di (8,11) sementara gerbangnya sudah di bawahnya.
