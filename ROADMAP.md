@@ -305,7 +305,7 @@ Tes: headless 407/407, Playwright 204/204, nol error konsol. Versi aset: ?v=38.
 
 - [x] Hapus objek stasiun di Pelabuhan (13,1) dan cek harborStale (`js/03-map-pelabuhan.js`, `js/12-simpan.js`, `index.html`.)
 
-Tes: headless 407/407, Playwright 204/204, nol error konsol. Versi aset: ?v=39.
+Tes: headless 408/408, Playwright 204/204, nol error konsol. Versi aset: ?v=39.
 
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
