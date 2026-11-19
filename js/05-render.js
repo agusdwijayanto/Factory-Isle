@@ -90,6 +90,38 @@ const PAINTERS = {
     g.beginPath(); g.ellipse(ox + 25, oy + 32, 7, 3.5, 0, 0, 6.29); g.fill();
     g.beginPath(); g.ellipse(ox + 40, oy + 34, 5, 2.5, 0, 0, 6.29); g.fill();
   },
+  water: (g, ox, oy, c) => {
+    P_ground(g, ox + 32, oy + 32, '#2a6db0');
+    g.strokeStyle = 'rgba(255,255,255,0.35)'; g.lineWidth = 1.5;
+    g.beginPath(); g.moveTo(ox + 14, oy + 30); g.lineTo(ox + 26, oy + 36); g.stroke();
+    g.beginPath(); g.moveTo(ox + 38, oy + 28); g.lineTo(ox + 50, oy + 34); g.stroke();
+  },
+  bridge: (g, ox, oy, c) => {
+    P_ground(g, ox + 32, oy + 32, '#2a6db0');
+    g.fillStyle = '#8a5a33';
+    g.beginPath();
+    g.moveTo(ox + 4, oy + 32); g.lineTo(ox + 32, oy + 18); g.lineTo(ox + 60, oy + 32); g.lineTo(ox + 32, oy + 46); g.closePath(); g.fill();
+    g.fillStyle = '#a8763e';
+    for (const dy of [-8, 0, 8]) {
+      g.beginPath();
+      g.moveTo(ox + 24, oy + 32 + dy); g.lineTo(ox + 32, oy + 28 + dy); g.lineTo(ox + 40, oy + 32 + dy); g.lineTo(ox + 32, oy + 36 + dy); g.closePath(); g.fill();
+    }
+  },
+  platform: (g, ox, oy, c) => {
+    P_ground(g, ox + 32, oy + 32, '#8d99a8');
+    g.strokeStyle = '#ffd75e'; g.lineWidth = 2;
+    g.beginPath(); g.moveTo(ox + 4, oy + 32); g.lineTo(ox + 32, oy + 18); g.stroke();
+    g.strokeStyle = '#5d6773'; g.lineWidth = 1.5;
+    g.beginPath(); g.moveTo(ox + 8, oy + 36); g.lineTo(ox + 56, oy + 36); g.stroke();
+  },
+  dock: (g, ox, oy, c) => {
+    P_ground(g, ox + 32, oy + 32, '#2a6db0');
+    g.fillStyle = '#7a5230';
+    g.beginPath();
+    g.moveTo(ox + 6, oy + 32); g.lineTo(ox + 32, oy + 19); g.lineTo(ox + 58, oy + 32); g.lineTo(ox + 32, oy + 45); g.closePath(); g.fill();
+    g.strokeStyle = '#a8763e'; g.lineWidth = 1.5;
+    g.beginPath(); g.moveTo(ox + 18, oy + 32); g.lineTo(ox + 32, oy + 25); g.lineTo(ox + 46, oy + 32); g.lineTo(ox + 32, oy + 39); g.closePath(); g.stroke();
+  },
   tree: (g, ox, oy) => {
     const cx = ox + 32, gy = oy + 62;
     P_shadow(g, cx, gy, 13);
@@ -321,6 +353,53 @@ const PAINTERS = {
     g.strokeStyle = '#ffd75e'; g.lineWidth = 1.5; g.strokeRect(cx - 26, gy - 62, 52, 14);
     g.fillStyle = '#ffd75e'; g.font = '800 10px system-ui, sans-serif';
     g.textAlign = 'center'; g.fillText('TOKO', cx, gy - 51);
+  },
+  mountain: (g, ox, oy) => {
+    const cx = ox + 32, gy = oy + 62;
+    P_shadow(g, cx, gy, 18);
+    g.fillStyle = '#7d8894';
+    g.beginPath();
+    g.moveTo(cx - 20, gy); g.lineTo(cx - 8, gy - 34); g.lineTo(cx + 2, gy - 44);
+    g.lineTo(cx + 12, gy - 30); g.lineTo(cx + 20, gy); g.closePath(); g.fill();
+    g.fillStyle = '#5d6773';
+    g.beginPath();
+    g.moveTo(cx + 2, gy - 44); g.lineTo(cx + 12, gy - 30); g.lineTo(cx + 20, gy);
+    g.lineTo(cx + 2, gy); g.closePath(); g.fill();
+    g.fillStyle = '#f2ede0'; // salju di puncak
+    g.beginPath();
+    g.moveTo(cx - 8, gy - 34); g.lineTo(cx + 2, gy - 44); g.lineTo(cx + 7, gy - 36);
+    g.lineTo(cx + 2, gy - 33); g.lineTo(cx - 3, gy - 36); g.closePath(); g.fill();
+  },
+  station: (g, ox, oy) => {
+    const cx = ox + 32, gy = oy + 62;
+    P_shadow(g, cx, gy, 16);
+    P_isoBox(g, cx, gy, 40, 16, '#3a5a8a', '#2c4468', '#223452');
+    g.fillStyle = '#2c4468'; g.fillRect(cx - 18, gy - 34, 36, 18);
+    g.fillStyle = '#e8b64c'; // atap menara jam
+    g.beginPath();
+    g.moveTo(cx - 12, gy - 34); g.lineTo(cx, gy - 46); g.lineTo(cx + 12, gy - 34); g.closePath(); g.fill();
+    g.fillStyle = '#f2ede0'; g.beginPath(); g.arc(cx, gy - 40, 4, 0, 6.29); g.fill();
+    g.strokeStyle = '#2a1f16'; g.lineWidth = 1;
+    g.beginPath(); g.moveTo(cx, gy - 40); g.lineTo(cx, gy - 43); g.stroke();
+    g.beginPath(); g.moveTo(cx, gy - 40); g.lineTo(cx + 2, gy - 39); g.stroke();
+    g.fillStyle = '#3a1c12'; g.fillRect(cx - 5, gy - 14, 10, 14);
+  },
+  train: (g, ox, oy) => {
+    const cx = ox + 32, gy = oy + 62;
+    P_shadow(g, cx, gy, 16);
+    g.fillStyle = '#2c2833'; // badan lokomotif uap
+    g.fillRect(cx - 18, gy - 26, 36, 18);
+    g.fillStyle = '#43404a'; g.fillRect(cx + 8, gy - 36, 10, 10); // kabin
+    g.fillStyle = '#2c2833'; g.fillRect(cx - 14, gy - 38, 5, 12); // cerobong
+    g.fillStyle = '#8d99a8'; g.fillRect(cx - 15, gy - 40, 7, 3);
+    g.fillStyle = '#c0392b'; g.fillRect(cx - 18, gy - 9, 36, 3); // garis merah
+    g.fillStyle = '#43404a';
+    [[-13, -2], [0, -2], [13, -2]].forEach(([dx, dy]) => {
+      g.beginPath(); g.arc(cx + dx, gy + dy, 4.5, 0, 6.29); g.fill();
+    });
+    g.fillStyle = 'rgba(255,255,255,0.5)'; // asap
+    g.beginPath(); g.arc(cx - 11, gy - 46, 4, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx - 14, gy - 52, 5, 0, 6.29); g.fill();
   },
   player: (g, ox, oy, cell, v) => {
     // v: {dir 0..3, frame 0..2}. dir 0/1 depan, 2/3 belakang; 1/2 dicerminkan.
@@ -656,7 +735,10 @@ function render() {
       const t = S.grid[gy][gx];
       const { x, y } = tileCenter(gx, gy, S.cam);
       if (x < -90 || x > VW + 90 || y < -90 || y > VH + 90) continue;
-      const ground = t.t === 'sand' ? 'sand' : t.t === 'clay' ? 'clay' : 'grass' + Math.floor(hash2(gx, gy) * 4);
+      const ground = t.t === 'sand' ? 'sand' : t.t === 'clay' ? 'clay'
+        : t.t === 'water' ? 'water' : t.t === 'bridge' ? 'bridge'
+        : t.t === 'platform' ? 'platform' : t.t === 'dock' ? 'dock'
+        : 'grass' + Math.floor(hash2(gx, gy) * 4);
       Atlas.drawTile(ctx, ground, x, y, z);
 
       const conv = onPlot ? S.conveyors.get(key(gx, gy)) : null;
@@ -686,7 +768,7 @@ function render() {
       }
       ctx.save();
       if (scale !== 1) { ctx.translate(x, y); ctx.scale(scale, scale); ctx.translate(-x, -y); }
-      if (t.obj && t.obj !== 'shop') {
+      if (t.obj && !t.obj.startsWith('shop')) {
         // Node habis (hp 0) hilang sampai tumbuh lagi; pohon menyisakan tunggul.
         const dead = NODES[t.obj] && t.hp <= 0;
         if (!dead || t.obj === 'tree') {
@@ -702,11 +784,26 @@ function render() {
               ctx.strokeText('Mayor', x, y - 56 * z);
               ctx.fillStyle = '#ffd75e'; ctx.fillText('Mayor', x, y - 56 * z);
             }
+            if (t.obj === 'station') {
+              ctx.font = '700 ' + Math.max(11, Math.round(12 * z)) + 'px system-ui, sans-serif';
+              ctx.textAlign = 'center';
+              ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.7)';
+              ctx.strokeText('Stasiun', x, y - 56 * z);
+              ctx.fillStyle = '#ffd75e'; ctx.fillText('Stasiun', x, y - 56 * z);
+            }
           }
           if (GLOWS[t.obj]) { const [dx, dy, r, a] = GLOWS[t.obj]; glows.push({ x: x + dx * z, y: y + dy * z, r: r * z, a }); }
         }
       }
-      if (t.obj === 'shop') Atlas.draw(ctx, 'shop', x, y + 6 * z, z);
+      if (t.obj && t.obj.startsWith('shop')) {
+        Atlas.draw(ctx, 'shop', x, y + 6 * z, z);
+        const label = SHOPS[t.obj.slice(5)] ? SHOPS[t.obj.slice(5)].name : '';
+        ctx.font = '700 ' + Math.max(11, Math.round(12 * z)) + 'px system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.7)';
+        ctx.strokeText(label, x, y - 56 * z);
+        ctx.fillStyle = '#ffd75e'; ctx.fillText(label, x, y - 56 * z);
+      }
       if (gate && gx === gate.gx && gy === gate.gy) Atlas.draw(ctx, 'gate', x, y + 6 * z, z);
       const m = onPlot ? S.machines.get(key(gx, gy)) : null;
       if (m) {

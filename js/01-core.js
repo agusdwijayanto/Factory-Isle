@@ -3,7 +3,7 @@
 const TILE_W = 64, TILE_H = 32;
 // Dimensi map AKTIF; berubah saat pindah map atau plot membesar.
 let GRID_W = 16, GRID_H = 12;
-const SAVE_KEY = 'indotopia-tycoon-save-v1';
+const SAVE_KEY = 'indotopia-tycoon-save-v2';
 
 const S = {
   money: 50,
@@ -18,9 +18,9 @@ const S = {
   pulses: new Map(), // "gx,gy" -> born, denyut saat diketuk
   beltT: 0,          // jam animasi conveyor
   time: 0,           // jam global detik
-  map: 'town',     // map aktif: 'town' (kota) atau 'plot' (lahan)
+  map: 'town',     // map aktif: 'town' (kota), 'forest', 'mountain', 'harbor', 'plot'
   grid: [],          // grid map AKTIF: [gy][gx] -> {t, obj, hp, regrowIn}
-  maps: {},          // 'town'|'plot' -> {w, h, grid}; grid non-aktif disimpan di sini
+  maps: {},          // nama map -> {w, h, grid}; grid non-aktif disimpan di sini
   expansion: 0,      // 0..4, tingkat ekspansi plot lewat Mayor
   autoSeller: false,
   autoSellerT: 0,
@@ -30,7 +30,6 @@ const S = {
   storages: new Map(),   // "gx,gy" -> {id, items:{}}
   walls: new Map(),      // "gx,gy" -> {id}
   decor: new Map(),      // "gx,gy" -> {id}
-  shop: { gx: 8, gy: 0 },       // di map kota
   mayor: { gx: 5, gy: 1 },      // di map kota
   plotPad: { gx: 8, gy: 10 },   // di map kota: injak untuk masuk ke plot
   player: {
@@ -89,16 +88,17 @@ function applyMap(name) {
 
 // Pindah map: titik lahir tetap sesuai desain (masuk plot di depan
 // gerbang, kembali ke kota di samping kotak plot), bukan posisi lama.
-function switchMap(name) {
+// spawn {fx, fy} opsional: pintu keluar dan kereta mengisi titik lahirnya.
+function switchMap(name, spawn) {
   const p = S.player;
   p.path = []; p.onArrive = null; p.working = null;
   applyMap(name);
-  const pos = defaultSpawn(name);
-  p.fx = pos.fx; p.fy = pos.fy; p.dir = pos.dir;
+  const pos = spawn || defaultSpawn(name);
+  p.fx = pos.fx; p.fy = pos.fy; p.dir = pos.dir === undefined ? 3 : pos.dir;
   if (typeof centerCamera === 'function' && typeof VW !== 'undefined') {
     centerCamera(VW, VH);
   }
-  TOAST(name === 'plot' ? 'Masuk ke lahanmu.' : 'Kembali ke kota.');
+  TOAST(name === 'plot' ? 'Masuk ke lahanmu.' : name === 'town' ? 'Kembali ke kota.' : 'Tiba di ' + MAP_NAMES[name] + '.');
   if (typeof UI !== 'undefined') UI.refreshHUD();
   saveSoon();
 }
@@ -108,7 +108,8 @@ function defaultSpawn(name) {
     const g = gatePos();
     return { fx: g.gx + 0.5, fy: g.gy - 0.5, dir: 3 };
   }
-  return { fx: S.plotPad.gx + 0.5, fy: S.plotPad.gy - 0.5, dir: 3 };
+  if (name === 'town') return { fx: S.plotPad.gx + 0.5, fy: S.plotPad.gy - 0.5, dir: 3 };
+  return { fx: 8.5, fy: 6.5, dir: 3 };
 }
 
 // Perbesar grid plot, bangunan lama tetap di koordinatnya.

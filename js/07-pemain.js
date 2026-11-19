@@ -128,7 +128,8 @@ function updatePlayer(dt) {
   }
 }
 
-// Injak pemicu pindah map: kotak plot di kota, gerbang di plot.
+// Injak pemicu pindah map: kotak plot di kota, gerbang di plot, dan pintu
+// keluar di ujung tiap map zona.
 function checkMapTrigger() {
   const cur = playerTile();
   if (S.map === 'town' && cur.gx === S.plotPad.gx && cur.gy === S.plotPad.gy) {
@@ -142,13 +143,19 @@ function checkMapTrigger() {
       return true;
     }
   }
+  for (const e of MAP_EXITS[S.map] || []) {
+    if (cur.gx === e.gx && cur.gy === e.gy) {
+      switchMap(e.to, { fx: e.sx + 0.5, fy: e.sy + 0.5 });
+      return true;
+    }
+  }
   return false;
 }
 
-// Tumbuh kembali simpul yang habis dipanen, di kedua map (simulasi jalan
+// Tumbuh kembali simpul yang habis dipanen, di semua map (simulasi jalan
 // terus walau pemain sedang di map lain).
 function updateRegrow(dt) {
-  for (const name of ['town', 'plot']) {
+  for (const name of Object.keys(S.maps)) {
     const m = S.maps[name];
     if (!m) continue;
     for (let gy = 0; gy < m.h; gy++) {
@@ -164,7 +171,8 @@ function updateRegrow(dt) {
 }
 
 // Keputusan ketuk: jalan, panen, atau buka panel sesudah sampai.
-// Bangunan hanya di plot; toko, Mayor, dan sumber daya hanya di kota.
+// Bangunan hanya di plot; toko, Mayor, stasiun, dan sumber daya ada di
+// mapnya masing-masing.
 function interactAt(gx, gy) {
   const t = tileAt(gx, gy);
   const k = key(gx, gy);
@@ -186,12 +194,17 @@ function interactAt(gx, gy) {
     return;
   }
 
-  if (gx === S.shop.gx && gy === S.shop.gy) {
-    goTo(gx, gy, () => UI.openShop());
+  if (t.obj && t.obj.startsWith('shop')) {
+    const id = t.obj.slice(5);
+    goTo(gx, gy, () => UI.openShop(id));
     return;
   }
-  if (gx === S.mayor.gx && gy === S.mayor.gy) {
+  if (S.map === 'town' && gx === S.mayor.gx && gy === S.mayor.gy) {
     goTo(gx, gy, () => UI.openMayor());
+    return;
+  }
+  if (t.obj === 'station' || t.obj === 'train' || t.t === 'platform') {
+    goTo(gx, gy, () => UI.openTrain());
     return;
   }
   if (t.obj && NODES[t.obj] && t.hp > 0) {

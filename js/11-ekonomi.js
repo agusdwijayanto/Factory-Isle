@@ -8,6 +8,44 @@ function sellPrice(id) {
   return it ? it.price : null;
 }
 
+// Harga toko membeli dari pemain. Exchange ('ALL') memakai harga papan
+// untuk semua barang yang bisa dijual.
+function shopSellPrice(shopId, id) {
+  const shop = SHOPS[shopId];
+  if (!shop) return null;
+  if (shop.sell === 'ALL') return sellPrice(id);
+  const p = shop.sell[id];
+  return p === undefined ? null : p;
+}
+
+// Jual qty item ke satu toko. Kembalikan uang yang didapat (0 kalau gagal).
+function sellItemAt(shopId, id, qty) {
+  const price = shopSellPrice(shopId, id);
+  if (price === null || price === undefined) return 0;
+  const have = invCount(id);
+  const n = Math.min(qty, have);
+  if (n <= 0) return 0;
+  invAdd(id, -n);
+  const gain = price * n;
+  S.money += gain;
+  S.stats.sold[id] = (S.stats.sold[id] || 0) + n;
+  saveSoon();
+  return gain;
+}
+
+// Beli qty item dari satu toko. Kembalikan jumlah yang terbeli (0 kalau gagal).
+function buyItem(shopId, id, qty) {
+  const shop = SHOPS[shopId];
+  const price = shop && shop.buy ? shop.buy[id] : undefined;
+  if (price === undefined) return 0;
+  const n = Math.max(0, Math.min(qty, Math.floor(S.money / price)));
+  if (n <= 0) return 0;
+  S.money -= price * n;
+  invAdd(id, n);
+  saveSoon();
+  return n;
+}
+
 // Jual qty item. Kembalikan uang yang didapat (0 kalau gagal).
 function sellItem(id, qty) {
   const price = sellPrice(id);

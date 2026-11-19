@@ -80,7 +80,7 @@ const UI = {
 
   refreshHUD() {
     $('money').textContent = '$' + fmt(S.money);
-    $('mapname').textContent = S.map === 'plot' ? 'Lahan' : 'Kota';
+    $('mapname').textContent = MAP_NAMES[S.map] || 'Kota';
     $('btn-tas').textContent = 'TAS (' + carriedTotal() + ')';
     // Bangun hanya di lahan: tombol disembunyikan di kota.
     $('btn-build').classList.toggle('hidden', S.map !== 'plot');
@@ -93,7 +93,7 @@ const UI = {
   // Satu panel dalam satu waktu: membuka panel lain menutup panel inspect/storage.
   openPanel(id) {
     ['build-menu', 'inspect-panel', 'storage-panel', 'shop-panel', 'tas-panel',
-     'burger-menu', 'admin-panel', 'settings-panel', 'help-panel', 'mayor-panel'].forEach((p) => {
+     'burger-menu', 'admin-panel', 'settings-panel', 'help-panel', 'mayor-panel', 'train-panel'].forEach((p) => {
       if (p !== id) $(p).classList.add('hidden');
     });
     if (id !== 'inspect-panel' && id !== 'storage-panel') { inspectKey = null; S.selected = null; }
@@ -102,7 +102,7 @@ const UI = {
   closePanel(id) { $(id).classList.add('hidden'); },
   closeAll() {
     ['build-menu', 'inspect-panel', 'storage-panel', 'shop-panel', 'tas-panel',
-     'burger-menu', 'admin-panel', 'settings-panel', 'help-panel', 'mayor-panel'].forEach((id) => this.closePanel(id));
+     'burger-menu', 'admin-panel', 'settings-panel', 'help-panel', 'mayor-panel', 'train-panel'].forEach((id) => this.closePanel(id));
     S.selected = null; inspectKey = null;
     if (S.placing) this.cancelPlacing();
   },
@@ -358,30 +358,35 @@ const UI = {
   },
 
   // ---- Toko ----
-  openShop() {
-    this.renderShop();
+  // Tiap toko beli dan jual barang beda dengan harga sendiri; harga yang
+  // tidak dicantumkan berarti toko itu tidak melayani barang tersebut.
+  openShop(shopId) {
+    shopId = shopId && SHOPS[shopId] ? shopId : 'exchange';
+    $('shop-title').textContent = SHOPS[shopId].name + ' — Jual / Beli';
+    this.renderShop(shopId);
     this.openPanel('shop-panel');
   },
-  renderShop() {
+  renderShop(shopId) {
     const body = $('shop-body');
     body.innerHTML = '';
-    const sellable = Object.keys(S.inv).filter((id) => sellPrice(id) !== null);
+    const shop = SHOPS[shopId];
+    const sellable = Object.keys(S.inv).filter((id) => shopSellPrice(shopId, id) !== null);
     if (!sellable.length) {
-      body.appendChild(el('div', 'Tas kosong atau hanya berisi komponen yang tidak dijual (Coil, Gear).', 'mp-desc'));
-      return;
+      body.appendChild(el('div', 'Toko ini tidak membeli barang yang ada di tasmu.', 'mp-desc'));
     }
     for (const id of sellable) {
+      const price = shopSellPrice(shopId, id);
       const row = el('div', null, 'shop-row');
       const left = el('span', null, 'shop-item');
       const icon = iconEl(id);
       if (icon) left.appendChild(icon);
-      left.appendChild(document.createTextNode(ITEMS[id].name + ' x' + invCount(id) + '  ($' + fmt(sellPrice(id)) + ')'));
+      left.appendChild(document.createTextNode(ITEMS[id].name + ' x' + invCount(id) + '  ($' + fmt(price) + ')'));
       row.appendChild(left);
       const btns = el('span', null, 'shop-btns');
       for (const n of [1, 10, Infinity]) {
         const b = el('button', n === Infinity ? 'Semua' : String(n));
         b.addEventListener('click', () => {
-          const gain = sellItem(id, n);
+          const gain = sellItemAt(shopId, id, n);
           if (gain > 0) {
             SFX.play('coin');
             const p = playerTile();
@@ -390,7 +395,7 @@ const UI = {
           } else {
             SFX.play('error');
           }
-          this.renderShop();
+          this.renderShop(shopId);
           this.refreshHUD();
         });
         btns.appendChild(b);
@@ -398,6 +403,65 @@ const UI = {
       row.appendChild(btns);
       body.appendChild(row);
     }
+    const buyable = shop.buy ? Object.keys(shop.buy) : [];
+    if (buyable.length) {
+      body.appendChild(el('div', 'Beli dari toko:', 'mp-desc'));
+      for (const id of buyable) {
+        const price = shop.buy[id];
+        const row = el('div', null, 'shop-row');
+        const left = el('span', null, 'shop-item');
+        const icon = iconEl(id);
+        if (icon) left.appendChild(icon);
+        left.appendChild(document.createTextNode(ITEMS[id].name + '  ($' + fmt(price) + ')'));
+        row.appendChild(left);
+        const btns = el('span', null, 'shop-btns');
+        for (const n of [1, 10]) {
+          const b = el('button', String(n));
+          b.addEventListener('click', () => {
+            const bought = buyItem(shopId, id, n);
+            if (bought > 0) {
+              SFX.play('coin');
+              this.toast('Terbeli ' + bought + ' ' + ITEMS[id].name + ' (-$' + fmt(price * bought) + ')');
+            } else {
+              SFX.play('error');
+              this.toast('Uang tidak cukup.');
+            }
+            this.renderShop(shopId);
+            this.refreshHUD();
+          });
+          btns.appendChild(b);
+        }
+        row.appendChild(btns);
+        body.appendChild(row);
+      }
+    }
+  },
+
+  // ---- Kereta ----
+  // Naik dari peron mana saja; tujuan yang sedang dituju tidak ditawarkan.
+  openTrain() {
+    this.renderTrain();
+    this.openPanel('train-panel');
+  },
+  renderTrain() {
+    const body = $('train-body');
+    body.innerHTML = '';
+    body.appendChild(el('div', 'Kereta 130 Trading Co. — angkutan cepat antar zona. Jalan kaki tetap bisa lewat ujung map.', 'mp-desc'));
+    for (const dest of ['mountain', 'forest', 'town', 'harbor']) {
+      if (dest === S.map) continue;
+      const row = el('div', null, 'mayor-row');
+      row.appendChild(el('span', MAP_NAMES[dest]));
+      const b = el('button', 'Naik');
+      b.addEventListener('click', () => this.rideTrain(dest));
+      row.appendChild(b);
+      body.appendChild(row);
+    }
+  },
+  rideTrain(dest) {
+    const [gx, gy] = TRAIN_SPAWN[dest];
+    this.closeAll();
+    switchMap(dest, { fx: gx + 0.5, fy: gy + 0.5 });
+    SFX.play('success');
   },
 
   // ---- Tas ----

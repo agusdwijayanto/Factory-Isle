@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Indotopia — Tycoon Pabrik Isometrik</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="style.css?v=12">
+<link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
 <canvas id="game"></canvas>
@@ -60,10 +60,18 @@
 
 <section id="shop-panel" class="panel hidden">
   <div class="panel-head">
-    <div class="panel-title">Toko — Jual</div>
+    <div class="panel-title" id="shop-title">Toko — Jual / Beli</div>
     <button class="btn-x" data-close="shop-panel">X</button>
   </div>
   <div id="shop-body"></div>
+</section>
+
+<section id="train-panel" class="panel hidden">
+  <div class="panel-head">
+    <div class="panel-title">Kereta 130</div>
+    <button class="btn-x" data-close="train-panel">X</button>
+  </div>
+  <div id="train-body"></div>
 </section>
 
 <section id="mayor-panel" class="panel hidden">
@@ -98,7 +106,10 @@
     <button class="btn-x" data-close="help-panel">X</button>
   </div>
   <div class="help-text">
-    <p>Kota: ketuk pohon, bijih, pasir, tanah liat, atau kapas untuk memanen. Ketuk Toko untuk menjual, ketuk Mayor untuk memperbesar lahan.</p>
+    <p>Kota: ketuk Mayor untuk memperbesar lahan. Ketuk salah satu dari 5 toko untuk jual atau beli — tiap toko harga dan barangnya beda. Exchange membeli semua barang.</p>
+    <p>Hutan (barat kota): pohon Oak dan kapas. Gunung (utara kota, lewat jembatan): bijih Iron, Copper, Tin, dan hulu sungai. Pelabuhan (timur kota): bayar lebih mahal untuk produk akhir.</p>
+    <p>Pindah zona: jalan ke ujung map. Dari kota ke atas ketemu sungai — lewat jembatan, sampai gunung. Clay ada di tepian sungai.</p>
+    <p>Kereta: ketuk peron atau lokomotif, pilih tujuan, langsung sampai. Jalan kaki tetap bisa.</p>
     <p>Masuk ke lahan: jalan ke kotak plot putih di kota. Keluar dari lahan: hanya lewat gerbang di tepi bawah lahan.</p>
     <p>Lahan: ketuk mesin untuk membuka panelnya. Masukkan bahan, mesin mengolah sendiri. Semua mesin jalan otomatis, termasuk Sawhorse. Mesin tetap jalan walau kamu sedang di kota.</p>
     <p>Conveyor mengalirkan item searah panah ke mesin atau penyimpanan di depannya. Coil dan Gear tidak dijual.</p>
@@ -120,19 +131,19 @@
 
 <div id="toast" class="hidden"></div>
 
-<script src="js/01-core.js?v=12"></script>
-<script src="js/02-iso.js?v=12"></script>
-<script src="js/03-data.js?v=12"></script>
-<script src="js/04-atlas.js?v=12"></script>
-<script src="js/05-render.js?v=12"></script>
-<script src="js/06-input.js?v=12"></script>
-<script src="js/07-pemain.js?v=12"></script>
-<script src="js/08-gerak.js?v=12"></script>
-<script src="js/09-mesin.js?v=12"></script>
-<script src="js/10-resep.js?v=12"></script>
-<script src="js/11-ekonomi.js?v=12"></script>
-<script src="js/12-simpan.js?v=12"></script>
-<script src="js/13-ui.js?v=12"></script>
-<script src="js/14-main.js?v=12"></script>
+<script src="js/01-core.js?v=13"></script>
+<script src="js/02-iso.js?v=13"></script>
+<script src="js/03-data.js?v=13"></script>
+<script src="js/04-atlas.js?v=13"></script>
+<script src="js/05-render.js?v=13"></script>
+<script src="js/06-input.js?v=13"></script>
+<script src="js/07-pemain.js?v=13"></script>
+<script src="js/08-gerak.js?v=13"></script>
+<script src="js/09-mesin.js?v=13"></script>
+<script src="js/10-resep.js?v=13"></script>
+<script src="js/11-ekonomi.js?v=13"></script>
+<script src="js/12-simpan.js?v=13"></script>
+<script src="js/13-ui.js?v=13"></script>
+<script src="js/14-main.js?v=13"></script>
 </body>
 </html>

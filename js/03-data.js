@@ -35,6 +35,65 @@ const ITEMS = {
   Window:    { name: 'Window',     color: '#9fd4e8', price: 84 },  // papan
 };
 
+// Nama map untuk HUD.
+const MAP_NAMES = { town: 'Kota', plot: 'Lahan', forest: 'Hutan', mountain: 'Gunung', harbor: 'Pelabuhan' };
+
+// Toko v2. sell = harga toko membeli dari pemain; buy = harga toko menjual
+// ke pemain. Harga ikut riset wiki 4.2; yang tidak ada di riset memakai
+// harga papan (ITEMS.price). Exchange membeli semua barang lain dengan
+// harga papan supaya loop jual v1 tetap utuh. Pelabuhan: harga premium =
+// yang terbesar antara harga riset gurun/kapal dan harga papan x1,2.
+const HARBOR_RESEARCH = { WoodFrame: 32, Log: 8, Firelog: 12 };
+function harborSellTable() {
+  const t = {};
+  for (const [id, it] of Object.entries(ITEMS)) {
+    if (it.price === null || it.price === undefined) continue;
+    t[id] = Math.max(HARBOR_RESEARCH[id] || 0, Math.ceil(it.price * 1.2));
+  }
+  return t;
+}
+const SHOPS = {
+  carpenter:  { name: 'Carpenter',  sell: { Log: 7, Pillar: 12, Plank: 6, WoodFrame: 28 }, buy: {} },
+  blacksmith: { name: 'Blacksmith', sell: { Firelog: 6, IronIngot: 24 }, buy: { Nails: 25 } },
+  toolshop:   { name: 'Tool Shop',  sell: { IronBeam: 72 }, buy: {} },
+  textile:    { name: 'Textile',    sell: { Cotton: 25 }, buy: { Cotton: 25 } },
+  exchange:   { name: 'Exchange',   sell: 'ALL', buy: { Log: 12, Pillar: 20, Plank: 10, Brick: 30, WoodFrame: 48, IronFrame: 83, IronBeam: 125, Coil: 38 } },
+  harbor:     { name: 'Pelabuhan',  sell: harborSellTable(), buy: {} },
+};
+// Posisi toko: obj di grid = 'shop_' + id.
+const SHOP_SPOTS = [
+  { map: 'town', gx: 2, gy: 1, id: 'carpenter' },
+  { map: 'town', gx: 11, gy: 3, id: 'blacksmith' }, // bukan di (8,1): petak itu jalan menuju jembatan
+  { map: 'town', gx: 11, gy: 1, id: 'toolshop' },
+  { map: 'town', gx: 14, gy: 1, id: 'textile' },
+  { map: 'town', gx: 14, gy: 3, id: 'exchange' },
+  { map: 'harbor', gx: 8, gy: 3, id: 'harbor' },
+];
+
+// Pintu keluar antar map: injak petak (gx,gy) pindah ke map `to`, lahir di
+// petak (sx,sy) map tujuan. Mekanisme TP yang sama seperti kotak plot dan
+// gerbang v12.
+const MAP_EXITS = {
+  town: [
+    { gx: 8, gy: 0, to: 'mountain', sx: 12, sy: 10 }, // jembatan ke gunung
+    { gx: 0, gy: 6, to: 'forest', sx: 14, sy: 6 },
+    { gx: 15, gy: 6, to: 'harbor', sx: 1, sy: 6 },
+  ],
+  forest: [
+    { gx: 8, gy: 0, to: 'mountain', sx: 4, sy: 10 },
+    { gx: 15, gy: 6, to: 'town', sx: 1, sy: 6 },
+  ],
+  mountain: [
+    { gx: 4, gy: 11, to: 'forest', sx: 8, sy: 1 },
+    { gx: 12, gy: 11, to: 'town', sx: 8, sy: 2 },
+  ],
+  harbor: [
+    { gx: 0, gy: 6, to: 'town', sx: 14, sy: 6 },
+  ],
+};
+// Peron kereta tiap map: [gx, gy] petak tengah peron, titik lahir naik kereta.
+const TRAIN_SPAWN = { town: [7, 9], forest: [7, 9], mountain: [7, 9], harbor: [7, 7] };
+
 // Dua map. Kota tetap 16x12; plot mulai 16x12 lalu membesar tiap ekspansi
 // (ukuran dasar sama dengan grid v1 supaya simpan lama termigrasi utuh).
 const TOWN_W = 16, TOWN_H = 12;
@@ -153,34 +212,74 @@ const HARVEST_TEXT = { // teks melayang panen, kunci = obj atau terrain
   oreTin: '+1 Tin Ore', sand: '+1 Sand', clay: '+1 Clay', cotton: '+1 Cotton',
 };
 
-// Peta awal ditaruh eksplisit supaya selalu sama. Kota: toko, Mayor,
-// kotak plot, dan semua sumber daya. Plot: rumput kosong siap dibangun.
+// Peta awal ditaruh eksplisit supaya selalu sama. Lima map, tiap zona
+// map sendiri. Kota: 5 toko, Mayor, kotak plot, sungai di utara dengan
+// jembatan ke gunung, clay di tepian. Hutan: pohon Oak dan ladang kapas.
+// Gunung: pegunungan, bijih, hulu sungai. Pelabuhan: laut, pantai pasir,
+// dermaga. Plot: rumput kosong siap dibangun.
+const MAP_W = 16, MAP_H = 12;
 function buildMap() {
   S.machines.clear(); S.conveyors.clear(); S.storages.clear();
   S.walls.clear(); S.decor.clear();
   S.expansion = 0; S.autoSeller = false; S.autoSellerT = 0;
 
-  const town = makeGrid(TOWN_W, TOWN_H);
-  const put = (list, obj) => list.forEach(([gx, gy]) => {
-    town[gy][gx].obj = obj;
-    if (NODES[obj]) town[gy][gx].hp = NODES[obj].hp;
+  const put = (g, list, obj) => list.forEach(([gx, gy]) => {
+    g[gy][gx].obj = obj;
+    if (NODES[obj]) g[gy][gx].hp = NODES[obj].hp;
   });
-  const terrain = (list, t) => list.forEach(([gx, gy]) => { town[gy][gx].t = t; });
+  const terrain = (g, list, t) => list.forEach(([gx, gy]) => { g[gy][gx].t = t; });
+  const platform = (g, px, py) => {
+    terrain(g, [[px - 1, py], [px, py], [px + 1, py]], 'platform');
+    g[py - 1][px].obj = 'train';
+  };
 
-  put([[1, 1], [2, 1], [1, 3], [2, 4], [3, 2], [1, 5], [3, 5], [2, 2], [0, 2], [3, 1]], 'tree');
-  put([[13, 2], [14, 3], [13, 4], [14, 1], [12, 2]], 'oreIron');
-  put([[14, 5], [13, 6], [14, 7]], 'oreCopper');
-  put([[11, 8], [12, 10], [14, 10]], 'oreTin');
-  put([[10, 1], [11, 1], [11, 2], [12, 1], [10, 2]], 'cotton');
-  put([[3, 3], [9, 6], [13, 7]], 'lantern');
-  terrain([[12, 8], [13, 8], [13, 9], [14, 9], [12, 9], [14, 8]], 'sand');
-  terrain([[1, 8], [2, 8], [2, 9], [3, 9], [1, 9], [0, 8]], 'clay');
-  town[S.shop.gy][S.shop.gx].obj = 'shop';
+  // ---- Kota 16x12 ----
+  const town = makeGrid(TOWN_W, TOWN_H);
+  terrain(town, Array.from({ length: 16 }, (_, x) => [x, 0]), 'water');
+  town[0][8].t = 'bridge'; // jembatan: satu-satunya jalan ke utara
+  for (const s of SHOP_SPOTS.filter((s) => s.map === 'town')) town[s.gy][s.gx].obj = 'shop_' + s.id;
   town[S.mayor.gy][S.mayor.gx].obj = 'mayor';
   town[S.plotPad.gy][S.plotPad.gx].obj = 'plotpad';
+  put(town, [[2, 8]], 'station');
+  platform(town, 7, 9);
+  put(town, [[3, 3], [9, 6], [12, 8]], 'lantern');
+  terrain(town, [[6, 1], [7, 1], [9, 1], [10, 1]], 'clay');
+
+  // ---- Hutan 16x12 ----
+  const forest = makeGrid(MAP_W, MAP_H);
+  put(forest, [[2, 2], [5, 2], [3, 4], [6, 3], [2, 6], [4, 7], [3, 9], [5, 10], [10, 4], [11, 8]], 'tree');
+  put(forest, [[11, 2], [12, 2], [13, 2], [11, 3], [12, 3]], 'cotton');
+  put(forest, [[10, 7]], 'lantern');
+  platform(forest, 7, 9);
+
+  // ---- Gunung 16x12 ----
+  const mountain = makeGrid(MAP_W, MAP_H);
+  put(mountain, [[0, 0], [2, 0], [4, 0], [6, 0], [8, 0], [10, 0], [12, 0], [14, 0], [1, 1], [15, 1]], 'mountain');
+  terrain(mountain, [[1, 2], [1, 3], [1, 4]], 'water'); // hulu sungai
+  terrain(mountain, [[2, 3], [2, 4]], 'clay');
+  put(mountain, [[10, 2], [12, 3], [11, 4], [13, 2], [10, 5]], 'oreIron');
+  put(mountain, [[12, 6], [13, 7], [11, 7]], 'oreCopper');
+  put(mountain, [[9, 8], [10, 9], [12, 9]], 'oreTin');
+  put(mountain, [[9, 6]], 'lantern');
+  platform(mountain, 7, 9);
+
+  // ---- Pelabuhan 16x12 ----
+  const harbor = makeGrid(MAP_W, MAP_H);
+  terrain(harbor, Array.from({ length: 16 }, (_, x) => [x, 10]), 'water');
+  terrain(harbor, Array.from({ length: 16 }, (_, x) => [x, 11]), 'water');
+  terrain(harbor, [[14, 8], [15, 8], [14, 9], [15, 9]], 'water');
+  terrain(harbor, [[7, 10], [8, 10]], 'dock'); // dermaga menjorok ke laut
+  for (const s of SHOP_SPOTS.filter((s) => s.map === 'harbor')) harbor[s.gy][s.gx].obj = 'shop_' + s.id;
+  put(harbor, [[2, 8]], 'station');
+  platform(harbor, 7, 7);
+  put(harbor, [[9, 5]], 'lantern');
+  terrain(harbor, [[2, 9], [4, 9], [6, 9], [10, 9], [12, 9], [13, 9]], 'sand');
 
   S.maps = {
     town: { w: TOWN_W, h: TOWN_H, grid: town },
+    forest: { w: MAP_W, h: MAP_H, grid: forest },
+    mountain: { w: MAP_W, h: MAP_H, grid: mountain },
+    harbor: { w: MAP_W, h: MAP_H, grid: harbor },
     plot: { w: PLOT_BASE_W, h: PLOT_BASE_H, grid: makeGrid(PLOT_BASE_W, PLOT_BASE_H) },
   };
   applyMap('town');
@@ -188,7 +287,7 @@ function buildMap() {
 
 // Tutorial: satu sistem per langkah, bisa dilewati.
 const TUTORIAL = [
-  { text: 'Ketuk pohon. Karakter akan berjalan dan menebang.', done: () => (S.stats.harvested.Log || 0) >= 1 },
+  { text: 'Jalan ke ujung barat kota untuk masuk ke Hutan, ketuk pohon.', done: () => (S.stats.harvested.Log || 0) >= 1 },
   { text: 'Kumpulkan 5 Log.', done: () => (S.stats.harvested.Log || 0) >= 5 },
   { text: 'Jalan ke kotak plot putih untuk masuk ke lahanmu.', done: () => S.map === 'plot' || [...S.machines.values()].length > 0 },
   { text: 'Buka BANGUN, taruh Sawhorse di rumput kosong.', done: () => [...S.machines.values()].some((m) => m.id === 'sawhorse') },

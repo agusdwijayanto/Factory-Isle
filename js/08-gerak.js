@@ -12,9 +12,11 @@ function blockedForWalk(gx, gy) {
   const k = key(gx, gy);
   // Bangunan hanya ada di plot; di kota koordinat yang sama adalah rumput.
   if (S.map === 'plot' && (S.machines.has(k) || S.storages.has(k) || S.walls.has(k))) return true;
-  if (S.map === 'town' && gx === S.shop.gx && gy === S.shop.gy) return true;
   const t = S.grid[gy][gx];
-  if (t.obj === 'mayor') return true;
+  // Air menghalangi; jembatan (rumput jembatan) satu-satunya jalan menyeberang.
+  if (t.t === 'water') return true;
+  if (t.obj === 'mayor' || t.obj === 'station' || t.obj === 'train' || t.obj === 'mountain') return true;
+  if (t.obj && t.obj.startsWith('shop')) return true;
   // Pohon/bijih/kapas hidup menghalangi; tunggul (hp 0) dan lentera bisa dilewati.
   if (t.obj && NODES[t.obj] && t.hp > 0) return true;
   return false;
