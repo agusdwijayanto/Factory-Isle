@@ -100,7 +100,7 @@ function updatePlayer(dt) {
     if (dist <= step) {
       p.fx = tx; p.fy = ty;
       p.path.shift();
-      // Injak kotak plot / gerbang: pindah map saat itu juga, jalur batal.
+      // Injak jalan masuk/keluar lahan: pindah map saat itu juga, jalur batal.
       if (checkMapTrigger()) return;
       if (!p.path.length) {
         p.frame = 0;
@@ -128,7 +128,7 @@ function updatePlayer(dt) {
   }
 }
 
-// Injak pemicu pindah map: kotak plot di kota, gerbang di plot, dan pintu
+// Injak pemicu pindah map: jalan masuk di kota, jalan keluar di plot, dan pintu
 // keluar di ujung tiap map zona.
 function checkMapTrigger() {
   const cur = playerTile();

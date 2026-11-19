@@ -29,7 +29,6 @@ function render() {
 
   const glows = [];
   const onPlot = S.map === 'plot';
-  const gate = onPlot ? gatePos() : null;
   const playerS = Math.floor(S.player.fx + S.player.fy);
   let playerDrawn = false;
   for (let s = 0; s <= GRID_W + GRID_H - 2; s++) {
@@ -105,7 +104,6 @@ function render() {
         ctx.strokeText(label, x, y - 56 * z);
         ctx.fillStyle = '#ffd75e'; ctx.fillText(label, x, y - 56 * z);
       }
-      if (gate && gx === gate.gx && gy === gate.gy) Atlas.draw(ctx, 'gate', x, y + 6 * z, z);
       const m = onPlot ? S.machines.get(key(gx, gy)) : null;
       if (m) {
         Atlas.draw(ctx, m.id, x, y + 6 * z, z);

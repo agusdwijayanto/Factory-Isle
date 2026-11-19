@@ -93,7 +93,7 @@ function applyMap(name) {
 }
 
 // Pindah map: titik lahir tetap sesuai desain (masuk plot di depan
-// gerbang, kembali ke kota di samping kotak plot), bukan posisi lama.
+// jalan keluar, kembali ke kota di samping jalan masuk), bukan posisi lama.
 // spawn {fx, fy} opsional: pintu keluar dan kereta mengisi titik lahirnya.
 function switchMap(name, spawn) {
   const p = S.player;

@@ -190,8 +190,19 @@ Tes: headless 194/194, Playwright 116/116, nol error konsol. Versi aset: ?v=26.
 
 Tes: headless 205/205, Playwright 127/127, nol error konsol. Versi aset: ?v=27.
 
+## Sudah live — v28 (19 Nov 2026)
+
+- [x] Lahan (perintah Agus): gerbang jadi jalan, sisa jalan jadi grass. Petak keluar (8,11) = Agus (1,9) kini jalan polos tanpa gambar gerbang; jalan pendek lama (8,7)-(8,10) = Agus (x=2-5, z=9) kini rumput dan bisa dibangun — lahan tinggal 1 petak jalan. Pemicu keluar di (8,11), titik lahir di lahan (8,10), dan `gatePos()` tidak berubah; penjaga `canPlace` untuk petak gerbang tetap dipertahankan (ekspansi memindah gerbang ke petak rumput, jadi penjaga itu masih perlu). (`js/03-map-lahan.js`, gambar gerbang dihapus dari `js/05-render.js`; pelukis + sel atlas gerbang dibiarkan seperti stasiun v18.)
+- [x] Kota (perintah Agus): kotak plot jadi jalan. Petak (8,11) = Agus (1,9) kini jalan, kolom jalan gx=8 nyambung sampai tepi bawah; kotak putih (obj `plotpad`) dihapus. `S.plotPad` tetap di (8,11) sebagai posisi pemicu masuk lahan dan patokan lahir kembali; hanya rupanya yang berubah. (`js/03-map-kota.js`.)
+- [x] Lampu kota pindah (tambahan Agus, dilipat ke v28): (9,4)->(5,2), (6,10)->(7,8), (4,13)->(5,15) = game (3,3)->(1,7), (9,6)->(7,5), (12,8)->(14,7). Jumlah tetap 3; petak tujuan rumput kosong (dicek dari kode); (9,6) kembali jalan polos. (`js/03-map-kota.js`.)
+- [x] Teks ikut diperbarui (gerbang/kotak putih sudah tidak ada): 2 langkah tutorial (`js/03-data-tutorial.js`), teks Bantuan (`index.html`), 2 toast bangun (`js/06-input.js`, `js/13-ui-build.js`).
+- [x] Migrasi simpan lama (`js/12-simpan.js`): cek usang kota kini `grid[11][8].t !== 'road'` (bukan `obj !== 'plotpad'`, supaya tidak bangun ulang tiap muat) + cek lampu baru (1,7); cek usang lahan baru (`plotStale`) membangun ulang grid lahan di ukuran saat ini (ekspansi terjaga) dengan jalan hanya di petak keluar — plot tidak ikut `buildStaticMaps()`, jadi dibangun ulang terpisah. Simpan baru v28 tidak dibangun ulang (dicek: petak jalan lain yang diubah tetap berubah sesudah muat). Progres pemain tetap.
+- [x] Tes regresi baru: headless memeriksa lahan 1 jalan + bekas jalan rumput dan bisa dibangun (Sawhorse terpasang di (8,9)), jalan keluar tetap tidak bisa ditaruh, pergi-pulang tetap jalan, lampu baru + lampu lama hilang, migrasi v28 + simpan baru tidak dibangun ulang; Playwright memeriksa data + jalan nyata dan lampu baru. Cek visual memeriksa piksel: (8,11) bukan rumput, (8,9) rumput; screenshot lahan/kota/lampu dilihat langsung. Cek lama yang mengunci jalan pendek, gambar gerbang, dan obj plotpad diperbaiki.
+
+Tes: headless 220/220, Playwright 129/129, nol error konsol. Versi aset: ?v=28.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v27.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v28.

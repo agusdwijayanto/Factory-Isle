@@ -51,7 +51,7 @@ Object.assign(UI, {
     }
     if (S.map !== 'plot') {
       SFX.play('error');
-      this.toast('Bangun hanya di lahanmu. Masuk lewat kotak plot putih di kota.');
+      this.toast('Bangun hanya di lahanmu. Masuk lewat ujung jalan di selatan kota.');
       return;
     }
     S.placing = { kind: item.kind, id: item.id };

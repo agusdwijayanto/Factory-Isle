@@ -1,7 +1,7 @@
 // Bantuan bangun map + rakitan map statis.
 // Pecahan 03-data.js (v16).
 // Peta awal ditaruh eksplisit supaya selalu sama. Lima map, tiap zona
-// map sendiri. Kota: 5 toko, Mayor, kotak plot, sungai di utara dengan
+// map sendiri. Kota: 5 toko, Mayor, jalan masuk lahan, sungai di utara dengan
 // jembatan ke gunung, clay di tepian. Hutan: pohon Oak dan ladang kapas.
 // Gunung: pegunungan, bijih, hulu sungai. Pelabuhan: laut, pantai pasir,
 // dermaga. Plot: rumput kosong siap dibangun.

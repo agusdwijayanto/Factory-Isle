@@ -1,7 +1,7 @@
-// Lahan: rumput kosong siap dibangun, jalan pendek gerbang ke tengah.
+// Lahan: rumput kosong siap dibangun; hanya petak keluar yang jalan.
 // Pecahan 03-data.js (v16).
 function buildPlot() {
   const plot = makeGrid(PLOT_BASE_W, PLOT_BASE_H);
-  roadAt(plot, [[8, 7], [8, 8], [8, 9], [8, 10]]); // jalan pendek gerbang ke tengah
+  roadAt(plot, [[8, 11]]); // petak keluar di tepi bawah; sisanya rumput, bisa dibangun
   return plot;
 }

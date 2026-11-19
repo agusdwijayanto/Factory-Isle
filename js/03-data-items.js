@@ -75,8 +75,8 @@ const SHOP_SPOTS = [
 ];
 
 // Pintu keluar antar map: injak petak (gx,gy) pindah ke map `to`, lahir di
-// petak (sx,sy) map tujuan. Mekanisme TP yang sama seperti kotak plot dan
-// gerbang v12.
+// petak (sx,sy) map tujuan. Mekanisme TP yang sama seperti jalan
+// masuk/keluar lahan v12.
 const MAP_EXITS = {
   town: [
     { gx: 8, gy: 0, to: 'mountain', sx: 14, sy: 10 }, // jembatan ke gunung, lahir di jalan selatan (x=2, z=15), satu petak di barat pintu ke kota

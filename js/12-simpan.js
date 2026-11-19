@@ -63,18 +63,32 @@ function loadGame() {
   }
   // Simpan v2 lama (sebelum jalan/rel v14, sebelum toko disebar v18,
   // sebelum peron hutan pindah v19, sebelum air/jembatan/jalan v23,
-  // sebelum pad/peron kota pindah v25):
+  // sebelum pad/peron kota pindah v25, sebelum gerbang/pad jadi jalan v28):
   // bangun ulang map statis supaya jalan, rel, posisi toko, posisi
   // peron/kereta hutan, air/jembatan/jalan, dan posisi pad/peron kota
   // yang baru muncul; progres pemain (uang, tas, mesin, lahan) tetap.
+  // Lahan dibangun ulang terpisah (bukan bagian buildStaticMaps) dan
+  // hanya kalau petak keluarnya masih lama, supaya simpan yang sudah
+  // baru tidak dibangun ulang tiap muat.
   const townStale = S.maps.town && (!S.maps.town.grid.flat().some((t) => t.t === 'road')
     || !SHOP_SPOTS.filter((s) => s.map === 'town').every((s) => S.maps.town.grid[s.gy][s.gx].obj === 'shop_' + s.id)
-    || S.maps.town.grid[11][8].obj !== 'plotpad');
+    || S.maps.town.grid[11][8].t !== 'road'
+    || S.maps.town.grid[7][1].obj !== 'lantern');
   const forestStale = S.maps.forest && (S.maps.forest.grid[9][14].obj !== 'train' || S.maps.forest.grid[0][8].t !== 'bridge');
   const mountainStale = S.maps.mountain && S.maps.mountain.grid[5][1].t !== 'water';
+  const plotStale = S.maps.plot && (S.maps.plot.grid[11][8].t !== 'road' || S.maps.plot.grid[10][8].t !== 'grass');
   if (townStale || forestStale || mountainStale) {
     const sm = buildStaticMaps();
     for (const [name, m] of Object.entries(sm)) S.maps[name] = m;
+  }
+  if (plotStale) {
+    // Lahan: petak keluar jadi jalan, sisanya rumput — di ukuran lahan
+    // saat ini (ekspansi ikut terjaga), supaya jalan keluar tetap di
+    // tengah tepi bawah yang baru.
+    const m = S.maps.plot;
+    const g = makeGrid(m.w, m.h);
+    roadAt(g, [[Math.floor(m.w / 2), m.h - 1]]);
+    S.maps.plot = { w: m.w, h: m.h, grid: g };
   }
   applyMap(S.maps[data.map] ? data.map : 'town');
   if (data.player) {
