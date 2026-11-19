@@ -331,6 +331,8 @@ Tes: headless 411/411, Playwright 204/204, nol error konsol. Versi aset: ?v=42.
 
 - [x] Perbaiki cacat v42: toko Pelabuhan memanggil `_paintWesternShop`; jalan jadi tanah frontier (debu kemerahan + bekas roda wagon); Mayor kembali ke perempuan pirang asli (foto Mayor). (`js/05-paint-tempat.js`, `js/05-paint-tanah.js`, `index.html`.)
 
+Tes: headless 411/411, Playwright 204/204, nol error konsol. Versi aset: ?v=43.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
