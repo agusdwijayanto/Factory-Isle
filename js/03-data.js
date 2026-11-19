@@ -283,10 +283,12 @@ function buildStaticMaps() {
   put(mountain, [[12, 6], [13, 7], [11, 7]], 'oreCopper');
   put(mountain, [[9, 8], [10, 9], [12, 9]], 'oreTin');
   put(mountain, [[9, 6]], 'lantern');
-  // Peron mengapit rel: rel penuh atas-bawah di x=7, kereta di (7,9).
+  // Peron mengapit rel: rel dari bawah berhenti di peron (terminus),
+  // tidak tembus ke atas — tidak ada map di utara gunung. Kereta di (7,9).
   terrain(mountain, [[6, 8], [8, 8]], 'platform');
   mountain[9][7].obj = 'train';
-  railYAt(mountain, 7, 0, 11);
+  railYAt(mountain, 7, 8, 11);
+  mountain[8][7].t = 'railStop'; // palang penahan di ujung rel paling atas
   roadAt(mountain, [
     ...rng(4, 12).map((gx) => [gx, 10]),
     ...rng(5, 7).map((gy) => [6, gy]),

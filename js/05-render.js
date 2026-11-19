@@ -148,6 +148,19 @@ const PAINTERS = {
       g.beginPath(); g.moveTo(ox + x1, oy + y1); g.lineTo(ox + x2, oy + y2); g.stroke();
     });
   },
+  // Ujung rel (terminus): rel seperti railY + palang merah di ujung atas.
+  railStop: (g, ox, oy, c) => {
+    P_ground(g, ox + 32, oy + 32, '#6e6a72');
+    g.strokeStyle = '#d7dbe0'; g.lineWidth = 2;
+    g.beginPath(); g.moveTo(ox + 51, oy + 26); g.lineTo(ox + 20, oy + 41); g.stroke();
+    g.beginPath(); g.moveTo(ox + 44, oy + 23); g.lineTo(ox + 13, oy + 38); g.stroke();
+    g.strokeStyle = '#4a464e'; g.lineWidth = 3;
+    [[38, 24, 42, 32], [30, 28, 34, 36], [22, 32, 26, 40]].forEach(([x1, y1, x2, y2]) => {
+      g.beginPath(); g.moveTo(ox + x1, oy + y1); g.lineTo(ox + x2, oy + y2); g.stroke();
+    });
+    g.strokeStyle = '#c0392b'; g.lineWidth = 4;
+    g.beginPath(); g.moveTo(ox + 41, oy + 20); g.lineTo(ox + 54, oy + 27); g.stroke();
+  },
   tree: (g, ox, oy) => {
     const cx = ox + 32, gy = oy + 62;
     P_shadow(g, cx, gy, 13);
@@ -765,7 +778,7 @@ function render() {
         : t.t === 'water' ? 'water' : t.t === 'bridge' ? 'bridge'
         : t.t === 'platform' ? 'platform' : t.t === 'dock' ? 'dock'
         : t.t === 'road' ? 'road' : t.t === 'railX' ? 'railX'
-        : t.t === 'railY' ? 'railY'
+        : t.t === 'railY' ? 'railY' : t.t === 'railStop' ? 'railStop'
         : 'grass' + Math.floor(hash2(gx, gy) * 4);
       Atlas.drawTile(ctx, ground, x, y, z);
 

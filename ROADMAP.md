@@ -77,10 +77,19 @@ Tes: headless 113/113, Playwright 99/99, nol error konsol. Versi aset: ?v=13.
 
 Tes: headless 126/126, Playwright 103/103, nol error konsol. Versi aset: ?v=14.
 
+## Sudah live — v15 (19 Nov 2026)
+
+- [x] Rel Gunung jadi terminus: rel hanya dari ujung bawah map naik sampai baris peron (y=8 sampai 11), lalu berhenti di peron. Rel di atas peron (y=0 sampai 7) dihapus — tidak ada map di utara gunung, jadi rel tidak tembus ke mana-mana.
+- [x] Palang penahan (buffer stop) merah di ujung rel paling atas (7,8), sprite prosedural baru `railStop` (sel atlas baris 7 kolom 0, tanpa ubah ukuran atlas). Rel kota, hutan, dan pelabuhan tidak diubah.
+- [x] Migrasi simpan v2 lama ikut membangun ulang rel terminus + palang penahan (tes migrasi diperluas).
+- [x] TRAIN_SPAWN gunung tetap [6,8]; kereta tetap di atas rel di (7,9).
+
+Tes: headless 126/126, Playwright 103/103, nol error konsol. Versi aset: ?v=15.
+
 ## Di luar tahap ini (sesuai PRD)
 
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v14.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v15.
