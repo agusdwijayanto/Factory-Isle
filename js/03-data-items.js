@@ -88,8 +88,8 @@ const MAP_EXITS = {
     { gx: 15, gy: 6, to: 'town', sx: 1, sy: 6 },
   ],
   mountain: [
-    { gx: 4, gy: 11, to: 'forest', sx: 8, sy: 1 },
-    { gx: 12, gy: 11, to: 'town', sx: 8, sy: 2 },
+    { gx: 6, gy: 11, to: 'forest', sx: 8, sy: 1 }, // pintu ke hutan di selatan spawn (6,10) (x=1, z=7)
+    { gx: 15, gy: 10, to: 'town', sx: 8, sy: 1 }, // ujung timur jalan selatan (x=2, z=16), lahir di bawah jembatan (x=11, z=9)
   ],
   harbor: [
     { gx: 0, gy: 6, to: 'town', sx: 14, sy: 6 },

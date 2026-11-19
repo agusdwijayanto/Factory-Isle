@@ -159,10 +159,12 @@ Tes: headless 173/173, Playwright 110/110, nol error konsol. Versi aset: ?v=23.
 
 ## Sudah live — v24 (19 Nov 2026)
 
-- [x] Bug spawn Hutan -> Gunung (laporan Agus): pemain lahir di (2,5) x/z, seharusnya (2,7). Akar masalah: titik lahir tetap di `MAP_EXITS` (`js/03-data-items.js`) masih (4,10) — petak yang sejak v23 jadi rumput. Perbaikan: spawn pindah ke (6,10) = Agus (2,7), di atas jalan selatan gunung. Arah balik (Gunung (4,11) -> Hutan, lahir (8,1)) dan transisi lain tidak diubah.
-- [x] Tes regresi baru: headless dan Playwright menegaskan posisi lahir Hutan -> Gunung (6,10) di atas jalan + label penggarisnya (2,7), dan pintu balik tetap jalan. Dua cek lama yang mengunci spawn (4,10) sebagai benar diperbaiki — itu sebabnya bug ini lolos.
+- [x] Bug spawn Hutan -> Gunung (laporan Agus): pemain lahir di (2,5) x/z, seharusnya (2,7). Akar masalah: titik lahir tetap di `MAP_EXITS` (`js/03-data-items.js`) masih (4,10) — petak yang sejak v23 jadi rumput. Perbaikan: spawn pindah ke (6,10) = Agus (2,7), di atas jalan selatan gunung.
+- [x] Pintu Gunung -> Hutan dipindah (perintah Agus): dari (4,11) ke (6,11) = Agus (1,7), tepat di selatan petak lahir (6,10). Lahir di Hutan tetap (8,1) = Agus (11,9).
+- [x] Pintu Gunung -> Kota dipindah (perintah Agus): dari (12,11) ke (15,10) = Agus (2,16), ujung timur baris jalan gy=10 (bukan (15,11)). Lahir di Kota pindah dari (8,2) ke (8,1) = Agus (11,9), di jalan bawah jembatan. Spawn Kota -> Gunung (12,10) tidak diubah.
+- [x] Tes regresi baru: headless dan Playwright menegaskan posisi lahir Hutan -> Gunung (6,10) di atas jalan + label penggarisnya (2,7), pintu (6,11) -> Hutan lahir (8,1), pintu (15,10) -> Kota lahir (8,1), dan pintu lama (4,11) dan (12,11) sudah mati. Dua cek lama yang mengunci spawn (4,10) sebagai benar diperbaiki — itu sebabnya bug ini lolos.
 
-Tes: headless 176/176, Playwright 112/112, nol error konsol. Versi aset: ?v=24.
+Tes: headless 180/180, Playwright 115/115, nol error konsol. Versi aset: ?v=24.
 
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
