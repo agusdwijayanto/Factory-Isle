@@ -16,6 +16,8 @@ function blockedForWalk(gx, gy) {
   // v36: air bisa dilewati dengan berenang (lambat) — pulau palem di
   // pelabuhan hanya dicapai lewat air. Jembatan tetap jalan tercepat.
   if (t.obj === 'mayor' || t.obj === 'train' || t.obj === 'station' || t.obj === 'mountain') return true;
+  // v49: papan COMING SOON menutup jalan buntu timur/barat kota.
+  if (t.obj === 'signClosed') return true;
   if (t.obj && t.obj.startsWith('shop')) return true;
   // Pohon/bijih/kapas hidup menghalangi; tunggul (hp 0) dan lentera bisa dilewati.
   if (t.obj && NODES[t.obj] && t.hp > 0) return true;
@@ -30,9 +32,11 @@ function blockedForWalk(gx, gy) {
 // bijih di dekat pintu tidak malah pindah map. Petak keluar tetap boleh
 // jadi target (klik pintu memang mau pindah).
 function isExitTile(gx, gy) {
-  for (const e of MAP_EXITS[S.map] || []) if (e.gx === gx && e.gy === gy) return true;
-  if (S.map === 'town' && gx === S.plotPad.gx && gy === S.plotPad.gy) return true;
+  // v49: jembatan kota (8,0) = pintu ke Lahan; gerbang lahan (bawah) = pintu
+  // ke Kota. Dua-duanya nggak boleh dilewati saat jalan ke target lain.
+  if (S.map === 'town' && gx === 8 && gy === 0) return true;
   if (S.map === 'plot') { const g = gatePos(); if (gx === g.gx && gy === g.gy) return true; }
+  for (const e of MAP_EXITS[S.map] || []) if (e.gx === gx && e.gy === gy) return true;
   return false;
 }
 

@@ -81,7 +81,7 @@ Object.assign(UI, {
     }
     if (S.map !== 'plot') {
       SFX.play('error');
-      this.toast('Bangun hanya di lahanmu. Masuk lewat ujung jalan di selatan kota.');
+      this.toast('Bangun hanya di lahanmu. Masuk lewat jembatan di utara kota.');
       return;
     }
     // v36: Storage Rack Advanced butuh item di tas (kecuali Mode Admin).

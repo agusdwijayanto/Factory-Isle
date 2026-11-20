@@ -347,8 +347,22 @@ Tes: headless 411/411, Playwright 204/204, nol error konsol. Versi aset: ?v=43.
 
 Tes: headless 411/411, Playwright 204/204, nol error konsol. Versi aset: ?v=44.
 
+## Sudah live — v49 (20 Nov 2026)
+
+- [x] Dunia dirombak jadi SATU RANTAI 8 map dari utara ke selatan: Gunung Es & Tambang -> Lahan Ijo -> Hutan Rimbun -> Hutan Dikit -> Lahan (plot) -> Kota -> Lahan Ijo Selatan -> Gurun & Pelabuhan. Nama map di HUD ikut (`MAP_NAMES`), urutan pintu utara-selatan di `MAP_EXITS`, peta lama (gunung/hutan/pelabuhan 16x12 + kota 20x14) dihapus. (`js/03-data-maps.js`, `js/03-data-items.js`, `js/03-map-gunung-es.js`, `js/03-map-padang.js`, `js/03-map-hutan2.js`, `js/03-map-lahan.js`.)
+- [x] Tiap map KOTAK 20x20 = 400 petak (kota ikut jadi 20x20; dulu 20x14). Lahan tetap dasar 16x12 lalu membesar sampai 24x16 lewat Mayor. (`js/03-map-*.js`, `js/03-data-items.js`.)
+- [x] Rel kolom x=9 di SEMUA map, termasuk lahan; jalan utama kolom x=8 tembus tiap map (lahan: dari gerbang atas (8,0) ke gerbang bawah (8,h-1)). Gunung Es adalah terminus utara (palang di (9,6)), Pelabuhan terminus selatan (palang di (9,7)). Kolom sungai/jalan/rel lahan di-stamp ulang tiap ekspansi supaya tidak ketinggalan di baris baru. (`js/03-map-*.js`, `js/03-map-lahan.js`, `js/01-core.js`.)
+- [x] Sungai mengalir utara-selatan sampai laut: kolom 1 di Gunung Es (beku), Lahan Ijo, Hutan Rimbun, Hutan Dikit, dan Lahan; masuk kota lewat jembatan utara (8,0), mengalir ke timur, lalu turun kolom 18 di Kota -> Lahan Ijo Selatan -> Pelabuhan, bermuara di teluk. Air tiap map wajib nyambung di perbatasan (dicek headless). Dua jalan kota menyeberangi sungai lewat jembatan (18,2) dan (18,6). (`js/03-map-*.js`.)
+- [x] Stasiun di 4 map: Gunung Es (8,7), Hutan Rimbun (14,8) — kereta tetap di (14,9), tidak dipindah — Kota (10,7), Gurun & Pelabuhan (8,6). Peron dihapus total (petak `platform` nol di semua map, helpernya dibuang). Panel naik kereta dibuka dari bangunan stasiun, bukan dari kereta. (`js/03-map-*.js`, `js/07-pemain.js`, `js/03-data-maps.js`, `js/13-ui-train.js`.)
+- [x] Kota: jalan utama timur-barat baris 6 buntu di kedua ujung, dipasang papan "COMING SOON" di (0,6) dan (19,6) — petaknya memblokir jalan (pemain berhenti satu petak sebelumnya). Sprite baru `signClosed` (atlas baris 23) di kedua manifes. (`js/03-map-kota.js`, `js/05-paint-node.js`, `js/04-atlas.js`, `assets/atlas-manifest.json`.)
+- [x] Lahan jadi map ke-5 di jalur, dicapai jalan kaki ke utara dari kota lewat jembatan (8,0); keluar lahan lewat gerbang bawah (8,h-1) ke Kota atau gerbang atas (8,0) ke Hutan Dikit. Titik (8,0) dan gerbang tidak bisa dibangun. (`js/07-pemain.js`, `js/05-render.js`, `js/01-core.js`.)
+- [x] Migrasi simpan lama (v2 v48): map statis dibangun ulang di ukuran baru, lahan di-stamp ulang (dua gerbang + kolom sungai/jalan/rel); uang, tas, mesin, ekspansi, perkakas, badge, tutorial tetap. Cek pakai simpan v48 buatan (uang 4242, 20x14, ada map `mountain`): lolos semua. (`js/12-simpan.js`.)
+- [x] Tata bahasa tutorial dan teks bantuan ikut arah baru (masuk lahan lewat jembatan utara, naik kereta dari stasiun). (`js/03-data-tutorial.js`, `js/13-ui-build.js`, `js/06-input.js`, `index.html`.)
+
+Tes: headless 197/197 (`node ~/workspace/indotopia-cek-v49.js`, memuat berkas game tanpa DOM), browser 12 transisi map jalan kaki lintas 8 map lolos, 4 stasiun membuka panel kereta dengan 3 tujuan masing-masing, papan COMING SOON menahan pemain, ekspansi 24x16 menjaga kolom + gerbang, migrasi simpan v48 lolos, nol error konsol. Versi aset: ?v=49.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v40.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v49.

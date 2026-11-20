@@ -1,26 +1,34 @@
-// Pelabuhan 16x12: laut, pantai pasir, dermaga. Pecahan 03-data.js (v16).
-// v36: desa gurun di timur (pasir gx 10-14, gy 0-4) + stasiun + kapal
-// bajak laut; pulau palem di tenggara (dicapai dengan berenang).
+// v49: Gurun + Pelabuhan, 20x20 — ujung SELATAN rantai (rel terminus).
+// Desa gurun di timur laut (pasir), pantai + dermaga di selatan (laut),
+// pulau palem di teluk tenggara (dicapai dengan berenang), stasiun di
+// (8,6) + kereta (9,6), rel kolom 9 berhenti di palang (9,7). Sungai kolom 18
+// membawa air dari Lahan Ijo Selatan ke laut.
 function buildHarbor() {
   const harbor = makeGrid(MAP_W, MAP_H);
-  terrain(harbor, Array.from({ length: 16 }, (_, x) => [x, 10]), 'water');
-  terrain(harbor, Array.from({ length: 16 }, (_, x) => [x, 11]), 'water');
-  terrain(harbor, [[14, 8], [15, 8], [14, 9], [15, 9]], 'water');
-  terrain(harbor, [[7, 10], [8, 10]], 'dock'); // dermaga menjorok ke laut
+  // Gurun + desa: pasir di timur laut.
+  terrain(harbor, [...rng(9, 17).flatMap((gx) => rng(1, 5).map((gy) => [gx, gy]))], 'sand');
+  // Pantai di selatan.
+  terrain(harbor, [...rng(0, 12).flatMap((gx) => rng(12, 17).map((gy) => [gx, gy]))], 'sand');
+  // Jalan: kolom 8 dari pintu utara + jalan pantai baris 5.
+  terrain(harbor, rng(0, 5).map((gy) => [8, gy]), 'road');
+  terrain(harbor, rng(0, 17).map((gx) => [gx, 5]), 'road');
+  // Rel terminus selatan (rel kolom 9 lewat di atas jalan pantai).
+  terrain(harbor, rng(0, 6).map((gy) => [9, gy]), 'railY');
+  terrain(harbor, [[9, 7]], 'railStop');
+  harbor[6][8].obj = 'station';
+  harbor[6][9].obj = 'train';
   for (const s of SHOP_SPOTS.filter((s) => s.map === 'harbor')) harbor[s.gy][s.gx].obj = 'shop_' + s.id;
-  // v48: stasiun menggantikan peron (baris 6 diganti bangunan stasiun).
-  harbor[6][7].obj = 'station';
-  harbor[7][7].obj = 'train';
-  railXAt(harbor, 7, 0, 8); // rel barat sampai stasiun
-  terrain(harbor, rng(0, 9).map((gy) => [15, gy]), 'water'); // laut di sisi kanan
-  // v36: desa gurun (pasir).
-  terrain(harbor, [...rng(10, 14).flatMap((gx) => rng(0, 4).map((gy) => [gx, gy]))], 'sand');
-  // v36: pulau palem — 3 petak rumput di laut tenggara, 2 palem, 1 petak
-  // kosong untuk mendarat (14,11); air berkurang 42 jadi 39.
-  terrain(harbor, [[14, 10], [15, 10], [14, 11]], 'grass');
-  put(harbor, [[14, 10], [15, 10]], 'palm');
-  roadAt(harbor, [...rng(0, 10).map((gx) => [gx, 6]), [7, 8], [7, 9]]);
-  put(harbor, [[9, 5]], 'lantern');
-  terrain(harbor, [[2, 9], [4, 9], [6, 9], [10, 9], [12, 9], [13, 9]], 'sand');
+  // Laut: tepi selatan + jalur timur + teluk tenggara.
+  terrain(harbor, [...rng(0, MAP_W - 1).flatMap((gx) => [[gx, 18], [gx, 19]])], 'water');
+  terrain(harbor, rng(0, 17).map((gy) => [MAP_W - 1, gy]), 'water');
+  terrain(harbor, [...rng(13, 19).flatMap((gx) => rng(15, 17).map((gy) => [gx, gy]))], 'water');
+  // v49: sungai dari Lahan Ijo Selatan turun kolom 18, bermuara di teluk.
+  terrain(harbor, rng(0, 14).map((gy) => [18, gy]), 'water');
+  // Dermaga menjorok ke laut.
+  terrain(harbor, [[7, 17], [8, 17], [7, 18], [8, 18]], 'dock');
+  // Pulau palem di teluk: 3 petak rumput, 2 palem, 1 petak mendarat (15,17).
+  terrain(harbor, [[15, 16], [16, 16], [15, 17]], 'grass');
+  put(harbor, [[15, 16], [16, 16]], 'palm');
+  put(harbor, [[10, 8]], 'lantern');
   return harbor;
 }

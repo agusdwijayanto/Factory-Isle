@@ -7,6 +7,7 @@ Object.assign(Atlas.painters, PAINTERS);
 // yang tidak punya jatuh ke rumput diam-diam (pernah menelan railBend).
 function groundSprite(t, gx, gy) {
   return t === 'sand' ? 'sand' : t === 'clay' ? 'clay'
+    : t === 'snow' ? 'snow' : t === 'ice' ? 'ice'
     : t === 'water' ? 'water' : t === 'bridge' ? 'bridge'
     : t === 'platform' ? 'platform' : t === 'dock' ? 'dock'
     : t === 'road' ? 'road' : t === 'railX' ? 'railX'
@@ -245,6 +246,7 @@ function canPlace(gx, gy, placing) {
   if (!t || t.obj) return false;
   const g = gatePos();
   if (gx === g.gx && gy === g.gy) return false;
+  if (gx === 8 && gy === 0) return false; // v49: gerbang utara lahan ke Hutan Dikit
   const k = key(gx, gy);
   if (S.machines.has(k) || S.storages.has(k) || S.walls.has(k) || S.decor.has(k) || S.conveyors.has(k)) return false;
   if (placing && !placing.fromKey && !adminOn() && housingUsed() + housingCostOf(placing) > housingMax()) return false;

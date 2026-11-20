@@ -3,12 +3,12 @@
 // Tutorial: satu sistem per langkah, bisa dilewati.
 const TUT_INTRO = 'Mau belajar main dulu? Ikuti 8 langkah singkat, dari menebang pohon sampai membuat Motor.';
 const TUTORIAL = [
-  { text: 'Jalan ke ujung barat kota untuk masuk ke Hutan, ketuk pohon.', done: () => (S.stats.harvested.Log || 0) >= 1 },
+  { text: 'Jalan ke utara dari kota (lewat Lahan) sampai Hutan Rimbun, ketuk pohon.', done: () => (S.stats.harvested.Log || 0) >= 1 },
   { text: 'Kumpulkan 5 Log.', done: () => (S.stats.harvested.Log || 0) >= 5 },
-  { text: 'Jalan ke ujung jalan di selatan kota untuk masuk ke lahanmu.', done: () => S.map === 'plot' || [...S.machines.values()].length > 0 },
+  { text: 'Masuk ke lahanmu lewat jembatan di utara kota.', done: () => S.map === 'plot' || [...S.machines.values()].length > 0 },
   { text: 'Buka BANGUN, taruh Sawhorse di rumput kosong.', done: () => [...S.machines.values()].some((m) => m.id === 'sawhorse') },
   { text: 'Ketuk Sawhorse, pilih resep, masukkan Log.', done: () => (S.stats.crafted.Plank || 0) + (S.stats.crafted.Pillar || 0) >= 1 },
-  { text: 'Keluar lewat jalan di ujung lahan, ketuk Toko, jual hasilmu.', done: () => Object.keys(S.stats.sold).length >= 1 },
+  { text: 'Keluar lewat gerbang bawah lahan ke kota, ketuk Toko, jual hasilmu.', done: () => Object.keys(S.stats.sold).length >= 1 },
   { text: 'Riset Carpenter di menu Bangun ($50).', done: () => !!S.unlocked.carpenter },
   { text: 'Bebas: kembangkan pabrikmu. Target: buat 1 Motor.', done: () => (S.stats.crafted.Motor || 0) >= 1 },
 ];

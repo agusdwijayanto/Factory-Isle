@@ -213,7 +213,10 @@ function updatePlayer(dt) {
 // keluar di ujung tiap map zona.
 function checkMapTrigger() {
   const cur = playerTile();
-  if (S.map === 'town' && cur.gx === S.plotPad.gx && cur.gy === S.plotPad.gy) {
+  // v49: lahan ada di UTARA kota. Jembatan kota (8,0) membawa ke lahan;
+  // gerbang lahan (petak bawah, tinggi ikut ekspansi) membawa balik ke kota.
+  // Titik lahir memakai defaultSpawn supaya ikut ukuran lahan terkini.
+  if (S.map === 'town' && cur.gx === 8 && cur.gy === 0) {
     switchMap('plot');
     return true;
   }

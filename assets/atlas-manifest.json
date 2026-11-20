@@ -28,9 +28,15 @@
     },
     "barrel": {
       "col": 2,
+      "h": 1,
       "row": 14,
-      "w": 1,
-      "h": 1
+      "w": 1
+    },
+    "bench": {
+      "col": 2,
+      "h": 1,
+      "row": 23,
+      "w": 1
     },
     "blacksmith": {
       "col": 4,
@@ -50,40 +56,16 @@
       "row": 12,
       "w": 1
     },
-    "campfire": {
-      "col": 1,
-      "h": 1,
-      "row": 22,
-      "w": 1
-    },
     "campTipi": {
       "col": 0,
       "h": 1,
       "row": 22,
       "w": 1
     },
-    "planter": {
-      "col": 0,
-      "h": 1,
-      "row": 23,
-      "w": 1
-    },
-    "lamppost": {
+    "campfire": {
       "col": 1,
       "h": 1,
-      "row": 23,
-      "w": 1
-    },
-    "bench": {
-      "col": 2,
-      "h": 1,
-      "row": 23,
-      "w": 1
-    },
-    "mailbox": {
-      "col": 3,
-      "h": 1,
-      "row": 23,
+      "row": 22,
       "w": 1
     },
     "carpenter": {
@@ -100,9 +82,9 @@
     },
     "conductor": {
       "col": 0,
+      "h": 1,
       "row": 14,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "container": {
       "col": 3,
@@ -136,9 +118,9 @@
     },
     "crane": {
       "col": 3,
+      "h": 1,
       "row": 14,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "crate": {
       "col": 5,
@@ -160,9 +142,9 @@
     },
     "dyeplant": {
       "col": 3,
+      "h": 1,
       "row": 15,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "elecSaw": {
       "col": 2,
@@ -212,11 +194,17 @@
       "row": 4,
       "w": 1
     },
+    "ice": {
+      "col": 5,
+      "h": 1,
+      "row": 23,
+      "w": 1
+    },
     "item_Barrel": {
       "col": 6,
+      "h": 1,
       "row": 17,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "item_Bed": {
       "col": 7,
@@ -292,9 +280,9 @@
     },
     "item_Dye": {
       "col": 4,
+      "h": 1,
       "row": 16,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "item_DyeCan": {
       "col": 5,
@@ -304,9 +292,9 @@
     },
     "item_DyeFlower": {
       "col": 5,
+      "h": 1,
       "row": 16,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "item_DyedTextiles": {
       "col": 4,
@@ -334,27 +322,27 @@
     },
     "item_GoldIngot": {
       "col": 1,
+      "h": 1,
       "row": 16,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "item_GoldOre": {
       "col": 0,
+      "h": 1,
       "row": 16,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "item_GoldPlate": {
       "col": 2,
+      "h": 1,
       "row": 16,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "item_GrindingWheel": {
       "col": 7,
+      "h": 1,
       "row": 16,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "item_IronBeam": {
       "col": 3,
@@ -418,15 +406,15 @@
     },
     "item_Rack": {
       "col": 5,
+      "h": 1,
       "row": 17,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "item_RackAdv": {
       "col": 7,
+      "h": 1,
       "row": 17,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "item_Sand": {
       "col": 3,
@@ -436,39 +424,39 @@
     },
     "item_SeedCotton": {
       "col": 3,
+      "h": 1,
       "row": 17,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "item_SeedDye": {
       "col": 4,
+      "h": 1,
       "row": 17,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "item_SeedOak": {
       "col": 0,
+      "h": 1,
       "row": 17,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "item_SeedPalm": {
       "col": 2,
+      "h": 1,
       "row": 17,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "item_SeedPine": {
       "col": 1,
+      "h": 1,
       "row": 17,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "item_Stone": {
       "col": 3,
+      "h": 1,
       "row": 16,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "item_Table": {
       "col": 0,
@@ -484,9 +472,9 @@
     },
     "item_TinCan": {
       "col": 6,
+      "h": 1,
       "row": 16,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "item_TinOre": {
       "col": 2,
@@ -512,10 +500,22 @@
       "row": 11,
       "w": 1
     },
+    "lamppost": {
+      "col": 1,
+      "h": 1,
+      "row": 23,
+      "w": 1
+    },
     "lantern": {
       "col": 5,
       "h": 1,
       "row": 0,
+      "w": 1
+    },
+    "mailbox": {
+      "col": 3,
+      "h": 1,
+      "row": 23,
       "w": 1
     },
     "mayor": {
@@ -526,9 +526,9 @@
     },
     "mixer": {
       "col": 6,
+      "h": 1,
       "row": 14,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "mountain": {
       "col": 2,
@@ -544,9 +544,9 @@
     },
     "oreGen": {
       "col": 5,
+      "h": 1,
       "row": 14,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "oreIron": {
       "col": 1,
@@ -568,14 +568,20 @@
     },
     "palm": {
       "col": 2,
+      "h": 1,
       "row": 15,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "pickaxe": {
       "col": 7,
       "h": 1,
       "row": 2,
+      "w": 1
+    },
+    "planter": {
+      "col": 0,
+      "h": 1,
+      "row": 23,
       "w": 1
     },
     "platform": {
@@ -613,9 +619,9 @@
     },
     "rackAdv": {
       "col": 4,
+      "h": 1,
       "row": 14,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "railBend": {
       "col": 4,
@@ -655,9 +661,9 @@
     },
     "sapling": {
       "col": 4,
+      "h": 1,
       "row": 15,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "sawhorse": {
       "col": 0,
@@ -667,14 +673,62 @@
     },
     "ship": {
       "col": 5,
+      "h": 1,
       "row": 15,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "shop": {
       "col": 0,
       "h": 2,
       "row": 4,
+      "w": 2
+    },
+    "shop_blacksmith": {
+      "col": 2,
+      "h": 2,
+      "row": 18,
+      "w": 2
+    },
+    "shop_carpenter": {
+      "col": 0,
+      "h": 2,
+      "row": 18,
+      "w": 2
+    },
+    "shop_desert": {
+      "col": 4,
+      "h": 2,
+      "row": 20,
+      "w": 2
+    },
+    "shop_exchange": {
+      "col": 0,
+      "h": 2,
+      "row": 20,
+      "w": 2
+    },
+    "shop_harbor": {
+      "col": 6,
+      "h": 2,
+      "row": 20,
+      "w": 2
+    },
+    "shop_supply": {
+      "col": 2,
+      "h": 2,
+      "row": 20,
+      "w": 2
+    },
+    "shop_textile": {
+      "col": 6,
+      "h": 2,
+      "row": 18,
+      "w": 2
+    },
+    "shop_toolshop": {
+      "col": 4,
+      "h": 2,
+      "row": 18,
       "w": 2
     },
     "shovel": {
@@ -685,9 +739,15 @@
     },
     "sign": {
       "col": 6,
+      "h": 1,
       "row": 15,
-      "w": 1,
-      "h": 1
+      "w": 1
+    },
+    "signClosed": {
+      "col": 6,
+      "h": 1,
+      "row": 23,
+      "w": 1
     },
     "smelter": {
       "col": 3,
@@ -695,11 +755,17 @@
       "row": 1,
       "w": 1
     },
+    "snow": {
+      "col": 4,
+      "h": 1,
+      "row": 23,
+      "w": 1
+    },
     "sorter": {
       "col": 1,
+      "h": 1,
       "row": 14,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "splitter": {
       "col": 5,
@@ -745,9 +811,9 @@
     },
     "stone": {
       "col": 7,
+      "h": 1,
       "row": 14,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "stump": {
       "col": 7,
@@ -781,15 +847,15 @@
     },
     "treeOak": {
       "col": 0,
+      "h": 1,
       "row": 15,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "treePine": {
       "col": 1,
+      "h": 1,
       "row": 15,
-      "w": 1,
-      "h": 1
+      "w": 1
     },
     "wagon": {
       "col": 4,
@@ -814,14 +880,6 @@
       "h": 1,
       "row": 12,
       "w": 1
-    },
-    "shop_carpenter": { "col": 0, "row": 18, "w": 2, "h": 2 },
-    "shop_blacksmith": { "col": 2, "row": 18, "w": 2, "h": 2 },
-    "shop_toolshop": { "col": 4, "row": 18, "w": 2, "h": 2 },
-    "shop_textile": { "col": 6, "row": 18, "w": 2, "h": 2 },
-    "shop_exchange": { "col": 0, "row": 20, "w": 2, "h": 2 },
-    "shop_supply": { "col": 2, "row": 20, "w": 2, "h": 2 },
-    "shop_desert": { "col": 4, "row": 20, "w": 2, "h": 2 },
-    "shop_harbor": { "col": 6, "row": 20, "w": 2, "h": 2 }
+    }
   }
 }

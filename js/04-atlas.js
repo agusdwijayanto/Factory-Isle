@@ -180,5 +180,9 @@ const MANIFEST_EMBEDDED = {
     lamppost: { col: 1, row: 23, w: 1, h: 1 },
     bench: { col: 2, row: 23, w: 1, h: 1 },
     mailbox: { col: 3, row: 23, w: 1, h: 1 },
+    // v49: tanah salju + es beku (Gunung Es), papan jalan buntu.
+    snow: { col: 4, row: 23, w: 1, h: 1 },
+    ice: { col: 5, row: 23, w: 1, h: 1 },
+    signClosed: { col: 6, row: 23, w: 1, h: 1 },
   },
 };

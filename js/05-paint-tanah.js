@@ -6,6 +6,24 @@ Object.assign(PAINTERS, {
   grass2: (g, ox, oy, c) => P_ground(g, ox + 32, oy + 32, '#9BCF62'),
   grass3: (g, ox, oy, c) => P_ground(g, ox + 32, oy + 32, '#C4E88C', '#F3C9B8'),
   sand: (g, ox, oy, c) => P_ground(g, ox + 32, oy + 32, '#E7CFA0', 'rgba(160,120,70,0.35)'),
+  // v49: salju (Gunung Es) — putih kebiruan, bintik kristal, tanpa garis keras.
+  snow: (g, ox, oy, c) => {
+    P_ground(g, ox + 32, oy + 32, '#EFF6FA');
+    g.fillStyle = 'rgba(200,222,236,0.55)';
+    g.beginPath(); g.ellipse(ox + 26, oy + 33, 9, 4, 0, 0, 6.29); g.fill();
+    g.beginPath(); g.ellipse(ox + 40, oy + 30, 6, 3, 0, 0, 6.29); g.fill();
+    g.fillStyle = '#FFFFFF';
+    [[-12, -4], [4, -7], [10, 3], [-4, 6]].forEach(([dx, dy]) => g.fillRect(ox + 32 + dx, oy + 32 + dy, 2, 2));
+  },
+  // v49: es beku (sungai/danau di Gunung Es) — pucat, retak tipis, kilau.
+  ice: (g, ox, oy, c) => {
+    P_ground(g, ox + 32, oy + 32, '#CFE9F4');
+    g.strokeStyle = 'rgba(255,255,255,0.85)'; g.lineWidth = 1.5;
+    g.beginPath(); g.moveTo(ox + 18, oy + 28); g.lineTo(ox + 30, oy + 34); g.lineTo(ox + 24, oy + 38); g.stroke();
+    g.beginPath(); g.moveTo(ox + 38, oy + 26); g.lineTo(ox + 46, oy + 33); g.stroke();
+    g.fillStyle = 'rgba(160,205,225,0.5)';
+    g.beginPath(); g.ellipse(ox + 32, oy + 32, 14, 6, 0, 0, 6.29); g.fill();
+  },
   clay: (g, ox, oy, c) => {
     P_ground(g, ox + 32, oy + 32, '#C98A6A');
     g.fillStyle = '#B07257';

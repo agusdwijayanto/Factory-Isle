@@ -76,7 +76,12 @@ const ITEMS = {
 };
 
 // Nama map untuk HUD.
-const MAP_NAMES = { town: 'Kota', plot: 'Lahan', forest: 'Hutan', mountain: 'Gunung', harbor: 'Pelabuhan' };
+// v49: dunia = 8 map satu rantai utara-selatan.
+const MAP_NAMES = {
+  ice: 'Gunung Es', meadow_n: 'Lahan Ijo', forest: 'Hutan Rimbun',
+  forest2: 'Hutan Dikit', plot: 'Lahan', town: 'Kota',
+  meadow_s: 'Lahan Ijo Selatan', harbor: 'Gurun & Pelabuhan',
+};
 
 // Toko v2. sell = harga toko membeli dari pemain; buy = harga toko menjual
 // ke pemain. Harga ikut riset wiki 4.2; yang tidak ada di riset memakai
@@ -126,7 +131,7 @@ const SHOP_SPOTS = [
   { map: 'town', gx: 11, gy: 1, id: 'toolshop' },
   { map: 'town', gx: 14, gy: 1, id: 'textile' },
   { map: 'town', gx: 17, gy: 7, id: 'supply' }, // v36: SUPPLY di sebelah rel
-  { map: 'harbor', gx: 8, gy: 3, id: 'harbor' },
+  { map: 'harbor', gx: 10, gy: 4, id: 'harbor' }, // v49: pindah dari (8,3) — (8,3) sekarang jalan kolom 8
   { map: 'harbor', gx: 12, gy: 2, id: 'desert' }, // v36: desa gurun
   { map: 'harbor', gx: 15, gy: 2, id: 'pirate' }, // v36: kapal bajak laut
 ];
@@ -134,33 +139,50 @@ const SHOP_SPOTS = [
 // Pintu keluar antar map: injak petak (gx,gy) pindah ke map `to`, lahir di
 // petak (sx,sy) map tujuan. Mekanisme TP yang sama seperti jalan
 // masuk/keluar lahan v12.
+// v49: rantai utara -> selatan: ice, meadow_n, forest, forest2, plot, town,
+// meadow_s, harbor. Pintu di (8,0) (utara) / (8,19) (selatan); masuk dari
+// utara lahir di baris 1 map tujuan, masuk dari selatan lahir di baris 18.
+// Gerbang lahan (dari/ke Kota) ditangani khusus di 07-pemain.js karena
+// tinggi lahan ikut ekspansi.
 const MAP_EXITS = {
-  town: [
-    { gx: 8, gy: 0, to: 'mountain', sx: 14, sy: 10 }, // jembatan ke gunung, lahir di jalan selatan (x=2, z=15), satu petak di barat pintu ke kota
-    { gx: 0, gy: 6, to: 'forest', sx: 14, sy: 6 },
-    { gx: 19, gy: 6, to: 'harbor', sx: 1, sy: 6 }, // v36: tepi timur baru kota 20x14
+  ice: [
+    { gx: 8, gy: 19, to: 'meadow_n', sx: 8, sy: 1 },
+  ],
+  meadow_n: [
+    { gx: 8, gy: 0, to: 'ice', sx: 8, sy: 18 },
+    { gx: 8, gy: 19, to: 'forest', sx: 8, sy: 1 },
   ],
   forest: [
-    { gx: 8, gy: 0, to: 'mountain', sx: 6, sy: 10 }, // lahir di jalan selatan gunung (x=2, z=7)
-    { gx: 15, gy: 6, to: 'town', sx: 1, sy: 6 },
+    { gx: 8, gy: 0, to: 'meadow_n', sx: 8, sy: 18 }, // jembatan tepi utara
+    { gx: 8, gy: 19, to: 'forest2', sx: 8, sy: 1 },
   ],
-  mountain: [
-    { gx: 6, gy: 11, to: 'forest', sx: 8, sy: 1 }, // pintu ke hutan di selatan spawn (6,10) (x=1, z=7)
-    { gx: 15, gy: 10, to: 'town', sx: 8, sy: 1 }, // ujung timur jalan selatan (x=2, z=16), lahir di bawah jembatan (x=11, z=9)
+  forest2: [
+    { gx: 8, gy: 0, to: 'forest', sx: 8, sy: 18 },
+    { gx: 8, gy: 19, to: 'plot', sx: 8, sy: 1 }, // masuk lahan dari utara
+  ],
+  plot: [
+    { gx: 8, gy: 0, to: 'forest2', sx: 8, sy: 18 }, // gerbang utara lahan
+  ],
+  town: [
+    { gx: 8, gy: 19, to: 'meadow_s', sx: 8, sy: 1 }, // gerbang selatan kota
+  ],
+  meadow_s: [
+    { gx: 8, gy: 0, to: 'town', sx: 8, sy: 18 },
+    { gx: 8, gy: 19, to: 'harbor', sx: 8, sy: 1 },
   ],
   harbor: [
-    { gx: 0, gy: 6, to: 'town', sx: 18, sy: 6 }, // v36: satu petak di barat pintu timur kota (19,6)
+    { gx: 8, gy: 0, to: 'meadow_s', sx: 8, sy: 18 },
   ],
 };
-// Stasiun kereta tiap map: [gx, gy] petak di samping bangunan stasiun,
-// titik lahir saat naik kereta. v48: stasiun menggantikan peron, jadi
-// titik lahir digeser ke petak bebas di sebelahnya.
-const TRAIN_SPAWN = { town: [8, 8], forest: [14, 7], mountain: [8, 8], harbor: [8, 6] };
+// Stasiun kereta 4 map: [gx, gy] petak lahir saat naik kereta (petak jalan
+// di sebelah bangunan stasiun): ice (8,7) -> lahir (8,8); forest (14,8) ->
+// lahir di jalan (14,7); town (10,7) -> lahir (8,8); harbor (8,6) -> lahir (8,7).
+const TRAIN_SPAWN = { ice: [8, 8], forest: [14, 7], town: [8, 8], harbor: [8, 7] };
 
-// v36: Kota membesar 20x14 (stasiun + Conductor + SUPPLY di timur).
-// Plot mulai 16x12 lalu membesar tiap ekspansi (ukuran dasar sama dengan
-// grid v1 supaya simpan lama termigrasi utuh).
-const TOWN_W = 20, TOWN_H = 14;
+// v49: Kota jadi KOTAK 20x20 seperti map lain. Plot mulai 16x12 lalu
+// membesar tiap ekspansi sampai 24x16 (ukuran dasar sama dengan grid v1
+// supaya simpan lama termigrasi utuh).
+const TOWN_W = 20, TOWN_H = 20;
 const PLOT_BASE_W = 16, PLOT_BASE_H = 12;
 // Rantai ekspansi Mayor: struktur dan harga ikut game asli.
 const EXPANSIONS = [
@@ -474,6 +496,7 @@ const CONVEYOR_COLOR_HEX = { gold: '#e8b64c', purple: '#9a6a9a', red: '#c0392b',
 
 // Riwayat versi untuk tombol Book di dalam game (ringkasan ROADMAP.md).
 const CHANGELOG = [
+  ['v49', 'Dunia dirombak jadi SATU RANTAI 8 map utara-selatan (Gunung Es - Lahan Ijo - Hutan Rimbun - Hutan Dikit - Lahan - Kota - Lahan Ijo Selatan - Gurun & Pelabuhan). Semua map KOTAK 20x20 (lahan tetap membesar sampai 24x16), rel di kolom x=9 di semua map, jalan utama kolom x=8 tembus semua map, sungai mengalir utara-selatan lewat kolom 1 lalu turun kolom 18 di kota sampai laut di Pelabuhan, stasiun di 4 map (hutan tetap di 14,8 dengan kereta di 14,9) dan naik kereta dari stasiun, peron dihapus. Jalan kota timur/barat buntu dengan papan COMING SOON.'],
   ['v43', 'Perbaiki v42 yang merusak game: toko Pelabuhan memanggil _paintShop yang sudah tidak ada (game tidak bisa boot); jalan jadi tanah frontier; Mayor kembali ke perempuan pirang asli.'],
   ['v42', 'Restyle Western: toko berteras + warna baru (Exchange jadi SALOON merah, SUPPLY hijau), stasiun coklat-merah, kereta bercowcatcher + kabin kayu + cerobong tinggi, Mayor jadi koboi.'],
   ['v41', 'Toko akhirnya benar-benar beda: render menggambar sprite toko itu sendiri, bukan lagi \'shop\' generik (v40 bikin gambarnya tapi tidak dipakai); tambah toko Pelabuhan (shop_harbor) yang ketinggalan di v40.'],

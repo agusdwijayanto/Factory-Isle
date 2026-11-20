@@ -19,7 +19,9 @@ const S = {
   pulses: new Map(), // "gx,gy" -> born, denyut saat diketuk
   beltT: 0,          // jam animasi conveyor
   time: 0,           // jam global detik
-  map: 'town',     // map aktif: 'town' (kota), 'forest', 'mountain', 'harbor', 'plot'
+  // v49: map aktif. Rantai utara->selatan: ice, meadow_n, forest, forest2,
+  // plot, town, meadow_s, harbor.
+  map: 'town',
   grid: [],          // grid map AKTIF: [gy][gx] -> {t, obj, hp, regrowIn, stage, growIn}
   maps: {},          // nama map -> {w, h, grid}; grid non-aktif disimpan di sini
   expansion: 0,      // 0..4, tingkat ekspansi plot lewat Mayor
@@ -33,7 +35,8 @@ const S = {
   walls: new Map(),      // "gx,gy" -> {id}
   decor: new Map(),      // "gx,gy" -> {id}
   mayor: { gx: 5, gy: 1 },      // di map kota
-  plotPad: { gx: 8, gy: 13 },   // di map kota: injak untuk masuk ke plot (x=1, z=9)
+  // v49: plotPad dihapus — lahan sekarang di UTARA kota, pintunya jembatan
+  // (8,0) di kota; gerbang lahan sendiri ada di 08-gerak/07-pemain.
   player: {
     fx: 8.5, fy: 6.5, dir: 1, frame: 0, walkT: 0,
     path: [],            // [{gx, gy}] petak tujuan berurutan
@@ -87,9 +90,9 @@ function newGrid() {
 }
 
 // Gerbang keluar plot: kolom 8 tepi bawah grid plot (Agus (1,9), sejajar
-// pad kota). Kolom TETAP 8 di semua ukuran lahan — tidak ikut melebar —
-// supaya jalan keluar tidak bergeser saat ekspansi. Satu-satunya jalan
-// keluar, supaya tidak sengaja keluar saat kerja di pinggir lahan.
+// pad kota) dan tepi atas (8,0) ke Hutan Dikit. Kolom TETAP 8 di semua
+// ukuran lahan — tidak ikut melebar — supaya jalan keluar tidak bergeser
+// saat ekspansi.
 function gatePos() {
   const m = S.maps.plot;
   return { gx: 8, gy: m.h - 1 };
@@ -167,7 +170,9 @@ function defaultSpawn(name) {
     const g = gatePos();
     return { fx: g.gx + 0.5, fy: g.gy - 0.5, dir: 3 };
   }
-  if (name === 'town') return { fx: S.plotPad.gx + 0.5, fy: S.plotPad.gy - 0.5, dir: 3 };
+  // v49: masuk kota dari lahan/enam map lain lewat gerbang utara (jembatan),
+  // jadi lahir satu petak di selatan jembatan.
+  if (name === 'town') return { fx: 8.5, fy: 1.5, dir: 1 };
   return { fx: 8.5, fy: 6.5, dir: 3 };
 }
 
@@ -184,6 +189,7 @@ function expandPlotGrid(w, h) {
   const dy = h - old.h; // jangkar bawah: baris lama turun sejauh selisih tinggi
   for (let gy = 0; gy < old.h; gy++)
     for (let gx = 0; gx < old.w; gx++) g[gy + dy][gx] = old.grid[gy][gx];
+  stampPlotColumns(g); // v49: baris baru di atas ikut dapat sungai/jalan/rel
   S.maps.plot = { w, h, grid: g };
   if (S.map === 'plot') applyMap('plot');
 }

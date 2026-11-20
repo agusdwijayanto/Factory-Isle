@@ -10,7 +10,7 @@ Object.assign(UI, {
     const body = $('train-body');
     body.innerHTML = '';
     body.appendChild(el('div', 'Kereta 130 Trading Co. — angkutan cepat antar zona. Jalan kaki tetap bisa lewat ujung map.', 'mp-desc'));
-    for (const dest of ['mountain', 'forest', 'town', 'harbor']) {
+    for (const dest of ['ice', 'forest', 'town', 'harbor']) {
       if (dest === S.map) continue;
       const row = el('div', null, 'mayor-row');
       row.appendChild(el('span', MAP_NAMES[dest]));

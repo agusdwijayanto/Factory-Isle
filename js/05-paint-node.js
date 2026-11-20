@@ -280,3 +280,32 @@ Object.assign(PAINTERS, {
     g.beginPath(); g.moveTo(cx, gy - 14); g.lineTo(cx - 3, gy - 7); g.lineTo(cx + 3, gy - 7); g.closePath(); g.fill();
   },
 });
+// v49: papan "COMING SOON" di jalan buntu kota (petak diblokir).
+Object.assign(PAINTERS, {
+  signClosed: (g, ox, oy, c) => {
+    const cx = ox + 32, gy = oy + 56;
+    // bayangan
+    g.fillStyle = 'rgba(122,102,80,0.20)';
+    g.beginPath(); g.ellipse(cx, gy + 1, 13, 5, 0, 0, 6.29); g.fill();
+    // dua tiang
+    g.fillStyle = '#B58A5E';
+    g.fillRect(cx - 10, gy - 26, 4, 26);
+    g.fillRect(cx + 6, gy - 26, 4, 26);
+    g.fillStyle = '#9A7048';
+    g.fillRect(cx - 10, gy - 26, 1.5, 26);
+    g.fillRect(cx + 6, gy - 26, 1.5, 26);
+    // papan
+    g.fillStyle = '#8A5A34'; g.fillRect(cx - 16, gy - 40, 32, 17);
+    g.fillStyle = '#F1E0C0'; g.fillRect(cx - 14, gy - 38, 28, 13);
+    g.strokeStyle = 'rgba(122,86,62,0.55)'; g.lineWidth = 1;
+    g.strokeRect(cx - 14.5, gy - 38.5, 29, 14);
+    // teks dua baris, auto-shrink
+    g.fillStyle = '#7A5638'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    let f = 6;
+    g.font = '700 ' + f + 'px system-ui, sans-serif';
+    while (g.measureText('COMING').width > 24 && f > 4) { f -= 0.5; g.font = '700 ' + f + 'px system-ui, sans-serif'; }
+    g.fillText('COMING', cx, gy - 34);
+    g.fillText('SOON', cx, gy - 27);
+    g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+  },
+});

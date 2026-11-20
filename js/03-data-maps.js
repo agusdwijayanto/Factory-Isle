@@ -1,11 +1,13 @@
 // Bantuan bangun map + rakitan map statis.
-// Pecahan 03-data.js (v16).
-// Peta awal ditaruh eksplisit supaya selalu sama. Lima map, tiap zona
-// map sendiri. Kota: 5 toko, Mayor, jalan masuk lahan, sungai di utara dengan
-// jembatan ke gunung, clay di tepian. Hutan: pohon Oak dan ladang kapas.
-// Gunung: pegunungan, bijih, hulu sungai. Pelabuhan: laut, pantai pasir,
-// dermaga. Plot: rumput kosong siap dibangun.
-const MAP_W = 16, MAP_H = 12;
+// v49: dunia jadi SATU RANTAI 8 map dari utara ke selatan. Tiap map KOTAK
+// 20x20 = 400 blok (lahan tetap 16x12 lalu membesar sampai 24x16).
+//   ice -> meadow_n -> forest -> forest2 -> plot -> town -> meadow_s -> harbor
+// Konvensi: gy=0 tepi UTARA, gy=19 tepi SELATAN. Jalan utama kolom x=8,
+// rel kolom x=9 di SEMUA map. Sungai mengalir utara->selatan: kolom 1 di
+// ice/meadow_n/forest/forest2/plot, masuk kota lewat jembatan utara lalu
+// turun kolom 18 di town/meadow_s/harbor sampai laut. Pintu antar map di
+// (8,0)/(8,19) kecuali stasiun-rel terminus di ujung rantai.
+const MAP_W = 20, MAP_H = 20;
 // Bantuan bangun map, dipakai buildMap dan migrasi simpan lama (12-simpan.js).
 const rng = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
 const put = (g, list, obj) => list.forEach(([gx, gy]) => {
@@ -20,22 +22,21 @@ const roadAt = (g, list) => list.forEach(([gx, gy]) => {
 });
 const railXAt = (g, gy, x0, x1) => { for (let x = x0; x <= x1; x++) if (g[gy][x].t === 'grass') g[gy][x].t = 'railX'; };
 const railYAt = (g, gx, y0, y1) => { for (let y = y0; y <= y1; y++) if (g[y][gx].t === 'grass') g[y][gx].t = 'railY'; };
-// Peron di samping rel (baris py-1); kereta di atas rel (baris py).
-const platform = (g, px, py) => {
-  terrain(g, [[px - 1, py - 1], [px, py - 1], [px + 1, py - 1]], 'platform');
-  g[py][px].obj = 'train';
-};
+// v49: peron dihapus total — naik kereta dari bangunan stasiun (07-pemain.js).
 
 
-// Map statis (kota, hutan, gunung, pelabuhan); lahan dibangun terpisah.
+// Map statis (7 map zona); lahan dibangun terpisah (03-map-lahan.js).
 // Tiap zona dibangun fungsinya sendiri (03-map-*.js); dipanggil di sini
 // saat buildMap/loadGame berjalan, sesudah semua script dimuat.
 function buildStaticMaps() {
   return {
-    town: { w: TOWN_W, h: TOWN_H, grid: buildTown() },
+    ice: { w: MAP_W, h: MAP_H, grid: buildIce() },
+    meadow_n: { w: MAP_W, h: MAP_H, grid: buildMeadowN() },
     forest: { w: MAP_W, h: MAP_H, grid: buildForest() },
-    mountain: { w: MAP_W, h: MAP_H, grid: buildMountain() },
+    forest2: { w: MAP_W, h: MAP_H, grid: buildForest2() },
+    meadow_s: { w: MAP_W, h: MAP_H, grid: buildMeadowS() },
     harbor: { w: MAP_W, h: MAP_H, grid: buildHarbor() },
+    town: { w: TOWN_W, h: TOWN_H, grid: buildTown() },
   };
 }
 
