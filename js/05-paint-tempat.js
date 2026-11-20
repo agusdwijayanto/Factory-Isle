@@ -159,34 +159,35 @@ Object.assign(PAINTERS, {
   train: (g, ox, oy) => {
     const cx = ox + 32, gy = oy + 62;
     P_shadow(g, cx, gy, 18);
-    // 5. Kereta cozy: gerbong maroon hangat + hias kuning + TRADING CO. + nomor 130
-    g.fillStyle = '#6e2c1d'; g.fillRect(cx - 46, gy - 23, 30, 15);
+    // 5. Kereta cozy: gerbong utama lebih lebar (36px) untuk muat "TRADING CO." tanpa meluber
+    g.fillStyle = '#6e2c1d'; g.fillRect(cx - 50, gy - 24, 36, 16);
     g.strokeStyle = '#ffeb99'; g.lineWidth = 1.5;
-    g.strokeRect(cx - 46, gy - 23, 30, 15);
-    g.fillStyle = '#ffeb99'; g.fillRect(cx - 42, gy - 19, 4, 6); g.fillRect(cx - 4, gy - 19, 4, 6);
+    g.strokeRect(cx - 50, gy - 24, 36, 16);
+    g.fillStyle = '#ffeb99'; g.fillRect(cx - 46, gy - 20, 5, 7); g.fillRect(cx - 22, gy - 20, 5, 7);
+    g.fillStyle = '#ffeb99'; g.font = '700 7.5px system-ui, sans-serif'; g.textAlign = 'center';
+    g.fillText('TRADING CO.', cx - 32, gy - 14);
     // Lokomotif uap 3D
     g.fillStyle = '#8f9da6';
     g.beginPath();
-    g.moveTo(cx - 20, gy - 4); g.lineTo(cx - 24, gy - 16); g.lineTo(cx - 16, gy - 16);
+    g.moveTo(cx - 14, gy - 4); g.lineTo(cx - 18, gy - 16); g.lineTo(cx - 10, gy - 16);
     g.closePath(); g.fill();
     g.fillStyle = '#3a3542';
-    g.fillRect(cx - 16, gy - 26, 32, 18);
-    g.fillStyle = '#9c5a3c'; g.fillRect(cx + 6, gy - 38, 14, 14);
-    g.fillStyle = '#222222'; g.fillRect(cx - 12, gy - 40, 6, 16);
-    g.fillStyle = '#ffc75f'; g.fillRect(cx - 14, gy - 42, 10, 3);
-    g.fillStyle = '#d64531'; g.fillRect(cx - 16, gy - 10, 32, 3);
+    g.fillRect(cx - 12, gy - 26, 30, 18);
+    g.fillStyle = '#9c5a3c'; g.fillRect(cx + 8, gy - 38, 14, 14);
+    g.fillStyle = '#222222'; g.fillRect(cx - 8, gy - 40, 6, 16);
+    g.fillStyle = '#ffc75f'; g.fillRect(cx - 10, gy - 42, 10, 3);
+    g.fillStyle = '#d64531'; g.fillRect(cx - 12, gy - 10, 30, 3);
     g.fillStyle = '#d64531';
-    [[-10, -2], [4, -2], [14, -2]].forEach(([dx, dy]) => {
+    [[-6, -2], [6, -2], [14, -2]].forEach(([dx, dy]) => {
       g.beginPath(); g.arc(cx + dx, gy + dy, 5, 0, 6.29); g.fill();
       g.fillStyle = '#222222'; g.beginPath(); g.arc(cx + dx, gy + dy, 2, 0, 6.29); g.fill();
       g.fillStyle = '#d64531';
     });
     g.fillStyle = 'rgba(255,255,255,0.7)';
-    g.beginPath(); g.arc(cx - 9, gy - 48, 4.5, 0, 6.29); g.fill();
-    g.beginPath(); g.arc(cx - 12, gy - 56, 6.5, 0, 6.29); g.fill();
-    g.fillStyle = '#ffeb99'; g.font = '700 7px system-ui, sans-serif'; g.textAlign = 'center';
-    g.fillText('130', cx + 13, gy - 32);
-    g.fillText('TRADING CO.', cx - 31, gy - 25);
+    g.beginPath(); g.arc(cx - 5, gy - 48, 4.5, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx - 8, gy - 56, 6.5, 0, 6.29); g.fill();
+    g.fillStyle = '#ffeb99'; g.font = '700 9px system-ui, sans-serif'; g.textAlign = 'center';
+    g.fillText('130', cx + 15, gy - 32);
   },
   // ---------- Mayor, gerbang, kotak plot ----------
   mayor: (g, ox, oy) => {
