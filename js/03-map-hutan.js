@@ -1,8 +1,8 @@
-// v49: Lahan Ijo + Hutan Rimbun, 20x20 — hutan lebat + stasiun kereta hutan.
-// JANGKAR SIMPAN (12-simpan.js tidak diubah): grid[0][8] jembatan,
-// grid[9][14] kereta, grid[5][12] dyeplant. Jangan pindahkan.
-// Stasiun hutan tetap di (14,8), kereta tetap di (14,9) — pintu utara ke
-// Lahan Ijo, pintu selatan ke Hutan Dikit.
+// v49: Padang Rumput + Hutan Lebat, 20x20 — hutan lebat + stasiun kereta.
+// JANGKAR SIMPAN: grid[0][8] jembatan, grid[7][9] kereta (v50), grid[5][12]
+// dyeplant. Jangan pindahkan.
+// v50: rel diluruskan (tanpa belokan); stasiun di (8,7), kereta di (9,7) di
+// rel lurus. Pintu utara ke Padang Rumput, pintu selatan ke Hutan Kapas.
 function buildForest() {
   const forest = makeGrid(MAP_W, MAP_H);
   put(forest, [[2, 2], [5, 3], [3, 5], [6, 4], [2, 8], [4, 10], [3, 12], [5, 14],
@@ -18,18 +18,15 @@ function buildForest() {
   // v49: sungai mengalir utara-selatan lewat kolom 1 (nyambung dari Lahan Ijo
   // di utara ke Hutan Dikit di selatan), jadi air tepi utara tidak buntu.
   terrain(forest, rng(1, MAP_H - 1).map((gy) => [1, gy]), 'water');
-  // Rel: kolom 9 dari utara, tikung ke timur di baris 9 menuju stasiun hutan,
-  // lalu kolom 9 lanjut tembus ke selatan.
-  railYAt(forest, 9, 0, 9);
-  railXAt(forest, 9, 10, MAP_W - 1);
-  terrain(forest, [[9, 9]], 'railBend');
-  railYAt(forest, 9, 10, MAP_H - 1);
-  forest[8][14].obj = 'station';  // (14,8)
-  forest[9][14].obj = 'train';    // (14,9) jangkar simpan
-  // Jalan: kolom 8 utara-selatan + cabang baris 7 ke stasiun + pintu selatan.
-  roadAt(forest, [
-    ...rng(0, MAP_H - 1).map((gy) => [8, gy]),
-    ...rng(10, 17).map((gx) => [gx, 7]),
-  ]);
+  // v50: rel LURUS kolom 9 utara-selatan (belokan + rel cabang ke (14,9)
+  // dihapus); stasiun di sisi barat rel, kereta di atas rel.
+  railYAt(forest, 9, 0, MAP_H - 1);
+  forest[7][8].obj = 'station'; // (8,7)
+  forest[7][9].obj = 'train';   // (9,7) jangkar simpan v50
+  // Jalan: kolom 8 utara-selatan. Stasiun (8,7) duduk di tengah kolom itu,
+  // jadi petaknya bukan jalan lagi — pemain memutar lewat rumput di
+  // (7,7)/(7,8) atau (8,6)->(7,6). Cabang jalan baris 7 ke stasiun lama
+  // (x 10..17) dibuang karena stasiunnya sudah di jalan utama.
+  roadAt(forest, rng(0, MAP_H - 1).map((gy) => [8, gy]));
   return forest;
 }

@@ -220,6 +220,11 @@ function checkMapTrigger() {
     switchMap('plot');
     return true;
   }
+  // v50: petak putih di rumput kota (7,13) — diinjak langsung masuk lahan.
+  if (S.map === 'town' && cur.gx === 7 && cur.gy === 13) {
+    switchMap('plot');
+    return true;
+  }
   if (S.map === 'plot') {
     const g = gatePos();
     if (cur.gx === g.gx && cur.gy === g.gy) {
@@ -280,11 +285,9 @@ function interactAt(gx, gy) {
     goTo(gx, gy, () => toggleWagon());
     return;
   }
-  // v35: tanda kuning di depan lahan membuka menu plot (save + wagon).
-  if (S.map === 'town' && t.obj === 'plotsign') {
-    goTo(gx, gy, () => UI.openPlot());
-    return;
-  }
+  // v50: petak putih plot (7,13) di rumput kota — cukup diklik, diinjak
+  // langsung pindah ke lahan (checkMapTrigger). Tanda plot lama dihapus;
+  // menu plot tetap bisa dibuka dari menu burger.
 
   if (S.map === 'plot') {
     if (S.machines.has(k)) {

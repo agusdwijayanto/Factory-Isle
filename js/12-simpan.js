@@ -111,8 +111,8 @@ function loadGame() {
     || !SHOP_SPOTS.filter((s) => s.map === 'town').every((s) => S.maps.town.grid[s.gy][s.gx].obj === 'shop_' + s.id)
     || S.maps.town.grid[13][8].t !== 'road'
     || S.maps.town.grid[7][1].obj !== 'lantern'
-    || S.maps.town.grid[13][7].obj !== 'plotsign');
-  const forestStale = S.maps.forest && (S.maps.forest.grid[9][14].obj !== 'train' || S.maps.forest.grid[0][8].t !== 'bridge' || S.maps.forest.grid[5][12].obj !== 'dyeplant');
+    || S.maps.town.grid[13][7].obj !== 'plotpad'); // v50: petak putih pengganti tanda plot
+  const forestStale = S.maps.forest && (S.maps.forest.grid[7][9].obj !== 'train' || S.maps.forest.grid[0][8].t !== 'bridge' || S.maps.forest.grid[5][12].obj !== 'dyeplant');
   const harborStale = S.maps.harbor && (S.maps.harbor.grid[2][12].obj !== 'shop_desert'); // v36: desa gurun
   // v49: lahan harus punya dua gerbang jalan (8,0) dan (8, h-1) plus kolom
   // sungai/jalan/rel; lahan lama (satu jalan di gerbang bawah) dibangun ulang

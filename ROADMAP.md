@@ -361,8 +361,19 @@ Tes: headless 411/411, Playwright 204/204, nol error konsol. Versi aset: ?v=44.
 
 Tes: headless 197/197 (`node ~/workspace/indotopia-cek-v49.js`, memuat berkas game tanpa DOM), browser 12 transisi map jalan kaki lintas 8 map lolos, 4 stasiun membuka panel kereta dengan 3 tujuan masing-masing, papan COMING SOON menahan pemain, ekspansi 24x16 menjaga kolom + gerbang, migrasi simpan v48 lolos, nol error konsol. Versi aset: ?v=49.
 
+## Sudah live — v50 (20 Nov 2026)
+
+- [x] Nama zona diganti (`MAP_NAMES`): Teluk Pasir (dulu Gurun & Pelabuhan), Hutan Lebat (Hutan Rimbun), Hutan Kapas (Hutan Dikit), Padang Rumput (Lahan Ijo), dan Padang Rumput Selatan (Lahan Ijo Selatan) — nama terakhir keputusan turunan supaya sepasang dengan Padang Rumput. Gunung Es, Lahan, Kota tidak diubah. Teks Bantuan di `index.html` ikut. (`js/03-data-items.js`, `index.html`.)
+- [x] Toko kota disebar ke empat arah, tidak lagi menumpuk di baris utara: Exchange/Salon di (6,1) persis di samping/depan Mayor (5,1) — petak (5,0) air dan (5,2) jalan, jadi dipakai (6,1) (satu-satunya tetangga kosong yang tersisa; tanah liat di bawahnya tetap, tidak kelihatan karena tertutup toko); Tool Shop (14,4); Blacksmith (3,8); Textile (16,12); Carpenter (4,15); SUPPLY (12,16). Jarak antar toko minimal 3 petak, tidak ada yang menutup jalan kolom 8, baris 2/6, rel kolom 9, atau sungai kolom 18. (`js/03-data-items.js`.)
+- [x] Toko Teluk Pasir (id `harbor`) digeser dari (10,4) ke (13,4): 4 petak dari rel kolom 9, masih di pasir desa gurun dan masih dicapai dari jalan pantai baris 5. (`js/03-data-items.js`.)
+- [x] Tanda plot di (7,13) dihapus; diganti PETAK PUTIH `plotpad` di petak yang sama (rumput kota). Diinjak = langsung pindah ke lahan (checkMapTrigger), petaknya juga dihindari BFS seperti pintu lain. Menu Plot di burger tetap jalan sendiri. Sprite `plotpad` memakai sel atlas lama (5,12) yang masih ada. (`js/03-map-kota.js`, `js/07-pemain.js`, `js/08-gerak.js`, `js/12-simpan.js`.)
+- [x] Rel Hutan Lebat diluruskan (opsi A): rel kolom 9 penuh dari utara ke selatan, tanpa belokan (`railBend`) dan tanpa rel cabang ke (14,9); stasiun pindah ke (8,7), kereta ke (9,7) di atas rel lurus; titik turun kereta hutan jadi (8,8) (sama seperti Gunung Es dan Kota). Jalan cabang baris 7 (x 10..17) yang dulu menuju stasiun lama dibuang karena tidak nyambung lagi. Jangkar simpan kereta hutan ikut pindah ke `grid[7][9]`; simpan lama dibangun ulang (forestStale). (`js/03-map-hutan.js`, `js/03-data-items.js`, `js/12-simpan.js`.)
+- [x] BENTROK YANG DILAPORKAN: stasiun Hutan Lebat di (8,7) duduk tepat di tengah jalan utama kolom 8, jadi petak itu bukan jalan lagi — jalan kolom 8 hutan bolong satu petak dan pemain memutar lewat rumput (7,7)/(7,8) atau (8,6)->(7,6). Kalau tembus betul yang diinginkan, stasiunnya harus di sisi timur rel (10,7) seperti kota. Tidak saya ubah sendiri.
+
+Tes: headless 264/264 (`node ~/workspace/indotopia-cek-v49.js`), browser: petak putih dites injak -> pindah ke lahan (3,5 dtk), 6 toko kota dibuka satu-satu lewat ketuk (semua panel terbuka dengan judul benar), toko Teluk Pasir terbuka, stasiun Hutan Lebat membuka panel kereta dari (8,7), migrasi simpan gaya v49 (kereta hutan 14,9 + toko lama) lolos, sprite `plotpad` menggambar 1.152 piksel (bukan kosong), nol error konsol. Versi aset: ?v=50.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
 
-- Tiap langkah dicentang sesudah dites. Versi live saat ini: v49.
+- Tiap langkah dicentang sesudah dites. Versi live saat ini: v50.

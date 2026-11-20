@@ -1,9 +1,10 @@
 // v49: Kota 20x20 (dulu 20x14) — 6 toko, Mayor, sungai utara + jembatan ke
 // Lahan, rel kolom 9 tembus utara-selatan dengan stasiun di (10,7)+kereta (9,7).
 // Sungai masuk dari jembatan utara, mengalir ke timur lalu turun kolom 18
-// menuju Lahan Ijo Selatan (dua jalan kota menyeberanginya lewat jembatan).
-// JANGKAR SIMPAN (12-simpan.js tidak diubah): grid[13][8] jalan,
-// grid[7][1] lantern, grid[13][7] plotsign.
+// menuju Padang Rumput Selatan (dua jalan kota menyeberanginya lewat jembatan).
+// v50: toko disebar lewat SHOP_SPOTS (empat arah), tanda plot diganti petak
+// putih (plotpad) di (7,13) — diinjak langsung pindah ke lahan.
+// JANGKAR SIMPAN: grid[13][8] jalan, grid[7][1] lantern, grid[13][7] plotpad.
 function buildTown() {
   const town = makeGrid(TOWN_W, TOWN_H);
   terrain(town, rng(0, TOWN_W - 1).map((gx) => [gx, 0]), 'water');
@@ -13,7 +14,7 @@ function buildTown() {
   terrain(town, rng(1, TOWN_H - 1).map((gy) => [18, gy]), 'water');
   for (const s of SHOP_SPOTS.filter((s) => s.map === 'town')) town[s.gy][s.gx].obj = 'shop_' + s.id;
   town[S.mayor.gy][S.mayor.gx].obj = 'mayor';
-  town[13][7].obj = 'plotsign'; // jangkar simpan; papan arah lahan
+  town[13][7].obj = 'plotpad'; // petak putih; diinjak = masuk lahan
   // Rel tembus kolom 9 penuh; stasiun di timurnya (jalan kolom 8).
   railYAt(town, 9, 1, TOWN_H - 1);
   town[7][10].obj = 'station'; // (10,7)

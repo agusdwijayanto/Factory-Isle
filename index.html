@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Factory-Isle — Tycoon Pabrik Isometrik</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="style.css?v=49">
+<link rel="stylesheet" href="style.css?v=50">
 </head>
 <body>
 <canvas id="game"></canvas>
@@ -138,21 +138,21 @@
     <button class="btn-x" data-close="help-panel">X</button>
   </div>
   <div class="help-text">
-    <p>Kota: ketuk Mayor untuk memperbesar lahan. Jalan timur dan barat kota buntu (papan COMING SOON). Ketuk salah satu dari 6 toko untuk jual atau beli — tiap toko harga dan barangnya beda. Exchange membeli semua barang. SUPPLY di sebelah rel jual/beli bahan dasar.</p>
-    <p>Dunia satu rantai dari utara ke selatan: Gunung Es &amp; Tambang (paling utara) &rarr; Lahan Ijo &rarr; Hutan Rimbun (ada stasiun) &rarr; Hutan Dikit &rarr; Lahanmu &rarr; Kota &rarr; Lahan Ijo Selatan &rarr; Gurun &amp; Pelabuhan (paling selatan). Tiap map kotak 20x20; lahan mulai 16x12 lalu membesar sampai 24x16.</p>
-    <p>Hutan: pohon Oak dan kapas, plus tanaman pewarna liar. Gunung Es: bijih Iron, Copper, Tin, Gold, dan batu di salju. Gurun &amp; Pelabuhan (paling selatan): desa gurun dan kapal bajak laut bayar lebih mahal untuk produk akhir; pulau palem di teluk dicapai dengan berenang.</p>
-    <p>Pindah zona: jalan ke ujung map lewat jalan utama. Dari kota ke utara lewat jembatan sampai Lahan, terus ke utara lewat Hutan Dikit dan Hutan Rimbun sampai Lahan Ijo dan Gunung Es. Ke selatan dari kota sampai Lahan Ijo Selatan dan Gurun &amp; Pelabuhan. Clay ada di tepian sungai dan danau es.</p>
-    <p>Kereta: ketuk bangunan STASIUN (Gunung Es, Hutan Rimbun, Kota, Gurun &amp; Pelabuhan) untuk membuka panel kereta, pilih tujuan, langsung sampai. Jalan kaki tetap bisa. Kereta juga toko keliling: jual barang ke kereta harga papan.</p>
+    <p>Kota: ketuk Mayor untuk memperbesar lahan. Jalan timur dan barat kota buntu (papan COMING SOON). Ketuk salah satu dari 6 toko untuk jual atau beli — tiap toko harga dan barangnya beda, tokonya disebar ke empat arah (depan Mayor, timur laut, barat, tenggara, barat daya, selatan). Exchange membeli semua barang. SUPPLY jual/beli bahan dasar.</p>
+    <p>Dunia satu rantai dari utara ke selatan: Gunung Es &amp; Tambang (paling utara) &rarr; Padang Rumput &rarr; Hutan Lebat (ada stasiun) &rarr; Hutan Kapas &rarr; Lahanmu &rarr; Kota &rarr; Padang Rumput Selatan &rarr; Teluk Pasir (paling selatan). Tiap map kotak 20x20; lahan mulai 16x12 lalu membesar sampai 24x16.</p>
+    <p>Hutan: pohon Oak dan kapas, plus tanaman pewarna liar. Gunung Es: bijih Iron, Copper, Tin, Gold, dan batu di salju. Teluk Pasir (paling selatan): desa gurun dan kapal bajak laut bayar lebih mahal untuk produk akhir; pulau palem di teluk dicapai dengan berenang.</p>
+    <p>Pindah zona: jalan ke ujung map lewat jalan utama. Dari kota ke utara lewat jembatan sampai Lahan, terus ke utara lewat Hutan Kapas dan Hutan Lebat sampai Padang Rumput dan Gunung Es. Ke selatan dari kota sampai Padang Rumput Selatan dan Teluk Pasir. Clay ada di tepian sungai dan danau es.</p>
+    <p>Kereta: ketuk bangunan STASIUN (Gunung Es, Hutan Lebat, Kota, Teluk Pasir) untuk membuka panel kereta, pilih tujuan, langsung sampai. Jalan kaki tetap bisa. Kereta juga toko keliling: jual barang ke kereta harga papan.</p>
     <p>Berenang: air bisa dilewati tapi lambat (setengah kecepatan); wagon tidak bisa masuk air. Benih didapat dari menggali tunggul dengan sekop, ditanam dari panel Tas di rumput lahan — Oak/Pine 4 tahap, Palm 3 tahap, kapas/pewarna 2 tahap.</p>
     <p>Sorter hanya melewatkan 1 jenis barang (pilih di panel periksanya). Conveyor bisa diwarnai (ungu/merah/hijau/oranye/biru) dari panel periksanya. Storage Barrel 100 slot, Storage Rack Advanced 1.000 slot (dibuat di Construction Crafter dari 1 Engine + 1 Rack + 4 Barrel), Storage Crane mengambil barang dari storage sebelah.</p>
     <p>Batas item aktif 150: mesin berhenti kalau barang di dunia sudah 150 — jual atau simpan barang. Buka slot save 2/3/4 bayar $25.000/$50.000/$100.000; biaya ekspansi naik per save.</p>
-    <p>Masuk ke lahan: lewat jembatan di utara kota. Keluar dari lahan: gerbang bawah (ke Kota) atau gerbang atas (ke Hutan Dikit).</p>
+    <p>Masuk ke lahan: lewat jembatan di utara kota ATAU injak petak putih di rumput kota. Keluar dari lahan: gerbang bawah (ke Kota) atau gerbang atas (ke Hutan Kapas).</p>
     <p>Lahan: ketuk mesin untuk membuka panelnya. Masukkan bahan, mesin mengolah sendiri. Semua mesin jalan otomatis, termasuk Sawhorse. Mesin tetap jalan walau kamu sedang di kota.</p>
     <p>Conveyor mengalirkan item searah panah ke mesin atau penyimpanan di depannya. Coil dan Gear tidak dijual.</p>
     <p>Perkakas: kapak, sekop dan pickaxe sudah ada sejak awal; upgrade Bronze $250 dan Iron $1.000 di Tool Shop bikin panen lebih cepat. Pohon pakai kapak, bijih pakai pickaxe, pasir dan tanah liat pakai sekop.</p>
     <p>Wagon: beli di menu Plot ($100), ketuk untuk naik — jalan kaki lv1, wagon lv2, kereta lv3. Peti wagon muat barang, diatur dari panel Tas. Kuda bikin wagon makin cepat.</p>
     <p>Housing: tiap bangunan memakai Housing (batas 600). Patung di menu Bangun menambah batas: Lion +50, Miner +100, Lumberjack +100, Blacksmiths +150, Liberty +200.</p>
-    <p>Badge didapat saat membuka resep (lihat menu Badge). Plot: tanda kuning di depan lahan membuka menu 4 slot save — muat, lepas, atau reset barang/bangunan/upgrade lahan.</p>
+    <p>Badge didapat saat membuka resep (lihat menu Badge). Plot: menu burger (tombol Plot) membuka 4 slot save — muat, lepas, atau reset barang/bangunan/upgrade lahan. Petak putih di rumput kota juga membawa langsung ke lahan.</p>
     <p>PC: WASD atau panah untuk berjalan, R memutar arah saat menaruh, Esc menutup panel.</p>
   </div>
 </section>
@@ -183,51 +183,51 @@
   </div>
 </section>
 
-<script src="js/01-core.js?v=49"></script>
-<script src="js/02-iso.js?v=49"></script>
-<script src="js/03-data-items.js?v=49"></script>
-<script src="js/03-data-tutorial.js?v=49"></script>
-<script src="js/03-data-maps.js?v=49"></script>
-<script src="js/03-map-kota.js?v=49"></script>
-<script src="js/03-map-padang.js?v=49"></script>
-<script src="js/03-map-hutan.js?v=49"></script>
-<script src="js/03-map-hutan2.js?v=49"></script>
-<script src="js/03-map-gunung-es.js?v=49"></script>
-<script src="js/03-map-pelabuhan.js?v=49"></script>
-<script src="js/03-map-lahan.js?v=49"></script>
-<script src="js/04-atlas.js?v=49"></script>
-<script src="js/05-render-core.js?v=49"></script>
-<script src="js/05-paint-helpers.js?v=49"></script>
-<script src="js/05-paint-tanah.js?v=49"></script>
-<script src="js/05-paint-node.js?v=49"></script>
-<script src="js/05-paint-mesin.js?v=49"></script>
-<script src="js/05-paint-alat.js?v=49"></script>
-<script src="js/05-paint-tempat.js?v=49"></script>
-<script src="js/05-paint-pemain.js?v=49"></script>
-<script src="js/05-paint-item.js?v=49"></script>
-<script src="js/05-paint-v36.js?v=49"></script>
-<script src="js/05-render-overlay.js?v=49"></script>
-<script src="js/05-render.js?v=49"></script>
-<script src="js/06-input.js?v=49"></script>
-<script src="js/07-pemain.js?v=49"></script>
-<script src="js/08-gerak.js?v=49"></script>
-<script src="js/09-mesin.js?v=49"></script>
-<script src="js/10-resep.js?v=49"></script>
-<script src="js/11-ekonomi.js?v=49"></script>
-<script src="js/12-simpan.js?v=49"></script>
-<script src="js/13-ui-core.js?v=49"></script>
-<script src="js/13-ui-build.js?v=49"></script>
-<script src="js/13-ui-inspect.js?v=49"></script>
-<script src="js/13-ui-storage.js?v=49"></script>
-<script src="js/13-ui-shop.js?v=49"></script>
-<script src="js/13-ui-train.js?v=49"></script>
-<script src="js/13-ui-tas.js?v=49"></script>
-<script src="js/13-ui-mayor.js?v=49"></script>
-<script src="js/13-ui-plot.js?v=49"></script>
-<script src="js/13-ui-badge.js?v=49"></script>
-<script src="js/13-ui-book.js?v=49"></script>
-<script src="js/13-ui-tick.js?v=49"></script>
-<script src="js/13-ui.js?v=49"></script>
-<script src="js/14-main.js?v=49"></script>
+<script src="js/01-core.js?v=50"></script>
+<script src="js/02-iso.js?v=50"></script>
+<script src="js/03-data-items.js?v=50"></script>
+<script src="js/03-data-tutorial.js?v=50"></script>
+<script src="js/03-data-maps.js?v=50"></script>
+<script src="js/03-map-kota.js?v=50"></script>
+<script src="js/03-map-padang.js?v=50"></script>
+<script src="js/03-map-hutan.js?v=50"></script>
+<script src="js/03-map-hutan2.js?v=50"></script>
+<script src="js/03-map-gunung-es.js?v=50"></script>
+<script src="js/03-map-pelabuhan.js?v=50"></script>
+<script src="js/03-map-lahan.js?v=50"></script>
+<script src="js/04-atlas.js?v=50"></script>
+<script src="js/05-render-core.js?v=50"></script>
+<script src="js/05-paint-helpers.js?v=50"></script>
+<script src="js/05-paint-tanah.js?v=50"></script>
+<script src="js/05-paint-node.js?v=50"></script>
+<script src="js/05-paint-mesin.js?v=50"></script>
+<script src="js/05-paint-alat.js?v=50"></script>
+<script src="js/05-paint-tempat.js?v=50"></script>
+<script src="js/05-paint-pemain.js?v=50"></script>
+<script src="js/05-paint-item.js?v=50"></script>
+<script src="js/05-paint-v36.js?v=50"></script>
+<script src="js/05-render-overlay.js?v=50"></script>
+<script src="js/05-render.js?v=50"></script>
+<script src="js/06-input.js?v=50"></script>
+<script src="js/07-pemain.js?v=50"></script>
+<script src="js/08-gerak.js?v=50"></script>
+<script src="js/09-mesin.js?v=50"></script>
+<script src="js/10-resep.js?v=50"></script>
+<script src="js/11-ekonomi.js?v=50"></script>
+<script src="js/12-simpan.js?v=50"></script>
+<script src="js/13-ui-core.js?v=50"></script>
+<script src="js/13-ui-build.js?v=50"></script>
+<script src="js/13-ui-inspect.js?v=50"></script>
+<script src="js/13-ui-storage.js?v=50"></script>
+<script src="js/13-ui-shop.js?v=50"></script>
+<script src="js/13-ui-train.js?v=50"></script>
+<script src="js/13-ui-tas.js?v=50"></script>
+<script src="js/13-ui-mayor.js?v=50"></script>
+<script src="js/13-ui-plot.js?v=50"></script>
+<script src="js/13-ui-badge.js?v=50"></script>
+<script src="js/13-ui-book.js?v=50"></script>
+<script src="js/13-ui-tick.js?v=50"></script>
+<script src="js/13-ui.js?v=50"></script>
+<script src="js/14-main.js?v=50"></script>
 </body>
 </html>
