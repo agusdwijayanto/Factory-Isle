@@ -18,6 +18,8 @@ function buildTown() {
     ...rng(1, TOWN_W - 1).map((gx) => [gx, 2]),
   ]);
   put(town, [[1, 7], [7, 5], [14, 7]], 'lantern');
+  put(town, [[1, 4]], 'campTipi');
+  put(town, [[2, 4]], 'campfire');
   terrain(town, [[6, 1], [7, 1], [9, 1], [10, 1]], 'clay');
   return town;
 }

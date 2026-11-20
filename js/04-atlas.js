@@ -22,7 +22,7 @@ const Atlas = {
     this._ready = (async () => {
       let m = null;
       try {
-        const r = await fetch('assets/atlas-manifest.json?v=45');
+        const r = await fetch('assets/atlas-manifest.json?v=46');
         if (r.ok) m = await r.json();
       } catch (_) { /* file:// atau offline: pakai salinan darurat */ }
       this.manifest = m || MANIFEST_EMBEDDED;
@@ -102,7 +102,7 @@ const Atlas = {
 // Salinan darurat manifest, sama isinya dengan assets/atlas-manifest.json.
 const MANIFEST_EMBEDDED = {
   name: 'indotopia-tycoon-atlas-v1', atlasFile: 'atlas.png', source: 'procedural',
-  cell: 64, cols: 8, rows: 22, anchor: 'bottom-center',
+  cell: 64, cols: 8, rows: 23, anchor: 'bottom-center',
   sprites: {
     tree: { col: 0, row: 0, w: 1, h: 1 }, oreIron: { col: 1, row: 0, w: 1, h: 1 },
     oreCopper: { col: 2, row: 0, w: 1, h: 1 }, oreTin: { col: 3, row: 0, w: 1, h: 1 },
@@ -173,5 +173,7 @@ const MANIFEST_EMBEDDED = {
     shop_supply: { col: 2, row: 20, w: 2, h: 2 },
     shop_desert: { col: 4, row: 20, w: 2, h: 2 },
     shop_harbor: { col: 6, row: 20, w: 2, h: 2 },
+    campTipi: { col: 0, row: 22, w: 1, h: 1 },
+    campfire: { col: 1, row: 22, w: 1, h: 1 },
   },
 };

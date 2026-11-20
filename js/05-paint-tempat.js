@@ -184,7 +184,7 @@ Object.assign(PAINTERS, {
     g.fillStyle = 'rgba(255,255,255,0.7)';
     g.beginPath(); g.arc(cx - 9, gy - 48, 4.5, 0, 6.29); g.fill();
     g.beginPath(); g.arc(cx - 12, gy - 56, 6.5, 0, 6.29); g.fill();
-    g.fillStyle = '#ffeb99'; g.font = '700 9px system-ui, sans-serif'; g.textAlign = 'center';
+    g.fillStyle = '#ffeb99'; g.font = '700 7px system-ui, sans-serif'; g.textAlign = 'center';
     g.fillText('130', cx + 13, gy - 32);
     g.fillText('TRADING CO.', cx - 31, gy - 25);
   },
