@@ -5,7 +5,7 @@
   "cols": 8,
   "name": "indotopia-tycoon-atlas-v1",
   "notes": "Selama source=procedural, atlas dibuat saat boot dari pelukis prosedural di 05-render.js mengikuti posisi sel di bawah. Nanti sprite Gemini disusun jadi atlas.png dengan tata letak sel yang SAMA, lalu source diganti menjadi atlas.png tanpa mengubah kode render.",
-  "rows": 23,
+  "rows": 24,
   "source": "procedural",
   "sprites": {
     "advSaw": {
@@ -60,6 +60,30 @@
       "col": 0,
       "h": 1,
       "row": 22,
+      "w": 1
+    },
+    "planter": {
+      "col": 0,
+      "h": 1,
+      "row": 23,
+      "w": 1
+    },
+    "lamppost": {
+      "col": 1,
+      "h": 1,
+      "row": 23,
+      "w": 1
+    },
+    "bench": {
+      "col": 2,
+      "h": 1,
+      "row": 23,
+      "w": 1
+    },
+    "mailbox": {
+      "col": 3,
+      "h": 1,
+      "row": 23,
       "w": 1
     },
     "carpenter": {

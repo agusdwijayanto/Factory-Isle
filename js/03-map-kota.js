@@ -7,7 +7,8 @@ function buildTown() {
   for (const s of SHOP_SPOTS.filter((s) => s.map === 'town')) town[s.gy][s.gx].obj = 'shop_' + s.id;
   town[S.mayor.gy][S.mayor.gx].obj = 'mayor';
   town[13][7].obj = 'plotsign'; // v36: tanda kuning menu plot, di samping pad lahan (8,13)
-  terrain(town, [[5, 8], [6, 8], [7, 8]], 'platform'); // peron (x=4, z=6-8)
+  // v48: peron diganti bangunan stasiun. Panel naik kereta dibuka dari stasiun.
+  town[8][7].obj = 'station';
   town[9][7].obj = 'train'; // kereta tetap di (7,9), di atas rel
   railXAt(town, 9, 0, TOWN_W - 1); // rel kiri-kanan penuh di baris peron
   // jalan: kolom tengah (8) utara-selatan sampai jalan masuk lahan (8,13),
@@ -18,6 +19,11 @@ function buildTown() {
     ...rng(1, TOWN_W - 1).map((gx) => [gx, 2]),
   ]);
   put(town, [[1, 7], [7, 5], [14, 7]], 'lantern');
+  // v48: prop kota kecil di tepi jalan
+  put(town, [[3, 5]], 'lamppost');
+  put(town, [[5, 7]], 'planter');
+  put(town, [[9, 7]], 'bench');
+  put(town, [[9, 5]], 'mailbox');
   put(town, [[1, 4]], 'campTipi');
   put(town, [[2, 4]], 'campfire');
   terrain(town, [[6, 1], [7, 1], [9, 1], [10, 1]], 'clay');

@@ -15,7 +15,8 @@ function buildForest() {
   railXAt(forest, 9, 9, 15);
   railYAt(forest, 9, 0, 9); // rel L: timur ke utara
   terrain(forest, [[9, 9]], 'railBend'); // tikungan L di pertemuan rel
-  terrain(forest, [[14, 8]], 'platform'); // peron baru 1 kotak (x=4,z=15)
+  terrain(forest, [[14, 8]], 'grass');
+  forest[8][14].obj = 'station'; // v48: stasiun menggantikan peron
   forest[9][14].obj = 'train'; // kereta di rel depan peron (x=3,z=15)
   roadAt(forest, [
     ...rng(0, 6).map((gy) => [8, gy]),

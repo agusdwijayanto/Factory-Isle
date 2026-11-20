@@ -309,8 +309,9 @@ function interactAt(gx, gy) {
     goTo(gx, gy, () => UI.openMayor());
     return;
   }
-  // Naik kereta hanya dari kereta; peron cuma dekorasi, tidak bisa diklik.
-  if (t.obj === 'train') {
+  // v48: panel naik kereta dibuka dari STASIUN (peron dihapus, kereta tetap
+  // jalan dan bisa diklik cuma untuk mendekat).
+  if (t.obj === 'station') {
     goTo(gx, gy, () => UI.openTrain());
     return;
   }

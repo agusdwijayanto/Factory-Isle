@@ -197,3 +197,58 @@ button { font: inherit; color: inherit; cursor: pointer; }
 @media (max-width: 480px) {
   #hint { font-size: 12px; }
 }
+
+/* ===== v48: kulit UI krem hangat, senada langit mint & bangunan pastel =====
+   Override di akhir file supaya aturan lama tidak perlu disentuh satu-satu. */
+body { background: #EDF8E9; color: #5A4432; }
+
+.hud-btn, #money, #mapname, #btn-tas, #place-btns button, .hud-btn,
+#toast, #hint {
+  background: rgba(253, 246, 231, .96);
+  border-color: #C9A87C;
+  color: #5A4432;
+  box-shadow: 0 2px 0 rgba(150, 120, 90, .25), 0 4px 10px rgba(120, 100, 70, .12);
+}
+#btn-burger span { background: #8A6B4C; }
+#money { color: #B4762C; border-color: #D8B183; }
+
+.panel {
+  background: #FDF6E7;
+  border: 2px solid #C9A87C;
+  border-radius: 14px;
+  color: #5A4432;
+  box-shadow: 0 3px 0 rgba(150, 120, 90, .22), 0 10px 24px rgba(120, 100, 70, .18);
+}
+.panel-title { color: #B4762C; }
+.btn-x { background: #F3E5CB; border: 1px solid #C9A87C; color: #6B4A32; }
+
+.panel button[data-act], #admin-panel button[data-admin], #admin-toggle,
+.menu-btn, .shop-btns button, #build-tabs button {
+  background: #FFFDF6; border: 1px solid #C9A87C; color: #5A4432;
+}
+.panel button[data-act]:active, #admin-panel button[data-admin]:active,
+#admin-toggle:active, .menu-btn:active, .shop-btns button:active {
+  background: #F1E2C6;
+}
+#admin-toggle.on { background: #F7C86B; border-color: #B4762C; color: #4A3218; }
+#build-tabs button.on, .mp-recipes button.on {
+  background: #F7C86B; border-color: #B4762C; color: #4A3218;
+}
+#btn-tut-next { background: #F7C86B; border-color: #B4762C; color: #4A3218; }
+
+.build-item, .shop-row, .mayor-row {
+  background: #FFFDF6; border: 1px solid #DCC9A6; border-radius: 10px;
+}
+.build-item small, .mp-desc, .help-text p { color: #7A6650; }
+.mp-recipe { color: #B4762C; }
+.mp-buffers { color: #7A6650; }
+.mp-bar { background: #EADCC0; border-color: #C9A87C; }
+#insp-progress { background: #6FBF5A; }
+#hint { border-color: #C9A87C; }
+#toast {
+  background: #FDF6E7; border: 1px solid #C9A87C; color: #6B4A32;
+  box-shadow: 0 2px 0 rgba(150, 120, 90, .22), 0 6px 16px rgba(120, 100, 70, .16);
+}
+#btn-rotate { border-color: #B4762C; color: #B4762C; }
+#btn-place-cancel { border-color: #C0503F; color: #C0503F; }
+#btn-place-ok { border-color: #4E9B45; color: #4E9B45; }

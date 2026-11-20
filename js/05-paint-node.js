@@ -1,201 +1,282 @@
 // Node panen dan hiasan alam: pohon, tunggul, bijih, kapas, lentera,
-// bunga. Pecahan 05-render.js (v16).
+// bunga, wagon, patung, badge, tanda plot, camp + prop kota (v48).
 Object.assign(PAINTERS, {
   tree: (g, ox, oy) => {
-    const cx = ox + 32, gy = oy + 62;
-    P_shadow(g, cx, gy, 13);
-    g.fillStyle = '#5f3d22'; g.fillRect(cx - 2.5, gy - 14, 5, 14);
-    g.fillStyle = '#2f6b33'; g.beginPath(); g.arc(cx, gy - 30, 13, 0, 6.29); g.fill();
-    g.fillStyle = '#357a38'; g.beginPath(); g.arc(cx - 8, gy - 22, 9, 0, 6.29); g.fill();
-    g.fillStyle = '#2a5f2e'; g.beginPath(); g.arc(cx + 8, gy - 22, 9, 0, 6.29); g.fill();
-    g.strokeStyle = 'rgba(255,215,94,0.55)'; g.lineWidth = 2;
-    g.beginPath(); g.arc(cx, gy - 30, 12, Math.PI * 0.9, Math.PI * 1.5); g.stroke();
+    const cx = ox + 32, gy = oy + 60;
+    P_shadow(g, cx, gy, 15);
+    g.fillStyle = P_shade('#9A7048', 0.95); g.fillRect(cx - 3, gy - 15, 6, 15);
+    g.strokeStyle = P_OL; g.lineWidth = 1; g.strokeRect(cx - 3, gy - 15, 6, 15);
+    g.fillStyle = P_shade('#7CC46E', 0.98); g.beginPath(); g.arc(cx, gy - 31, 14, 0, 6.29); g.fill();
+    g.fillStyle = P_shade('#7CC46E', 0.86); g.beginPath(); g.arc(cx - 9, gy - 22, 9.5, 0, 6.29); g.fill();
+    g.fillStyle = P_shade('#7CC46E', 0.70); g.beginPath(); g.arc(cx + 9, gy - 22, 9.5, 0, 6.29); g.fill();
+    g.fillStyle = P_shade('#7CC46E', 1.14); g.beginPath(); g.arc(cx - 5, gy - 36, 7, 0, 6.29); g.fill();
+    g.strokeStyle = 'rgba(104,86,62,0.35)'; g.lineWidth = 1;
+    g.beginPath(); g.arc(cx, gy - 31, 14, 0, 6.29); g.stroke();
   },
   stump: (g, ox, oy) => {
-    const cx = ox + 32, gy = oy + 62;
+    const cx = ox + 32, gy = oy + 60;
     P_shadow(g, cx, gy, 8);
-    g.fillStyle = '#5f3d22'; g.fillRect(cx - 6, gy - 6, 12, 6);
-    g.fillStyle = '#a8763e'; g.beginPath(); g.ellipse(cx, gy - 6, 6, 2.5, 0, 0, 6.29); g.fill();
+    g.fillStyle = P_shade('#9A7048', 0.9); g.fillRect(cx - 6, gy - 7, 12, 7);
+    g.fillStyle = P_shade('#D9B27A', 1.0);
+    g.beginPath(); g.ellipse(cx, gy - 7, 6, 2.8, 0, 0, 6.29); g.fill();
+    g.strokeStyle = P_OL; g.lineWidth = 1;
+    g.beginPath(); g.ellipse(cx, gy - 7, 6, 2.8, 0, 0, 6.29); g.stroke();
   },
-  oreIron: (g, ox, oy) => PAINTERS._ore(g, ox, oy, '#e07b39'),
-  oreCopper: (g, ox, oy) => PAINTERS._ore(g, ox, oy, '#4fae9d'),
-  oreTin: (g, ox, oy) => PAINTERS._ore(g, ox, oy, '#d8e2e8'),
+  oreIron: (g, ox, oy) => PAINTERS._ore(g, ox, oy, '#E07B39'),
+  oreCopper: (g, ox, oy) => PAINTERS._ore(g, ox, oy, '#4FAE9D'),
+  oreTin: (g, ox, oy) => PAINTERS._ore(g, ox, oy, '#D8E2E8'),
   _ore: (g, ox, oy, color) => {
-    const cx = ox + 32, gy = oy + 62;
+    const cx = ox + 32, gy = oy + 60;
     P_shadow(g, cx, gy, 14);
-    g.fillStyle = '#7d8894';
+    g.fillStyle = P_shade('#A9AFB3', 0.98);
     g.beginPath();
     g.moveTo(cx - 14, gy); g.lineTo(cx - 9, gy - 14); g.lineTo(cx + 3, gy - 18);
     g.lineTo(cx + 13, gy - 8); g.lineTo(cx + 14, gy); g.closePath(); g.fill();
-    g.fillStyle = '#5d6773';
+    g.strokeStyle = P_OL; g.lineWidth = 1; g.stroke();
+    g.fillStyle = P_shade('#A9AFB3', 0.78);
     g.beginPath();
     g.moveTo(cx + 3, gy - 18); g.lineTo(cx + 13, gy - 8);
-    g.lineTo(cx + 14, gy); g.lineTo(cx + 2, gy); g.closePath(); g.fill();
+    g.lineTo(cx + 14, gy); g.lineTo(cx + 2, gy); g.closePath(); g.fill(); g.stroke();
     g.fillStyle = color;
     [[-7, -8], [2, -12], [7, -5]].forEach(([dx, dy]) => g.fillRect(cx + dx, gy + dy, 3.5, 3.5));
   },
   cotton: (g, ox, oy) => {
-    const cx = ox + 32, gy = oy + 62;
+    const cx = ox + 32, gy = oy + 60;
     P_shadow(g, cx, gy, 11);
-    g.strokeStyle = '#3f7a34'; g.lineWidth = 1.6;
+    g.strokeStyle = P_shade('#6FAE5E', 0.95); g.lineWidth = 1.6;
     [[-8, 0], [0, -3], [8, 0]].forEach(([dx, dy]) => {
       g.beginPath(); g.moveTo(cx + dx, gy); g.lineTo(cx + dx, gy - 12 + dy); g.stroke();
     });
-    g.fillStyle = '#f2ede0';
+    g.fillStyle = '#FBF7EC';
     [[-8, -13], [0, -16], [8, -13], [-4, -10], [4, -10]].forEach(([dx, dy]) => {
       g.beginPath(); g.arc(cx + dx, gy + dy, 4, 0, 6.29); g.fill();
     });
   },
   lantern: (g, ox, oy) => {
-    const cx = ox + 32, gy = oy + 62;
+    const cx = ox + 32, gy = oy + 60;
     P_shadow(g, cx, gy, 6);
-    g.fillStyle = '#3a2a1a'; g.fillRect(cx - 1.5, gy - 26, 3, 26);
-    g.fillStyle = '#ffd75e'; g.fillRect(cx - 4, gy - 33, 8, 8);
-    g.strokeStyle = '#3a2a1a'; g.lineWidth = 1.5; g.strokeRect(cx - 4, gy - 33, 8, 8);
+    g.fillStyle = P_shade('#6B4A32', 0.85); g.fillRect(cx - 1.5, gy - 26, 3, 26);
+    g.fillStyle = '#FFE89B'; g.fillRect(cx - 4, gy - 33, 8, 8);
+    g.strokeStyle = P_shade('#6B4A32', 0.8); g.lineWidth = 1.5; g.strokeRect(cx - 4, gy - 33, 8, 8);
   },
   flowers: (g, ox, oy) => {
-    const cx = ox + 32, gy = oy + 62;
-    g.strokeStyle = '#3f7a34'; g.lineWidth = 1.5;
+    const cx = ox + 32, gy = oy + 60;
+    g.strokeStyle = P_shade('#6FAE5E', 0.95); g.lineWidth = 1.5;
     [[-9, -8], [0, -11], [9, -8]].forEach(([dx, dy]) => {
       g.beginPath(); g.moveTo(cx + dx, gy); g.lineTo(cx + dx, gy + dy); g.stroke();
     });
-    g.fillStyle = '#d97ba8';
+    g.fillStyle = '#E88BB0';
     [[-9, -9], [0, -12], [9, -9]].forEach(([dx, dy]) => {
       g.beginPath(); g.arc(cx + dx, gy + dy, 3, 0, 6.29); g.fill();
     });
+    g.fillStyle = '#FFF3C4';
+    [[-9, -9], [0, -12], [9, -9]].forEach(([dx, dy]) => {
+      g.beginPath(); g.arc(cx + dx, gy + dy, 1.2, 0, 6.29); g.fill();
+    });
   },
-  // ---- v35: wagon, patung, badge, tanda plot ----
-  // Wagon ikut referensi gambar 1: kuda menarik gerbong kayu berisi peti.
+
+  // ---- v35: wagon ----
   wagon: (g, ox, oy) => {
-    const cx = ox + 32, gy = oy + 62;
-    P_shadow(g, cx, gy, 16);
-    // Kuda cozy di depan kanan.
-    g.fillStyle = '#9c6644';
-    g.beginPath(); g.ellipse(cx + 12, gy - 16, 9.5, 6.5, 0, 0, 6.29); g.fill();
-    g.beginPath(); g.arc(cx + 20, gy - 24, 4.8, 0, 6.29); g.fill();
-    g.fillStyle = '#7f4f24'; g.fillRect(cx + 18, gy - 30, 4.5, 6.5);
-    g.strokeStyle = '#7f4f24'; g.lineWidth = 2;
-    [[8, -10], [14, -10], [10, -10], [16, -10]].forEach(([dx, dy]) => {
+    const cx = ox + 32, gy = oy + 60;
+    P_shadow(g, cx, gy, 18);
+    // kuda
+    g.fillStyle = P_shade('#B07E52', 0.98);
+    g.beginPath(); g.ellipse(cx + 13, gy - 17, 9.5, 6.5, 0, 0, 6.29); g.fill();
+    g.strokeStyle = P_OL; g.lineWidth = 1; g.stroke();
+    g.fillStyle = P_shade('#B07E52', 1.02);
+    g.beginPath(); g.arc(cx + 21, gy - 25, 4.8, 0, 6.29); g.fill(); g.stroke();
+    g.fillStyle = P_shade('#8A6242', 0.95); g.fillRect(cx + 19, gy - 31, 4.5, 6.5);
+    g.strokeStyle = P_shade('#8A6242', 0.9); g.lineWidth = 2;
+    [[9, 0], [15, 0], [11, -2], [17, -2]].forEach(([dx]) => {
       g.beginPath(); g.moveTo(cx + dx, gy - 12); g.lineTo(cx + dx, gy); g.stroke();
     });
-    // 8. Wagon cozy: kanvas conestoga putih hangat + garis kuning hangat + slot muatan
-    g.fillStyle = '#fffaf0';
-    g.beginPath(); g.ellipse(cx - 8, gy - 26, 14.5, 10.5, 0, 0, 6.29); g.fill();
-    g.fillStyle = '#ffc75f';
-    g.beginPath(); g.ellipse(cx - 8, gy - 24, 12.5, 6.5, 0, 0, 6.29); g.stroke(); g.lineWidth = 1.8; g.stroke();
-    g.fillStyle = '#a8763e'; g.fillRect(cx - 22, gy - 14, 24, 10);
-    g.fillStyle = '#7a5230'; g.fillRect(cx - 22, gy - 14, 24, 3);
-    g.fillStyle = '#5d6773';
-    g.beginPath(); g.arc(cx - 16, gy - 1, 4.2, 0, 6.29); g.fill();
-    g.beginPath(); g.arc(cx - 4, gy - 1, 4.2, 0, 6.29); g.fill();
-    g.strokeStyle = '#5f3d22'; g.lineWidth = 1.5;
-    g.beginPath(); g.moveTo(cx + 4, gy - 16); g.lineTo(cx + 2, gy - 12); g.stroke();
-    g.fillStyle = '#ffeb99'; g.font = '700 8.5px system-ui, sans-serif'; g.textAlign = 'center';
-    g.fillText('0 / 15', cx, gy - 29);
+    // kanvas conestoga
+    g.fillStyle = '#FBF7EC';
+    g.beginPath(); g.ellipse(cx - 8, gy - 27, 14.5, 10.5, 0, 0, 6.29); g.fill();
+    g.strokeStyle = P_OL; g.lineWidth = 1.2; g.stroke();
+    g.strokeStyle = P_shade('#F0B94E', 1.0); g.lineWidth = 1.4;
+    g.beginPath(); g.ellipse(cx - 8, gy - 25, 12.5, 6.5, 0, 0, 6.29); g.stroke();
+    // peti + roda
+    P_box(g, cx - 10, gy - 14, 26, 10, '#C79A6B');
+    g.fillStyle = P_shade('#3A4148', 1.15);
+    g.beginPath(); g.arc(cx - 17, gy - 1, 4.4, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx - 4, gy - 1, 4.4, 0, 6.29); g.fill();
+    g.strokeStyle = P_shade('#9A7048', 0.85); g.lineWidth = 1.5;
+    g.beginPath(); g.moveTo(cx + 5, gy - 16); g.lineTo(cx + 8, gy - 13); g.stroke();
+    // muatan
+    g.fillStyle = '#FDF6E7'; g.fillRect(cx - 16, gy - 30, 16, 6);
+    g.strokeStyle = P_OL; g.lineWidth = 1; g.strokeRect(cx - 16, gy - 30, 16, 6);
+    g.fillStyle = '#5A4432'; g.font = '700 6px system-ui, sans-serif'; g.textAlign = 'center';
+    g.fillText('0 / 15', cx - 8, gy - 25.5);
   },
-  // Patung: alas batu + sosok, beda warna/siluet tiap patung.
+
+  // ---- v48: prop kota kecil (tidak memblokir jalan) ----
+  planter: (g, ox, oy) => {
+    const cx = ox + 32, gy = oy + 60;
+    P_shadow(g, cx, gy, 8);
+    P_box(g, cx, gy, 16, 8, '#C79A6B');
+    g.fillStyle = P_shade('#7CC46E', 1.0);
+    g.beginPath(); g.arc(cx - 3, gy - 12, 4.5, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx + 3, gy - 13, 4, 0, 6.29); g.fill();
+    g.fillStyle = '#E88BB0';
+    g.beginPath(); g.arc(cx - 3, gy - 14, 1.8, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx + 4, gy - 15, 1.6, 0, 6.29); g.fill();
+  },
+  lamppost: (g, ox, oy) => {
+    const cx = ox + 32, gy = oy + 60;
+    P_shadow(g, cx, gy, 6);
+    g.fillStyle = P_shade('#6B4A32', 0.8); g.fillRect(cx - 1.5, gy - 28, 3, 28);
+    P_box(g, cx, gy - 27, 10, 4, '#6B4A32');
+    g.fillStyle = '#FFE89B'; g.fillRect(cx - 3.5, gy - 38, 7, 7);
+    g.strokeStyle = P_shade('#6B4A32', 0.8); g.lineWidth = 1.2; g.strokeRect(cx - 3.5, gy - 38, 7, 7);
+    g.fillStyle = 'rgba(255,232,155,0.28)';
+    g.beginPath(); g.arc(cx, gy - 34, 10, 0, 6.29); g.fill();
+  },
+  bench: (g, ox, oy) => {
+    const cx = ox + 32, gy = oy + 60;
+    P_shadow(g, cx, gy, 9);
+    P_box(g, cx, gy - 4, 20, 3, '#C79A6B');
+    g.fillStyle = P_shade('#B57A4E', 0.85);
+    g.fillRect(cx - 8, gy - 12, 2.5, 8); g.fillRect(cx + 5.5, gy - 12, 2.5, 8);
+    g.fillStyle = P_shade('#C79A6B', 1.05); g.fillRect(cx - 9, gy - 14, 18, 3);
+  },
+  mailbox: (g, ox, oy) => {
+    const cx = ox + 32, gy = oy + 60;
+    P_shadow(g, cx, gy, 6);
+    g.fillStyle = P_shade('#6B4A32', 0.85); g.fillRect(cx - 1.5, gy - 16, 3, 16);
+    g.fillStyle = P_shade('#8FB3C9', 0.95);
+    g.fillRect(cx - 6, gy - 24, 12, 10);
+    g.beginPath(); g.arc(cx, gy - 24, 6, Math.PI, 0); g.fill();
+    g.strokeStyle = P_OL; g.lineWidth = 1; g.strokeRect(cx - 6, gy - 24, 12, 10);
+    g.fillStyle = '#F0B94E'; g.fillRect(cx + 7, gy - 22, 2, 6);
+  },
+
+  // ---- Patung ----
   _statueBase: (g, ox, oy) => {
-    const cx = ox + 32, gy = oy + 62;
+    const cx = ox + 32, gy = oy + 60;
     P_shadow(g, cx, gy, 12);
-    g.fillStyle = '#8d99a8'; g.fillRect(cx - 11, gy - 6, 22, 6);
-    g.fillStyle = '#6e7683'; g.fillRect(cx - 9, gy - 10, 18, 4);
+    P_box(g, cx, gy, 22, 8, '#C9C6C0');
   },
   statueLion: (g, ox, oy) => {
     PAINTERS._statueBase(g, ox, oy);
-    const cx = ox + 32, gy = oy + 62;
-    g.fillStyle = '#c98f2e';
+    const cx = ox + 32, gy = oy + 60;
+    g.fillStyle = P_shade('#D9A85E', 0.98);
     g.beginPath(); g.ellipse(cx, gy - 20, 9, 6, 0, 0, 6.29); g.fill();
     g.beginPath(); g.arc(cx + 8, gy - 26, 5, 0, 6.29); g.fill();
-    g.fillStyle = '#a8763e'; g.fillRect(cx - 8, gy - 16, 16, 6);
+    g.strokeStyle = P_OL; g.lineWidth = 1; g.stroke();
+    g.fillStyle = P_shade('#B57A4E', 0.95); g.fillRect(cx - 8, gy - 16, 16, 6);
   },
   statueMiner: (g, ox, oy) => {
     PAINTERS._statueBase(g, ox, oy);
-    const cx = ox + 32, gy = oy + 62;
-    g.fillStyle = '#8d99a8';
-    g.fillRect(cx - 4, gy - 32, 8, 22);
+    const cx = ox + 32, gy = oy + 60;
+    g.fillStyle = P_shade('#B9C0C6', 0.95); g.fillRect(cx - 4, gy - 32, 8, 22);
     g.beginPath(); g.arc(cx, gy - 36, 5, 0, 6.29); g.fill();
-    g.strokeStyle = '#7a5230'; g.lineWidth = 2.5;
+    g.strokeStyle = P_OL; g.lineWidth = 1; g.stroke();
+    g.strokeStyle = P_shade('#9A7048', 0.95); g.lineWidth = 2.5;
     g.beginPath(); g.moveTo(cx + 4, gy - 28); g.lineTo(cx + 12, gy - 36); g.stroke();
-    g.fillStyle = '#ffd75e'; g.fillRect(cx - 2, gy - 42, 4, 3);
+    g.fillStyle = '#F0B94E'; g.fillRect(cx - 2, gy - 42, 4, 3);
   },
   statueLumber: (g, ox, oy) => {
     PAINTERS._statueBase(g, ox, oy);
-    const cx = ox + 32, gy = oy + 62;
-    g.fillStyle = '#2f6b33';
-    g.fillRect(cx - 4, gy - 32, 8, 22);
+    const cx = ox + 32, gy = oy + 60;
+    g.fillStyle = P_shade('#7CC46E', 0.85); g.fillRect(cx - 4, gy - 32, 8, 22);
     g.beginPath(); g.arc(cx, gy - 36, 5, 0, 6.29); g.fill();
-    g.strokeStyle = '#7a5230'; g.lineWidth = 2.5;
+    g.strokeStyle = P_OL; g.lineWidth = 1; g.stroke();
+    g.strokeStyle = P_shade('#9A7048', 0.95); g.lineWidth = 2.5;
     g.beginPath(); g.moveTo(cx - 4, gy - 28); g.lineTo(cx - 12, gy - 38); g.stroke();
-    g.fillStyle = '#8d99a8';
+    g.fillStyle = '#B9C0C6';
     g.beginPath(); g.moveTo(cx - 12, gy - 38); g.lineTo(cx - 6, gy - 34); g.lineTo(cx - 10, gy - 30); g.closePath(); g.fill();
   },
   statueSmith: (g, ox, oy) => {
     PAINTERS._statueBase(g, ox, oy);
-    const cx = ox + 32, gy = oy + 62;
-    g.fillStyle = '#6e7683';
-    g.fillRect(cx - 4, gy - 32, 8, 22);
+    const cx = ox + 32, gy = oy + 60;
+    g.fillStyle = P_shade('#9AA7A0', 0.9); g.fillRect(cx - 4, gy - 32, 8, 22);
     g.beginPath(); g.arc(cx, gy - 36, 5, 0, 6.29); g.fill();
-    g.strokeStyle = '#7a5230'; g.lineWidth = 2.5;
+    g.strokeStyle = P_OL; g.lineWidth = 1; g.stroke();
+    g.strokeStyle = P_shade('#9A7048', 0.95); g.lineWidth = 2.5;
     g.beginPath(); g.moveTo(cx + 4, gy - 28); g.lineTo(cx + 12, gy - 40); g.stroke();
-    g.fillStyle = '#3a3f47'; g.fillRect(cx + 10, gy - 42, 6, 4);
+    g.fillStyle = '#5E666F'; g.fillRect(cx + 10, gy - 42, 6, 4);
   },
   statueLiberty: (g, ox, oy) => {
     PAINTERS._statueBase(g, ox, oy);
-    const cx = ox + 32, gy = oy + 62;
-    g.fillStyle = '#4fae9d';
-    g.fillRect(cx - 4, gy - 34, 8, 24);
+    const cx = ox + 32, gy = oy + 60;
+    g.fillStyle = P_shade('#7FB3A8', 0.98); g.fillRect(cx - 4, gy - 34, 8, 24);
     g.beginPath(); g.arc(cx, gy - 38, 5, 0, 6.29); g.fill();
-    g.strokeStyle = '#4fae9d'; g.lineWidth = 2.5;
+    g.strokeStyle = P_OL; g.lineWidth = 1; g.stroke();
+    g.strokeStyle = P_shade('#7FB3A8', 0.95); g.lineWidth = 2.5;
     g.beginPath(); g.moveTo(cx + 4, gy - 30); g.lineTo(cx + 12, gy - 42); g.stroke();
-    g.fillStyle = '#ffd75e';
+    g.fillStyle = '#F0B94E';
     g.beginPath(); g.arc(cx + 12, gy - 44, 3, 0, 6.29); g.fill();
   },
   badge: (g, ox, oy) => {
-    const cx = ox + 32, gy = oy + 62;
-    g.fillStyle = '#ffd75e';
+    const cx = ox + 32, gy = oy + 60;
+    g.fillStyle = '#F0B94E';
     g.beginPath(); g.arc(cx, gy - 24, 11, 0, 6.29); g.fill();
-    g.strokeStyle = '#c98f2e'; g.lineWidth = 2;
+    g.strokeStyle = P_shade('#B57A4E', 0.95); g.lineWidth = 2;
     g.beginPath(); g.arc(cx, gy - 24, 11, 0, 6.29); g.stroke();
     g.beginPath(); g.arc(cx, gy - 24, 6, 0, 6.29); g.stroke();
-    g.fillStyle = '#c98f2e';
+    g.fillStyle = P_shade('#B57A4E', 0.95);
     g.beginPath(); g.moveTo(cx, gy - 30); g.lineTo(cx + 2, gy - 26); g.lineTo(cx + 6, gy - 26);
     g.lineTo(cx + 3, gy - 23); g.lineTo(cx + 4, gy - 19); g.lineTo(cx, gy - 21);
     g.lineTo(cx - 4, gy - 19); g.lineTo(cx - 3, gy - 23); g.lineTo(cx - 6, gy - 26);
     g.lineTo(cx - 2, gy - 26); g.closePath(); g.fill();
-    g.strokeStyle = '#d97b4f'; g.lineWidth = 3;
+    g.strokeStyle = P_shade('#C4664C', 1.0); g.lineWidth = 3;
     g.beginPath(); g.moveTo(cx - 5, gy - 14); g.lineTo(cx - 8, gy - 4); g.stroke();
     g.beginPath(); g.moveTo(cx + 5, gy - 14); g.lineTo(cx + 8, gy - 4); g.stroke();
   },
   plotsign: (g, ox, oy) => {
-    const cx = ox + 32, gy = oy + 62;
+    const cx = ox + 32, gy = oy + 60;
     P_shadow(g, cx, gy, 8);
-    g.fillStyle = '#7a5230'; g.fillRect(cx - 2, gy - 30, 4, 30);
-    g.fillStyle = '#ffd75e'; g.fillRect(cx - 14, gy - 42, 28, 16);
-    g.strokeStyle = '#7a5230'; g.lineWidth = 2; g.strokeRect(cx - 14, gy - 42, 28, 16);
-    g.fillStyle = '#3a2a1a'; g.font = '700 10px system-ui, sans-serif'; g.textAlign = 'center';
+    g.fillStyle = P_shade('#9A7048', 0.9); g.fillRect(cx - 2, gy - 30, 4, 30);
+    g.fillStyle = '#FDF6E7'; g.fillRect(cx - 14, gy - 42, 28, 16);
+    g.strokeStyle = P_shade('#9A7048', 0.85); g.lineWidth = 1.5; g.strokeRect(cx - 14, gy - 42, 28, 16);
+    g.fillStyle = '#5A4432'; g.font = '700 8px system-ui, sans-serif'; g.textAlign = 'center';
     g.fillText('PLOT', cx, gy - 31);
   },
+
+  // ---- Camp ----
   campTipi: (g, ox, oy) => {
-    const cx = ox + 32, gy = oy + 62;
-    P_shadow(g, cx, gy, 12);
-    // 7. Camp cozy: tenda tipi hangat + api unggun lembut
-    g.fillStyle = '#e5c158';
-    g.beginPath(); g.moveTo(cx, gy - 25); g.lineTo(cx - 13, gy - 2); g.lineTo(cx + 13, gy - 2); g.closePath(); g.fill();
-    g.fillStyle = '#b07238';
-    g.beginPath(); g.moveTo(cx, gy - 23); g.lineTo(cx - 11, gy - 2); g.lineTo(cx + 11, gy - 2); g.closePath(); g.fill();
-    g.fillStyle = '#6b7a8f'; g.fillRect(cx - 1.2, gy - 7, 2.4, 7);
-    g.strokeStyle = '#8b5a2b'; g.lineWidth = 1.2;
-    g.beginPath(); g.moveTo(cx - 9, gy - 2); g.lineTo(cx - 9, gy - 11); g.stroke();
-    g.beginPath(); g.moveTo(cx + 9, gy - 2); g.lineTo(cx + 9, gy - 11); g.stroke();
+    const cx = ox + 32, gy = oy + 60;
+    P_shadow(g, cx, gy, 13);
+    // kanvas krem + aksen hangat, garis jahit
+    g.beginPath(); g.moveTo(cx, gy - 28); g.lineTo(cx - 14, gy - 2); g.lineTo(cx + 14, gy - 2); g.closePath();
+    g.fillStyle = '#FBF3E2'; g.fill();
+    g.strokeStyle = P_OL; g.lineWidth = 1; g.stroke();
+    g.beginPath(); g.moveTo(cx, gy - 28); g.lineTo(cx - 14, gy - 2); g.lineTo(cx - 2, gy - 2); g.closePath();
+    g.fillStyle = P_shade('#FBF3E2', 0.88); g.fill(); g.stroke();
+    // jahit & tiang
+    g.strokeStyle = 'rgba(176,114,56,0.5)'; g.lineWidth = 0.8;
+    g.beginPath(); g.moveTo(cx - 4, gy - 20); g.lineTo(cx - 10, gy - 4); g.stroke();
+    g.beginPath(); g.moveTo(cx + 4, gy - 20); g.lineTo(cx + 10, gy - 4); g.stroke();
+    g.fillStyle = '#8A6242'; g.fillRect(cx - 1.2, gy - 34, 2.4, 8);
+    g.fillStyle = '#F0B94E'; g.fillRect(cx - 2, gy - 35, 4, 3);
+    // pintu gelap
+    g.fillStyle = P_shade('#6B4A32', 0.75);
+    g.beginPath(); g.moveTo(cx, gy - 12); g.lineTo(cx - 5, gy - 2); g.lineTo(cx + 5, gy - 2); g.closePath(); g.fill();
   },
   campfire: (g, ox, oy) => {
-    const cx = ox + 32, gy = oy + 62;
-    P_shadow(g, cx, gy, 6);
-    g.fillStyle = '#6d4c41'; g.fillRect(cx - 4.5, gy - 4.5, 9, 4.5);
-    g.fillRect(cx - 2.2, gy - 6.5, 4.5, 6.5);
-    g.fillStyle = '#ff7a2e';
-    g.beginPath(); g.arc(cx, gy - 9, 5.5, 0, 6.29); g.fill();
-    g.fillStyle = '#ffeb99';
-    g.beginPath(); g.arc(cx, gy - 11, 3.2, 0, 6.29); g.fill();
+    const cx = ox + 32, gy = oy + 60;
+    // cahaya hangat lembut
+    g.fillStyle = 'rgba(255,196,96,0.20)';
+    g.beginPath(); g.ellipse(cx, gy - 6, 18, 8, 0, 0, 6.29); g.fill();
+    P_shadow(g, cx, gy, 7);
+    // batu dudukan
+    g.fillStyle = '#B9C0C6';
+    for (const [dx, dy] of [[-9, -1], [-3, -5], [6, -3], [10, 1]]) {
+      g.beginPath(); g.arc(cx + dx, gy + dy, 2.6, 0, 6.29); g.fill();
+    }
+    g.strokeStyle = P_OL; g.lineWidth = 1;
+    for (const [dx, dy] of [[-9, -1], [-3, -5], [6, -3], [10, 1]]) {
+      g.beginPath(); g.arc(cx + dx, gy + dy, 2.6, 0, 6.29); g.stroke();
+    }
+    // kayu
+    g.strokeStyle = P_shade('#9A7048', 0.9); g.lineWidth = 2.5;
+    g.beginPath(); g.moveTo(cx - 5, gy - 2); g.lineTo(cx + 5, gy - 7); g.stroke();
+    g.beginPath(); g.moveTo(cx + 5, gy - 2); g.lineTo(cx - 5, gy - 7); g.stroke();
+    // api
+    g.fillStyle = '#F08A3C';
+    g.beginPath(); g.moveTo(cx, gy - 17); g.lineTo(cx - 5, gy - 7); g.lineTo(cx + 5, gy - 7); g.closePath(); g.fill();
+    g.fillStyle = '#FFD75E';
+    g.beginPath(); g.moveTo(cx, gy - 14); g.lineTo(cx - 3, gy - 7); g.lineTo(cx + 3, gy - 7); g.closePath(); g.fill();
   },
 });

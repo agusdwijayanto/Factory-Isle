@@ -1,236 +1,382 @@
 // Tempat di map: toko, gunung, stasiun, kereta, Mayor, gerbang,
-// kotak plot. Pecahan 05-render.js (v16).
+// kotak plot. v48: semua bangunan lewat P_box (3 tona dari satu warna),
+// alas batu, atap menjorok, papan nama krem, garis tepi coklat lembut.
 Object.assign(PAINTERS, {
-  shop: (g, ox, oy) => {
-    // Blok 2x2 sel: alas di bawah blok.
-    const cx = ox + 64, gy = oy + 126;
-    P_shadow(g, cx, gy, 34);
-    P_isoBox(g, cx, gy, 84, 34, '#8b4513', '#65351a', '#3a1c12');
-    P_isoBox(g, cx, gy - 34, 70, 22, '#a0522d', '#8b4513', '#4a2e18');
-    g.fillStyle = '#c0392b';
+  shop: (g, ox, oy) => PAINTERS.shop_exchange(g, ox, oy),
+
+  // ---------- Papan nama: krem + tepi coklat, font menyusut kalau sempit ----------
+  _paintSign(g, cx, cy, w, h, text, size, fill, ink) {
+    g.fillStyle = fill; g.fillRect(cx - w / 2, cy, w, h);
+    g.strokeStyle = '#8A6B4C'; g.lineWidth = 1.5; g.strokeRect(cx - w / 2, cy, w, h);
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    let f = size;
+    g.font = `800 ${f}px system-ui, sans-serif`;
+    while (g.measureText(text).width > w - 8 && f > 6) {
+      f -= 0.5; g.font = `800 ${f}px system-ui, sans-serif`;
+    }
+    g.fillStyle = ink; g.fillText(text, cx, cy + h / 2 + 0.5);
+    g.textBaseline = 'alphabetic';
+  },
+
+  // ---------- Atap ----------
+  // Prisma iso dari belah ketupat (bawah) ke belah ketupat kecil (atas).
+  // Empat bidang trapesium dengan nilai berbeda = atap terbaca tiga dimensi.
+  // topFrac kecil (0.10) = atap limas, besar (0.40) = atap perisai/pelana.
+  _roofPrism(g, cx, ty, a, b, H, roof, topFrac) {
+    const t = topFrac === undefined ? 0.34 : topFrac;
+    const A = Math.max(3, a * t), B = Math.max(2, b * t);
+    const B0 = [cx, ty - b], R0 = [cx + a, ty], F0 = [cx, ty + b], L0 = [cx - a, ty];
+    const B1 = [cx, ty - b - H], R1 = [cx + A, ty - H], F1 = [cx, ty + B - H], L1 = [cx - A, ty - H];
+    const quad = (p1, p2, p3, p4, col) => {
+      g.beginPath(); g.moveTo(p1[0], p1[1]); g.lineTo(p2[0], p2[1]);
+      g.lineTo(p3[0], p3[1]); g.lineTo(p4[0], p4[1]); g.closePath();
+      g.fillStyle = col; g.fill();
+      g.strokeStyle = P_OL; g.lineWidth = 1; g.stroke();
+    };
+    quad(L0, B0, B1, L1, P_shade(roof, 1.10));  // belakang-kiri: paling terang
+    quad(B0, R0, R1, B1, P_shade(roof, 0.98));  // belakang-kanan
+    quad(F0, L0, L1, F1, P_shade(roof, 0.84));  // depan-kiri
+    quad(R0, F0, F1, R1, P_shade(roof, 0.66));  // depan-kanan: paling gelap
+    // tutup atas + lis terang
     g.beginPath();
-    g.moveTo(cx - 42, gy - 34); g.lineTo(cx, gy - 56); g.lineTo(cx + 42, gy - 34);
-    g.lineTo(cx + 42, gy - 28); g.lineTo(cx, gy - 50); g.lineTo(cx - 42, gy - 28);
-    g.closePath(); g.fill();
-    g.fillStyle = '#3a1c12'; g.fillRect(cx - 12, gy - 26, 24, 26);
-    g.fillStyle = '#ffd75e'; g.fillRect(cx - 9, gy - 23, 18, 8);
-    g.fillStyle = '#2a1f16'; g.fillRect(cx - 26, gy - 62, 52, 14);
-    g.strokeStyle = '#ffd75e'; g.lineWidth = 1.5; g.strokeRect(cx - 26, gy - 62, 52, 14);
-    g.fillStyle = '#ffd75e'; g.font = '800 10px system-ui, sans-serif';
-    g.textAlign = 'center'; g.fillText('WESTERN', cx, gy - 51);
-  },
-  _paintWesternShop(g, ox, oy, wallColor1, wallColor2, roofColor1, roofColor2, title, extraFn) {
-    const cx = ox + 64, gy = oy + 126;
-    // Bayangan lembut cozy
-    g.fillStyle = 'rgba(60,30,10,0.25)';
-    g.beginPath(); g.ellipse(cx, gy + 4, 42, 18, 0, 0, 6.29); g.fill();
-    // Kotak utama dengan tekstur 3D hangat
-    P_isoBox(g, cx, gy, 86, 36, wallColor1, wallColor2, '#4a2810');
-    // Teras depan hangat (warm wood porch)
-    g.fillStyle = '#c87d55';
-    g.fillRect(cx - 32, gy - 18, 64, 10);
-    g.fillStyle = '#7a4a28';
-    g.fillRect(cx - 34, gy - 36, 6, 20);
-    g.fillRect(cx + 28, gy - 36, 6, 20);
-    P_isoBox(g, cx, gy - 36, 76, 24, roofColor1, roofColor2, '#3a1f10');
-    // Atap pelana 3D cozy
-    g.fillStyle = roofColor1;
+    g.moveTo(B1[0], B1[1]); g.lineTo(R1[0], R1[1]);
+    g.lineTo(F1[0], F1[1]); g.lineTo(L1[0], L1[1]); g.closePath();
+    g.fillStyle = P_shade(roof, 1.14); g.fill();
+    g.strokeStyle = P_OL; g.lineWidth = 1; g.stroke();
+    // garis atap / lis gantung: bayangan tipis di bawah eave
+    g.strokeStyle = 'rgba(104,86,62,0.35)'; g.lineWidth = 1;
     g.beginPath();
-    g.moveTo(cx - 46, gy - 36); g.lineTo(cx, gy - 64); g.lineTo(cx + 46, gy - 36);
-    g.lineTo(cx + 46, gy - 30); g.lineTo(cx, gy - 58); g.lineTo(cx - 46, gy - 30);
-    g.closePath(); g.fill();
-    // Pintu hangat + aksen cahaya jendela
-    g.fillStyle = '#3a1c12'; g.fillRect(cx - 10, gy - 30, 20, 26);
-    g.fillStyle = '#ffeb99'; g.fillRect(cx - 7, gy - 26, 14, 10);
-    if (extraFn) extraFn(g, cx, gy);
-    // Papan nama besar cozy
-    g.fillStyle = '#4a2810'; g.fillRect(cx - 40, gy - 72, 80, 18);
-    g.strokeStyle = '#ffeb99'; g.lineWidth = 2; g.strokeRect(cx - 40, gy - 72, 80, 18);
-    g.fillStyle = '#ffeb99'; g.font = '800 10px system-ui, sans-serif';
-    g.textAlign = 'center'; g.fillText(title, cx, gy - 59);
+    g.moveTo(L0[0], L0[1]); g.lineTo(F0[0], F0[1]); g.lineTo(R0[0], R0[1]); g.stroke();
   },
-  shop_carpenter: (g, ox, oy) => {
-    // 2. CARPENTER: biru hangat + cart jual kayu di luar dengan harga papan
-    PAINTERS._paintWesternShop(g, ox, oy, '#7b95b8', '#5e799e', '#b8623b', '#964d2d', 'CARPENTER', (g, cx, gy) => {
-      g.fillStyle = '#8b5a2b'; g.fillRect(cx - 30, gy - 6, 22, 10);
-      g.fillStyle = '#e2c08d'; g.fillRect(cx - 32, gy - 14, 26, 8);
-      g.fillStyle = '#ffeb99'; g.font = '700 8px system-ui, sans-serif'; g.textAlign = 'center';
-      g.fillText('Plank 12 / 8 / 5', cx - 19, gy - 9);
-      g.fillStyle = '#6b7a8f'; g.beginPath(); g.arc(cx - 24, gy - 1, 3.5, 0, 6.29); g.fill();
-      g.beginPath(); g.arc(cx - 8, gy - 1, 3.5, 0, 6.29); g.fill();
+
+  _gableRoof(g, cx, ty, a, b, H, roof) { PAINTERS._roofPrism(g, cx, ty, a, b, H, roof, 0.30); },
+
+  _hipRoof(g, cx, ty, a, b, H, roof) { PAINTERS._roofPrism(g, cx, ty, a, b, H, roof, 0.12); },
+
+  // ---------- Badan toko 2x2 sel ----------
+  // opt: wall, roof, style ('gable'|'hip'|'flat'|'awning'|'dome'),
+  //      twoStory, extra(g,cx,gy,top)
+  _paintWesternShop(g, ox, oy, o) {
+    const cx = ox + 64, gy = oy + 126;
+    const wall = o.wall, roof = o.roof || P_shade(wall, 0.72);
+    const W = 96, H = o.twoStory ? 66 : 52;
+    const top = gy - 4 - H;              // pusat muka atas badan
+    P_shadow(g, cx, gy, 48);
+    // alas batu
+    P_plinth(g, cx, gy, W - 2, '#C9C6C0');
+    // badan: kontras sisi dinaikkan supaya kubus terbaca
+    P_box(g, cx, gy - 4, W, H, wall, {
+      top: P_shade(wall, 1.10), left: P_shade(wall, 0.90), right: P_shade(wall, 0.66),
     });
+    // teras kayu
+    g.fillStyle = P_shade('#C79A6B', 0.94); g.fillRect(cx - 40, gy - 6, 80, 6);
+    g.strokeStyle = 'rgba(104,86,62,0.45)'; g.lineWidth = 1;
+    g.beginPath(); g.moveTo(cx - 40, gy - 6); g.lineTo(cx + 40, gy - 6); g.stroke();
+
+    // pintu + jendela
+    g.fillStyle = P_shade('#6B4A32', 0.9); g.fillRect(cx - 9, gy - 30, 18, 26);
+    g.strokeStyle = 'rgba(104,86,62,0.5)'; g.strokeRect(cx - 9, gy - 30, 18, 26);
+    g.fillStyle = '#FFF3C4'; g.fillRect(cx - 6, gy - 27, 12, 10);
+    for (const sx of [-1, 1]) {
+      const wx = cx + sx * 27;
+      g.fillStyle = P_shade('#6B4A32', 0.9); g.fillRect(wx - 8, gy - 28, 16, 13);
+      g.fillStyle = '#FFF3C4'; g.fillRect(wx - 6, gy - 26, 12, 9);
+      g.fillStyle = 'rgba(104,86,62,0.45)';
+      g.fillRect(wx - 0.5, gy - 26, 1, 9); g.fillRect(wx - 6, gy - 22, 12, 1);
+    }
+    // tiang teras
+    g.fillStyle = P_shade('#B57A4E', 0.9);
+    g.fillRect(cx - 38, gy - 16, 3, 12); g.fillRect(cx + 35, gy - 16, 3, 12);
+
+    // atap: menjorok 6px keluar dari badan (x=54 vs 48, y=32 vs 24)
+    const a = 54, b = 32;
+    if (o.style === 'hip') PAINTERS._hipRoof(g, cx, top + 2, a, b, 26, roof);
+    else if (o.style === 'dome') {
+      PAINTERS._hipRoof(g, cx, top + 2, a, b, 18, roof);
+      g.fillStyle = P_shade(roof, 0.86);
+      g.beginPath(); g.ellipse(cx, top - 14, 20, 18, 0, Math.PI, 0); g.fill();
+      g.strokeStyle = P_OL; g.lineWidth = 1; g.stroke();
+      g.fillStyle = P_shade(roof, 1.3); g.fillRect(cx - 2, top - 34, 4, 6);
+    } else if (o.style === 'flat') {
+      // fasad tiruan (false front): papan tegak menutupi atap, sengaja datar
+      const fw = W + 8;
+      g.fillStyle = P_shade(roof, 0.94); g.fillRect(cx - fw / 2, top - 12, fw, 15);
+      g.strokeStyle = P_OL; g.lineWidth = 1; g.strokeRect(cx - fw / 2, top - 12, fw, 15);
+      g.fillStyle = P_shade(roof, 1.22); g.fillRect(cx - fw / 2, top - 14, fw, 3);
+      g.fillStyle = 'rgba(104,86,62,0.18)'; g.fillRect(cx - fw / 2, top + 3, fw, 2);
+    } else {
+      PAINTERS._gableRoof(g, cx, top + 2, a, b, 28, roof);
+    }
+    if (o.style === 'awning') {
+      const ay = gy - 36;
+      g.fillStyle = '#FDF6E7'; g.fillRect(cx - 34, ay, 68, 9);
+      g.fillStyle = o.awning || P_shade(roof, 0.9);
+      for (let i = 0; i < 6; i++) g.fillRect(cx - 34 + i * 11, ay, 5.5, 9);
+      g.strokeStyle = P_OL; g.lineWidth = 1; g.strokeRect(cx - 34, ay, 68, 9);
+    }
+    // papan nama: 74px, menempel dinding (tidak menutupi atap/sisi)
+    PAINTERS._paintSign(g, cx, gy - H + 5, 74, 13, o.title, 10, '#FDF6E7', '#5A4432');
+    if (o.extra) o.extra(g, cx, gy, top);
   },
-  shop_blacksmith: (g, ox, oy) => {
-    PAINTERS._paintWesternShop(g, ox, oy, '#555555', '#333333', '#3b4252', '#2e3440', 'BLACKSMITH', (g, cx, gy) => {
-      g.fillStyle = '#e67e22'; g.fillRect(cx - 30, gy - 16, 12, 14);
-      g.fillStyle = '#e74c3c'; g.fillRect(cx - 28, gy - 12, 8, 8);
-      g.fillStyle = '#222222'; g.fillRect(cx + 18, gy - 10, 10, 6);
-    });
-  },
+
   shop_exchange: (g, ox, oy) => {
-    // 1. SALOON: cozy warm red, menara air, swinging doors, 2 lantai, bartender
-    PAINTERS._paintWesternShop(g, ox, oy, '#a83225', '#8a2419', '#d64531', '#b53322', 'SALOON', (g, cx, gy) => {
-      // Pintu swinging doors berayun kayu hangat
-      g.fillStyle = '#7a3b1e';
-      g.fillRect(cx - 9, gy - 30, 8, 26); g.fillRect(cx + 1, gy - 30, 8, 26);
-      g.strokeStyle = '#ffeb99'; g.lineWidth = 1;
-      g.strokeRect(cx - 9, gy - 30, 8, 26); g.strokeRect(cx + 1, gy - 30, 8, 26);
-      // Jendela lantai 2 hangat
-      g.fillStyle = '#3a1c12';
-      g.fillRect(cx - 26, gy - 60, 10, 8); g.fillRect(cx + 16, gy - 60, 10, 8);
-      g.fillStyle = '#ffeb99'; g.fillRect(cx - 24, gy - 58, 6, 4); g.fillRect(cx + 18, gy - 58, 6, 4);
-      // Menara air kayu hangat di atas atap
-      g.fillStyle = '#7a4a28'; g.fillRect(cx - 6, gy - 86, 4, 22);
-      g.fillStyle = '#34495e'; g.beginPath(); g.arc(cx - 4, gy - 88, 10, 0, 6.29); g.fill();
-      g.fillStyle = '#d64531'; g.fillRect(cx - 9, gy - 82, 14, 6);
-      // Bartender NPC cozy
-      g.fillStyle = '#ffdb80'; g.fillRect(cx - 2, gy - 34, 4, 8);
-      g.fillStyle = '#d64531'; g.fillRect(cx - 3, gy - 28, 6, 6);
-      g.fillStyle = '#3a1c12'; g.beginPath(); g.arc(cx, gy - 36, 3, 0, 6.29); g.fill();
+    // SALOON: dua lantai, menara air, pintu ayun, bartender
+    PAINTERS._paintWesternShop(g, ox, oy, {
+      wall: '#C4614A', roof: '#8E3B33', twoStory: true, style: 'gable', title: 'SALOON',
+      extra: (g, cx, gy, top) => {
+        g.fillStyle = P_shade('#6B4A32', 0.85);
+        g.fillRect(cx - 10, gy - 30, 8, 26); g.fillRect(cx + 2, gy - 30, 8, 26);
+        g.strokeStyle = '#FFF3C4'; g.lineWidth = 1;
+        g.strokeRect(cx - 10, gy - 30, 8, 26); g.strokeRect(cx + 2, gy - 30, 8, 26);
+        // jendela lantai dua (di bawah papan nama, di atas pintu)
+        for (const sx of [-1, 1]) {
+          g.fillStyle = P_shade('#6B4A32', 0.8); g.fillRect(cx + sx * 27 - 8, gy - 46, 16, 10);
+          g.fillStyle = '#FFF3C4'; g.fillRect(cx + sx * 27 - 6, gy - 44, 12, 6);
+        }
+        // menara air
+        g.fillStyle = P_shade('#B57A4E', 0.85); g.fillRect(cx + 30, top - 22, 3, 24);
+        g.fillStyle = P_shade('#9AA7A0', 0.95);
+        g.beginPath(); g.arc(cx + 31, top - 26, 9, 0, 6.29); g.fill();
+        g.strokeStyle = P_OL; g.lineWidth = 1; g.stroke();
+        g.fillStyle = P_shade('#8E3B33', 1.1); g.fillRect(cx + 23, top - 34, 16, 4);
+        // bartender di ambang
+        g.fillStyle = '#FFDB9E'; g.fillRect(cx - 2, gy - 28, 4, 7);
+        g.fillStyle = '#8E3B33'; g.fillRect(cx - 3, gy - 22, 6, 6);
+        g.fillStyle = '#4A2E1E'; g.beginPath(); g.arc(cx, gy - 30, 3, 0, 6.29); g.fill();
+      },
     });
   },
+
+  shop_carpenter: (g, ox, oy) => {
+    // CARPENTER: kayu biru pastel + cart papan harga
+    PAINTERS._paintWesternShop(g, ox, oy, {
+      wall: '#8FB3C9', roof: '#C4664C', style: 'gable', title: 'CARPENTER',
+      extra: (g, cx, gy, top) => {
+        // tumpukan papan di sisi kiri
+        for (let i = 0; i < 3; i++) {
+          g.fillStyle = P_shade('#D9B27A', 0.95 - i * 0.08);
+          g.fillRect(cx - 46, gy - 10 - i * 4, 22, 4);
+        }
+        // cart kecil + papan harga
+        g.fillStyle = P_shade('#B57A4E', 0.95); g.fillRect(cx + 22, gy - 16, 18, 10);
+        g.fillStyle = '#FDF6E7'; g.fillRect(cx + 20, gy - 30, 24, 12);
+        g.strokeStyle = P_OL; g.lineWidth = 1; g.strokeRect(cx + 20, gy - 30, 24, 12);
+        g.fillStyle = '#5A4432'; g.font = '700 6px system-ui, sans-serif'; g.textAlign = 'center';
+        g.fillText('12 / 8 / 5', cx + 32, gy - 25);
+        g.fillText('PLANK', cx + 32, gy - 21);
+        g.fillStyle = P_shade('#6B4A32', 0.9);
+        g.beginPath(); g.arc(cx + 25, gy - 4, 3.5, 0, 6.29); g.fill();
+        g.beginPath(); g.arc(cx + 37, gy - 4, 3.5, 0, 6.29); g.fill();
+      },
+    });
+  },
+
+  shop_blacksmith: (g, ox, oy) => {
+    // BLACKSMITH: batu arang, cerobong, nyala tungku
+    PAINTERS._paintWesternShop(g, ox, oy, {
+      wall: '#8A8378', roof: '#5C6B7A', style: 'gable', title: 'BLACKSMITH',
+      extra: (g, cx, gy, top) => {
+        // cerobong batu
+        P_box(g, cx + 26, top - 6, 12, 22, '#B0A79A');
+        g.fillStyle = 'rgba(255,240,220,0.55)';
+        g.beginPath(); g.arc(cx + 27, top - 34, 5, 0, 6.29); g.fill();
+        g.beginPath(); g.arc(cx + 31, top - 42, 4, 0, 6.29); g.fill();
+        // tungku + landasan
+        g.fillStyle = P_shade('#6B4A32', 0.7); g.fillRect(cx - 34, gy - 12, 16, 8);
+        P_furnace(g, cx - 26, gy - 12);
+        g.fillStyle = '#7C838C'; g.fillRect(cx + 16, gy - 12, 14, 4);
+        g.fillStyle = '#5E666F'; g.fillRect(cx + 20, gy - 8, 6, 6);
+      },
+    });
+  },
+
   shop_toolshop: (g, ox, oy) => {
-    PAINTERS._paintWesternShop(g, ox, oy, '#784212', '#5e3310', '#8e44ad', '#7d3c98', 'TOOL SHOP', (g, cx, gy) => {
-      g.fillStyle = '#bdc3c7'; g.fillRect(cx - 26, gy - 14, 4, 12);
-      g.fillStyle = '#e74c3c'; g.fillRect(cx - 28, gy - 14, 8, 4);
+    // TOOL SHOP: kanopi bergaris
+    PAINTERS._paintWesternShop(g, ox, oy, {
+      wall: '#C9A25E', roof: '#6C7FA0', style: 'awning', title: 'TOOL SHOP',
+      extra: (g, cx, gy) => {
+        g.fillStyle = '#AEB6BE'; g.fillRect(cx - 28, gy - 14, 3, 12);
+        g.fillStyle = '#C96A4E'; g.fillRect(cx - 31, gy - 14, 9, 4);
+        g.fillStyle = '#BFB49B'; g.fillRect(cx + 22, gy - 12, 10, 3);
+        g.fillStyle = P_shade('#B57A4E', 0.9); g.fillRect(cx + 24, gy - 9, 3, 8);
+      },
     });
   },
+
   shop_textile: (g, ox, oy) => {
-    // 3. TEXTILE: cozy light wood + gulungan kain merah & ungu di jendela
-    PAINTERS._paintWesternShop(g, ox, oy, '#e8ecef', '#cbd2d8', '#e06d6d', '#bc5252', 'TEXTILE', (g, cx, gy) => {
-      g.fillStyle = '#f25f5c'; g.fillRect(cx - 26, gy - 14, 7, 10); g.fillRect(cx - 26, gy - 14, 7, 3);
-      g.fillStyle = '#845ec2'; g.fillRect(cx + 19, gy - 14, 7, 10); g.fillRect(cx + 19, gy - 14, 7, 3);
-      g.fillStyle = '#ffc75f'; g.fillRect(cx - 28, gy - 12, 2, 6); g.fillRect(cx + 21, gy - 12, 2, 6);
+    // TEXTILE: hip roof + gulungan kain
+    PAINTERS._paintWesternShop(g, ox, oy, {
+      wall: '#EFE3D2', roof: '#D97A6C', style: 'hip', title: 'TEXTILE',
+      extra: (g, cx, gy) => {
+        const rolls = [['#E2665C', cx - 30], ['#9A7BC4', cx - 22], ['#F0B94E', cx + 20], ['#7FB3A8', cx + 28]];
+        for (const [col, x] of rolls) {
+          g.fillStyle = P_shade(col, 0.95); g.fillRect(x, gy - 17, 6, 11);
+          g.fillStyle = P_shade(col, 1.15); g.fillRect(x, gy - 17, 6, 2.5);
+        }
+      },
     });
   },
+
   shop_supply: (g, ox, oy) => {
-    // 4. SUPPLY: hijau hangat, fasad tiruan, busur di atas pintu
-    PAINTERS._paintWesternShop(g, ox, oy, '#27ae60', '#1e8449', '#2ecc71', '#27ae60', 'SUPPLY', (g, cx, gy) => {
-      g.fillStyle = '#27ae60'; g.fillRect(cx - 36, gy - 72, 72, 4);
-      g.strokeStyle = '#ffeb99'; g.lineWidth = 1.5; g.strokeRect(cx - 36, gy - 72, 72, 4);
-      g.fillStyle = '#2ecc71';
-      g.beginPath(); g.arc(cx, gy - 30, 7, Math.PI, 0); g.fill();
-      g.fillRect(cx - 7, gy - 30, 14, 7);
-      g.fillStyle = '#f39c12'; g.fillRect(cx - 28, gy - 10, 8, 8); g.fillRect(cx + 20, gy - 10, 8, 8);
+    // SUPPLY: fasad tiruan + busur pintu
+    PAINTERS._paintWesternShop(g, ox, oy, {
+      wall: '#6FAE7B', roof: '#4E8F63', style: 'flat', title: 'SUPPLY',
+      extra: (g, cx, gy) => {
+        g.fillStyle = P_shade('#6FAE7B', 1.12);
+        g.beginPath(); g.arc(cx, gy - 34, 11, Math.PI, 0); g.fill();
+        g.strokeStyle = '#FDF6E7'; g.lineWidth = 2;
+        g.beginPath(); g.arc(cx, gy - 34, 11, Math.PI, 0); g.stroke();
+        g.fillStyle = '#E0A24E'; g.fillRect(cx - 32, gy - 14, 9, 9); g.fillRect(cx + 23, gy - 14, 9, 9);
+        g.strokeStyle = P_OL; g.lineWidth = 1;
+        g.strokeRect(cx - 32, gy - 14, 9, 9); g.strokeRect(cx + 23, gy - 14, 9, 9);
+      },
     });
   },
+
   shop_desert: (g, ox, oy) => {
-    PAINTERS._paintWesternShop(g, ox, oy, '#d4ac0d', '#b7950b', '#ca6f1e', '#b9770e', 'DESERT', (g, cx, gy) => {
-      g.fillStyle = '#a04000'; g.beginPath(); g.arc(cx - 24, gy - 8, 5, 0, 6.29); g.fill();
-      g.fillStyle = '#dc7633'; g.beginPath(); g.arc(cx + 22, gy - 8, 5, 0, 6.29); g.fill();
+    // DESERT: kubah pasir
+    PAINTERS._paintWesternShop(g, ox, oy, {
+      wall: '#E3B771', roof: '#CE8450', style: 'dome', title: 'DESERT',
+      extra: (g, cx, gy) => {
+        g.fillStyle = P_shade('#CE8450', 1.05);
+        g.beginPath(); g.arc(cx - 30, gy - 8, 6, 0, 6.29); g.fill();
+        g.beginPath(); g.arc(cx + 30, gy - 8, 6, 0, 6.29); g.fill();
+        g.strokeStyle = P_OL; g.lineWidth = 1;
+        g.beginPath(); g.arc(cx - 30, gy - 8, 6, 0, 6.29); g.stroke();
+        g.beginPath(); g.arc(cx + 30, gy - 8, 6, 0, 6.29); g.stroke();
+      },
     });
   },
+
   shop_harbor: (g, ox, oy) => {
-    // v41: toko Pelabuhan (id 'harbor') ketinggalan di v40 — tanpa ini gambarnya hilang.
-    PAINTERS._paintWesternShop(g, ox, oy, '#1a5276', '#154360', '#2e86c1', '#2471a3', 'HARBOR', (g, cx, gy) => {
-      g.fillStyle = '#7fb3d5'; g.fillRect(cx - 28, gy - 12, 10, 8);
-      g.fillStyle = '#aed6f1'; g.fillRect(cx + 20, gy - 12, 10, 8);
+    // HARBOR: kanopi teal, jaring & tong
+    PAINTERS._paintWesternShop(g, ox, oy, {
+      wall: '#7FB3A8', roof: '#4F8C86', style: 'awning', title: 'HARBOR',
+      awning: '#4F8C86',
+      extra: (g, cx, gy) => {
+        g.fillStyle = P_shade('#B57A4E', 0.9); g.fillRect(cx - 34, gy - 14, 12, 12);
+        g.fillStyle = P_shade('#B57A4E', 1.1); g.fillRect(cx - 34, gy - 14, 12, 2.5);
+        g.strokeStyle = 'rgba(253,246,231,0.85)'; g.lineWidth = 1.5;
+        g.beginPath(); g.arc(cx + 26, gy - 14, 7, Math.PI * 0.15, Math.PI * 0.95); g.stroke();
+        g.beginPath(); g.moveTo(cx + 19, gy - 13); g.lineTo(cx + 33, gy - 13); g.stroke();
+      },
     });
   },
+
   mountain: (g, ox, oy) => {
-    const cx = ox + 32, gy = oy + 62;
-    P_shadow(g, cx, gy, 18);
-    g.fillStyle = '#7d8894';
+    const cx = ox + 32, gy = oy + 60;
+    P_shadow(g, cx, gy + 2, 18);
+    g.fillStyle = P_shade('#9DA5A2', 0.95);
     g.beginPath();
-    g.moveTo(cx - 20, gy); g.lineTo(cx - 8, gy - 34); g.lineTo(cx + 2, gy - 44);
-    g.lineTo(cx + 12, gy - 30); g.lineTo(cx + 20, gy); g.closePath(); g.fill();
-    g.fillStyle = '#5d6773';
+    g.moveTo(cx - 22, gy); g.lineTo(cx - 8, gy - 34); g.lineTo(cx + 2, gy - 44);
+    g.lineTo(cx + 12, gy - 30); g.lineTo(cx + 22, gy); g.closePath(); g.fill();
+    g.fillStyle = P_shade('#9DA5A2', 0.72);
     g.beginPath();
-    g.moveTo(cx + 2, gy - 44); g.lineTo(cx + 12, gy - 30); g.lineTo(cx + 20, gy);
+    g.moveTo(cx + 2, gy - 44); g.lineTo(cx + 12, gy - 30); g.lineTo(cx + 22, gy);
     g.lineTo(cx + 2, gy); g.closePath(); g.fill();
-    g.fillStyle = '#f2ede0'; // salju di puncak
+    g.strokeStyle = P_OL; g.lineWidth = 1; g.stroke();
+    g.fillStyle = '#FBF7EC';
     g.beginPath();
     g.moveTo(cx - 8, gy - 34); g.lineTo(cx + 2, gy - 44); g.lineTo(cx + 7, gy - 36);
     g.lineTo(cx + 2, gy - 33); g.lineTo(cx - 3, gy - 36); g.closePath(); g.fill();
   },
+
+  // Stasiun: bangunan kecil beratap pelana — pengganti peron.
+  // v48: papan STATION menempel dinding, atap pelana di atasnya.
   station: (g, ox, oy) => {
-    const cx = ox + 32, gy = oy + 62;
-    P_shadow(g, cx, gy, 16);
-    P_isoBox(g, cx, gy, 40, 16, '#8b4513', '#65351a', '#3a1c12');
-    g.fillStyle = '#65351a'; g.fillRect(cx - 18, gy - 34, 36, 18);
-    g.fillStyle = '#c0392b'; // atap stasiun western
-    g.beginPath();
-    g.moveTo(cx - 16, gy - 34); g.lineTo(cx, gy - 46); g.lineTo(cx + 16, gy - 34); g.closePath(); g.fill();
-    g.fillStyle = '#ffd75e'; g.beginPath(); g.arc(cx, gy - 40, 4, 0, 6.29); g.fill();
-    g.strokeStyle = '#2a1f16'; g.lineWidth = 1;
-    g.beginPath(); g.moveTo(cx, gy - 40); g.lineTo(cx, gy - 43); g.stroke();
-    g.fillStyle = '#3a1c12'; g.fillRect(cx - 5, gy - 14, 10, 14);
+    const cx = ox + 32, gy = oy + 60;
+    P_shadow(g, cx, gy, 28);
+    P_plinth(g, cx, gy, 50, '#C9C6C0');
+    P_box(g, cx, gy - 4, 50, 30, '#E9DCC4', {
+      top: P_shade('#E9DCC4', 1.06), left: P_shade('#E9DCC4', 0.90), right: P_shade('#E9DCC4', 0.68),
+    });
+    PAINTERS._paintSign(g, cx, gy - 32, 42, 10, 'STATION', 7, '#FDF6E7', '#5A4432');
+    // pintu + dua jendela kecil
+    g.fillStyle = P_shade('#6B4A32', 0.9); g.fillRect(cx - 6, gy - 20, 12, 16);
+    g.fillStyle = '#FFF3C4'; g.fillRect(cx - 4, gy - 18, 8, 7);
+    g.fillStyle = '#FFF3C4'; g.fillRect(cx - 20, gy - 18, 8, 6); g.fillRect(cx + 12, gy - 18, 8, 6);
+    PAINTERS._gableRoof(g, cx, gy - 34 + 2, 29, 17, 13, '#C4664C');
+    // papan digambar SESUDAH atap: menempel di muka depan, tidak tertutup
+    PAINTERS._paintSign(g, cx, gy - 30, 42, 10, 'STATION', 7, '#FDF6E7', '#5A4432');
+    // bangku peron
+    g.fillStyle = P_shade('#B57A4E', 0.9); g.fillRect(cx + 22, gy - 9, 10, 3);
+    g.fillRect(cx + 23, gy - 6, 2, 4); g.fillRect(cx + 29, gy - 6, 2, 4);
   },
+
   train: (g, ox, oy) => {
     const cx = ox + 32, gy = oy + 62;
-    P_shadow(g, cx, gy, 18);
-    // 5. Kereta cozy: gerbong utama lebih lebar (36px) untuk muat "TRADING CO." tanpa meluber
-    g.fillStyle = '#6e2c1d'; g.fillRect(cx - 50, gy - 24, 36, 16);
-    g.strokeStyle = '#ffeb99'; g.lineWidth = 1.5;
-    g.strokeRect(cx - 50, gy - 24, 36, 16);
-    g.fillStyle = '#ffeb99'; g.fillRect(cx - 46, gy - 20, 5, 7); g.fillRect(cx - 22, gy - 20, 5, 7);
-    g.fillStyle = '#ffeb99'; g.font = '700 7.5px system-ui, sans-serif'; g.textAlign = 'center';
-    g.fillText('TRADING CO.', cx - 32, gy - 14);
-    // Lokomotif uap 3D
-    g.fillStyle = '#8f9da6';
-    g.beginPath();
-    g.moveTo(cx - 14, gy - 4); g.lineTo(cx - 18, gy - 16); g.lineTo(cx - 10, gy - 16);
+    P_shadow(g, cx, gy + 2, 28);
+    // papan nama 52px di atas rangkaian (teks 7px = 45.6px, muat)
+    PAINTERS._paintSign(g, cx, gy - 56, 56, 14, 'TRADING CO.', 7, '#FDF6E7', '#5A4432');
+    g.fillStyle = P_shade('#B57A4E', 0.85);
+    g.fillRect(cx - 20, gy - 42, 2.5, 14); g.fillRect(cx + 17, gy - 42, 2.5, 14);
+    // gerbong
+    P_box(g, cx - 23, gy - 2, 34, 16, '#7A3B2E', { top: P_shade('#7A3B2E', 1.28) });
+    g.fillStyle = '#FFF3C4'; g.fillRect(cx - 36, gy - 16, 5, 7); g.fillRect(cx - 16, gy - 16, 5, 7);
+    // lokomotif
+    g.fillStyle = P_shade('#8C99A0', 0.9);
+    g.beginPath(); g.moveTo(cx - 8, gy - 4); g.lineTo(cx - 11, gy - 15); g.lineTo(cx - 4, gy - 15);
     g.closePath(); g.fill();
-    g.fillStyle = '#3a3542';
-    g.fillRect(cx - 12, gy - 26, 30, 18);
-    g.fillStyle = '#9c5a3c'; g.fillRect(cx + 8, gy - 38, 14, 14);
-    g.fillStyle = '#222222'; g.fillRect(cx - 8, gy - 40, 6, 16);
-    g.fillStyle = '#ffc75f'; g.fillRect(cx - 10, gy - 42, 10, 3);
-    g.fillStyle = '#d64531'; g.fillRect(cx - 12, gy - 10, 30, 3);
-    g.fillStyle = '#d64531';
-    [[-6, -2], [6, -2], [14, -2]].forEach(([dx, dy]) => {
-      g.beginPath(); g.arc(cx + dx, gy + dy, 5, 0, 6.29); g.fill();
-      g.fillStyle = '#222222'; g.beginPath(); g.arc(cx + dx, gy + dy, 2, 0, 6.29); g.fill();
-      g.fillStyle = '#d64531';
-    });
-    g.fillStyle = 'rgba(255,255,255,0.7)';
-    g.beginPath(); g.arc(cx - 5, gy - 48, 4.5, 0, 6.29); g.fill();
-    g.beginPath(); g.arc(cx - 8, gy - 56, 6.5, 0, 6.29); g.fill();
-    g.fillStyle = '#ffeb99'; g.font = '700 9px system-ui, sans-serif'; g.textAlign = 'center';
-    g.fillText('130', cx + 15, gy - 32);
+    P_box(g, cx + 8, gy - 2, 22, 20, '#5E6B78');
+    // kabin + nomor 130
+    P_box(g, cx + 14, gy - 24, 14, 12, '#4A5663');
+    g.fillStyle = '#FFF3C4'; g.font = '700 7px system-ui, sans-serif'; g.textAlign = 'center';
+    g.fillText('130', cx + 14, gy - 30);
+    // cerobong + asap
+    g.fillStyle = P_shade('#3A4148', 1.0); g.fillRect(cx + 1, gy - 34, 6, 14);
+    g.fillStyle = P_shade('#C4664C', 1.0); g.fillRect(cx, gy - 36, 8, 3);
+    g.fillStyle = 'rgba(255,255,255,0.75)';
+    g.beginPath(); g.arc(cx + 4, gy - 42, 4, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx + 7, gy - 50, 5.5, 0, 6.29); g.fill();
+    // roda
+    g.fillStyle = P_shade('#3A4148', 1.1);
+    for (const dx of [-32, -20, 0, 12]) {
+      g.beginPath(); g.arc(cx + dx, gy - 1, 4.5, 0, 6.29); g.fill();
+      g.fillStyle = '#C9C6C0'; g.beginPath(); g.arc(cx + dx, gy - 1, 1.6, 0, 6.29); g.fill();
+      g.fillStyle = P_shade('#3A4148', 1.1);
+    }
   },
+
   // ---------- Mayor, gerbang, kotak plot ----------
   mayor: (g, ox, oy) => {
-    // v43: kembali ke Mayor asli — perempuan rambut pirang, gaun biru-putih
-    // (foto Mayor). v42 mengubahnya jadi koboi pria, itu menyimpang dari aslinya.
-    const cx = ox + 32, gy = oy + 62;
+    // Mayor asli: perempuan rambut pirang, gaun biru-putih (foto Mayor).
+    const cx = ox + 32, gy = oy + 60;
     P_shadow(g, cx, gy, 10);
-    g.fillStyle = '#2c4a7a'; // gaun
+    g.fillStyle = P_shade('#3D6AA8', 0.98);
     g.beginPath();
     g.moveTo(cx - 5, gy - 32); g.lineTo(cx + 5, gy - 32);
-    g.lineTo(cx + 11, gy); g.lineTo(cx - 11, gy);
-    g.closePath(); g.fill();
-    g.fillStyle = '#e8e4f5'; // celemek putih
+    g.lineTo(cx + 11, gy - 2); g.lineTo(cx - 11, gy - 2); g.closePath(); g.fill();
+    g.fillStyle = '#FBF7EC';
     g.beginPath();
     g.moveTo(cx - 3, gy - 30); g.lineTo(cx + 3, gy - 30);
-    g.lineTo(cx + 6, gy - 2); g.lineTo(cx - 6, gy - 2);
-    g.closePath(); g.fill();
-    g.fillStyle = '#f0c8a0'; // tangan + kepala
+    g.lineTo(cx + 6, gy - 4); g.lineTo(cx - 6, gy - 4); g.closePath(); g.fill();
+    g.fillStyle = '#F3CBA6';
     g.fillRect(cx - 9, gy - 30, 3, 9); g.fillRect(cx + 6, gy - 30, 3, 9);
     g.beginPath(); g.arc(cx, gy - 38, 7, 0, 6.29); g.fill();
-    g.fillStyle = '#e8c860'; // rambut pirang
+    g.fillStyle = '#EBCB72';
     g.beginPath(); g.arc(cx, gy - 41, 8, Math.PI, 0); g.fill();
     g.fillRect(cx - 8, gy - 41, 3, 10); g.fillRect(cx + 5, gy - 41, 3, 10);
-    g.fillStyle = '#2a1a10'; g.fillRect(cx - 3, gy - 39, 2, 2); g.fillRect(cx + 2, gy - 39, 2, 2);
+    g.fillStyle = '#3B2A1E'; g.fillRect(cx - 3, gy - 39, 2, 2); g.fillRect(cx + 2, gy - 39, 2, 2);
+    g.strokeStyle = P_OL; g.lineWidth = 1;
+    g.beginPath(); g.arc(cx, gy - 38, 7, 0, 6.29); g.stroke();
   },
+
   gate: (g, ox, oy) => {
-    const cx = ox + 32, gy = oy + 62;
-    P_shadow(g, cx, gy, 16);
-    g.fillStyle = '#5f3d22';
+    const cx = ox + 32, gy = oy + 60;
+    P_shadow(g, cx, gy, 18);
+    g.fillStyle = P_shade('#8A6B4C', 0.95);
     g.fillRect(cx - 20, gy - 34, 5, 34); g.fillRect(cx + 15, gy - 34, 5, 34);
-    g.fillStyle = '#7a5230'; g.fillRect(cx - 22, gy - 40, 44, 6);
-    g.fillStyle = '#ffd75e';
-    g.fillRect(cx - 19, gy - 33, 3, 3); g.fillRect(cx + 16, gy - 33, 3, 3);
-    g.fillStyle = '#e8b64c'; g.fillRect(cx - 8, gy - 32, 16, 9);
-    g.strokeStyle = '#5f3d22'; g.lineWidth = 1.5; g.strokeRect(cx - 8, gy - 32, 16, 9);
+    P_box(g, cx, gy - 34, 46, 6, '#B57A4E');
+    PAINTERS._paintSign(g, cx, gy - 30, 30, 11, 'TOWN', 8, '#FDF6E7', '#5A4432');
   },
+
   plotpad: (g, ox, oy) => {
     const cx = ox + 32, cy = oy + 32;
     g.beginPath();
     g.moveTo(cx, cy - 15); g.lineTo(cx + 30, cy); g.lineTo(cx, cy + 15); g.lineTo(cx - 30, cy);
-    g.closePath(); g.fillStyle = '#e8e4da'; g.fill();
-    g.strokeStyle = '#e8b64c'; g.lineWidth = 2.5; g.stroke();
-    g.fillStyle = '#c98f2e';
+    g.closePath(); g.fillStyle = '#F3EEDF'; g.fill();
+    g.strokeStyle = '#E0A24E'; g.lineWidth = 2.5; g.stroke();
+    g.fillStyle = '#CE9A46';
     [[0, -9], [17, 0], [0, 9], [-17, 0]].forEach(([dx, dy]) => {
       g.beginPath(); g.arc(cx + dx, cy + dy, 2, 0, 6.29); g.fill();
     });

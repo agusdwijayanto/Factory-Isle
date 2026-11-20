@@ -152,8 +152,10 @@ const MAP_EXITS = {
     { gx: 0, gy: 6, to: 'town', sx: 18, sy: 6 }, // v36: satu petak di barat pintu timur kota (19,6)
   ],
 };
-// Peron kereta tiap map: [gx, gy] petak tengah peron, titik lahir naik kereta.
-const TRAIN_SPAWN = { town: [7, 8], forest: [14, 8], mountain: [6, 8], harbor: [7, 6] };
+// Stasiun kereta tiap map: [gx, gy] petak di samping bangunan stasiun,
+// titik lahir saat naik kereta. v48: stasiun menggantikan peron, jadi
+// titik lahir digeser ke petak bebas di sebelahnya.
+const TRAIN_SPAWN = { town: [8, 8], forest: [14, 7], mountain: [8, 8], harbor: [8, 6] };
 
 // v36: Kota membesar 20x14 (stasiun + Conductor + SUPPLY di timur).
 // Plot mulai 16x12 lalu membesar tiap ekspansi (ukuran dasar sama dengan

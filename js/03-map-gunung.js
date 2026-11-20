@@ -17,7 +17,8 @@ function buildMountain() {
   put(mountain, [[9, 6]], 'lantern');
   // Peron mengapit rel: rel dari bawah berhenti di peron (terminus),
   // tidak tembus ke atas — tidak ada map di utara gunung. Kereta di (7,9).
-  terrain(mountain, [[6, 8], [8, 8]], 'platform');
+  // v48: stasiun menggantikan peron; rel tetap berhenti di terminus.
+  mountain[8][6].obj = 'station';
   mountain[9][7].obj = 'train';
   railYAt(mountain, 7, 8, 11);
   mountain[8][7].t = 'railStop'; // palang penahan di ujung rel paling atas

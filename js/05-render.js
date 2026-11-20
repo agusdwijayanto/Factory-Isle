@@ -15,17 +15,45 @@ function groundSprite(t, gx, gy) {
     : 'grass' + Math.floor(hash2(gx, gy) * 4);
 }
 
+// v48: langit mint + awan blob; pulau digambar punya tebal (slab diorama).
+function paintSky() {
+  const bg = ctx.createLinearGradient(0, 0, 0, VH);
+  bg.addColorStop(0, '#DCF2E1'); bg.addColorStop(1, '#EDF8E9');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, VW, VH);
+  for (const c of CLOUDS) {
+    const x = c.x * VW + Math.sin(S.time * 0.05 + c.x * 9) * 10, y = c.y * VH, s = c.s * 26;
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.beginPath();
+    ctx.arc(x, y, s * 0.62, 0, 6.29);
+    ctx.arc(x + s * 0.55, y + s * 0.08, s * 0.44, 0, 6.29);
+    ctx.arc(x - s * 0.52, y + s * 0.12, s * 0.4, 0, 6.29);
+    ctx.fill();
+  }
+}
+
+function paintSlab() {
+  const z = S.cam.zoom;
+  const gw = S.grid[0].length, gh = S.grid.length;
+  const E = isoPoint(gw, 0, S.cam), Sg = isoPoint(gw, gh, S.cam), Wc = isoPoint(0, gh, S.cam);
+  const T = 30 * z;
+  ctx.fillStyle = 'rgba(94,116,66,0.13)';
+  ctx.beginPath(); ctx.ellipse((E.x + Wc.x) / 2 + 10 * z, Sg.y + T + 8 * z, (E.x - Wc.x) * 0.42, 26 * z, 0, 0, 6.29); ctx.fill();
+  // sisi kanan (gelap)
+  ctx.beginPath();
+  ctx.moveTo(E.x, E.y); ctx.lineTo(Sg.x, Sg.y); ctx.lineTo(Sg.x, Sg.y + T); ctx.lineTo(E.x, E.y + T);
+  ctx.closePath(); ctx.fillStyle = '#8A6B4C'; ctx.fill();
+  // sisi kiri-depan (terang)
+  ctx.beginPath();
+  ctx.moveTo(Sg.x, Sg.y); ctx.lineTo(Wc.x, Wc.y); ctx.lineTo(Wc.x, Wc.y + T); ctx.lineTo(Sg.x, Sg.y + T);
+  ctx.closePath(); ctx.fillStyle = '#C99A6E'; ctx.fill();
+  ctx.strokeStyle = 'rgba(90,68,46,0.30)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(Wc.x, Wc.y + T); ctx.lineTo(Sg.x, Sg.y + T); ctx.lineTo(E.x, E.y + T); ctx.stroke();
+}
+
 function render() {
   const z = S.cam.zoom;
-  const bg = ctx.createLinearGradient(0, 0, 0, VH);
-  bg.addColorStop(0, '#0b0912'); bg.addColorStop(1, '#16102a');
-  ctx.fillStyle = bg; ctx.fillRect(0, 0, VW, VH);
-  for (const st of STARS) {
-    ctx.globalAlpha = 0.3 + 0.5 * (0.5 + 0.5 * Math.sin(S.time * 2 + st.p));
-    ctx.fillStyle = '#e8e4f5';
-    ctx.beginPath(); ctx.arc(st.x * VW, st.y * VH, st.r, 0, 6.29); ctx.fill();
-  }
-  ctx.globalAlpha = 1;
+  paintSky();
+  paintSlab();
 
   const glows = [];
   const onPlot = S.map === 'plot';
@@ -81,26 +109,21 @@ function render() {
             Atlas.drawTile(ctx, 'plotpad', x, y, z);
           } else {
             Atlas.draw(ctx, sprite, x, y + 6 * z, z * gs);
+            // v48: hanya Mayor yang masih pakai label mengambang — toko dan
+            // stasiun sudah punya papan nama di sprite, label dobel dibuang.
             if (t.obj === 'mayor') {
               ctx.font = '700 ' + Math.max(11, Math.round(12 * z)) + 'px system-ui, sans-serif';
               ctx.textAlign = 'center';
-              ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.7)';
-              ctx.strokeText('Mayor', x, y - 56 * z);
-              ctx.fillStyle = '#ffd75e'; ctx.fillText('Mayor', x, y - 56 * z);
-            }
-            if (t.obj === 'station') {
-              ctx.font = '700 ' + Math.max(11, Math.round(12 * z)) + 'px system-ui, sans-serif';
-              ctx.textAlign = 'center';
-              ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.7)';
-              ctx.strokeText('Stasiun', x, y - 56 * z);
-              ctx.fillStyle = '#ffd75e'; ctx.fillText('Stasiun', x, y - 56 * z);
+              ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.55)';
+              ctx.strokeText('Mayor', x, y - 88 * z);
+              ctx.fillStyle = '#FFF3C4'; ctx.fillText('Mayor', x, y - 88 * z);
             }
             if (t.obj === 'conductor') {
               ctx.font = '700 ' + Math.max(11, Math.round(12 * z)) + 'px system-ui, sans-serif';
               ctx.textAlign = 'center';
-              ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.7)';
-              ctx.strokeText('Conductor', x, y - 56 * z);
-              ctx.fillStyle = '#ffd75e'; ctx.fillText('Conductor', x, y - 56 * z);
+              ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.55)';
+              ctx.strokeText('Conductor', x, y - 52 * z);
+              ctx.fillStyle = '#FFF3C4'; ctx.fillText('Conductor', x, y - 52 * z);
             }
           }
           if (GLOWS[t.obj]) { const [dx, dy, r, a] = GLOWS[t.obj]; glows.push({ x: x + dx * z, y: y + dy * z, r: r * z, a }); }
@@ -109,13 +132,8 @@ function render() {
       if (t.obj && t.obj.startsWith('shop')) {
         // v41: gambar sprite toko itu sendiri (shop_carpenter, shop_blacksmith, ...),
         // bukan lagi 'shop' generik — v40 bikin gambarnya tapi render masih pakai yang lama.
+        // v48: label teks mengambang dihapus; nama toko ada di papan sprite.
         Atlas.draw(ctx, t.obj === 'shop_pirate' ? 'ship' : t.obj, x, y + 6 * z, z);
-        const label = SHOPS[t.obj.slice(5)] ? SHOPS[t.obj.slice(5)].name : '';
-        ctx.font = '700 ' + Math.max(11, Math.round(12 * z)) + 'px system-ui, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.7)';
-        ctx.strokeText(label, x, y - 56 * z);
-        ctx.fillStyle = '#ffd75e'; ctx.fillText(label, x, y - 56 * z);
       }
       const m = onPlot ? S.machines.get(key(gx, gy)) : null;
       if (m) {
@@ -197,8 +215,8 @@ function render() {
     }
   }
 
-  const vg = ctx.createRadialGradient(VW / 2, VH / 2, Math.min(VW, VH) * 0.35, VW / 2, VH / 2, Math.max(VW, VH) * 0.75);
-  vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(5,3,10,0.45)');
+  const vg = ctx.createRadialGradient(VW / 2, VH * 0.45, Math.min(VW, VH) * 0.45, VW / 2, VH * 0.45, Math.max(VW, VH) * 0.8);
+  vg.addColorStop(0, 'rgba(120,150,90,0)'); vg.addColorStop(1, 'rgba(86,116,66,0.10)');
   ctx.fillStyle = vg; ctx.fillRect(0, 0, VW, VH);
 
   ctx.textAlign = 'center';

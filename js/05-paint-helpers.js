@@ -1,6 +1,18 @@
 // Pembantu pelukis atlas (belah ketupat tanah, bayangan, kotak iso,
 // ikon bijih/batangan, api tungku) + wadah PAINTERS.
-// Pecahan 05-render.js (v16).
+// v48: gaya cozy — satu warna dasar per bangunan, tiga tona turunan tetap,
+// garis tepi coklat lembut, bayangan hangat dari kiri-atas.
+// ---------- Palet & tona ----------
+function P_rgb(hex) { const n = parseInt(hex.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+// k < 1 menggelapkan, k > 1 mendekatkan ke putih. Selalu balik rgb().
+function P_shade(hex, k) {
+  const [r, g, b] = P_rgb(hex);
+  if (k <= 1) return `rgb(${Math.round(r * k)},${Math.round(g * k)},${Math.round(b * k * 0.98)})`;
+  const t = Math.min(1, k - 1), f = (c) => Math.round(c + (255 - c) * t);
+  return `rgb(${f(r)},${f(g)},${f(b)})`;
+}
+const P_OL = 'rgba(104,86,62,0.55)'; // garis tepi lembut, bukan hitam
+
 // ---------- Pelukis atlas: g = konteks atlas, (cx, gy) = tengah & alas ----------
 // Semua pelukis memakai skala 1 (sel 64px). Dipanggil Atlas.build.
 // Belah ketupat tanah 2:1 (64x32), BUKAN 64x64: ubin setinggi sel penuh
@@ -9,13 +21,51 @@ function P_ground(g, cx, gy, color, dots) {
   g.beginPath();
   g.moveTo(cx, gy - 16); g.lineTo(cx + 32, gy); g.lineTo(cx, gy + 16); g.lineTo(cx - 32, gy);
   g.closePath(); g.fillStyle = color; g.fill();
-  g.strokeStyle = 'rgba(0,0,0,0.22)'; g.lineWidth = 1; g.stroke();
-  if (dots) { g.fillStyle = dots; g.beginPath(); g.arc(cx - 9, gy - 2, 1.6, 0, 6.29); g.fill(); g.beginPath(); g.arc(cx + 8, gy + 3, 1.4, 0, 6.29); g.fill(); }
+  g.strokeStyle = 'rgba(120,100,70,0.18)'; g.lineWidth = 1; g.stroke();
+  if (dots) {
+    g.fillStyle = dots;
+    g.beginPath(); g.arc(cx - 9, gy - 2, 1.6, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx + 8, gy + 3, 1.4, 0, 6.29); g.fill();
+  }
 }
+
+// Bayangan hangat: halo hijau-coklat lebar + inti kontak lebih pekat.
+// Arah tetap kanan-bawah (terang dari kiri-atas), tidak pernah hitam.
 function P_shadow(g, cx, gy, rx) {
-  g.fillStyle = 'rgba(0,0,0,0.3)';
-  g.beginPath(); g.ellipse(cx, gy + 3, rx, rx * 0.45, 0, 0, 6.29); g.fill();
+  g.fillStyle = 'rgba(94,116,66,0.16)';
+  g.beginPath(); g.ellipse(cx + rx * 0.16, gy + 4, rx * 1.02, rx * 0.4, 0, 0, 6.29); g.fill();
+  g.fillStyle = 'rgba(91,73,49,0.20)';
+  g.beginPath(); g.ellipse(cx + rx * 0.16, gy + 2, rx * 0.6, rx * 0.24, 0, 0, 6.29); g.fill();
 }
+
+// Kotak iso tiga sisi dari SATU warna dasar: atas terang, kiri sedang,
+// kanan gelap, plus garis tepi. Ini yang membuat bangunan terasa padat.
+// (cx, cy) = TITIK TANAH depan-belakang belah ketupat (bukan pusat alas):
+// pusat alas digeser hh ke atas supaya ujung depan kaki kotak jatuh di cy.
+function P_box(g, cx, cy, w, hgt, base, opt = {}) {
+  const hw = w / 2, hh = w / 4, ty = cy - hh - hgt;
+  cy = cy - hh;
+  const top = opt.top || P_shade(base, 1.06);
+  const lf = opt.left || P_shade(base, 0.86);
+  const rt = opt.right || P_shade(base, 0.70);
+  g.lineWidth = opt.olW || 1; g.strokeStyle = opt.ol || P_OL;
+  g.beginPath();
+  g.moveTo(cx - hw, ty); g.lineTo(cx, ty + hh); g.lineTo(cx, cy + hh); g.lineTo(cx - hw, cy);
+  g.closePath(); g.fillStyle = lf; g.fill(); if (!opt.noOl) g.stroke();
+  g.beginPath();
+  g.moveTo(cx, ty + hh); g.lineTo(cx + hw, ty); g.lineTo(cx + hw, cy); g.lineTo(cx, cy + hh);
+  g.closePath(); g.fillStyle = rt; g.fill(); if (!opt.noOl) g.stroke();
+  g.beginPath();
+  g.moveTo(cx, ty - hh); g.lineTo(cx + hw, ty); g.lineTo(cx, ty + hh); g.lineTo(cx - hw, ty);
+  g.closePath(); g.fillStyle = top; g.fill(); if (!opt.noOl) g.stroke();
+}
+
+// Alas batu menjorok sedikit: langkah siluet kedua, menancapkan bangunan.
+function P_plinth(g, cx, cy, w, base = '#C9C6C0') {
+  P_box(g, cx, cy, w + 6, 4, base, { top: P_shade(base, 1.02), left: P_shade(base, 0.82), right: P_shade(base, 0.68) });
+}
+
+// Kotak iso lama (3 warna eksplisit) — dipakai mesin & sprite non-bangunan.
 function P_isoBox(g, cx, cy, w, hgt, cTop, cLeft, cRight) {
   const hw = w / 2, hh = w / 4, ty = cy - hgt;
   g.beginPath();

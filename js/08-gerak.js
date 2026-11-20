@@ -15,7 +15,7 @@ function blockedForWalk(gx, gy) {
   const t = S.grid[gy][gx];
   // v36: air bisa dilewati dengan berenang (lambat) — pulau palem di
   // pelabuhan hanya dicapai lewat air. Jembatan tetap jalan tercepat.
-  if (t.obj === 'mayor' || t.obj === 'train' || t.obj === 'mountain') return true;
+  if (t.obj === 'mayor' || t.obj === 'train' || t.obj === 'station' || t.obj === 'mountain') return true;
   if (t.obj && t.obj.startsWith('shop')) return true;
   // Pohon/bijih/kapas hidup menghalangi; tunggul (hp 0) dan lentera bisa dilewati.
   if (t.obj && NODES[t.obj] && t.hp > 0) return true;
