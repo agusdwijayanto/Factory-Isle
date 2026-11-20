@@ -21,37 +21,43 @@ Object.assign(PAINTERS, {
   },
   _paintWesternShop(g, ox, oy, wallColor1, wallColor2, roofColor1, roofColor2, title, extraFn) {
     const cx = ox + 64, gy = oy + 126;
-    P_shadow(g, cx, gy, 34);
-    P_isoBox(g, cx, gy, 86, 36, wallColor1, wallColor2, '#3a1c12');
-    // Teras depan / front porch
-    g.fillStyle = '#b06040';
-    g.fillRect(cx - 30, gy - 18, 60, 10);
-    g.fillStyle = '#5f3d22';
-    g.fillRect(cx - 32, gy - 36, 6, 20);
-    g.fillRect(cx + 26, gy - 36, 6, 20);
-    P_isoBox(g, cx, gy - 36, 74, 24, roofColor1, roofColor2, '#2a1f16');
+    // Bayangan lembut cozy
+    g.fillStyle = 'rgba(60,30,10,0.25)';
+    g.beginPath(); g.ellipse(cx, gy + 4, 42, 18, 0, 0, 6.29); g.fill();
+    // Kotak utama dengan tekstur 3D hangat
+    P_isoBox(g, cx, gy, 86, 36, wallColor1, wallColor2, '#4a2810');
+    // Teras depan hangat (warm wood porch)
+    g.fillStyle = '#c87d55';
+    g.fillRect(cx - 32, gy - 18, 64, 10);
+    g.fillStyle = '#7a4a28';
+    g.fillRect(cx - 34, gy - 36, 6, 20);
+    g.fillRect(cx + 28, gy - 36, 6, 20);
+    P_isoBox(g, cx, gy - 36, 76, 24, roofColor1, roofColor2, '#3a1f10');
+    // Atap pelana 3D cozy
     g.fillStyle = roofColor1;
     g.beginPath();
-    g.moveTo(cx - 45, gy - 36); g.lineTo(cx, gy - 62); g.lineTo(cx + 45, gy - 36);
-    g.lineTo(cx + 45, gy - 30); g.lineTo(cx, gy - 56); g.lineTo(cx - 45, gy - 30);
+    g.moveTo(cx - 46, gy - 36); g.lineTo(cx, gy - 64); g.lineTo(cx + 46, gy - 36);
+    g.lineTo(cx + 46, gy - 30); g.lineTo(cx, gy - 58); g.lineTo(cx - 46, gy - 30);
     g.closePath(); g.fill();
-    g.fillStyle = '#2a1f16'; g.fillRect(cx - 10, gy - 30, 20, 26);
-    g.fillStyle = '#ffd75e'; g.fillRect(cx - 7, gy - 26, 14, 10);
+    // Pintu hangat + aksen cahaya jendela
+    g.fillStyle = '#3a1c12'; g.fillRect(cx - 10, gy - 30, 20, 26);
+    g.fillStyle = '#ffeb99'; g.fillRect(cx - 7, gy - 26, 14, 10);
     if (extraFn) extraFn(g, cx, gy);
-    g.fillStyle = '#3a1c12'; g.fillRect(cx - 38, gy - 70, 76, 18);
-    g.strokeStyle = '#ffd75e'; g.lineWidth = 2; g.strokeRect(cx - 38, gy - 70, 76, 18);
-    g.fillStyle = '#ffd75e'; g.font = '800 9.5px system-ui, sans-serif';
-    g.textAlign = 'center'; g.fillText(title, cx, gy - 57);
+    // Papan nama besar cozy
+    g.fillStyle = '#4a2810'; g.fillRect(cx - 40, gy - 72, 80, 18);
+    g.strokeStyle = '#ffeb99'; g.lineWidth = 2; g.strokeRect(cx - 40, gy - 72, 80, 18);
+    g.fillStyle = '#ffeb99'; g.font = '800 10px system-ui, sans-serif';
+    g.textAlign = 'center'; g.fillText(title, cx, gy - 59);
   },
   shop_carpenter: (g, ox, oy) => {
-    PAINTERS._paintWesternShop(g, ox, oy, '#8b9dc3', '#6b7fa3', '#a0522d', '#873600', 'CARPENTER', (g, cx, gy) => {
-      // Cart jual di luar dengan harga
-      g.fillStyle = '#8b4513'; g.fillRect(cx - 30, gy - 6, 20, 10);
-      g.fillStyle = '#d2b48c'; g.fillRect(cx - 32, gy - 14, 24, 8);
-      g.fillStyle = '#ffd75e'; g.font = '700 8px system-ui, sans-serif'; g.textAlign = 'center';
-      g.fillText('Plank 12 / 8 / 5', cx - 20, gy - 10);
-      g.fillStyle = '#5d6773'; g.beginPath(); g.arc(cx - 24, gy - 1, 3, 0, 6.29); g.fill();
-      g.beginPath(); g.arc(cx - 8, gy - 1, 3, 0, 6.29); g.fill();
+    // 2. CARPENTER: biru hangat + cart jual kayu di luar dengan harga papan
+    PAINTERS._paintWesternShop(g, ox, oy, '#7b95b8', '#5e799e', '#b8623b', '#964d2d', 'CARPENTER', (g, cx, gy) => {
+      g.fillStyle = '#8b5a2b'; g.fillRect(cx - 30, gy - 6, 22, 10);
+      g.fillStyle = '#e2c08d'; g.fillRect(cx - 32, gy - 14, 26, 8);
+      g.fillStyle = '#ffeb99'; g.font = '700 8px system-ui, sans-serif'; g.textAlign = 'center';
+      g.fillText('Plank 12 / 8 / 5', cx - 19, gy - 9);
+      g.fillStyle = '#6b7a8f'; g.beginPath(); g.arc(cx - 24, gy - 1, 3.5, 0, 6.29); g.fill();
+      g.beginPath(); g.arc(cx - 8, gy - 1, 3.5, 0, 6.29); g.fill();
     });
   },
   shop_blacksmith: (g, ox, oy) => {
@@ -62,25 +68,25 @@ Object.assign(PAINTERS, {
     });
   },
   shop_exchange: (g, ox, oy) => {
-    // SALOON: menara air, pintu berkunci, 2 lantai, bartender NPC, papan SALOON.
-    PAINTERS._paintWesternShop(g, ox, oy, '#962d22', '#78281f', '#c0392b', '#922b21', 'SALOON', (g, cx, gy) => {
-      // Pintu berkunci saloon (swinging doors, ganda)
-      g.fillStyle = '#5d2e1a';
+    // 1. SALOON: cozy warm red, menara air, swinging doors, 2 lantai, bartender
+    PAINTERS._paintWesternShop(g, ox, oy, '#a83225', '#8a2419', '#d64531', '#b53322', 'SALOON', (g, cx, gy) => {
+      // Pintu swinging doors berayun kayu hangat
+      g.fillStyle = '#7a3b1e';
       g.fillRect(cx - 9, gy - 30, 8, 26); g.fillRect(cx + 1, gy - 30, 8, 26);
-      g.strokeStyle = '#ffd75e'; g.lineWidth = 1;
+      g.strokeStyle = '#ffeb99'; g.lineWidth = 1;
       g.strokeRect(cx - 9, gy - 30, 8, 26); g.strokeRect(cx + 1, gy - 30, 8, 26);
-      // Jendela lantai 2
-      g.fillStyle = '#2a1f16';
+      // Jendela lantai 2 hangat
+      g.fillStyle = '#3a1c12';
       g.fillRect(cx - 26, gy - 60, 10, 8); g.fillRect(cx + 16, gy - 60, 10, 8);
-      g.fillStyle = '#ffd75e'; g.fillRect(cx - 24, gy - 58, 6, 4); g.fillRect(cx + 18, gy - 58, 6, 4);
-      // Menara air di atas atap
-      g.fillStyle = '#5f3d22'; g.fillRect(cx - 6, gy - 84, 4, 20);
-      g.fillStyle = '#2c3e50'; g.beginPath(); g.arc(cx - 4, gy - 86, 10, 0, 6.29); g.fill();
-      g.fillStyle = '#c0392b'; g.fillRect(cx - 9, gy - 80, 14, 6);
-      // Bartender NPC di pintu
-      g.fillStyle = '#e8c860'; g.fillRect(cx - 2, gy - 34, 4, 8);
-      g.fillStyle = '#c0392b'; g.fillRect(cx - 3, gy - 28, 6, 6);
-      g.fillStyle = '#2a1f16'; g.beginPath(); g.arc(cx, gy - 36, 3, 0, 6.29); g.fill();
+      g.fillStyle = '#ffeb99'; g.fillRect(cx - 24, gy - 58, 6, 4); g.fillRect(cx + 18, gy - 58, 6, 4);
+      // Menara air kayu hangat di atas atap
+      g.fillStyle = '#7a4a28'; g.fillRect(cx - 6, gy - 86, 4, 22);
+      g.fillStyle = '#34495e'; g.beginPath(); g.arc(cx - 4, gy - 88, 10, 0, 6.29); g.fill();
+      g.fillStyle = '#d64531'; g.fillRect(cx - 9, gy - 82, 14, 6);
+      // Bartender NPC cozy
+      g.fillStyle = '#ffdb80'; g.fillRect(cx - 2, gy - 34, 4, 8);
+      g.fillStyle = '#d64531'; g.fillRect(cx - 3, gy - 28, 6, 6);
+      g.fillStyle = '#3a1c12'; g.beginPath(); g.arc(cx, gy - 36, 3, 0, 6.29); g.fill();
     });
   },
   shop_toolshop: (g, ox, oy) => {
@@ -90,25 +96,22 @@ Object.assign(PAINTERS, {
     });
   },
   shop_textile: (g, ox, oy) => {
-    PAINTERS._paintWesternShop(g, ox, oy, '#d6dbdf', '#bfccdc', '#d98880', '#cb4335', 'TEXTILE', (g, cx, gy) => {
-      // Gulungan kain di jendela
-      g.fillStyle = '#e74c3c'; g.fillRect(cx - 26, gy - 14, 6, 10); g.fillRect(cx - 26, gy - 14, 6, 3);
-      g.fillStyle = '#9b59b6'; g.fillRect(cx + 20, gy - 14, 6, 10); g.fillRect(cx + 20, gy - 14, 6, 3);
-      g.fillStyle = '#f1c40f'; g.fillRect(cx - 28, gy - 12, 2, 6); g.fillRect(cx + 22, gy - 12, 2, 6);
+    // 3. TEXTILE: cozy light wood + gulungan kain merah & ungu di jendela
+    PAINTERS._paintWesternShop(g, ox, oy, '#e8ecef', '#cbd2d8', '#e06d6d', '#bc5252', 'TEXTILE', (g, cx, gy) => {
+      g.fillStyle = '#f25f5c'; g.fillRect(cx - 26, gy - 14, 7, 10); g.fillRect(cx - 26, gy - 14, 7, 3);
+      g.fillStyle = '#845ec2'; g.fillRect(cx + 19, gy - 14, 7, 10); g.fillRect(cx + 19, gy - 14, 7, 3);
+      g.fillStyle = '#ffc75f'; g.fillRect(cx - 28, gy - 12, 2, 6); g.fillRect(cx + 21, gy - 12, 2, 6);
     });
   },
   shop_supply: (g, ox, oy) => {
-    // SUPPLY hijau: fasad tiruan + busur di atas pintu.
-    PAINTERS._paintWesternShop(g, ox, oy, '#1e8449', '#145a32', '#27ae60', '#1e8449', 'SUPPLY', (g, cx, gy) => {
-      // Fasad tiruan (false front) — dinding depan lebih tinggi dari atap
-      g.fillStyle = '#1e8449'; g.fillRect(cx - 34, gy - 70, 68, 4);
-      g.strokeStyle = '#ffd75e'; g.lineWidth = 1.5; g.strokeRect(cx - 34, gy - 70, 68, 4);
-      // Busur di atas pintu
-      g.fillStyle = '#27ae60';
-      g.beginPath(); g.arc(cx, gy - 30, 6, Math.PI, 0); g.fill();
-      g.fillRect(cx - 6, gy - 30, 12, 6);
-      // Papan barang di luar
-      g.fillStyle = '#d4ac0d'; g.fillRect(cx - 28, gy - 10, 8, 8); g.fillRect(cx + 20, gy - 10, 8, 8);
+    // 4. SUPPLY: hijau hangat, fasad tiruan, busur di atas pintu
+    PAINTERS._paintWesternShop(g, ox, oy, '#27ae60', '#1e8449', '#2ecc71', '#27ae60', 'SUPPLY', (g, cx, gy) => {
+      g.fillStyle = '#27ae60'; g.fillRect(cx - 36, gy - 72, 72, 4);
+      g.strokeStyle = '#ffeb99'; g.lineWidth = 1.5; g.strokeRect(cx - 36, gy - 72, 72, 4);
+      g.fillStyle = '#2ecc71';
+      g.beginPath(); g.arc(cx, gy - 30, 7, Math.PI, 0); g.fill();
+      g.fillRect(cx - 7, gy - 30, 14, 7);
+      g.fillStyle = '#f39c12'; g.fillRect(cx - 28, gy - 10, 8, 8); g.fillRect(cx + 20, gy - 10, 8, 8);
     });
   },
   shop_desert: (g, ox, oy) => {
@@ -156,39 +159,34 @@ Object.assign(PAINTERS, {
   train: (g, ox, oy) => {
     const cx = ox + 32, gy = oy + 62;
     P_shadow(g, cx, gy, 18);
-    // Kereta marong (gerbong maroon dengan hias kuning di belakang)
-    g.fillStyle = '#5d2e1a'; g.fillRect(cx - 44, gy - 22, 28, 14);
-    g.strokeStyle = '#f1c40f'; g.lineWidth = 1.5;
-    g.strokeRect(cx - 44, gy - 22, 28, 14);
-    g.fillStyle = '#f1c40f'; g.fillRect(cx - 40, gy - 18, 4, 6); g.fillRect(cx - 4, gy - 18, 4, 6);
-    // Lokomotif
-    g.fillStyle = '#7f8c8d';
+    // 5. Kereta cozy: gerbong maroon hangat + hias kuning + TRADING CO. + nomor 130
+    g.fillStyle = '#6e2c1d'; g.fillRect(cx - 46, gy - 23, 30, 15);
+    g.strokeStyle = '#ffeb99'; g.lineWidth = 1.5;
+    g.strokeRect(cx - 46, gy - 23, 30, 15);
+    g.fillStyle = '#ffeb99'; g.fillRect(cx - 42, gy - 19, 4, 6); g.fillRect(cx - 4, gy - 19, 4, 6);
+    // Lokomotif uap 3D
+    g.fillStyle = '#8f9da6';
     g.beginPath();
     g.moveTo(cx - 20, gy - 4); g.lineTo(cx - 24, gy - 16); g.lineTo(cx - 16, gy - 16);
     g.closePath(); g.fill();
-    // Boiler
-    g.fillStyle = '#2c2833';
+    g.fillStyle = '#3a3542';
     g.fillRect(cx - 16, gy - 26, 32, 18);
-    // Cab
-    g.fillStyle = '#8b4513'; g.fillRect(cx + 6, gy - 38, 14, 14);
-    // Smokestack (cerobong tinggi klasik)
-    g.fillStyle = '#111111'; g.fillRect(cx - 12, gy - 40, 6, 16);
-    g.fillStyle = '#d4ac0d'; g.fillRect(cx - 14, gy - 42, 10, 3);
-    g.fillStyle = '#c0392b'; g.fillRect(cx - 16, gy - 10, 32, 3);
-    g.fillStyle = '#c0392b';
+    g.fillStyle = '#9c5a3c'; g.fillRect(cx + 6, gy - 38, 14, 14);
+    g.fillStyle = '#222222'; g.fillRect(cx - 12, gy - 40, 6, 16);
+    g.fillStyle = '#ffc75f'; g.fillRect(cx - 14, gy - 42, 10, 3);
+    g.fillStyle = '#d64531'; g.fillRect(cx - 16, gy - 10, 32, 3);
+    g.fillStyle = '#d64531';
     [[-10, -2], [4, -2], [14, -2]].forEach(([dx, dy]) => {
       g.beginPath(); g.arc(cx + dx, gy + dy, 5, 0, 6.29); g.fill();
-      g.fillStyle = '#111111'; g.beginPath(); g.arc(cx + dx, gy + dy, 2, 0, 6.29); g.fill();
-      g.fillStyle = '#c0392b';
+      g.fillStyle = '#222222'; g.beginPath(); g.arc(cx + dx, gy + dy, 2, 0, 6.29); g.fill();
+      g.fillStyle = '#d64531';
     });
-    g.fillStyle = 'rgba(255,255,255,0.6)';
-    g.beginPath(); g.arc(cx - 9, gy - 48, 4, 0, 6.29); g.fill();
-    g.beginPath(); g.arc(cx - 12, gy - 55, 6, 0, 6.29); g.fill();
-    // Nomor kereta di kabin
-    g.fillStyle = '#ffd75e'; g.font = '700 9px system-ui, sans-serif'; g.textAlign = 'center';
+    g.fillStyle = 'rgba(255,255,255,0.7)';
+    g.beginPath(); g.arc(cx - 9, gy - 48, 4.5, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx - 12, gy - 56, 6.5, 0, 6.29); g.fill();
+    g.fillStyle = '#ffeb99'; g.font = '700 9px system-ui, sans-serif'; g.textAlign = 'center';
     g.fillText('130', cx + 13, gy - 32);
-    // Tulisan TRADING CO. di tender (belakang lokomotif)
-    g.fillText('TRADING CO.', cx - 30, gy - 24);
+    g.fillText('TRADING CO.', cx - 31, gy - 25);
   },
   // ---------- Mayor, gerbang, kotak plot ----------
   mayor: (g, ox, oy) => {

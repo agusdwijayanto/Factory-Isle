@@ -69,33 +69,29 @@ Object.assign(PAINTERS, {
   wagon: (g, ox, oy) => {
     const cx = ox + 32, gy = oy + 62;
     P_shadow(g, cx, gy, 16);
-    // Kuda di depan kanan.
-    g.fillStyle = '#8a5a33';
-    g.beginPath(); g.ellipse(cx + 12, gy - 16, 9, 6, 0, 0, 6.29); g.fill(); // badan
-    g.beginPath(); g.arc(cx + 20, gy - 24, 4.5, 0, 6.29); g.fill(); // kepala
-    g.fillStyle = '#6a4526'; g.fillRect(cx + 18, gy - 30, 4, 6); // telinga/leher
-    g.strokeStyle = '#6a4526'; g.lineWidth = 2;
+    // Kuda cozy di depan kanan.
+    g.fillStyle = '#9c6644';
+    g.beginPath(); g.ellipse(cx + 12, gy - 16, 9.5, 6.5, 0, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx + 20, gy - 24, 4.8, 0, 6.29); g.fill();
+    g.fillStyle = '#7f4f24'; g.fillRect(cx + 18, gy - 30, 4.5, 6.5);
+    g.strokeStyle = '#7f4f24'; g.lineWidth = 2;
     [[8, -10], [14, -10], [10, -10], [16, -10]].forEach(([dx, dy]) => {
       g.beginPath(); g.moveTo(cx + dx, gy - 12); g.lineTo(cx + dx, gy); g.stroke();
     });
-    // Kanvas conestoga (atap lengkung putih)
-    g.fillStyle = '#f2ede0';
-    g.beginPath(); g.ellipse(cx - 8, gy - 26, 14, 10, 0, 0, 6.29); g.fill();
-    g.fillStyle = '#d4ac0d';
-    g.beginPath(); g.ellipse(cx - 8, gy - 24, 12, 6, 0, 0, 6.29); g.stroke(); g.lineWidth = 1.5; g.stroke();
-    // Badan gerbong kayu di bawah kanvas
+    // 8. Wagon cozy: kanvas conestoga putih hangat + garis kuning hangat + slot muatan
+    g.fillStyle = '#fffaf0';
+    g.beginPath(); g.ellipse(cx - 8, gy - 26, 14.5, 10.5, 0, 0, 6.29); g.fill();
+    g.fillStyle = '#ffc75f';
+    g.beginPath(); g.ellipse(cx - 8, gy - 24, 12.5, 6.5, 0, 0, 6.29); g.stroke(); g.lineWidth = 1.8; g.stroke();
     g.fillStyle = '#a8763e'; g.fillRect(cx - 22, gy - 14, 24, 10);
     g.fillStyle = '#7a5230'; g.fillRect(cx - 22, gy - 14, 24, 3);
-    // Roda gigi
     g.fillStyle = '#5d6773';
-    g.beginPath(); g.arc(cx - 16, gy - 1, 4, 0, 6.29); g.fill();
-    g.beginPath(); g.arc(cx - 4, gy - 1, 4, 0, 6.29); g.fill();
-    // Tali kuda ke gerbong.
+    g.beginPath(); g.arc(cx - 16, gy - 1, 4.2, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx - 4, gy - 1, 4.2, 0, 6.29); g.fill();
     g.strokeStyle = '#5f3d22'; g.lineWidth = 1.5;
     g.beginPath(); g.moveTo(cx + 4, gy - 16); g.lineTo(cx + 2, gy - 12); g.stroke();
-    // Indikator slot muatan
-    g.fillStyle = '#ffd75e'; g.font = '700 8px system-ui, sans-serif'; g.textAlign = 'center';
-    g.fillText('0 / 15', cx, gy - 28);
+    g.fillStyle = '#ffeb99'; g.font = '700 8.5px system-ui, sans-serif'; g.textAlign = 'center';
+    g.fillText('0 / 15', cx, gy - 29);
   },
   // Patung: alas batu + sosok, beda warna/siluet tiap patung.
   _statueBase: (g, ox, oy) => {
@@ -182,23 +178,24 @@ Object.assign(PAINTERS, {
   campTipi: (g, ox, oy) => {
     const cx = ox + 32, gy = oy + 62;
     P_shadow(g, cx, gy, 12);
-    g.fillStyle = '#d4ac0d';
-    g.beginPath(); g.moveTo(cx, gy - 24); g.lineTo(cx - 12, gy - 2); g.lineTo(cx + 12, gy - 2); g.closePath(); g.fill();
-    g.fillStyle = '#a06530';
-    g.beginPath(); g.moveTo(cx, gy - 22); g.lineTo(cx - 10, gy - 2); g.lineTo(cx + 10, gy - 2); g.closePath(); g.fill();
-    g.fillStyle = '#5d6773'; g.fillRect(cx - 1, gy - 6, 2, 6);
-    g.strokeStyle = '#8b4513'; g.lineWidth = 1;
-    g.beginPath(); g.moveTo(cx - 8, gy - 2); g.lineTo(cx - 8, gy - 10); g.stroke();
-    g.beginPath(); g.moveTo(cx + 8, gy - 2); g.lineTo(cx + 8, gy - 10); g.stroke();
+    // 7. Camp cozy: tenda tipi hangat + api unggun lembut
+    g.fillStyle = '#e5c158';
+    g.beginPath(); g.moveTo(cx, gy - 25); g.lineTo(cx - 13, gy - 2); g.lineTo(cx + 13, gy - 2); g.closePath(); g.fill();
+    g.fillStyle = '#b07238';
+    g.beginPath(); g.moveTo(cx, gy - 23); g.lineTo(cx - 11, gy - 2); g.lineTo(cx + 11, gy - 2); g.closePath(); g.fill();
+    g.fillStyle = '#6b7a8f'; g.fillRect(cx - 1.2, gy - 7, 2.4, 7);
+    g.strokeStyle = '#8b5a2b'; g.lineWidth = 1.2;
+    g.beginPath(); g.moveTo(cx - 9, gy - 2); g.lineTo(cx - 9, gy - 11); g.stroke();
+    g.beginPath(); g.moveTo(cx + 9, gy - 2); g.lineTo(cx + 9, gy - 11); g.stroke();
   },
   campfire: (g, ox, oy) => {
     const cx = ox + 32, gy = oy + 62;
     P_shadow(g, cx, gy, 6);
-    g.fillStyle = '#5d4037'; g.fillRect(cx - 4, gy - 4, 8, 4);
-    g.fillRect(cx - 2, gy - 6, 4, 6);
+    g.fillStyle = '#6d4c41'; g.fillRect(cx - 4.5, gy - 4.5, 9, 4.5);
+    g.fillRect(cx - 2.2, gy - 6.5, 4.5, 6.5);
     g.fillStyle = '#ff7a2e';
-    g.beginPath(); g.arc(cx, gy - 8, 5, 0, 6.29); g.fill();
-    g.fillStyle = '#f1c40f';
-    g.beginPath(); g.arc(cx, gy - 10, 3, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx, gy - 9, 5.5, 0, 6.29); g.fill();
+    g.fillStyle = '#ffeb99';
+    g.beginPath(); g.arc(cx, gy - 11, 3.2, 0, 6.29); g.fill();
   },
 });
