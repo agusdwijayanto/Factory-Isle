@@ -15,10 +15,12 @@ function buildTown() {
   terrain(town, rng(1, TOWN_H - 1).map((gy) => [18, gy]), 'water');
   for (const s of SHOP_SPOTS.filter((s) => s.map === 'town')) town[s.gy][s.gx].obj = 'shop_' + s.id;
   town[S.mayor.gy][S.mayor.gx].obj = 'mayor'; // v51: (7,13)
+  town[3][3].obj = 'wagonShop'; // v52: bangunan beli wagon pindah ke kota (x17,z4)
   // Rel tembus kolom 9 penuh; stasiun di timurnya (jalan kolom 8).
   railYAt(town, 9, 1, TOWN_H - 1);
   town[7][10].obj = 'station'; // (10,7)
   town[7][9].obj = 'train';    // (9,7), di atas rel
+  town[8][9].obj = 'trainCar'; // (9,8), gerbong 1 petak ke selatan (v52)
   // Jalan: kolom 8 utara-selatan, baris 6 (jalan utama timur-barat),
   // baris 2 (jalan toko).
   roadAt(town, [

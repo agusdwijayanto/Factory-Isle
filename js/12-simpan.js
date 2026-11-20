@@ -112,12 +112,21 @@ function loadGame() {
     || S.maps.town.grid[13][8].t !== 'road'
     || S.maps.town.grid[7][1].obj !== 'lantern'
     // v51: Mayor di (7,13) — simpan v50 punya petak putih di situ, jadi ke sini ikut bangun ulang.
-    || S.maps.town.grid[13][7].obj !== 'mayor');
-  const meadowNStale = S.maps.meadow_n && S.maps.meadow_n.grid[5][4].obj !== 'plotpad'; // v51: petak putih plot
+    || S.maps.town.grid[13][7].obj !== 'mayor'
+    || S.maps.town.grid[3][3].obj !== 'wagonShop'); // v52: bangunan beli wagon pindah ke kota
+  const meadowNStale = S.maps.meadow_n && (S.maps.meadow_n.grid[5][4].obj !== 'plotpad'
+    || S.maps.meadow_n.grid[5][5].obj !== 'plotsign'); // v51 petak putih, v52 papan PLOT
   const forestStale = S.maps.forest && (S.maps.forest.grid[7][9].obj !== 'train'
     || S.maps.forest.grid[7][10].obj !== 'station' // v51: stasiun di timur rel
     || S.maps.forest.grid[0][8].t !== 'bridge' || S.maps.forest.grid[5][12].obj !== 'dyeplant');
   const harborStale = S.maps.harbor && !SHOP_SPOTS.filter((s) => s.map === 'harbor').every((s) => S.maps.harbor.grid[s.gy][s.gx].obj === 'shop_' + s.id);
+  // v52: tiap map berstasiun harus punya lokomotif + gerbong (2 petak).
+  const keretaStale = ['ice', 'forest', 'town', 'harbor'].some((n) => {
+    const m = S.maps[n];
+    if (!m) return false;
+    const flat = m.grid.flat();
+    return flat.filter((t) => t.obj === 'train').length !== 1 || flat.filter((t) => t.obj === 'trainCar').length !== 1;
+  });
   // v49: lahan harus punya dua gerbang jalan (8,0) dan (8, h-1) plus kolom
   // sungai/jalan/rel; lahan lama (satu jalan di gerbang bawah) dibangun ulang
   // di ukuran yang sekarang, mesin dan ekspansinya tetap.
@@ -125,8 +134,14 @@ function loadGame() {
   const plotStale = S.maps.plot && (S.maps.plot.grid[pg.gy][pg.gx].t !== 'road'
     || S.maps.plot.grid[0][8].t !== 'road'
     || S.maps.plot.grid[Math.floor(S.maps.plot.h / 2)][1].t !== 'water'
-    || S.maps.plot.grid[Math.floor(S.maps.plot.h / 2)][9].t !== 'railY');
-  if (townStale || meadowNStale || forestStale || harborStale) {
+    || S.maps.plot.grid[Math.floor(S.maps.plot.h / 2)][9].t !== 'railY'
+    // v52: simpan v51 punya bangunan beli wagon di lahan (5, h-2) — sekarang
+    // bangunannya di kota, jadi lahan yang masih menyimpannya dibangun ulang
+    // sekali. Cek ini SENGAJA "masih ada" (bukan "harus ada"), karena setelah
+    // v52 lahan tidak lagi memuat bangunan itu — kalau dibalik, lahan akan
+    // dibangun ulang tiap kali dimuat.
+    || S.maps.plot.grid[S.maps.plot.h - 2][5].obj === 'wagonShop');
+  if (townStale || meadowNStale || forestStale || harborStale || keretaStale) {
     const sm = buildStaticMaps();
     for (const [name, m] of Object.entries(sm)) S.maps[name] = m;
   }

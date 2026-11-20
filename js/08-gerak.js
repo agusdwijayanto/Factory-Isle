@@ -19,6 +19,7 @@ function blockedForWalk(gx, gy) {
   // v49: papan COMING SOON menutup jalan buntu timur/barat kota.
   if (t.obj === 'signClosed') return true;
   if (t.obj === 'wagonShop') return true; // v51: bangunan, bukan petak yang bisa diinjak
+  if (t.obj === 'trainCar') return true;  // v52: gerbong kereta, memblokir seperti bangunan
   if (t.obj && t.obj.startsWith('shop')) return true;
   // Pohon/bijih/kapas hidup menghalangi; tunggul (hp 0) dan lentera bisa dilewati.
   if (t.obj && NODES[t.obj] && t.hp > 0) return true;

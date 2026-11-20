@@ -22,7 +22,7 @@ const Atlas = {
     this._ready = (async () => {
       let m = null;
       try {
-        const r = await fetch('assets/atlas-manifest.json?v=51');
+        const r = await fetch('assets/atlas-manifest.json?v=52');
         if (r.ok) m = await r.json();
       } catch (_) { /* file:// atau offline: pakai salinan darurat */ }
       this.manifest = m || MANIFEST_EMBEDDED;
@@ -186,5 +186,7 @@ const MANIFEST_EMBEDDED = {
     signClosed: { col: 6, row: 23, w: 1, h: 1 },
     // v51: bangunan beli wagon (tanpa NPC).
     wagonShop: { col: 7, row: 23, w: 1, h: 1 },
+    // v52: gerbong penumpang lepas (lokomotif dan gerbong dipisah).
+    trainCar: { col: 7, row: 22, w: 1, h: 1 },
   },
 };

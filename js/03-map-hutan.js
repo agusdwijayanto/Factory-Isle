@@ -24,6 +24,7 @@ function buildForest() {
   railYAt(forest, 9, 0, MAP_H - 1);
   forest[7][10].obj = 'station'; // (10,7) timur rel
   forest[7][9].obj = 'train';    // (9,7) jangkar simpan v50
+  forest[8][9].obj = 'trainCar'; // (9,8) gerbong 1 petak ke selatan (v52)
   // Jalan: kolom 8 utara-selatan tembus; cabang jalan baris 7 ke stasiun lama
   // (x 10..17) sudah dibuang v50.
   roadAt(forest, rng(0, MAP_H - 1).map((gy) => [8, gy]));

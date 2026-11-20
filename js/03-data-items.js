@@ -136,7 +136,7 @@ const SHOP_SPOTS = [
   { map: 'town', gx: 12, gy: 16, id: 'supply' },
   { map: 'harbor', gx: 4, gy: 10, id: 'harbor' }, // v51: (x10,z5), jauh dari rel dan dari desert village
   { map: 'harbor', gx: 12, gy: 2, id: 'desert' }, // v36: desa gurun
-  { map: 'harbor', gx: 15, gy: 2, id: 'pirate' }, // v36: kapal bajak laut
+  { map: 'harbor', gx: 10, gy: 18, id: 'pirate' }, // v52: kapal bajak laut di air dekat dermaga
 ];
 
 // Pintu keluar antar map: injak petak (gx,gy) pindah ke map `to`, lahir di
@@ -499,6 +499,7 @@ const CONVEYOR_COLOR_HEX = { gold: '#e8b64c', purple: '#9a6a9a', red: '#c0392b',
 
 // Riwayat versi untuk tombol Book di dalam game (ringkasan ROADMAP.md).
 const CHANGELOG = [
+  ['v52', 'Lima sprite yang menggambar di luar sel atlas dimasukkan ke dalam selnya (shop + shop_exchange 2px dari atas, gate 4px, station 2px, plotpad 1px dari kiri) — semua 147 sprite kini muat di selnya. Lokomotif dan gerbong kereta dipisah jadi dua petak (gerbong 1 petak ke selatan lokomotif, memblokir seperti bangunan) dan semua tulisan di sprite kereta dihapus (TRADING CO. + angka 130). Kapal bajak laut pindah ke air (10,18) di dekat dermaga. Papan "PLOT" pasang lagi di Padang Rumput (5,5) di samping petak putih. Bangunan beli wagon pindah dari lahan ke kota (3,3); simpan lama yang masih menyimpan bangunan itu di lahan dibangun ulang sekali.'],
   ['v51', 'Toko Teluk Pasir pindah ke (x10,z5) = (4,10), tidak lagi menutupi desert village. Petak putih plot pindah dari kota ke Padang Rumput (x15,z5) = (4,5): diinjak tetap masuk lahan; petak putih lama di (7,13) kota dihapus. Mayor pindah ke (x7,z8) = (7,13), salon pindah ke (x9,z8) = (7,11) tepat di utara Mayor; nama bangunan SUPPLY diperbaiki (papan nama sekarang duduk di fasad tiruan, tidak lagi ketutup busur pintunya sendiri). Stasiun Hutan Lebat pindah ke timur rel (10,7): jalan kolom 8 tembus lagi. Wagon digambar ulang ikut game asli (dua lembu berkuk + kanvas putih + peti papan), kereta digambar ulang gaya isometrik cozy (biru batu tulis + cerobong hitam + papan kayu di bawah), tambah BANGUNAN BELI WAGON (tanpa NPC) di lahan (5,10): ketuk untuk buka menu wagon.'],
   ['v50', 'Nama zona diganti: Teluk Pasir (dulu Gurun & Pelabuhan), Hutan Lebat (dulu Hutan Rimbun), Hutan Kapas (dulu Hutan Dikit), Padang Rumput (dulu Lahan Ijo) dan Padang Rumput Selatan. Rel Hutan Lebat diluruskan (stasiun ke (8,7), kereta ke (9,7), belokan + rel cabang ke (14,9) dihapus). Toko kota disebar ke empat arah: exchange di depan Mayor (6,1), toolshop (14,4), blacksmith (3,8), textile (16,12), carpenter (4,15), supply (12,16); toko Teluk Pasir digeser ke (13,4) jauh dari rel. Tanda plot diganti PETAK PUTIH di (7,13): diinjak langsung teleport ke lahan (jembatan utara (8,0) tetap).'],
   ['v49', 'Dunia dirombak jadi SATU RANTAI 8 map utara-selatan (Gunung Es - Lahan Ijo - Hutan Rimbun - Hutan Dikit - Lahan - Kota - Lahan Ijo Selatan - Gurun & Pelabuhan). Semua map KOTAK 20x20 (lahan tetap membesar sampai 24x16), rel di kolom x=9 di semua map, jalan utama kolom x=8 tembus semua map, sungai mengalir utara-selatan lewat kolom 1 lalu turun kolom 18 di kota sampai laut di Pelabuhan, stasiun di 4 map (hutan tetap di 14,8 dengan kereta di 14,9) dan naik kereta dari stasiun, peron dihapus. Jalan kota timur/barat buntu dengan papan COMING SOON.'],

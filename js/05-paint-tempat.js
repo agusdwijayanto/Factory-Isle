@@ -105,7 +105,9 @@ Object.assign(PAINTERS, {
       g.fillStyle = P_shade(roof, 1.22); g.fillRect(cx - fw / 2, top - 14, fw, 3);
       g.fillStyle = 'rgba(104,86,62,0.18)'; g.fillRect(cx - fw / 2, top + 3, fw, 2);
     } else {
-      PAINTERS._gableRoof(g, cx, top + 2, a, b, 28, roof);
+      // v52: atap toko dua lantai (SALOON) diturunkan 3px — puncak atapnya
+      // dulu menggambar 2px di luar sel atlas (luber).
+      PAINTERS._gableRoof(g, cx, top + (o.twoStory ? 5 : 2), a, b, 28, roof);
     }
     if (o.style === 'awning') {
       const ay = gy - 36;
@@ -290,7 +292,9 @@ Object.assign(PAINTERS, {
   // v48: papan STATION menempel dinding, atap pelana di atasnya.
   station: (g, ox, oy) => {
     const cx = ox + 32, gy = oy + 60;
-    P_shadow(g, cx, gy, 28);
+    // v52: bayangan dibatasi 26 (dulu 28) — pendar kanan bayangannya
+    // menggambar 1px ke luar sel atlas.
+    P_shadow(g, cx, gy, 26);
     P_plinth(g, cx, gy, 50, '#C9C6C0');
     P_box(g, cx, gy - 4, 50, 30, '#E9DCC4', {
       top: P_shade('#E9DCC4', 1.06), left: P_shade('#E9DCC4', 0.90), right: P_shade('#E9DCC4', 0.68),
@@ -300,81 +304,84 @@ Object.assign(PAINTERS, {
     g.fillStyle = P_shade('#6B4A32', 0.9); g.fillRect(cx - 6, gy - 20, 12, 16);
     g.fillStyle = '#FFF3C4'; g.fillRect(cx - 4, gy - 18, 8, 7);
     g.fillStyle = '#FFF3C4'; g.fillRect(cx - 20, gy - 18, 8, 6); g.fillRect(cx + 12, gy - 18, 8, 6);
-    PAINTERS._gableRoof(g, cx, gy - 34 + 2, 29, 17, 13, '#C4664C');
+    // v52: atap pelana diturunkan 3px (puncak belakangnya dulu 2px di luar sel).
+    PAINTERS._gableRoof(g, cx, gy - 34 + 5, 29, 17, 13, '#C4664C');
     // papan digambar SESUDAH atap: menempel di muka depan, tidak tertutup
     PAINTERS._paintSign(g, cx, gy - 30, 42, 10, 'STATION', 7, '#FDF6E7', '#5A4432');
-    // bangku peron
-    g.fillStyle = P_shade('#B57A4E', 0.9); g.fillRect(cx + 22, gy - 9, 10, 3);
-    g.fillRect(cx + 23, gy - 6, 2, 4); g.fillRect(cx + 29, gy - 6, 2, 4);
+    // bangku peron (v52: digeser 1px ke kiri supaya tidak luber ke sel sebelah)
+    g.fillStyle = P_shade('#B57A4E', 0.9); g.fillRect(cx + 21, gy - 9, 10, 3);
+    g.fillRect(cx + 22, gy - 6, 2, 4); g.fillRect(cx + 28, gy - 6, 2, 4);
   },
 
-  // v51: kereta digambar ulang gaya isometrik cozy ikut referensi game asli:
-  // gerbong krem berjendela dengan atap kubah, lokomotif biru batu tulis +
-  // smokebox gelap + cerobong hitam bermulut kuningan + kabin biru tua +
-  // papan lari gelap + cowcatcher. Semua digambar di dalam sel 64px.
+  // v51: kereta digambar ulang gaya isometrik cozy ikut referensi game asli.
+  // v52: lokomotif dan gerbong DIPISAH (masing-masing 1 petak di rel) dan
+  // semua tulisan dihapus — tidak ada lagi "TRADING CO." maupun "130".
+  // menghadap kanan (+x = layar kanan); gerbong duduk di petak selatan.
   train: (g, ox, oy) => {
     const cx = ox + 32, gy = oy + 62;
-    P_shadow(g, cx, gy + 2, 26);
-    // papan nama di atas rangkaian (teks 7px = 45,6px, muat)
-    PAINTERS._paintSign(g, cx, gy - 58, 56, 13, 'TRADING CO.', 7, '#FDF6E7', '#5A4432');
-    // ---- gerbong penumpang ----
-    P_box(g, cx - 17, gy - 2, 26, 15, '#E8DCC8', { top: P_shade('#E8DCC8', 1.10), left: P_shade('#E8DCC8', 0.94), right: P_shade('#E8DCC8', 0.80) });
-    g.fillStyle = '#C1502E'; g.fillRect(cx - 29, gy - 8, 24, 4);   // pita merah-oranye
-    g.fillStyle = '#4A4A52'; g.fillRect(cx - 28, gy - 17, 22, 5);  // strip jendela
-    g.fillStyle = 'rgba(255,255,255,0.35)';
-    for (let i = 0; i < 4; i++) g.fillRect(cx - 26 + i * 6, gy - 17, 3, 5); // kaca
-    // atap kubah gelap + dua ventilasi
-    g.beginPath(); g.moveTo(cx - 30, gy - 18); g.quadraticCurveTo(cx - 17, gy - 26, cx - 4, gy - 18); g.closePath();
-    g.fillStyle = '#6B6156'; g.fill();
-    g.strokeStyle = P_OL; g.lineWidth = 1; g.stroke();
-    g.fillStyle = '#5A5148';
-    g.beginPath(); g.arc(cx - 22, gy - 22, 2.2, 0, 6.29); g.fill();
-    g.beginPath(); g.arc(cx - 12, gy - 22, 2.2, 0, 6.29); g.fill();
-    // rangka + roda gerbong
-    g.fillStyle = '#33333A'; g.fillRect(cx - 30, gy - 6, 26, 2.5);
-    for (const rx of [cx - 25, cx - 10]) {
-      g.fillStyle = '#33333A'; g.beginPath(); g.arc(rx, gy - 1.5, 3.2, 0, 6.29); g.fill();
-      g.strokeStyle = '#8A8F98'; g.lineWidth = 1; g.stroke();
-    }
-    // ---- lokomotif ----
-    g.fillStyle = '#33333A'; g.fillRect(cx - 6, gy - 7, 32, 3); // papan lari
+    P_shadow(g, cx, gy + 2, 20);
+    g.fillStyle = '#33333A'; g.fillRect(cx - 16, gy - 7, 32, 3); // papan lari
     // boiler (kapsul biru batu tulis, punggung lebih terang)
     g.beginPath();
-    g.moveTo(cx + 5, gy - 17); g.lineTo(cx + 22, gy - 17);
-    g.quadraticCurveTo(cx + 27, gy - 17, cx + 27, gy - 11.5);
-    g.quadraticCurveTo(cx + 27, gy - 6, cx + 22, gy - 6);
-    g.lineTo(cx + 5, gy - 6); g.closePath();
+    g.moveTo(cx - 6, gy - 17); g.lineTo(cx + 11, gy - 17);
+    g.quadraticCurveTo(cx + 16, gy - 17, cx + 16, gy - 11.5);
+    g.quadraticCurveTo(cx + 16, gy - 6, cx + 11, gy - 6);
+    g.lineTo(cx - 6, gy - 6); g.closePath();
     g.fillStyle = '#7C9CB8'; g.fill();
     g.strokeStyle = P_OL; g.lineWidth = 1; g.stroke();
-    g.fillStyle = '#9AB8D0'; g.fillRect(cx + 7, gy - 17, 16, 3); // kilau atas
+    g.fillStyle = '#9AB8D0'; g.fillRect(cx - 4, gy - 17, 14, 3); // kilau atas
     g.fillStyle = '#2E3038'; // smokebox depan
-    g.beginPath(); g.ellipse(cx + 27, gy - 11.5, 2.6, 5.5, 0, 0, 6.29); g.fill();
+    g.beginPath(); g.ellipse(cx + 16, gy - 11.5, 2.6, 5.5, 0, 0, 6.29); g.fill();
     // cerobong hitam + mulut + pita kuningan
-    g.fillStyle = '#2E3038'; g.fillRect(cx + 14, gy - 29, 6, 12);
-    g.fillRect(cx + 12.5, gy - 32, 9, 3);
-    g.fillStyle = '#D8A94A'; g.fillRect(cx + 14, gy - 26, 6, 2);
+    g.fillStyle = '#2E3038'; g.fillRect(cx + 2, gy - 29, 6, 12);
+    g.fillRect(cx + 0.5, gy - 32, 9, 3);
+    g.fillStyle = '#D8A94A'; g.fillRect(cx + 2, gy - 26, 6, 2);
     // asap
     g.fillStyle = 'rgba(255,255,255,0.7)';
-    g.beginPath(); g.arc(cx + 18, gy - 35, 3.5, 0, 6.29); g.fill();
-    g.beginPath(); g.arc(cx + 22, gy - 41, 4.5, 0, 6.29); g.fill();
-    g.beginPath(); g.arc(cx + 26, gy - 46, 3, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx + 5, gy - 35, 3.5, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx + 9, gy - 41, 4.5, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx + 13, gy - 46, 3, 0, 6.29); g.fill();
     // kabin biru tua + atap navy + jendela + lis kuningan
-    P_box(g, cx - 1, gy - 2, 15, 15, '#6E8AA6', { top: P_shade('#6E8AA6', 1.12), left: P_shade('#6E8AA6', 0.92), right: P_shade('#6E8AA6', 0.78) });
-    P_box(g, cx - 1, gy - 17, 17, 4, '#3A4050', { top: P_shade('#3A4050', 1.25) });
-    g.fillStyle = '#4A5A6A'; g.fillRect(cx - 6, gy - 13, 5, 5); // jendela kabin
-    g.fillStyle = '#D8A94A'; g.fillRect(cx - 8, gy - 6, 15, 1.5); // lis kuningan
-    g.fillStyle = '#FFF3C4'; g.font = '700 7px system-ui, sans-serif'; g.textAlign = 'center';
-    g.fillText('130', cx + 1, gy - 28);
+    P_box(g, cx - 11, gy - 2, 15, 15, '#6E8AA6', { top: P_shade('#6E8AA6', 1.12), left: P_shade('#6E8AA6', 0.92), right: P_shade('#6E8AA6', 0.78) });
+    P_box(g, cx - 11, gy - 17, 17, 4, '#3A4050', { top: P_shade('#3A4050', 1.25) });
+    g.fillStyle = '#4A5A6A'; g.fillRect(cx - 16, gy - 13, 5, 5); // jendela kabin
+    g.fillStyle = '#D8A94A'; g.fillRect(cx - 18, gy - 6, 15, 1.5); // lis kuningan
     // cowcatcher
     g.fillStyle = '#2E3038';
-    g.beginPath(); g.moveTo(cx + 24, gy - 3); g.lineTo(cx + 31, gy - 3); g.lineTo(cx + 31, gy - 9); g.closePath(); g.fill();
+    g.beginPath(); g.moveTo(cx + 14, gy - 3); g.lineTo(cx + 22, gy - 3); g.lineTo(cx + 22, gy - 9); g.closePath(); g.fill();
     g.strokeStyle = '#6A6E76'; g.lineWidth = 1;
-    g.beginPath(); g.moveTo(cx + 26, gy - 3); g.lineTo(cx + 29, gy - 8); g.stroke();
-    // roda lokomotif (kecil, pelek terang)
-    for (const rx of [cx, cx + 10]) {
+    g.beginPath(); g.moveTo(cx + 16, gy - 3); g.lineTo(cx + 20, gy - 8); g.stroke();
+    // roda (pelek terang)
+    for (const rx of [cx - 8, cx + 2]) {
       g.fillStyle = '#33333A'; g.beginPath(); g.arc(rx, gy - 1.5, 4.4, 0, 6.29); g.fill();
       g.strokeStyle = '#8A8F98'; g.lineWidth = 1; g.stroke();
       g.fillStyle = '#8A8F98'; g.beginPath(); g.arc(rx, gy - 1.5, 1.4, 0, 6.29); g.fill();
+    }
+  },
+
+  // v52: gerbong penumpang lepas (1 petak) — digambar di petak rel selatan
+  // lokomotif. Badan krem, pita merah-oranye, strip jendela gelap, atap kubah
+  // ber ventilasi, rangka + roda kecil. Tanpa tulisan.
+  trainCar: (g, ox, oy) => {
+    const cx = ox + 32, gy = oy + 62;
+    P_shadow(g, cx, gy + 2, 20);
+    P_box(g, cx, gy - 2, 34, 15, '#E8DCC8', { top: P_shade('#E8DCC8', 1.10), left: P_shade('#E8DCC8', 0.94), right: P_shade('#E8DCC8', 0.80) });
+    g.fillStyle = '#C1502E'; g.fillRect(cx - 16, gy - 8, 32, 4);   // pita merah-oranye
+    g.fillStyle = '#4A4A52'; g.fillRect(cx - 15, gy - 17, 30, 5);  // strip jendela
+    g.fillStyle = 'rgba(255,255,255,0.35)';
+    for (let i = 0; i < 5; i++) g.fillRect(cx - 13 + i * 6, gy - 17, 3, 5); // kaca
+    // atap kubah gelap + dua ventilasi
+    g.beginPath(); g.moveTo(cx - 17, gy - 18); g.quadraticCurveTo(cx, gy - 26, cx + 17, gy - 18); g.closePath();
+    g.fillStyle = '#6B6156'; g.fill();
+    g.strokeStyle = P_OL; g.lineWidth = 1; g.stroke();
+    g.fillStyle = '#5A5148';
+    g.beginPath(); g.arc(cx - 8, gy - 22, 2.2, 0, 6.29); g.fill();
+    g.beginPath(); g.arc(cx + 8, gy - 22, 2.2, 0, 6.29); g.fill();
+    // rangka + roda
+    g.fillStyle = '#33333A'; g.fillRect(cx - 17, gy - 6, 34, 2.5);
+    for (const rx of [cx - 12, cx + 4]) {
+      g.fillStyle = '#33333A'; g.beginPath(); g.arc(rx, gy - 1.5, 3.2, 0, 6.29); g.fill();
+      g.strokeStyle = '#8A8F98'; g.lineWidth = 1; g.stroke();
     }
   },
 
@@ -459,18 +466,22 @@ Object.assign(PAINTERS, {
   gate: (g, ox, oy) => {
     const cx = ox + 32, gy = oy + 60;
     P_shadow(g, cx, gy, 18);
+    // v52: tiang ditinggikan + balok diturunkan 4px supaya puncak balok tidak
+    // luber keluar sel atlas (dulu 4px di atas sel).
     g.fillStyle = P_shade('#8A6B4C', 0.95);
-    g.fillRect(cx - 20, gy - 34, 5, 34); g.fillRect(cx + 15, gy - 34, 5, 34);
-    P_box(g, cx, gy - 34, 46, 6, '#B57A4E');
+    g.fillRect(cx - 20, gy - 38, 5, 38); g.fillRect(cx + 15, gy - 38, 5, 38);
+    P_box(g, cx, gy - 30, 46, 6, '#B57A4E');
     PAINTERS._paintSign(g, cx, gy - 30, 30, 11, 'TOWN', 8, '#FDF6E7', '#5A4432');
   },
 
   plotpad: (g, ox, oy) => {
     const cx = ox + 32, cy = oy + 32;
+    // v52: dimasukkan 1px + sambungan bulat — ujung lancip belah ketupat dulu
+    // menggambar 1px di luar sel (sambungan miter memanjang di sudut tajam).
     g.beginPath();
-    g.moveTo(cx, cy - 15); g.lineTo(cx + 30, cy); g.lineTo(cx, cy + 15); g.lineTo(cx - 30, cy);
+    g.moveTo(cx, cy - 14); g.lineTo(cx + 29, cy); g.lineTo(cx, cy + 14); g.lineTo(cx - 29, cy);
     g.closePath(); g.fillStyle = '#F3EEDF'; g.fill();
-    g.strokeStyle = '#E0A24E'; g.lineWidth = 2.5; g.stroke();
+    g.strokeStyle = '#E0A24E'; g.lineWidth = 2.5; g.lineJoin = 'round'; g.stroke();
     g.fillStyle = '#CE9A46';
     [[0, -9], [17, 0], [0, 9], [-17, 0]].forEach(([dx, dy]) => {
       g.beginPath(); g.arc(cx + dx, cy + dy, 2, 0, 6.29); g.fill();

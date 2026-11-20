@@ -15,7 +15,10 @@ function buildMeadow(north) {
   put(g, [[3, 4], [4, 9], [15, 5], [16, 11], [3, 15], [14, 16], [6, 12], [17, 8]], 'tree');
   put(g, [[5, 3], [12, 4], [7, 9], [13, 13], [4, 17], [11, 17]], 'flowers');
   put(g, [[10, 6], [12, 14]], 'lantern');
-  if (north) g[5][4].obj = 'plotpad'; // (4,5) rumput kosong, 3 petak dari sungai, 4 dari jalan, 5 dari rel
+  if (north) {
+    g[5][4].obj = 'plotpad'; // (4,5) rumput kosong, 3 petak dari sungai, 4 dari jalan, 5 dari rel
+    g[5][5].obj = 'plotsign'; // v52: papan "PLOT" tepat di timur petak putih
+  }
   return g;
 }
 function buildMeadowN() { return buildMeadow(true); }

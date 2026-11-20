@@ -21,6 +21,7 @@ function buildIce() {
   terrain(ice, [[9, 6]], 'railStop');
   ice[7][8].obj = 'station';
   ice[7][9].obj = 'train';
+  ice[8][9].obj = 'trainCar'; // v52: gerbong 1 petak ke selatan
   put(ice, [[7, 7]], 'lantern');
   // Jalan: kolom 8 dari stasiun sampai tepi selatan (pintu ke Lahan Ijo).
   terrain(ice, rng(8, MAP_H - 1).map((gy) => [8, gy]), 'road');

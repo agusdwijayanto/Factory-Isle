@@ -17,6 +17,7 @@ function buildHarbor() {
   terrain(harbor, [[9, 7]], 'railStop');
   harbor[6][8].obj = 'station';
   harbor[6][9].obj = 'train';
+  harbor[7][9].obj = 'trainCar'; // v52: gerbong 1 petak ke selatan (di palang rel)
   for (const s of SHOP_SPOTS.filter((s) => s.map === 'harbor')) harbor[s.gy][s.gx].obj = 'shop_' + s.id;
   // Laut: tepi selatan + jalur timur + teluk tenggara.
   terrain(harbor, [...rng(0, MAP_W - 1).flatMap((gx) => [[gx, 18], [gx, 19]])], 'water');

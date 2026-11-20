@@ -7,17 +7,14 @@
 // kolom 9 — supaya nyambung dengan map atas (Hutan Kapas) dan bawah (Kota).
 // Kolom itu di-stamp ulang tiap ekspansi (01-core.js expandPlotGrid) karena
 // baris/kolom baru lahir kosong.
-// v51: bangunan beli wagon (tanpa NPC) duduk 2 baris di atas gerbang, kolom 5.
-// Ekspansi menggeser isi lahan, jadi salinan lamanya dibuang dulu tiap stamp.
+// v52: bangunan beli wagon KELUAR dari lahan (pindah ke kota) — jadi tidak
+// ada lagi objek tetap di lahan selain kolom-kolom ini.
 function stampPlotColumns(g) {
   for (const row of g) {
     if (row[1]) row[1].t = 'water';
     if (row[8]) row[8].t = 'road';
     if (row[9]) row[9].t = 'railY';
-    for (const t of row) if (t.obj === 'wagonShop') t.obj = null;
   }
-  const gy = g.length - 2;
-  if (g[gy] && g[gy][5]) g[gy][5].obj = 'wagonShop';
 }
 function buildPlot() {
   const plot = makeGrid(PLOT_BASE_W, PLOT_BASE_H);
