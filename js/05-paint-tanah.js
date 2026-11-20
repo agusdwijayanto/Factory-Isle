@@ -42,13 +42,21 @@ Object.assign(PAINTERS, {
     g.beginPath(); g.moveTo(ox + 18, oy + 32); g.lineTo(ox + 32, oy + 25); g.lineTo(ox + 46, oy + 32); g.lineTo(ox + 32, oy + 39); g.closePath(); g.stroke();
   },
   road: (g, ox, oy, c) => {
-    // v43: tanah frontier — debu kemerahan + bekas roda wagon.
+    // Jalan kota: tanah frontier + pagar kayu + sumur.
     P_ground(g, ox + 32, oy + 32, '#a67c52');
     g.strokeStyle = 'rgba(90,60,30,0.6)'; g.lineWidth = 2;
     g.beginPath(); g.moveTo(ox + 20, oy + 25); g.lineTo(ox + 44, oy + 37); g.stroke();
     g.beginPath(); g.moveTo(ox + 20, oy + 29); g.lineTo(ox + 44, oy + 41); g.stroke();
     g.fillStyle = 'rgba(90,60,30,0.5)';
     [[-10, -3], [2, -6], [9, 2], [-3, 5], [6, 6]].forEach(([dx, dy]) => g.fillRect(ox + 32 + dx, oy + 32 + dy, 3, 3));
+    // Pagar kayu di tepi jalan
+    g.fillStyle = '#8b4513';
+    [[ox + 8, oy + 24], [ox + 18, oy + 28], [ox + 28, oy + 32], [ox + 38, oy + 36], [ox + 48, oy + 40], [ox + 56, oy + 44]].forEach(([x, y]) => g.fillRect(x, y, 2, 6));
+    [[ox + 10, oy + 40], [ox + 20, oy + 44], [ox + 30, oy + 48], [ox + 40, oy + 52], [ox + 50, oy + 56], [ox + 60, oy + 60]].forEach(([x, y]) => g.fillRect(x, y, 2, 6));
+    // Sumur di tengah jalan
+    g.fillStyle = '#5d6773'; g.fillRect(ox + 30, oy + 36, 4, 6);
+    g.fillStyle = '#8b4513'; g.fillRect(ox + 28, oy + 34, 8, 4);
+    g.fillStyle = '#2a6db0'; g.fillRect(ox + 30, oy + 30, 4, 4);
   },
   // Rel searah sumbu-x: garis baja sejajar diagonal belah ketupat, sambung antar petak.
   railX: (g, ox, oy, c) => {

@@ -44,9 +44,14 @@ Object.assign(PAINTERS, {
     g.textAlign = 'center'; g.fillText(title, cx, gy - 57);
   },
   shop_carpenter: (g, ox, oy) => {
-    PAINTERS._paintWesternShop(g, ox, oy, '#8b4513', '#65351a', '#a0522d', '#873600', 'CARPENTER', (g, cx, gy) => {
-      g.fillStyle = '#d2b48c'; g.fillRect(cx - 28, gy - 12, 14, 8);
-      g.fillStyle = '#8b4513'; g.fillRect(cx - 26, gy - 10, 10, 4);
+    PAINTERS._paintWesternShop(g, ox, oy, '#8b9dc3', '#6b7fa3', '#a0522d', '#873600', 'CARPENTER', (g, cx, gy) => {
+      // Cart jual di luar dengan harga
+      g.fillStyle = '#8b4513'; g.fillRect(cx - 30, gy - 6, 20, 10);
+      g.fillStyle = '#d2b48c'; g.fillRect(cx - 32, gy - 14, 24, 8);
+      g.fillStyle = '#ffd75e'; g.font = '700 8px system-ui, sans-serif'; g.textAlign = 'center';
+      g.fillText('Plank 12 / 8 / 5', cx - 20, gy - 10);
+      g.fillStyle = '#5d6773'; g.beginPath(); g.arc(cx - 24, gy - 1, 3, 0, 6.29); g.fill();
+      g.beginPath(); g.arc(cx - 8, gy - 1, 3, 0, 6.29); g.fill();
     });
   },
   shop_blacksmith: (g, ox, oy) => {
@@ -57,10 +62,25 @@ Object.assign(PAINTERS, {
     });
   },
   shop_exchange: (g, ox, oy) => {
-    // SALOON merah (judul pendek saja — 'SALOON / EXCHANGE' 101px meluber dari papan 76px).
+    // SALOON: menara air, pintu berkunci, 2 lantai, bartender NPC, papan SALOON.
     PAINTERS._paintWesternShop(g, ox, oy, '#962d22', '#78281f', '#c0392b', '#922b21', 'SALOON', (g, cx, gy) => {
-      g.fillStyle = '#f1c40f'; g.fillRect(cx - 28, gy - 10, 8, 8);
-      g.fillStyle = '#d4ac0d'; g.fillRect(cx + 20, gy - 12, 10, 8);
+      // Pintu berkunci saloon (swinging doors, ganda)
+      g.fillStyle = '#5d2e1a';
+      g.fillRect(cx - 9, gy - 30, 8, 26); g.fillRect(cx + 1, gy - 30, 8, 26);
+      g.strokeStyle = '#ffd75e'; g.lineWidth = 1;
+      g.strokeRect(cx - 9, gy - 30, 8, 26); g.strokeRect(cx + 1, gy - 30, 8, 26);
+      // Jendela lantai 2
+      g.fillStyle = '#2a1f16';
+      g.fillRect(cx - 26, gy - 60, 10, 8); g.fillRect(cx + 16, gy - 60, 10, 8);
+      g.fillStyle = '#ffd75e'; g.fillRect(cx - 24, gy - 58, 6, 4); g.fillRect(cx + 18, gy - 58, 6, 4);
+      // Menara air di atas atap
+      g.fillStyle = '#5f3d22'; g.fillRect(cx - 6, gy - 84, 4, 20);
+      g.fillStyle = '#2c3e50'; g.beginPath(); g.arc(cx - 4, gy - 86, 10, 0, 6.29); g.fill();
+      g.fillStyle = '#c0392b'; g.fillRect(cx - 9, gy - 80, 14, 6);
+      // Bartender NPC di pintu
+      g.fillStyle = '#e8c860'; g.fillRect(cx - 2, gy - 34, 4, 8);
+      g.fillStyle = '#c0392b'; g.fillRect(cx - 3, gy - 28, 6, 6);
+      g.fillStyle = '#2a1f16'; g.beginPath(); g.arc(cx, gy - 36, 3, 0, 6.29); g.fill();
     });
   },
   shop_toolshop: (g, ox, oy) => {
@@ -71,15 +91,24 @@ Object.assign(PAINTERS, {
   },
   shop_textile: (g, ox, oy) => {
     PAINTERS._paintWesternShop(g, ox, oy, '#d6dbdf', '#bfccdc', '#d98880', '#cb4335', 'TEXTILE', (g, cx, gy) => {
-      g.fillStyle = '#ffffff'; g.fillRect(cx - 28, gy - 12, 10, 8);
-      g.fillStyle = '#9b59b6'; g.fillRect(cx + 20, gy - 12, 10, 8);
+      // Gulungan kain di jendela
+      g.fillStyle = '#e74c3c'; g.fillRect(cx - 26, gy - 14, 6, 10); g.fillRect(cx - 26, gy - 14, 6, 3);
+      g.fillStyle = '#9b59b6'; g.fillRect(cx + 20, gy - 14, 6, 10); g.fillRect(cx + 20, gy - 14, 6, 3);
+      g.fillStyle = '#f1c40f'; g.fillRect(cx - 28, gy - 12, 2, 6); g.fillRect(cx + 22, gy - 12, 2, 6);
     });
   },
   shop_supply: (g, ox, oy) => {
-    // SUPPLY hijau
+    // SUPPLY hijau: fasad tiruan + busur di atas pintu.
     PAINTERS._paintWesternShop(g, ox, oy, '#1e8449', '#145a32', '#27ae60', '#1e8449', 'SUPPLY', (g, cx, gy) => {
-      g.fillStyle = '#784212'; g.fillRect(cx - 28, gy - 12, 8, 10);
-      g.fillStyle = '#b9770e'; g.fillRect(cx + 20, gy - 12, 10, 10);
+      // Fasad tiruan (false front) — dinding depan lebih tinggi dari atap
+      g.fillStyle = '#1e8449'; g.fillRect(cx - 34, gy - 70, 68, 4);
+      g.strokeStyle = '#ffd75e'; g.lineWidth = 1.5; g.strokeRect(cx - 34, gy - 70, 68, 4);
+      // Busur di atas pintu
+      g.fillStyle = '#27ae60';
+      g.beginPath(); g.arc(cx, gy - 30, 6, Math.PI, 0); g.fill();
+      g.fillRect(cx - 6, gy - 30, 12, 6);
+      // Papan barang di luar
+      g.fillStyle = '#d4ac0d'; g.fillRect(cx - 28, gy - 10, 8, 8); g.fillRect(cx + 20, gy - 10, 8, 8);
     });
   },
   shop_desert: (g, ox, oy) => {
@@ -127,7 +156,12 @@ Object.assign(PAINTERS, {
   train: (g, ox, oy) => {
     const cx = ox + 32, gy = oy + 62;
     P_shadow(g, cx, gy, 18);
-    // Cowcatcher (wedge plow at front)
+    // Kereta marong (gerbong maroon dengan hias kuning di belakang)
+    g.fillStyle = '#5d2e1a'; g.fillRect(cx - 44, gy - 22, 28, 14);
+    g.strokeStyle = '#f1c40f'; g.lineWidth = 1.5;
+    g.strokeRect(cx - 44, gy - 22, 28, 14);
+    g.fillStyle = '#f1c40f'; g.fillRect(cx - 40, gy - 18, 4, 6); g.fillRect(cx - 4, gy - 18, 4, 6);
+    // Lokomotif
     g.fillStyle = '#7f8c8d';
     g.beginPath();
     g.moveTo(cx - 20, gy - 4); g.lineTo(cx - 24, gy - 16); g.lineTo(cx - 16, gy - 16);
@@ -150,6 +184,11 @@ Object.assign(PAINTERS, {
     g.fillStyle = 'rgba(255,255,255,0.6)';
     g.beginPath(); g.arc(cx - 9, gy - 48, 4, 0, 6.29); g.fill();
     g.beginPath(); g.arc(cx - 12, gy - 55, 6, 0, 6.29); g.fill();
+    // Nomor kereta di kabin
+    g.fillStyle = '#ffd75e'; g.font = '700 9px system-ui, sans-serif'; g.textAlign = 'center';
+    g.fillText('130', cx + 13, gy - 32);
+    // Tulisan TRADING CO. di tender (belakang lokomotif)
+    g.fillText('TRADING CO.', cx - 30, gy - 24);
   },
   // ---------- Mayor, gerbang, kotak plot ----------
   mayor: (g, ox, oy) => {

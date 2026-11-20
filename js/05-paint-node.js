@@ -78,16 +78,24 @@ Object.assign(PAINTERS, {
     [[8, -10], [14, -10], [10, -10], [16, -10]].forEach(([dx, dy]) => {
       g.beginPath(); g.moveTo(cx + dx, gy - 12); g.lineTo(cx + dx, gy); g.stroke();
     });
-    // Gerbong kayu di belakang kiri + peti.
-    g.fillStyle = '#a8763e'; g.fillRect(cx - 22, gy - 14, 24, 12);
+    // Kanvas conestoga (atap lengkung putih)
+    g.fillStyle = '#f2ede0';
+    g.beginPath(); g.ellipse(cx - 8, gy - 26, 14, 10, 0, 0, 6.29); g.fill();
+    g.fillStyle = '#d4ac0d';
+    g.beginPath(); g.ellipse(cx - 8, gy - 24, 12, 6, 0, 0, 6.29); g.stroke(); g.lineWidth = 1.5; g.stroke();
+    // Badan gerbong kayu di bawah kanvas
+    g.fillStyle = '#a8763e'; g.fillRect(cx - 22, gy - 14, 24, 10);
     g.fillStyle = '#7a5230'; g.fillRect(cx - 22, gy - 14, 24, 3);
-    g.fillStyle = '#c9a86a'; g.fillRect(cx - 18, gy - 22, 12, 8);
+    // Roda gigi
     g.fillStyle = '#5d6773';
     g.beginPath(); g.arc(cx - 16, gy - 1, 4, 0, 6.29); g.fill();
     g.beginPath(); g.arc(cx - 4, gy - 1, 4, 0, 6.29); g.fill();
     // Tali kuda ke gerbong.
     g.strokeStyle = '#5f3d22'; g.lineWidth = 1.5;
     g.beginPath(); g.moveTo(cx + 4, gy - 16); g.lineTo(cx + 2, gy - 12); g.stroke();
+    // Indikator slot muatan
+    g.fillStyle = '#ffd75e'; g.font = '700 8px system-ui, sans-serif'; g.textAlign = 'center';
+    g.fillText('0 / 15', cx, gy - 28);
   },
   // Patung: alas batu + sosok, beda warna/siluet tiap patung.
   _statueBase: (g, ox, oy) => {
@@ -170,5 +178,27 @@ Object.assign(PAINTERS, {
     g.strokeStyle = '#7a5230'; g.lineWidth = 2; g.strokeRect(cx - 14, gy - 42, 28, 16);
     g.fillStyle = '#3a2a1a'; g.font = '700 10px system-ui, sans-serif'; g.textAlign = 'center';
     g.fillText('PLOT', cx, gy - 31);
+  },
+  campTipi: (g, ox, oy) => {
+    const cx = ox + 32, gy = oy + 62;
+    P_shadow(g, cx, gy, 12);
+    g.fillStyle = '#d4ac0d';
+    g.beginPath(); g.moveTo(cx, gy - 24); g.lineTo(cx - 12, gy - 2); g.lineTo(cx + 12, gy - 2); g.closePath(); g.fill();
+    g.fillStyle = '#a06530';
+    g.beginPath(); g.moveTo(cx, gy - 22); g.lineTo(cx - 10, gy - 2); g.lineTo(cx + 10, gy - 2); g.closePath(); g.fill();
+    g.fillStyle = '#5d6773'; g.fillRect(cx - 1, gy - 6, 2, 6);
+    g.strokeStyle = '#8b4513'; g.lineWidth = 1;
+    g.beginPath(); g.moveTo(cx - 8, gy - 2); g.lineTo(cx - 8, gy - 10); g.stroke();
+    g.beginPath(); g.moveTo(cx + 8, gy - 2); g.lineTo(cx + 8, gy - 10); g.stroke();
+  },
+  campfire: (g, ox, oy) => {
+    const cx = ox + 32, gy = oy + 62;
+    P_shadow(g, cx, gy, 6);
+    g.fillStyle = '#5d4037'; g.fillRect(cx - 4, gy - 4, 8, 4);
+    g.fillRect(cx - 2, gy - 6, 4, 6);
+    g.fillStyle = '#ff7a2e';
+    g.beginPath(); g.arc(cx, gy - 8, 5, 0, 6.29); g.fill();
+    g.fillStyle = '#f1c40f';
+    g.beginPath(); g.arc(cx, gy - 10, 3, 0, 6.29); g.fill();
   },
 });

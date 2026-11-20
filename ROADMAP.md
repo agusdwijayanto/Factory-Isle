@@ -333,6 +333,20 @@ Tes: headless 411/411, Playwright 204/204, nol error konsol. Versi aset: ?v=42.
 
 Tes: headless 411/411, Playwright 204/204, nol error konsol. Versi aset: ?v=43.
 
+## Sudah live — v44 (20 Nov 2026)
+
+- [x] SALOON: menara air di atas atap, pintu berkunci berayun (swinging doors), jendela lantai 2, bartender NPC di pintu, papan SALOON. (`js/05-paint-tempat.js`)
+- [x] CARPENTER: dinding kayu biru-abu + cart jual di luar dengan harga papan (Plank 12 / 8 / 5). (`js/05-paint-tempat.js`)
+- [x] TEXTILE: gulungan kain merah dan ungu di jendela. (`js/05-paint-tempat.js`)
+- [x] SUPPLY: fasad tiruan (false front) lebih tinggi dari atap + busur di atas pintu. (`js/05-paint-tempat.js`)
+- [x] Kereta 130 Trading Co.: gerbong maroon dengan hias kuning di belakang, nomor "130" di kabin, tulisan "TRADING CO." di tender. (`js/05-paint-tempat.js`)
+- [x] Jalan kota: pagar kayu di tepi jalan + sumur di tengah jalan. (`js/05-paint-tanah.js`)
+- [x] Camp: tenda tipi (kerucut kulit + tiang) dan api unggun (kayu + nyala). (`js/05-paint-node.js`)
+- [x] Wagon: kanvas conestoga (atap lengkung putih) + indikator slot muatan "0 / 15". (`js/05-paint-node.js`)
+- [x] Terblokir (laporkan saja): BLACKSMITH + menu crafting — butuh `unrar` untuk ekstrak sisa 40 PNG dari Factory_Tycon.rar (40/80 sukses; `rarfile` Python intermittent, `unrar` sistem tidak tersedia).
+
+Tes: headless 411/411, Playwright 204/204, nol error konsol. Versi aset: ?v=44.
+
 - Rantai tekstil + Bronze Cannon, quest/trust NPC, Fuel meter terpisah, irigasi, bangunan logika, multi-save
 
 ## Cara baca
