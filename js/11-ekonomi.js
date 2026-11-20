@@ -134,16 +134,21 @@ function buyWagon() {
   saveSoon();
   return true;
 }
-// Petak lahir wagon: (8,10) di lahan, atau rumput kosong terdekat.
+// Petak lahir wagon: sisi barat jalan di depan gerbang lahan (7, h-2) —
+// tepat di samping bangunan beli wagon (5, h-2) — atau rumput kosong terdekat.
+// v51: (8,10) lama sudah jadi petak jalan sejak kolom 8 jadi jalan utama.
 function wagonSpawnSpot() {
-  const grid = S.maps.plot.grid;
-  if (grid[10] && grid[10][8].t === 'grass' && !grid[10][8].obj && !S.machines.has('8,10')) return { gx: 8, gy: 10 };
+  const grid = S.maps.plot.grid, h = S.maps.plot.h;
+  for (const p of [{ gx: 7, gy: h - 2 }, { gx: 6, gy: h - 2 }, { gx: 8, gy: h - 2 }]) {
+    const t = grid[p.gy] && grid[p.gy][p.gx];
+    if (t && t.t === 'grass' && !t.obj && !S.machines.has(key(p.gx, p.gy))) return p;
+  }
   for (let gy = 0; gy < S.maps.plot.h; gy++)
     for (let gx = 0; gx < S.maps.plot.w; gx++) {
       const t = grid[gy][gx];
       if (t.t === 'grass' && !t.obj && !S.machines.has(key(gx, gy))) return { gx, gy };
     }
-  return { gx: 8, gy: 10 };
+  return { gx: 7, gy: h - 2 };
 }
 // Naik tingkat wagon (kapasitas naik). Kembalikan false kalau sudah maks.
 function upgradeWagon() {

@@ -34,7 +34,7 @@ const S = {
   storages: new Map(),   // "gx,gy" -> {id, items:{}}
   walls: new Map(),      // "gx,gy" -> {id}
   decor: new Map(),      // "gx,gy" -> {id}
-  mayor: { gx: 5, gy: 1 },      // di map kota
+  mayor: { gx: 7, gy: 13 },     // v51: (x7,z8) di kota, di selatan salon (7,11)
   // v49: plotPad dihapus — lahan sekarang di UTARA kota, pintunya jembatan
   // (8,0) di kota; gerbang lahan sendiri ada di 08-gerak/07-pemain.
   player: {

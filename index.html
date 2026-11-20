@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Factory-Isle — Tycoon Pabrik Isometrik</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="style.css?v=50">
+<link rel="stylesheet" href="style.css?v=51">
 </head>
 <body>
 <canvas id="game"></canvas>
@@ -146,7 +146,8 @@
     <p>Berenang: air bisa dilewati tapi lambat (setengah kecepatan); wagon tidak bisa masuk air. Benih didapat dari menggali tunggul dengan sekop, ditanam dari panel Tas di rumput lahan — Oak/Pine 4 tahap, Palm 3 tahap, kapas/pewarna 2 tahap.</p>
     <p>Sorter hanya melewatkan 1 jenis barang (pilih di panel periksanya). Conveyor bisa diwarnai (ungu/merah/hijau/oranye/biru) dari panel periksanya. Storage Barrel 100 slot, Storage Rack Advanced 1.000 slot (dibuat di Construction Crafter dari 1 Engine + 1 Rack + 4 Barrel), Storage Crane mengambil barang dari storage sebelah.</p>
     <p>Batas item aktif 150: mesin berhenti kalau barang di dunia sudah 150 — jual atau simpan barang. Buka slot save 2/3/4 bayar $25.000/$50.000/$100.000; biaya ekspansi naik per save.</p>
-    <p>Masuk ke lahan: lewat jembatan di utara kota ATAU injak petak putih di rumput kota. Keluar dari lahan: gerbang bawah (ke Kota) atau gerbang atas (ke Hutan Kapas).</p>
+    <p>Masuk ke lahan: lewat jembatan di utara kota ATAU injak petak putih di Padang Rumput (di sebelah utara kota, setelah lewat lahan; petaknya ada di barat sungai). Keluar dari lahan: gerbang bawah (ke Kota) atau gerbang atas (ke Hutan Kapas).</p>
+    <p>Wagon: beli di BANGUNAN BELI WAGON di lahan (dekat gerbang, kolom 5) atau dari menu Plot ($100), ketuk wagon untuk naik — jalan kaki lv1, wagon lv2, kereta lv3. Peti wagon muat barang, diatur dari panel Tas. Kuda bikin wagon makin cepat.</p>
     <p>Lahan: ketuk mesin untuk membuka panelnya. Masukkan bahan, mesin mengolah sendiri. Semua mesin jalan otomatis, termasuk Sawhorse. Mesin tetap jalan walau kamu sedang di kota.</p>
     <p>Conveyor mengalirkan item searah panah ke mesin atau penyimpanan di depannya. Coil dan Gear tidak dijual.</p>
     <p>Perkakas: kapak, sekop dan pickaxe sudah ada sejak awal; upgrade Bronze $250 dan Iron $1.000 di Tool Shop bikin panen lebih cepat. Pohon pakai kapak, bijih pakai pickaxe, pasir dan tanah liat pakai sekop.</p>
@@ -183,51 +184,51 @@
   </div>
 </section>
 
-<script src="js/01-core.js?v=50"></script>
-<script src="js/02-iso.js?v=50"></script>
-<script src="js/03-data-items.js?v=50"></script>
-<script src="js/03-data-tutorial.js?v=50"></script>
-<script src="js/03-data-maps.js?v=50"></script>
-<script src="js/03-map-kota.js?v=50"></script>
-<script src="js/03-map-padang.js?v=50"></script>
-<script src="js/03-map-hutan.js?v=50"></script>
-<script src="js/03-map-hutan2.js?v=50"></script>
-<script src="js/03-map-gunung-es.js?v=50"></script>
-<script src="js/03-map-pelabuhan.js?v=50"></script>
-<script src="js/03-map-lahan.js?v=50"></script>
-<script src="js/04-atlas.js?v=50"></script>
-<script src="js/05-render-core.js?v=50"></script>
-<script src="js/05-paint-helpers.js?v=50"></script>
-<script src="js/05-paint-tanah.js?v=50"></script>
-<script src="js/05-paint-node.js?v=50"></script>
-<script src="js/05-paint-mesin.js?v=50"></script>
-<script src="js/05-paint-alat.js?v=50"></script>
-<script src="js/05-paint-tempat.js?v=50"></script>
-<script src="js/05-paint-pemain.js?v=50"></script>
-<script src="js/05-paint-item.js?v=50"></script>
-<script src="js/05-paint-v36.js?v=50"></script>
-<script src="js/05-render-overlay.js?v=50"></script>
-<script src="js/05-render.js?v=50"></script>
-<script src="js/06-input.js?v=50"></script>
-<script src="js/07-pemain.js?v=50"></script>
-<script src="js/08-gerak.js?v=50"></script>
-<script src="js/09-mesin.js?v=50"></script>
-<script src="js/10-resep.js?v=50"></script>
-<script src="js/11-ekonomi.js?v=50"></script>
-<script src="js/12-simpan.js?v=50"></script>
-<script src="js/13-ui-core.js?v=50"></script>
-<script src="js/13-ui-build.js?v=50"></script>
-<script src="js/13-ui-inspect.js?v=50"></script>
-<script src="js/13-ui-storage.js?v=50"></script>
-<script src="js/13-ui-shop.js?v=50"></script>
-<script src="js/13-ui-train.js?v=50"></script>
-<script src="js/13-ui-tas.js?v=50"></script>
-<script src="js/13-ui-mayor.js?v=50"></script>
-<script src="js/13-ui-plot.js?v=50"></script>
-<script src="js/13-ui-badge.js?v=50"></script>
-<script src="js/13-ui-book.js?v=50"></script>
-<script src="js/13-ui-tick.js?v=50"></script>
-<script src="js/13-ui.js?v=50"></script>
-<script src="js/14-main.js?v=50"></script>
+<script src="js/01-core.js?v=51"></script>
+<script src="js/02-iso.js?v=51"></script>
+<script src="js/03-data-items.js?v=51"></script>
+<script src="js/03-data-tutorial.js?v=51"></script>
+<script src="js/03-data-maps.js?v=51"></script>
+<script src="js/03-map-kota.js?v=51"></script>
+<script src="js/03-map-padang.js?v=51"></script>
+<script src="js/03-map-hutan.js?v=51"></script>
+<script src="js/03-map-hutan2.js?v=51"></script>
+<script src="js/03-map-gunung-es.js?v=51"></script>
+<script src="js/03-map-pelabuhan.js?v=51"></script>
+<script src="js/03-map-lahan.js?v=51"></script>
+<script src="js/04-atlas.js?v=51"></script>
+<script src="js/05-render-core.js?v=51"></script>
+<script src="js/05-paint-helpers.js?v=51"></script>
+<script src="js/05-paint-tanah.js?v=51"></script>
+<script src="js/05-paint-node.js?v=51"></script>
+<script src="js/05-paint-mesin.js?v=51"></script>
+<script src="js/05-paint-alat.js?v=51"></script>
+<script src="js/05-paint-tempat.js?v=51"></script>
+<script src="js/05-paint-pemain.js?v=51"></script>
+<script src="js/05-paint-item.js?v=51"></script>
+<script src="js/05-paint-v36.js?v=51"></script>
+<script src="js/05-render-overlay.js?v=51"></script>
+<script src="js/05-render.js?v=51"></script>
+<script src="js/06-input.js?v=51"></script>
+<script src="js/07-pemain.js?v=51"></script>
+<script src="js/08-gerak.js?v=51"></script>
+<script src="js/09-mesin.js?v=51"></script>
+<script src="js/10-resep.js?v=51"></script>
+<script src="js/11-ekonomi.js?v=51"></script>
+<script src="js/12-simpan.js?v=51"></script>
+<script src="js/13-ui-core.js?v=51"></script>
+<script src="js/13-ui-build.js?v=51"></script>
+<script src="js/13-ui-inspect.js?v=51"></script>
+<script src="js/13-ui-storage.js?v=51"></script>
+<script src="js/13-ui-shop.js?v=51"></script>
+<script src="js/13-ui-train.js?v=51"></script>
+<script src="js/13-ui-tas.js?v=51"></script>
+<script src="js/13-ui-mayor.js?v=51"></script>
+<script src="js/13-ui-plot.js?v=51"></script>
+<script src="js/13-ui-badge.js?v=51"></script>
+<script src="js/13-ui-book.js?v=51"></script>
+<script src="js/13-ui-tick.js?v=51"></script>
+<script src="js/13-ui.js?v=51"></script>
+<script src="js/14-main.js?v=51"></script>
 </body>
 </html>

@@ -18,6 +18,7 @@ function blockedForWalk(gx, gy) {
   if (t.obj === 'mayor' || t.obj === 'train' || t.obj === 'station' || t.obj === 'mountain') return true;
   // v49: papan COMING SOON menutup jalan buntu timur/barat kota.
   if (t.obj === 'signClosed') return true;
+  if (t.obj === 'wagonShop') return true; // v51: bangunan, bukan petak yang bisa diinjak
   if (t.obj && t.obj.startsWith('shop')) return true;
   // Pohon/bijih/kapas hidup menghalangi; tunggul (hp 0) dan lentera bisa dilewati.
   if (t.obj && NODES[t.obj] && t.hp > 0) return true;
@@ -33,9 +34,10 @@ function blockedForWalk(gx, gy) {
 // jadi target (klik pintu memang mau pindah).
 function isExitTile(gx, gy) {
   // v49: jembatan kota (8,0) = pintu ke Lahan; gerbang lahan (bawah) = pintu
-  // ke Kota. v50: petak putih plot (7,13) juga pemicu pindah map.
-  // Ketiganya nggak boleh dilewati saat jalan ke target lain.
-  if (S.map === 'town' && ((gx === 8 && gy === 0) || (gx === 7 && gy === 13))) return true;
+  // ke Kota. v51: petak putih plot pindah ke Padang Rumput (4,5), juga pemicu
+  // pindah map. Semuanya nggak boleh dilewati saat jalan ke target lain.
+  if (S.map === 'town' && gx === 8 && gy === 0) return true;
+  if (S.map === 'meadow_n' && gx === 4 && gy === 5) return true;
   if (S.map === 'plot') { const g = gatePos(); if (gx === g.gx && gy === g.gy) return true; }
   for (const e of MAP_EXITS[S.map] || []) if (e.gx === gx && e.gy === gy) return true;
   return false;

@@ -75,39 +75,93 @@ Object.assign(PAINTERS, {
     });
   },
 
-  // ---- v35: wagon ----
+  // ---- v35: wagon; v51 digambar ulang ikut game asli (WagonLvMax):
+  // dua lembu berkuk di depan, peti papan dengan tonggak, kanvas putih
+  // setengah tabung, roda kayu besar-belakang/kecil-depan, alas biru navy.
   wagon: (g, ox, oy) => {
     const cx = ox + 32, gy = oy + 60;
-    P_shadow(g, cx, gy, 18);
-    // kuda
-    g.fillStyle = P_shade('#B07E52', 0.98);
-    g.beginPath(); g.ellipse(cx + 13, gy - 17, 9.5, 6.5, 0, 0, 6.29); g.fill();
+    P_shadow(g, cx, gy, 19);
+    // ---- lembu (dua, krem-putih, tanduk pucat, berkuk) ----
+    const ox1 = (bx, by, s) => {
+      g.fillStyle = '#F5F0E6';
+      g.beginPath(); g.ellipse(bx, by, 9 * s, 6 * s, 0, 0, 6.29); g.fill();
+      g.strokeStyle = P_OL; g.lineWidth = 1; g.stroke();
+      g.fillStyle = '#DED2BD';
+      g.beginPath(); g.ellipse(bx, by + 2.5 * s, 8 * s, 3 * s, 0, 0, 6.29); g.fill();
+      // kepala menunduk di depan (+x)
+      g.fillStyle = '#F5F0E6';
+      g.beginPath(); g.ellipse(bx + 8 * s, by + 3 * s, 4.4 * s, 3.6 * s, 0.5, 0, 6.29); g.fill();
+      g.strokeStyle = P_OL; g.stroke();
+      // tanduk
+      g.strokeStyle = '#D8C9A8'; g.lineWidth = 1.4;
+      g.beginPath(); g.moveTo(bx + 9 * s, by + 1 * s); g.lineTo(bx + 12 * s, by - 1.5 * s); g.stroke();
+      // kaki
+      g.strokeStyle = '#E8E0D0'; g.lineWidth = 2;
+      [[-5, 0], [-1, 0], [4, 0], [7, 0]].forEach(([dx]) => {
+        g.beginPath(); g.moveTo(bx + dx * s, by + 4 * s); g.lineTo(bx + dx * s, by + 11 * s); g.stroke();
+      });
+      g.fillStyle = '#5A5048';
+      [[-5], [-1], [4], [7]].forEach(([dx]) => g.fillRect(bx + dx * s - 1, by + 11 * s, 2.6 * s, 1.6));
+      // ekor
+      g.strokeStyle = '#DED2BD'; g.lineWidth = 1;
+      g.beginPath(); g.moveTo(bx - 9 * s, by - 1 * s); g.lineTo(bx - 12 * s, by + 4 * s); g.stroke();
+    };
+    ox1(cx + 19, gy - 21, 0.92); // lembu jauh (belakang-atas)
+    ox1(cx + 12, gy - 13, 1.0);  // lembu dekat
+    // kuk kayu melintang di pundak kedua lembu
+    g.fillStyle = '#C2A077';
+    g.beginPath(); g.moveTo(cx + 9, gy - 24); g.lineTo(cx + 26, gy - 29); g.lineTo(cx + 26, gy - 25); g.lineTo(cx + 9, gy - 20); g.closePath(); g.fill();
     g.strokeStyle = P_OL; g.lineWidth = 1; g.stroke();
-    g.fillStyle = P_shade('#B07E52', 1.02);
-    g.beginPath(); g.arc(cx + 21, gy - 25, 4.8, 0, 6.29); g.fill(); g.stroke();
-    g.fillStyle = P_shade('#8A6242', 0.95); g.fillRect(cx + 19, gy - 31, 4.5, 6.5);
-    g.strokeStyle = P_shade('#8A6242', 0.9); g.lineWidth = 2;
-    [[9, 0], [15, 0], [11, -2], [17, -2]].forEach(([dx]) => {
-      g.beginPath(); g.moveTo(cx + dx, gy - 12); g.lineTo(cx + dx, gy); g.stroke();
-    });
-    // kanvas conestoga
-    g.fillStyle = '#FBF7EC';
-    g.beginPath(); g.ellipse(cx - 8, gy - 27, 14.5, 10.5, 0, 0, 6.29); g.fill();
-    g.strokeStyle = P_OL; g.lineWidth = 1.2; g.stroke();
-    g.strokeStyle = P_shade('#F0B94E', 1.0); g.lineWidth = 1.4;
-    g.beginPath(); g.ellipse(cx - 8, gy - 25, 12.5, 6.5, 0, 0, 6.29); g.stroke();
-    // peti + roda
-    P_box(g, cx - 10, gy - 14, 26, 10, '#C79A6B');
-    g.fillStyle = P_shade('#3A4148', 1.15);
-    g.beginPath(); g.arc(cx - 17, gy - 1, 4.4, 0, 6.29); g.fill();
-    g.beginPath(); g.arc(cx - 4, gy - 1, 4.4, 0, 6.29); g.fill();
-    g.strokeStyle = P_shade('#9A7048', 0.85); g.lineWidth = 1.5;
-    g.beginPath(); g.moveTo(cx + 5, gy - 16); g.lineTo(cx + 8, gy - 13); g.stroke();
-    // muatan
-    g.fillStyle = '#FDF6E7'; g.fillRect(cx - 16, gy - 30, 16, 6);
-    g.strokeStyle = P_OL; g.lineWidth = 1; g.strokeRect(cx - 16, gy - 30, 16, 6);
-    g.fillStyle = '#5A4432'; g.font = '700 6px system-ui, sans-serif'; g.textAlign = 'center';
-    g.fillText('0 / 15', cx - 8, gy - 25.5);
+    // ---- peti wagon (papan kayu + tonggak) ----
+    P_box(g, cx - 9, gy - 2, 26, 12, '#9B6B45', { top: P_shade('#9B6B45', 1.14) });
+    g.fillStyle = P_shade('#6E4A2E', 0.95);
+    g.fillRect(cx - 22, gy - 12, 26, 4);               // sisi papan bawah
+    g.fillStyle = P_shade('#6E4A2E', 0.8);
+    for (let i = 0; i < 4; i++) g.fillRect(cx - 21 + i * 7, gy - 12, 1, 6); // garis papan
+    g.fillStyle = '#B8895C'; g.fillRect(cx - 22, gy - 15, 26, 2); // rel atas terang
+    g.fillStyle = '#5E3F27';
+    for (let i = 0; i < 5; i++) g.fillRect(cx - 21 + i * 6, gy - 21, 2, 6); // tonggak
+    // alas biru navy di lantai peti (sisi depan, tanpa kanvas)
+    g.fillStyle = '#2A3A5C';
+    g.beginPath(); g.moveTo(cx - 12, gy - 17); g.lineTo(cx - 1, gy - 23); g.lineTo(cx + 1, gy - 19); g.lineTo(cx - 10, gy - 13); g.closePath(); g.fill();
+    // ---- kanvas putih setengah tabung ----
+    const ccx = cx - 10, ccy = gy - 26;
+    g.beginPath(); g.ellipse(ccx, ccy, 15, 14, 0, Math.PI, 0); g.closePath();
+    g.fillStyle = '#ECECEA'; g.fill();
+    g.strokeStyle = P_OL; g.lineWidth = 1; g.stroke();
+    g.fillStyle = '#CFCFCC'; // sisi belakang lebih gelap
+    g.beginPath(); g.ellipse(ccx - 5, ccy - 1, 9, 12, 0, Math.PI, 0); g.fill();
+    g.strokeStyle = 'rgba(150,150,145,0.45)'; g.lineWidth = 1; // garis lipatan kain
+    for (const dx of [-9, -4, 2, 7]) {
+      g.beginPath(); g.moveTo(ccx + dx, ccy - 12); g.lineTo(ccx + dx, ccy + 0.5); g.stroke();
+    }
+    g.fillStyle = '#DEDCD6'; g.fillRect(ccx - 15, ccy - 1, 30, 3); // ujung kain bergelombang
+    // ---- roda kayu (belakang besar, depan kecil) ----
+    const roda = (rx, ry, r) => {
+      g.fillStyle = '#7A5A3F';
+      g.beginPath(); g.arc(rx, ry, r, 0, 6.29); g.fill();
+      g.strokeStyle = '#4A3826'; g.lineWidth = 1; g.stroke();
+      g.strokeStyle = '#5E4029'; g.lineWidth = 1;
+      for (let a = 0; a < 6; a++) {
+        g.beginPath(); g.moveTo(rx, ry);
+        g.lineTo(rx + Math.cos(a * 1.047) * r * 0.9, ry + Math.sin(a * 1.047) * r * 0.9);
+        g.stroke();
+      }
+      g.fillStyle = '#4E3620';
+      g.beginPath(); g.arc(rx, ry, r * 0.3, 0, 6.29); g.fill();
+    };
+    roda(cx - 20, gy - 1, 5.6); roda(cx - 12, gy - 1, 5.6); // belakang
+    roda(cx + 1, gy - 1, 4.4);                              // depan dekat
+    roda(cx + 5, gy - 4, 4.0);                              // depan jauh
+    // batang penarik ke kuk
+    g.strokeStyle = '#8A6242'; g.lineWidth = 2;
+    g.beginPath(); g.moveTo(cx + 3, gy - 6); g.lineTo(cx + 11, gy - 17); g.stroke();
+    // ---- indikator muatan (ikut v44) ----
+    g.fillStyle = '#F8F8F8';
+    g.fillRect(cx - 25, gy - 47, 30, 11);
+    g.strokeStyle = 'rgba(90,68,50,0.45)'; g.lineWidth = 1; g.strokeRect(cx - 25, gy - 47, 30, 11);
+    g.fillStyle = '#3A3A3A'; g.font = '700 7px system-ui, sans-serif'; g.textAlign = 'center';
+    g.fillText('0 / 15', cx - 10, gy - 39.5);
   },
 
   // ---- v48: prop kota kecil (tidak memblokir jalan) ----

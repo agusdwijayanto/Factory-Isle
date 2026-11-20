@@ -122,20 +122,19 @@ const SHOPS = {
   pirate:     { name: 'Kapal Bajak Laut', sell: { DyedTextiles: 20, Bed: 109, Engine: 185, Piano: 360 }, buy: {} }, // v37: Dyed 60->20 tutup arbitrase (premium pelabuhan: papan 16 x 1,2 = 19,2 dibulatkan 20)
 };
 // Posisi toko: obj di grid = 'shop_' + id.
-// v50: toko kota disebar ke empat arah (tidak lagi menumpuk di baris utara):
-// exchange depan Mayor (6,1) utara, toolshop (14,4) timur laut, blacksmith
-// (3,8) barat, textile (16,12) tenggara, carpenter (4,15) barat daya, supply
-// (12,16) selatan. Semua minimal 3 petak dari toko lain, tidak di kolom rel
-// (9), kolom jalan (8), baris jalan (2)/(6), kolom sungai (18), atau petak
-// jangkar simpan.
+// v50: toko kota disebar ke empat arah (tidak lagi menumpuk di baris utara).
+// v51: salon (exchange) pindah ke (7,11) = x9,z8, tepat di utara Mayor (7,13),
+// jadi Mayor tetap kelihatan di selatan salon. Semua minimal 3 petak dari
+// toko lain, tidak di kolom rel (9), kolom jalan (8), baris jalan (2)/(6),
+// kolom sungai (18), atau petak jangkar simpan.
 const SHOP_SPOTS = [
-  { map: 'town', gx: 6, gy: 1, id: 'exchange' },   // depan Mayor (5,1)
+  { map: 'town', gx: 7, gy: 11, id: 'exchange' },  // v51: salon (x9,z8), utara Mayor
   { map: 'town', gx: 14, gy: 4, id: 'toolshop' },
   { map: 'town', gx: 3, gy: 8, id: 'blacksmith' },
   { map: 'town', gx: 16, gy: 12, id: 'textile' },
   { map: 'town', gx: 4, gy: 15, id: 'carpenter' },
   { map: 'town', gx: 12, gy: 16, id: 'supply' },
-  { map: 'harbor', gx: 13, gy: 4, id: 'harbor' }, // v50: geser ke timur, jauh dari rel kolom 9
+  { map: 'harbor', gx: 4, gy: 10, id: 'harbor' }, // v51: (x10,z5), jauh dari rel dan dari desert village
   { map: 'harbor', gx: 12, gy: 2, id: 'desert' }, // v36: desa gurun
   { map: 'harbor', gx: 15, gy: 2, id: 'pirate' }, // v36: kapal bajak laut
 ];
@@ -500,6 +499,7 @@ const CONVEYOR_COLOR_HEX = { gold: '#e8b64c', purple: '#9a6a9a', red: '#c0392b',
 
 // Riwayat versi untuk tombol Book di dalam game (ringkasan ROADMAP.md).
 const CHANGELOG = [
+  ['v51', 'Toko Teluk Pasir pindah ke (x10,z5) = (4,10), tidak lagi menutupi desert village. Petak putih plot pindah dari kota ke Padang Rumput (x15,z5) = (4,5): diinjak tetap masuk lahan; petak putih lama di (7,13) kota dihapus. Mayor pindah ke (x7,z8) = (7,13), salon pindah ke (x9,z8) = (7,11) tepat di utara Mayor; nama bangunan SUPPLY diperbaiki (papan nama sekarang duduk di fasad tiruan, tidak lagi ketutup busur pintunya sendiri). Stasiun Hutan Lebat pindah ke timur rel (10,7): jalan kolom 8 tembus lagi. Wagon digambar ulang ikut game asli (dua lembu berkuk + kanvas putih + peti papan), kereta digambar ulang gaya isometrik cozy (biru batu tulis + cerobong hitam + papan kayu di bawah), tambah BANGUNAN BELI WAGON (tanpa NPC) di lahan (5,10): ketuk untuk buka menu wagon.'],
   ['v50', 'Nama zona diganti: Teluk Pasir (dulu Gurun & Pelabuhan), Hutan Lebat (dulu Hutan Rimbun), Hutan Kapas (dulu Hutan Dikit), Padang Rumput (dulu Lahan Ijo) dan Padang Rumput Selatan. Rel Hutan Lebat diluruskan (stasiun ke (8,7), kereta ke (9,7), belokan + rel cabang ke (14,9) dihapus). Toko kota disebar ke empat arah: exchange di depan Mayor (6,1), toolshop (14,4), blacksmith (3,8), textile (16,12), carpenter (4,15), supply (12,16); toko Teluk Pasir digeser ke (13,4) jauh dari rel. Tanda plot diganti PETAK PUTIH di (7,13): diinjak langsung teleport ke lahan (jembatan utara (8,0) tetap).'],
   ['v49', 'Dunia dirombak jadi SATU RANTAI 8 map utara-selatan (Gunung Es - Lahan Ijo - Hutan Rimbun - Hutan Dikit - Lahan - Kota - Lahan Ijo Selatan - Gurun & Pelabuhan). Semua map KOTAK 20x20 (lahan tetap membesar sampai 24x16), rel di kolom x=9 di semua map, jalan utama kolom x=8 tembus semua map, sungai mengalir utara-selatan lewat kolom 1 lalu turun kolom 18 di kota sampai laut di Pelabuhan, stasiun di 4 map (hutan tetap di 14,8 dengan kereta di 14,9) dan naik kereta dari stasiun, peron dihapus. Jalan kota timur/barat buntu dengan papan COMING SOON.'],
   ['v43', 'Perbaiki v42 yang merusak game: toko Pelabuhan memanggil _paintShop yang sudah tidak ada (game tidak bisa boot); jalan jadi tanah frontier; Mayor kembali ke perempuan pirang asli.'],

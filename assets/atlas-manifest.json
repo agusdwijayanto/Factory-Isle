@@ -863,6 +863,12 @@
       "row": 8,
       "w": 1
     },
+    "wagonShop": {
+      "col": 7,
+      "h": 1,
+      "row": 23,
+      "w": 1
+    },
     "wallIron": {
       "col": 1,
       "h": 1,

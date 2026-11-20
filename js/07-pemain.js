@@ -220,8 +220,9 @@ function checkMapTrigger() {
     switchMap('plot');
     return true;
   }
-  // v50: petak putih di rumput kota (7,13) — diinjak langsung masuk lahan.
-  if (S.map === 'town' && cur.gx === 7 && cur.gy === 13) {
+  // v51: petak putih plot pindah ke Padang Rumput (4,5) — diinjak langsung
+  // masuk lahan. Kota tidak punya petak putih lagi.
+  if (S.map === 'meadow_n' && cur.gx === 4 && cur.gy === 5) {
     switchMap('plot');
     return true;
   }
@@ -285,9 +286,15 @@ function interactAt(gx, gy) {
     goTo(gx, gy, () => toggleWagon());
     return;
   }
-  // v50: petak putih plot (7,13) di rumput kota — cukup diklik, diinjak
-  // langsung pindah ke lahan (checkMapTrigger). Tanda plot lama dihapus;
-  // menu plot tetap bisa dibuka dari menu burger.
+  // v51: BANGUNAN BELI WAGON di lahan — ketuk = buka menu wagon (menu Plot
+  // memuat beli/naik tingkat/kuda/respawn wagon).
+  if (t.obj === 'wagonShop') {
+    goTo(gx, gy, () => UI.openPlot());
+    return;
+  }
+  // v50: petak putih plot sudah pindah ke Padang Rumput (v51); klik petak
+  // itu cukup, diinjak langsung pindah ke lahan (checkMapTrigger). Menu plot
+  // tetap bisa dibuka dari menu burger.
 
   if (S.map === 'plot') {
     if (S.machines.has(k)) {

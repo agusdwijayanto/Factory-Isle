@@ -19,14 +19,13 @@ function buildForest() {
   // di utara ke Hutan Dikit di selatan), jadi air tepi utara tidak buntu.
   terrain(forest, rng(1, MAP_H - 1).map((gy) => [1, gy]), 'water');
   // v50: rel LURUS kolom 9 utara-selatan (belokan + rel cabang ke (14,9)
-  // dihapus); stasiun di sisi barat rel, kereta di atas rel.
+  // dihapus). v51: stasiun pindah ke sisi TIMUR rel (10,7), kereta tetap di
+  // (9,7) — jadi jalan utama kolom 8 tembus lagi tanpa lubang.
   railYAt(forest, 9, 0, MAP_H - 1);
-  forest[7][8].obj = 'station'; // (8,7)
-  forest[7][9].obj = 'train';   // (9,7) jangkar simpan v50
-  // Jalan: kolom 8 utara-selatan. Stasiun (8,7) duduk di tengah kolom itu,
-  // jadi petaknya bukan jalan lagi — pemain memutar lewat rumput di
-  // (7,7)/(7,8) atau (8,6)->(7,6). Cabang jalan baris 7 ke stasiun lama
-  // (x 10..17) dibuang karena stasiunnya sudah di jalan utama.
+  forest[7][10].obj = 'station'; // (10,7) timur rel
+  forest[7][9].obj = 'train';    // (9,7) jangkar simpan v50
+  // Jalan: kolom 8 utara-selatan tembus; cabang jalan baris 7 ke stasiun lama
+  // (x 10..17) sudah dibuang v50.
   roadAt(forest, rng(0, MAP_H - 1).map((gy) => [8, gy]));
   return forest;
 }

@@ -2,9 +2,10 @@
 // Lahan, rel kolom 9 tembus utara-selatan dengan stasiun di (10,7)+kereta (9,7).
 // Sungai masuk dari jembatan utara, mengalir ke timur lalu turun kolom 18
 // menuju Padang Rumput Selatan (dua jalan kota menyeberanginya lewat jembatan).
-// v50: toko disebar lewat SHOP_SPOTS (empat arah), tanda plot diganti petak
-// putih (plotpad) di (7,13) — diinjak langsung pindah ke lahan.
-// JANGKAR SIMPAN: grid[13][8] jalan, grid[7][1] lantern, grid[13][7] plotpad.
+// v50: toko disebar lewat SHOP_SPOTS (empat arah). v51: Mayor pindah ke
+// (7,13) = x7,z8 dengan salon (7,11) tepat di utaranya; petak putih plot
+// pindah ke Padang Rumput, jadi kota tidak punya petak putih lagi.
+// JANGKAR SIMPAN: grid[13][8] jalan, grid[7][1] lantern, grid[13][7] mayor.
 function buildTown() {
   const town = makeGrid(TOWN_W, TOWN_H);
   terrain(town, rng(0, TOWN_W - 1).map((gx) => [gx, 0]), 'water');
@@ -13,8 +14,7 @@ function buildTown() {
   // v49: sungai lanjut ke selatan lewat kolom 18 (timur kota).
   terrain(town, rng(1, TOWN_H - 1).map((gy) => [18, gy]), 'water');
   for (const s of SHOP_SPOTS.filter((s) => s.map === 'town')) town[s.gy][s.gx].obj = 'shop_' + s.id;
-  town[S.mayor.gy][S.mayor.gx].obj = 'mayor';
-  town[13][7].obj = 'plotpad'; // petak putih; diinjak = masuk lahan
+  town[S.mayor.gy][S.mayor.gx].obj = 'mayor'; // v51: (7,13)
   // Rel tembus kolom 9 penuh; stasiun di timurnya (jalan kolom 8).
   railYAt(town, 9, 1, TOWN_H - 1);
   town[7][10].obj = 'station'; // (10,7)
