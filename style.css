@@ -1,254 +1,244 @@
+:root {
+  --warm-bg: #fbf7f0;
+  --warm-cream: #f7eedf;
+  --warm-cream-panel: #fffaf2;
+  --warm-brown: #5c4033;
+  --warm-brown-dark: #3b271d;
+  --warm-brown-border: #a47e62;
+  --warm-gold: #e6b84c;
+  --warm-gold-hover: #f0c965;
+  --warm-shadow: 0 8px 24px rgba(92, 64, 51, 0.12);
+  --font-nunito: 'Nunito', system-ui, -apple-system, sans-serif;
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
 body {
-  background: #0e0b16; color: #f5e9d8;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--warm-bg);
+  color: var(--warm-brown-dark);
+  font-family: var(--font-nunito);
   -webkit-user-select: none; user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
 #game { position: fixed; inset: 0; touch-action: none; display: block; }
-button { font: inherit; color: inherit; cursor: pointer; }
+button { font: inherit; color: inherit; cursor: pointer; transition: background 0.2s ease, transform 0.1s ease; }
+button:hover { filter: brightness(1.05); }
+button:active { transform: scale(0.98); }
 .hidden { display: none !important; }
 
-/* HUD atas: burger kiri, uang tengah, ADMIN kanan. */
+/* HUD header: gradient gelap transparan + backdrop-filter blur */
 #hud {
   position: fixed; top: 0; left: 0; right: 0; z-index: 10;
   display: flex; align-items: center; justify-content: space-between;
-  padding: max(8px, env(safe-area-inset-top)) 10px 8px;
+  padding: max(10px, env(safe-area-inset-top)) 12px 10px;
+  background: linear-gradient(180deg, rgba(59, 39, 29, 0.85) 0%, rgba(59, 39, 29, 0.4) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(164, 126, 98, 0.3);
   pointer-events: none;
 }
 #hud > * { pointer-events: auto; }
 .hud-btn {
-  min-width: 44px; min-height: 44px; padding: 0 12px;
-  background: rgba(16, 12, 26, .92); border: 2px solid #e07b39; border-radius: 10px;
+  min-width: 44px; min-height: 44px; padding: 0 14px;
+  background: var(--warm-cream-panel); border: 2px solid var(--warm-brown-border); border-radius: 12px;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+  box-shadow: var(--warm-shadow);
 }
-#btn-burger span { display: block; width: 20px; height: 3px; background: #ffd75e; border-radius: 2px; }
+#btn-burger span { display: block; width: 20px; height: 3px; background: var(--warm-brown); border-radius: 2px; }
 #money {
-  font-size: 20px; font-weight: 800; color: #ffd75e;
-  background: rgba(16, 12, 26, .92); border: 2px solid #e07b39; border-radius: 10px;
+  font-size: 20px; font-weight: 800; color: #b8860b;
+  background: var(--warm-cream-panel); border: 2px solid var(--warm-gold); border-radius: 12px;
   padding: 8px 16px;
+  box-shadow: var(--warm-shadow);
 }
 #mapname {
-  font-size: 14px; font-weight: 700; color: #e8d9bd;
-  background: rgba(16, 12, 26, .92); border: 1px solid #8a5a33; border-radius: 10px;
-  padding: 8px 12px;
+  font-size: 14px; font-weight: 700; color: var(--warm-brown-dark);
+  background: var(--warm-cream-panel); border: 1px solid var(--warm-brown-border); border-radius: 12px;
+  padding: 8px 14px;
+  box-shadow: var(--warm-shadow);
 }
 
-/* Panel gelap tembus pandang, aksen hangat seperti cahaya lentera. */
+/* Panel: border-radius 12px, shadow lembut, border coklat */
 .panel {
   position: fixed; z-index: 20;
-  background: rgba(16, 12, 26, .94); border: 2px solid #e07b39; border-radius: 12px;
-  padding: 12px;
+  background: var(--warm-cream-panel);
+  border: 2px solid var(--warm-brown-border);
+  border-radius: 12px;
+  box-shadow: var(--warm-shadow);
+  padding: 16px;
+  color: var(--warm-brown-dark);
 }
-.panel-title { font-weight: 800; color: #ffd75e; letter-spacing: .5px; }
-.panel-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.panel-title { font-weight: 800; color: var(--warm-brown); letter-spacing: .5px; font-size: 16px; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .btn-x {
   min-width: 36px; min-height: 36px; border-radius: 8px;
-  background: #3a2a1e; border: 1px solid #e07b39; font-weight: 700;
+  background: var(--warm-cream); border: 1px solid var(--warm-brown-border); font-weight: 700;
+  color: var(--warm-brown);
 }
 .panel button[data-act], #admin-panel button[data-admin], #admin-toggle {
   display: block; width: 100%; text-align: left;
-  min-height: 44px; margin-top: 8px; padding: 0 12px; border-radius: 8px;
-  background: #2a1f16; border: 1px solid #8a5a33;
+  min-height: 44px; margin-top: 8px; padding: 0 14px; border-radius: 10px;
+  background: var(--warm-cream); border: 1px solid var(--warm-brown-border);
+  color: var(--warm-brown-dark); font-weight: 600;
 }
-.panel button[data-act]:active, #admin-panel button[data-admin]:active, #admin-toggle:active { background: #4a3220; }
-/* Saklar Mode Admin ON: emas, supaya keadaan langsung kelihatan. */
-#admin-toggle.on { background: #5a3a12; border-color: #ffd75e; color: #ffd75e; font-weight: 700; }
+.panel button[data-act]:active, #admin-panel button[data-admin]:active, #admin-toggle:active { background: #ecdcc2; }
 
-#burger-menu { top: 60px; left: 10px; width: 230px; }
+/* Tombol: rounded, warna emas, hover effect */
+button:not(.hud-btn):not(.btn-x):not(#btn-build):not(#btn-tas) {
+  border-radius: 10px;
+}
+#admin-toggle.on { background: var(--warm-gold); border-color: var(--warm-brown); color: var(--warm-brown-dark); font-weight: 700; }
+
+#burger-menu { top: 70px; left: 12px; width: 240px; }
 #burger-menu button:first-of-type { margin-top: 10px; }
 
 #hint {
   position: fixed; left: 50%; transform: translateX(-50%);
-  bottom: 76px; z-index: 9; max-width: 92vw; text-align: center;
-  font-size: 13px; color: #e8d9bd; background: rgba(16, 12, 26, .8);
-  border: 1px solid #8a5a33; border-radius: 999px; padding: 6px 14px;
+  bottom: 80px; z-index: 9; max-width: 92vw; text-align: center;
+  font-size: 13px; color: var(--warm-brown-dark); background: rgba(255, 250, 242, 0.92);
+  border: 1px solid var(--warm-brown-border); border-radius: 999px; padding: 8px 16px;
+  box-shadow: var(--warm-shadow);
   pointer-events: none;
+  backdrop-filter: blur(4px);
 }
 
 #buildbar {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
-  display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  padding: 10px 12px max(10px, env(safe-area-inset-bottom));
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px max(12px, env(safe-area-inset-bottom));
+  background: linear-gradient(0deg, rgba(59, 39, 29, 0.85) 0%, rgba(59, 39, 29, 0.4) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(164, 126, 98, 0.3);
   pointer-events: none;
 }
 #buildbar > * { pointer-events: auto; }
 #btn-build {
-  min-height: 48px; padding: 0 22px; border-radius: 10px;
-  background: #e07b39; border: 2px solid #ffd75e; color: #1c1208;
+  min-height: 48px; padding: 0 24px; border-radius: 12px;
+  background: var(--warm-gold); border: 2px solid var(--warm-brown); color: var(--warm-brown-dark);
   font-weight: 800; letter-spacing: 1px;
+  box-shadow: var(--warm-shadow);
+  transition: all 0.2s ease;
 }
+#btn-build:hover { background: var(--warm-gold-hover); transform: translateY(-1px); }
 
-/* Menu bangun: lembar bawah, isi boleh scroll sendiri, halaman tetap diam. */
-#build-menu { left: 8px; right: 8px; bottom: 76px; max-height: 46vh; overflow-y: auto; }
-#build-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+#build-menu { left: 12px; right: 12px; bottom: 84px; max-height: 46vh; overflow-y: auto; }
+#build-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
 #build-tabs button {
-  min-height: 40px; padding: 0 12px; border-radius: 8px;
-  background: #2a1f16; border: 1px solid #8a5a33;
+  min-height: 40px; padding: 0 14px; border-radius: 10px;
+  background: var(--warm-cream); border: 1px solid var(--warm-brown-border);
+  color: var(--warm-brown-dark); font-weight: 600;
 }
-#build-tabs button.on { background: #e07b39; color: #1c1208; font-weight: 700; border-color: #ffd75e; }
-#build-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 8px; }
+#build-tabs button.on { background: var(--warm-gold); color: var(--warm-brown-dark); font-weight: 700; border-color: var(--warm-brown); }
+#build-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
 .build-item {
-  min-height: 52px; padding: 8px; border-radius: 8px; text-align: left;
-  background: #241a12; border: 1px solid #8a5a33;
+  min-height: 52px; padding: 10px; border-radius: 10px; text-align: left;
+  background: var(--warm-cream); border: 1px solid var(--warm-brown-border);
   display: flex; align-items: center; gap: 8px;
 }
 .build-item .sw {
   flex: none; width: 22px; height: 22px; transform: rotate(45deg) scaleY(.55);
-  border: 2px solid rgba(255, 255, 255, .35); border-radius: 3px;
+  border: 2px solid rgba(92, 64, 51, 0.35); border-radius: 3px;
 }
-.build-item small { display: block; color: #c9a86a; font-size: 11px; }
+.build-item small { display: block; color: #8c6239; font-size: 11px; }
 
-/* Panel mesin dan admin: kartu tengah. */
 #inspect-panel, #storage-panel, #shop-panel, #tas-panel, #admin-panel,
 #settings-panel, #help-panel, #mayor-panel, #tut-panel {
   left: 50%; top: 50%; transform: translate(-50%, -50%);
   width: min(420px, 92vw); max-height: 78vh; overflow-y: auto;
 }
-/* Panel tutorial: kartu kecil di tengah; tembus ketuk kecuali tombolnya,
-   supaya tidak menutupi petak dan tombol penting saat main. */
 #tut-panel { width: min(340px, 92vw); pointer-events: none; }
 #tut-panel button { pointer-events: auto; }
-/* Tombol tutorial kecil dan di tengah, bukan selebar panel: ketukan petak
-   di balik panel tidak boleh nyasar ke Lewati (sekali tekan tutorial mati). */
 #tut-panel .mp-actions { justify-content: center; }
 #tut-panel .mp-actions button { flex: 0 0 auto; min-width: 110px; }
-#btn-tut-next { background: #e07b39; color: #1c1208; font-weight: 700; border-color: #ffd75e; }
-.mp-desc { font-size: 14px; color: #e8d9bd; margin-bottom: 8px; }
-.mp-recipe { font-size: 13px; color: #ffd75e; margin-bottom: 10px; }
-.mp-buffers { font-size: 13px; color: #e8d9bd; margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+#btn-tut-next { background: var(--warm-gold); color: var(--warm-brown-dark); font-weight: 700; border-color: var(--warm-brown); }
+.mp-desc { font-size: 14px; color: var(--warm-brown-dark); margin-bottom: 8px; }
+.mp-recipe { font-size: 13px; color: #b8860b; font-weight: 700; margin-bottom: 10px; }
+.mp-buffers { font-size: 13px; color: var(--warm-brown-dark); margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
 .mp-recipes { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
 .mp-recipes button {
-  min-height: 38px; padding: 0 10px; border-radius: 8px;
-  background: #2a1f16; border: 1px solid #8a5a33;
+  min-height: 38px; padding: 0 12px; border-radius: 10px;
+  background: var(--warm-cream); border: 1px solid var(--warm-brown-border);
   display: inline-flex; align-items: center; gap: 5px;
+  color: var(--warm-brown-dark);
 }
 .item-icon { width: 28px; height: 28px; flex: none; image-rendering: pixelated; }
 .icon-chip {
   display: inline-flex; align-items: center; gap: 4px;
-  background: #241a12; border: 1px solid #8a5a33; border-radius: 999px; padding: 2px 8px 2px 2px;
+  background: var(--warm-cream); border: 1px solid var(--warm-brown-border); border-radius: 999px; padding: 2px 8px 2px 2px;
 }
 .icon-chip .item-icon { width: 22px; height: 22px; }
 .shop-item { display: inline-flex; align-items: center; gap: 6px; }
 .mayor-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
 .mayor-row {
   display: flex; justify-content: space-between; align-items: center; gap: 8px;
-  font-size: 14px; padding: 8px 0; border-bottom: 1px solid #3a2a1e;
+  font-size: 14px; padding: 8px 0; border-bottom: 1px solid rgba(164, 126, 98, 0.2);
 }
 .mayor-row button {
-  flex: none; min-width: 64px; min-height: 40px; padding: 0 12px; border-radius: 8px;
-  background: #2a1f16; border: 1px solid #8a5a33;
+  flex: none; min-width: 64px; min-height: 40px; padding: 0 12px; border-radius: 10px;
+  background: var(--warm-cream); border: 1px solid var(--warm-brown-border);
+  color: var(--warm-brown-dark);
 }
 .mayor-row button:disabled { opacity: 0.45; }
-.mp-recipes button.on { background: #e07b39; color: #1c1208; font-weight: 700; border-color: #ffd75e; }
-.mp-bar { height: 12px; border-radius: 6px; background: #241a12; border: 1px solid #8a5a33; overflow: hidden; margin-bottom: 10px; }
-#insp-progress { height: 100%; width: 0; background: #5eff8a; }
+.mp-recipes button.on { background: var(--warm-gold); color: var(--warm-brown-dark); font-weight: 700; border-color: var(--warm-brown); }
+.mp-bar { height: 12px; border-radius: 6px; background: var(--warm-cream); border: 1px solid var(--warm-brown-border); overflow: hidden; margin-bottom: 10px; }
+#insp-progress { height: 100%; width: 0; background: #66bb6a; }
 .mp-actions { display: flex; gap: 8px; margin-top: 8px; }
 .mp-actions button {
-  flex: 1; min-height: 44px; border-radius: 8px;
-  background: #2a1f16; border: 1px solid #8a5a33;
+  flex: 1; min-height: 44px; border-radius: 10px;
+  background: var(--warm-cream); border: 1px solid var(--warm-brown-border);
+  color: var(--warm-brown-dark); font-weight: 600;
 }
 .shop-row {
   display: flex; justify-content: space-between; align-items: center; gap: 8px;
-  padding: 8px 0; border-bottom: 1px solid #3a2a1e; font-size: 14px;
+  padding: 8px 0; border-bottom: 1px solid rgba(164, 126, 98, 0.2); font-size: 14px;
 }
 .shop-btns { display: flex; gap: 6px; flex: none; }
 .shop-btns button {
-  min-width: 44px; min-height: 36px; padding: 0 10px; border-radius: 8px;
-  background: #2a1f16; border: 1px solid #8a5a33;
+  min-width: 44px; min-height: 36px; padding: 0 10px; border-radius: 10px;
+  background: var(--warm-cream); border: 1px solid var(--warm-brown-border);
+  color: var(--warm-brown-dark);
 }
 .build-item.locked { opacity: 0.75; border-style: dashed; }
 .menu-btn {
   display: block; width: 100%; text-align: left;
-  min-height: 44px; margin-top: 8px; padding: 0 12px; border-radius: 8px;
-  background: #2a1f16; border: 1px solid #8a5a33;
+  min-height: 44px; margin-top: 8px; padding: 0 14px; border-radius: 10px;
+  background: var(--warm-cream); border: 1px solid var(--warm-brown-border);
+  color: var(--warm-brown-dark); font-weight: 600;
 }
-.help-text p { font-size: 14px; line-height: 1.5; margin-bottom: 10px; color: #e8d9bd; }
+.help-text p { font-size: 14px; line-height: 1.5; margin-bottom: 10px; color: var(--warm-brown-dark); }
 #btn-tas {
-  min-height: 48px; padding: 0 14px; border-radius: 10px;
-  background: rgba(16, 12, 26, .92); border: 2px solid #8a5a33; font-weight: 700;
+  min-height: 48px; padding: 0 16px; border-radius: 12px;
+  background: var(--warm-cream-panel); border: 2px solid var(--warm-brown-border); font-weight: 700;
+  color: var(--warm-brown-dark);
+  box-shadow: var(--warm-shadow);
 }
-/* Klaster tombol taruh melayang (v34): bulat, di dekat bayangan, bukan di bar bawah. */
 #place-btns {
   position: fixed; left: -9999px; top: -9999px; z-index: 30;
   display: flex; gap: 8px;
 }
 #place-btns button {
-  width: 44px; height: 44px; min-height: 44px; padding: 0; border-radius: 50%;
-  background: rgba(16, 12, 26, .92); border: 2px solid #8a5a33;
+  width: 46px; height: 46px; min-height: 46px; padding: 0; border-radius: 50%;
+  background: var(--warm-cream-panel); border: 2px solid var(--warm-brown-border);
   font-weight: 700; font-size: 20px;
+  box-shadow: var(--warm-shadow);
 }
-#btn-rotate { border-color: #ffd75e; color: #ffd75e; }
-#btn-place-cancel { border-color: #ff8a8a; color: #ff8a8a; }
-#btn-place-ok { border-color: #5eff8a; color: #5eff8a; }
+#btn-rotate { border-color: var(--warm-gold); color: #b8860b; }
+#btn-place-cancel { border-color: #d9534f; color: #d9534f; }
+#btn-place-ok { border-color: #5cb85c; color: #5cb85c; }
 
 #toast {
   position: fixed; left: 50%; bottom: 170px; transform: translateX(-50%); z-index: 30;
-  background: rgba(16, 12, 26, .95); border: 1px solid #ffd75e; color: #ffd75e;
-  border-radius: 999px; padding: 8px 16px; font-size: 14px; pointer-events: none;
+  background: var(--warm-cream-panel); border: 1px solid var(--warm-gold); color: #b8860b;
+  border-radius: 999px; padding: 8px 18px; font-size: 14px; font-weight: 700; pointer-events: none;
   white-space: nowrap; max-width: 92vw; overflow: hidden; text-overflow: ellipsis;
+  box-shadow: var(--warm-shadow);
 }
 
 @media (min-width: 700px) {
-  #build-menu { left: auto; right: 12px; width: 460px; bottom: 76px; }
+  #build-menu { left: auto; right: 12px; width: 460px; bottom: 84px; }
   #hint { bottom: 84px; }
 }
 @media (max-width: 480px) {
   #hint { font-size: 12px; }
 }
-
-/* ===== v48: kulit UI krem hangat, senada langit mint & bangunan pastel =====
-   Override di akhir file supaya aturan lama tidak perlu disentuh satu-satu. */
-body { background: #EDF8E9; color: #5A4432; }
-
-.hud-btn, #money, #mapname, #btn-tas, #place-btns button, .hud-btn,
-#toast, #hint {
-  background: rgba(253, 246, 231, .96);
-  border-color: #C9A87C;
-  color: #5A4432;
-  box-shadow: 0 2px 0 rgba(150, 120, 90, .25), 0 4px 10px rgba(120, 100, 70, .12);
-}
-#btn-burger span { background: #8A6B4C; }
-#money { color: #B4762C; border-color: #D8B183; }
-
-.panel {
-  background: #FDF6E7;
-  border: 2px solid #C9A87C;
-  border-radius: 14px;
-  color: #5A4432;
-  box-shadow: 0 3px 0 rgba(150, 120, 90, .22), 0 10px 24px rgba(120, 100, 70, .18);
-}
-.panel-title { color: #B4762C; }
-.btn-x { background: #F3E5CB; border: 1px solid #C9A87C; color: #6B4A32; }
-
-.panel button[data-act], #admin-panel button[data-admin], #admin-toggle,
-.menu-btn, .shop-btns button, #build-tabs button {
-  background: #FFFDF6; border: 1px solid #C9A87C; color: #5A4432;
-}
-.panel button[data-act]:active, #admin-panel button[data-admin]:active,
-#admin-toggle:active, .menu-btn:active, .shop-btns button:active {
-  background: #F1E2C6;
-}
-#admin-toggle.on { background: #F7C86B; border-color: #B4762C; color: #4A3218; }
-#build-tabs button.on, .mp-recipes button.on {
-  background: #F7C86B; border-color: #B4762C; color: #4A3218;
-}
-#btn-tut-next { background: #F7C86B; border-color: #B4762C; color: #4A3218; }
-
-.build-item, .shop-row, .mayor-row {
-  background: #FFFDF6; border: 1px solid #DCC9A6; border-radius: 10px;
-}
-.build-item small, .mp-desc, .help-text p { color: #7A6650; }
-.mp-recipe { color: #B4762C; }
-.mp-buffers { color: #7A6650; }
-.mp-bar { background: #EADCC0; border-color: #C9A87C; }
-#insp-progress { background: #6FBF5A; }
-#hint { border-color: #C9A87C; }
-#toast {
-  background: #FDF6E7; border: 1px solid #C9A87C; color: #6B4A32;
-  box-shadow: 0 2px 0 rgba(150, 120, 90, .22), 0 6px 16px rgba(120, 100, 70, .16);
-}
-#btn-rotate { border-color: #B4762C; color: #B4762C; }
-#btn-place-cancel { border-color: #C0503F; color: #C0503F; }
-#btn-place-ok { border-color: #4E9B45; color: #4E9B45; }
