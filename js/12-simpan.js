@@ -1,208 +1,292 @@
-// Menu plot: 4 slot save + wagon. Pecahan 13-ui.js (v35).
-// v52-cozy: slot visual diperkaya (uang, waktu, ekspansi, badge aktif).
-let plotResetSlot = 0;
+// Simpan otomatis ke localStorage. Disimpan throttled: saveSoon menandai,
+// loop utama menulis paling cepat tiap 5 detik.
+let saveDirty = false;
+let saveTimer = 0;
+let saveBlocked = false; // reset: cegah pagehide menulis ulang simpan yang baru dihapus
 
-Object.assign(UI, {
-  openPlot() {
-    plotResetSlot = 0;
-    this.renderPlot();
-    this.openPanel('plot-panel');
-  },
+// v35: 4 slot save (wiki Plots). Slot 1 memakai kunci lama supaya simpan
+// v2 langsung menjadi slot 1; slot 2-4 kunci turunan. Meta menyimpan slot
+// terakhir yang dimuat (0 = tidak ada slot dimuat).
+const SLOT_KEYS = [null, SAVE_KEY, SAVE_KEY + '-s2', SAVE_KEY + '-s3', SAVE_KEY + '-s4'];
+const SLOT_META_KEY = SAVE_KEY + '-slot';
+// v36: slot mana yang sudah dibuka (dibayar) — disimpan terpisah dari data
+// slot, supaya slot yang dihapus (reset) tetap dihitung terbuka.
+const SLOT_UNLOCK_KEY = SAVE_KEY + '-unlocked';
+function slotKey(slot) { return SLOT_KEYS[slot] || SAVE_KEY; }
+function currentSlotFromMeta() {
+  try {
+    const n = parseInt(localStorage.getItem(SLOT_META_KEY) || '1', 10);
+    return n >= 0 && n <= 4 ? n : 1;
+  } catch (_) { return 1; }
+}
+// Isi mentah satu slot (null kalau kosong). Dipakai menu plot tanpa memuat.
+function readSlotData(slot) {
+  try { return JSON.parse(localStorage.getItem(slotKey(slot)) || 'null'); } catch (_) { return null; }
+}
+function slotInfo(slot) {
+  const d = readSlotData(slot);
+  if (!d || d.v !== 2) return null;
+  return { money: d.money, expansion: d.expansion || 0, w: (d.maps && d.maps.plot && d.maps.plot.w) || PLOT_BASE_W, h: (d.maps && d.maps.plot && d.maps.plot.h) || PLOT_BASE_H };
+}
 
-  renderPlot() {
-    const body = $('plot-body');
-    body.innerHTML = '';
+function saveSoon() { saveDirty = true; }
 
-    // --- Deskripsi ---
-    body.appendChild(el('div',
-      'Pilih slot save. Muat = pindah ke slot itu. Lepas = simpan lalu keluar. Reset = hapus sebagian isi.',
-      'mp-desc'
-    ));
-    if (S.saveSlot) {
-      body.appendChild(el('div', '▶ Slot aktif: ' + S.saveSlot, 'mp-desc mp-desc--active'));
+function flatNodes(grid) {
+  return grid.flat().map((t) => ({ t: t.t, obj: t.obj, hp: t.hp, regrowIn: t.regrowIn, stage: t.stage || 0, growIn: t.growIn || 0 }));
+}
+
+function saveGame() {
+  if (saveBlocked) return;
+  if (!S.saveSlot) return; // v35: tidak ada slot dimuat (habis lepas save) = tidak menulis
+  try {
+    const maps = {};
+    for (const [name, m] of Object.entries(S.maps)) maps[name] = { w: m.w, h: m.h, nodes: flatNodes(m.grid) };
+    const data = {
+      v: 2, money: S.money, inv: S.inv, unlocked: S.unlocked,
+      map: S.map, expansion: S.expansion, autoSeller: S.autoSeller, admin: S.admin,
+      machines: [...S.machines], conveyors: [...S.conveyors],
+      storages: [...S.storages], walls: [...S.walls], decor: [...S.decor],
+      player: { fx: S.player.fx, fy: S.player.fy, dir: S.player.dir },
+      maps,
+      tut: S.tut, tutDone: S.tutDone, tutStarted: S.tutStarted, stats: S.stats, settings: S.settings,
+      tools: S.tools, badges: S.badges, wagon: S.wagon, saveSlot: S.saveSlot,
+    };
+    localStorage.setItem(slotKey(S.saveSlot), JSON.stringify(data));
+    try { localStorage.setItem(SLOT_META_KEY, String(S.saveSlot)); } catch (_) { /* abaikan */ }
+    saveDirty = false;
+  } catch (_) { /* penyimpanan penuh/diblokir: game tetap jalan */ }
+}
+
+function restoreNodes(saved, fallbackW, fallbackH) {
+  const g = makeGrid(saved.w || fallbackW, saved.h || fallbackH);
+  (saved.nodes || []).forEach((n, i) => {
+    const w = saved.w || fallbackW;
+    const t = g[Math.floor(i / w)][i % w];
+    if (t) { t.t = n.t; t.obj = n.obj; t.hp = n.hp; t.regrowIn = n.regrowIn; t.stage = n.stage || 0; t.growIn = n.growIn || 0; }
+  });
+  return { w: saved.w || fallbackW, h: saved.h || fallbackH, grid: g };
+}
+
+function loadGame() {
+  // v35: muat slot terakhir (meta); kosong = mulai baru di slot itu.
+  const slot = currentSlotFromMeta();
+  S.saveSlot = slot;
+  let data = readSlotData(slot);
+  if (!data) return false;
+  if (data.v !== 2) return false; // kunci v2 tidak pernah berisi simpan v1
+  S.money = data.money;
+  S.inv = data.inv || {};
+  S.unlocked = data.unlocked || { sawhorse: true, splitter: true };
+  S.expansion = data.expansion || 0;
+  S.autoSeller = !!data.autoSeller;
+  S.admin = !!data.admin; // simpan lama tanpa kunci admin = OFF
+  S.tools = Object.assign({ axe: 1, shovel: 1, pickaxe: 1 }, data.tools || {});
+  S.badges = data.badges || {};
+  // Simpan lama: badge diberikan untuk resep yang sudah terbuka.
+  for (const [mid, bid] of Object.entries(RESEARCH_BADGE)) if (S.unlocked[mid]) S.badges[bid] = true;
+  S.wagon = data.wagon || null;
+  S.machines = new Map(data.machines || []);
+  S.conveyors = new Map(data.conveyors || []);
+  S.storages = new Map(data.storages || []);
+  S.walls = new Map(data.walls || []);
+  S.decor = new Map(data.decor || []);
+  if (data.town) S.maps.town = restoreNodes(data.town, TOWN_W, TOWN_H);
+  if (data.plot) S.maps.plot = restoreNodes(data.plot, PLOT_BASE_W, PLOT_BASE_H);
+  if (data.maps) {
+    for (const [name, saved] of Object.entries(data.maps)) {
+      if (S.maps[name]) S.maps[name] = restoreNodes(saved, S.maps[name].w, S.maps[name].h);
     }
+  }
+  // Simpan v2 lama (sebelum jalan/rel v14, sebelum toko disebar v18,
+  // sebelum peron hutan pindah v19, sebelum air/jembatan/jalan v23,
+  // sebelum pad/peron kota pindah v25, sebelum gerbang/pad jadi jalan v28):
+  // bangun ulang map statis supaya jalan, rel, posisi toko, posisi
+  // peron/kereta hutan, air/jembatan/jalan, dan posisi pad/peron kota
+  // yang baru muncul; progres pemain (uang, tas, mesin, lahan) tetap.
+  // Lahan dibangun ulang terpisah (bukan bagian buildStaticMaps) dan
+  // hanya kalau petak keluarnya masih lama, supaya simpan yang sudah
+  // baru tidak dibangun ulang tiap muat.
+  const townStale = S.maps.town && (S.maps.town.w !== TOWN_W || S.maps.town.h !== TOWN_H
+    || !S.maps.town.grid.flat().some((t) => t.t === 'road')
+    || !SHOP_SPOTS.filter((s) => s.map === 'town').every((s) => S.maps.town.grid[s.gy][s.gx].obj === 'shop_' + s.id)
+    || S.maps.town.grid[13][8].t !== 'road'
+    || S.maps.town.grid[7][1].obj !== 'lantern'
+    // v51: Mayor di (7,13) — simpan v50 punya petak putih di situ, jadi ke sini ikut bangun ulang.
+    || S.maps.town.grid[13][7].obj !== 'mayor'
+    || S.maps.town.grid[3][3].obj !== 'wagonShop'); // v52: bangunan beli wagon pindah ke kota
+  const meadowNStale = S.maps.meadow_n && (S.maps.meadow_n.grid[5][4].obj !== 'plotpad'
+    || S.maps.meadow_n.grid[5][5].obj !== 'plotsign'); // v51 petak putih, v52 papan PLOT
+  const forestStale = S.maps.forest && (S.maps.forest.grid[7][9].obj !== 'train'
+    || S.maps.forest.grid[7][10].obj !== 'station' // v51: stasiun di timur rel
+    || S.maps.forest.grid[0][8].t !== 'bridge' || S.maps.forest.grid[5][12].obj !== 'dyeplant');
+  const harborStale = S.maps.harbor && !SHOP_SPOTS.filter((s) => s.map === 'harbor').every((s) => S.maps.harbor.grid[s.gy][s.gx].obj === 'shop_' + s.id);
+  // v52: tiap map berstasiun harus punya lokomotif + gerbong (2 petak).
+  const keretaStale = ['ice', 'forest', 'town', 'harbor'].some((n) => {
+    const m = S.maps[n];
+    if (!m) return false;
+    const flat = m.grid.flat();
+    return flat.filter((t) => t.obj === 'train').length !== 1 || flat.filter((t) => t.obj === 'trainCar').length !== 1;
+  });
+  // v49: lahan harus punya dua gerbang jalan (8,0) dan (8, h-1) plus kolom
+  // sungai/jalan/rel; lahan lama (satu jalan di gerbang bawah) dibangun ulang
+  // di ukuran yang sekarang, mesin dan ekspansinya tetap.
+  const pg = S.maps.plot ? gatePos() : null;
+  const plotStale = S.maps.plot && (S.maps.plot.grid[pg.gy][pg.gx].t !== 'road'
+    || S.maps.plot.grid[0][8].t !== 'road'
+    || S.maps.plot.grid[Math.floor(S.maps.plot.h / 2)][1].t !== 'water'
+    || S.maps.plot.grid[Math.floor(S.maps.plot.h / 2)][9].t !== 'railY'
+    // v52: simpan v51 punya bangunan beli wagon di lahan (5, h-2) — sekarang
+    // bangunannya di kota, jadi lahan yang masih menyimpannya dibangun ulang
+    // sekali. Cek ini SENGAJA "masih ada" (bukan "harus ada"), karena setelah
+    // v52 lahan tidak lagi memuat bangunan itu — kalau dibalik, lahan akan
+    // dibangun ulang tiap kali dimuat.
+    || S.maps.plot.grid[S.maps.plot.h - 2][5].obj === 'wagonShop');
+  if (townStale || meadowNStale || forestStale || harborStale || keretaStale) {
+    const sm = buildStaticMaps();
+    for (const [name, m] of Object.entries(sm)) S.maps[name] = m;
+  }
+  if (plotStale) {
+    // Lahan: dua gerbang jalan + kolom sungai/rel, sisanya rumput — di
+    // ukuran lahan saat ini (ekspansi ikut terjaga), supaya jalan keluar
+    // tetap di gerbang (8, h-1) = Agus (1,9).
+    const m = S.maps.plot;
+    const g = makeGrid(m.w, m.h);
+    stampPlotColumns(g);
+    S.maps.plot = { w: m.w, h: m.h, grid: g };
+  }
+  applyMap(S.maps[data.map] ? data.map : 'town');
+  if (data.player) {
+    S.player.fx = data.player.fx; S.player.fy = data.player.fy; S.player.dir = data.player.dir;
+  }
+  S.tut = data.tut || 0; S.tutDone = !!data.tutDone;
+  // Simpan lama tanpa kunci tutStarted: yang sudah di tengah tutorial
+  // dianggap sudah mulai (ajakan tidak nongol lagi).
+  S.tutStarted = !!data.tutStarted || S.tut > 0;
+  S.stats = data.stats || { harvested: {}, crafted: {}, sold: {} };
+  S.settings = Object.assign({ sound: true, ruler: true }, data.settings || {}); // simpan lama tanpa kunci ruler = ON
+  return true;
+}
 
-    // --- 4 Slot ---
-    for (let n = 1; n <= 4; n++) {
-      const info    = slotInfo(n);
-      const locked  = !info && n > 1 && !slotUnlocked(n);
-      const isActive = n === S.saveSlot;
+function resetSave() {
+  saveBlocked = true;
+  try {
+    localStorage.removeItem(slotKey(S.saveSlot));
+    localStorage.removeItem(SLOT_META_KEY);
+  } catch (_) { /* abaikan */ }
+}
 
-      // Card slot
-      const card = el('div', null, 'save-slot' + (isActive ? ' save-slot--active' : '') + (!info ? ' empty' : ''));
-
-      if (!info && !locked) {
-        // Kosong
-        card.appendChild(el('span', '— Slot ' + n + ' kosong —', 'slot-name'));
-      } else if (locked) {
-        // Terkunci
-        const lockEl = el('div', null, '');
-        lockEl.appendChild(el('span', 'Slot ' + n, 'slot-name'));
-        lockEl.appendChild(el('span', '🔒 Terkunci — $' + fmt(SLOT_UNLOCK_COST[n]) + ' untuk buka', 'slot-time'));
-        card.appendChild(lockEl);
-      } else {
-        // Ada data
-        const header = el('div', null, 'slot-header');
-        header.appendChild(el('span', 'Slot ' + n + (isActive ? ' ▶ aktif' : ''), 'slot-name'));
-
-        // Waktu save
-        const ts = info.savedAt ? new Date(info.savedAt) : null;
-        const timeStr = ts
-          ? ts.toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
-            + ' ' + ts.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' })
-          : 'Waktu tidak diketahui';
-        header.appendChild(el('span', timeStr, 'slot-time'));
-        card.appendChild(header);
-
-        // Info baris
-        const infoRow = el('div', null, 'slot-info-row');
-        infoRow.appendChild(el('span', '💰 $' + fmt(info.money), 'slot-money'));
-        infoRow.appendChild(el('span', '🗺 ' + info.w + '×' + info.h, 'slot-money'));
-        infoRow.appendChild(el('span', '⬆ Ekspansi ' + info.expansion, 'slot-time'));
-        card.appendChild(infoRow);
-      }
-
-      // Tombol aksi
-      const btns = el('div', null, 'slot-actions');
-
-      const bLoad = el('button', locked ? '🔓 Buka ($' + fmt(SLOT_UNLOCK_COST[n]) + ')' : '▶ Muat');
-      bLoad.className = 'btn-primary';
-      bLoad.disabled = isActive;
-      bLoad.addEventListener('click', () => {
-        const r = loadSlot(n);
-        if (r === 'locked') {
-          SFX.play('error');
-          this.toast('Uang tidak cukup untuk buka Slot ' + n + ' ($' + fmt(SLOT_UNLOCK_COST[n]) + ').');
-        } else {
-          SFX.play('success');
-          this.toast(r === 'fresh' ? 'Slot ' + n + ' baru dibuat.' : 'Slot ' + n + ' dimuat.');
-        }
-        this.renderPlot(); this.refreshHUD();
-      });
-      btns.appendChild(bLoad);
-
-      const bReset = el('button', '↺ Reset');
-      bReset.className = 'btn-secondary';
-      bReset.disabled = !info;
-      bReset.addEventListener('click', () => {
-        plotResetSlot = plotResetSlot === n ? 0 : n;
-        this.renderPlot();
-      });
-      btns.appendChild(bReset);
-
-      if (isActive) {
-        const bOut = el('button', '⏏ Lepas');
-        bOut.className = 'btn-secondary';
-        bOut.addEventListener('click', () => {
-          unloadSlot();
-          SFX.play('place');
-          this.toast('Save dilepas. Muat slot lain untuk main lagi.');
-          this.renderPlot(); this.refreshHUD();
-        });
-        btns.appendChild(bOut);
-      }
-
-      card.appendChild(btns);
-      body.appendChild(card);
-
-      // Sub-menu reset
-      if (plotResetSlot === n) {
-        const rr = el('div', null, 'save-slot save-slot--reset');
-        rr.appendChild(el('span', 'Reset slot ' + n + ' — pilih bagian:', 'slot-name'));
-        const rb = el('div', null, 'slot-actions');
-        for (const [part, label] of [['items','🎒 Barang'], ['buildings','🏗 Bangunan'], ['upgrades','📐 Upgrade lahan']]) {
-          const b = el('button', label);
-          b.className = 'btn-danger';
-          b.addEventListener('click', () => {
-            if (resetSlotPart(n, part)) {
-              SFX.play('success');
-              this.toast('Slot ' + n + ' direset: ' + label + '.');
-            } else {
-              SFX.play('error');
-              this.toast('Reset gagal.');
-            }
-            plotResetSlot = 0;
-            this.renderPlot(); this.refreshHUD();
-          });
-          rb.appendChild(b);
-        }
-        rr.appendChild(rb);
-        body.appendChild(rr);
-      }
-    }
-
-    // ---- Wagon ----
-    body.appendChild(el('div', 'Wagon — transportasi: jalan kaki lv1, wagon lv2, kereta lv3.', 'mp-desc'));
-
-    if (!S.wagon) {
-      const row = el('div', null, 'save-slot');
-      row.appendChild(el('span', '🛒 Wagon — $' + fmt(WAGON_BUY_COST) + ' (peti 5 barang)', 'slot-name'));
-      const b = el('button', 'Beli Wagon');
-      b.className = 'btn-primary';
-      b.disabled = !adminOn() && S.money < WAGON_BUY_COST;
-      b.addEventListener('click', () => {
-        if (buyWagon()) { SFX.play('success'); this.toast('Wagon dibeli! Ketuk untuk naik.'); }
-        else { SFX.play('error'); this.toast('Uang tidak cukup.'); }
-        this.renderPlot(); this.refreshHUD();
-      });
-      const ba = el('div', null, 'slot-actions');
-      ba.appendChild(b);
-      row.appendChild(ba);
-      body.appendChild(row);
-    } else {
-      const w = S.wagon;
-      body.appendChild(el('div',
-        '🛒 Wagon lv' + w.level + ' — peti ' + wagonItemsTotal() + '/' + wagonCap() +
-        ', kuda: ' + w.horses + (w.riding ? ' (ditunggangi)' : ''),
-        'mp-desc'
-      ));
-
-      // Naik tingkat
-      const nextCap = w.level < WAGON_LEVELS.length ? WAGON_LEVELS[w.level] : null;
-      const r1 = el('div', null, 'save-slot');
-      r1.appendChild(el('span', nextCap ? '⬆ Naik tingkat — peti ' + nextCap.cap + ' ($' + fmt(nextCap.cost) + ')' : '✅ Tingkat wagon maks.', 'slot-name'));
-      const bUp = el('button', 'Naik Tingkat');
-      bUp.className = 'btn-primary';
-      bUp.disabled = !nextCap || (!adminOn() && S.money < nextCap.cost);
-      bUp.addEventListener('click', () => {
-        if (upgradeWagon()) { SFX.play('success'); this.toast('Wagon naik tingkat! Peti ' + wagonCap() + '.'); }
-        else { SFX.play('error'); this.toast('Uang tidak cukup.'); }
-        this.renderPlot(); this.refreshHUD();
-      });
-      const ba1 = el('div', null, 'slot-actions'); ba1.appendChild(bUp); r1.appendChild(ba1);
-      body.appendChild(r1);
-
-      // Kuda
-      const horseCost = w.horses < 2 ? WAGON_HORSE_COST[w.horses] : null;
-      const r2 = el('div', null, 'save-slot');
-      r2.appendChild(el('span',
-        horseCost ? (w.horses === 0 ? '🐴 Speed+ 1 kuda' : '🐴🐴 Speed++ 2 kuda') + ' ($' + fmt(horseCost) + ')' : '✅ Kuda maks (2).',
-        'slot-name'
-      ));
-      const bHorse = el('button', 'Beli Kuda');
-      bHorse.className = 'btn-primary';
-      bHorse.disabled = !horseCost || (!adminOn() && S.money < horseCost);
-      bHorse.addEventListener('click', () => {
-        if (buyHorse()) { SFX.play('success'); this.toast('Kuda ditambah!'); }
-        else { SFX.play('error'); this.toast('Uang tidak cukup.'); }
-        this.renderPlot(); this.refreshHUD();
-      });
-      const ba2 = el('div', null, 'slot-actions'); ba2.appendChild(bHorse); r2.appendChild(ba2);
-      body.appendChild(r2);
-
-      // Respawn
-      const r3 = el('div', null, 'save-slot');
-      r3.appendChild(el('span', '🔄 Respawn wagon ($' + fmt(WAGON_RESPAWN_COST) + ')', 'slot-name'));
-      const bRe = el('button', 'Respawn');
-      bRe.className = 'btn-secondary';
-      bRe.disabled = !adminOn() && S.money < WAGON_RESPAWN_COST;
-      bRe.addEventListener('click', () => {
-        if (respawnWagon()) { SFX.play('success'); this.toast('Wagon kembali ke depan lahan.'); }
-        else { SFX.play('error'); this.toast('Uang tidak cukup.'); }
-        this.renderPlot(); this.refreshHUD();
-      });
-      const ba3 = el('div', null, 'slot-actions'); ba3.appendChild(bRe); r3.appendChild(ba3);
-      body.appendChild(r3);
-    }
-  },
-});
+// ---- v35: operasi slot save ----
+// Keadaan baru yang bersih (dipakai slot kosong + lepas save).
+function resetLiveState() {
+  S.money = 50; S.inv = {}; S.unlocked = { sawhorse: true, splitter: true };
+  S.expansion = 0; S.autoSeller = false; S.autoSellerT = 0; S.admin = false;
+  S.tools = { axe: 1, shovel: 1, pickaxe: 1 }; S.badges = {}; S.wagon = null;
+  S.tut = 0; S.tutDone = false; S.tutStarted = false;
+  S.stats = { harvested: {}, crafted: {}, sold: {} };
+  S.player.fx = 8.5; S.player.fy = 6.5; S.player.dir = 3;
+  S.player.path = []; S.player.onArrive = null; S.player.working = null;
+}
+// Muat slot n: simpan slot sekarang dulu, lalu muat target (kosong = baru).
+// Kembalikan 'loaded' / 'fresh' / 'locked' (uang tidak cukup buka slot).
+// v36: buka slot 2/3/4 bayar (SLOT_UNLOCK_COST, wiki Plots); slot dengan
+// data dihitung sudah terbuka; biaya dipotong dari uang slot sekarang.
+function slotUnlocked(n) {
+  if (n <= 1) return true;
+  if (readSlotData(n)) return true;
+  try {
+    const u = JSON.parse(localStorage.getItem(SLOT_UNLOCK_KEY) || '{}');
+    return !!u[n];
+  } catch (_) { return false; }
+}
+function buySlot(n) {
+  if (n <= 1 || slotUnlocked(n)) return true;
+  const cost = SLOT_UNLOCK_COST[n];
+  if (!adminOn() && S.money < cost) return false;
+  if (!adminOn()) S.money -= cost;
+  try {
+    const u = JSON.parse(localStorage.getItem(SLOT_UNLOCK_KEY) || '{}');
+    u[n] = true;
+    localStorage.setItem(SLOT_UNLOCK_KEY, JSON.stringify(u));
+  } catch (_) { /* abaikan */ }
+  saveSoon();
+  return true;
+}
+function loadSlot(n) {
+  if (n < 1 || n > 4) return null;
+  if (n > 1 && !slotUnlocked(n) && !buySlot(n)) return 'locked';
+  if (S.saveSlot) saveGame();
+  const data = readSlotData(n);
+  S.saveSlot = n;
+  if (!data || data.v !== 2) {
+    resetLiveState();
+    buildMap();
+    saveGame();
+    return 'fresh';
+  }
+  // Muat dari JSON slot target: pakai jalur loadGame yang sama.
+  try { localStorage.setItem(SLOT_META_KEY, String(n)); } catch (_) { /* abaikan */ }
+  buildMap();
+  loadGame();
+  return 'loaded';
+}
+// Lepas save: simpan slot sekarang, lalu kosongkan keadaan (tidak ada slot
+// dimuat); simpan tersimpan tetap ada dan bisa dimuat lagi dari menu plot.
+function unloadSlot() {
+  if (!S.saveSlot) return false;
+  saveGame();
+  resetLiveState();
+  buildMap();
+  S.saveSlot = 0;
+  try { localStorage.setItem(SLOT_META_KEY, '0'); } catch (_) { /* abaikan */ }
+  saveDirty = false;
+  return true;
+}
+// Reset sebagian isi slot: 'items' (tas + buffer mesin + conveyor),
+// 'buildings' (semua bangunan), atau 'upgrades' (ekspansi kembali 0).
+// Slot yang sedang dimuat diubah langsung; slot lain diubah di JSON-nya.
+function resetSlotPart(slot, part) {
+  if (slot < 1 || slot > 4) return false;
+  if (slot === S.saveSlot) {
+    if (part === 'items') {
+      S.inv = {};
+      for (const m of S.machines.values()) { m.input = {}; m.output = {}; }
+      for (const c of S.conveyors.values()) c.item = null;
+    } else if (part === 'buildings') {
+      S.machines.clear(); S.conveyors.clear(); S.storages.clear(); S.walls.clear(); S.decor.clear();
+    } else if (part === 'upgrades') {
+      S.expansion = 0;
+      const g = buildPlot();
+      S.maps.plot = { w: PLOT_BASE_W, h: PLOT_BASE_H, grid: g };
+      // Bangunan di luar lahan dasar ikut terhapus (tidak muat lagi).
+      for (const k of [...S.machines.keys()]) { const [gx, gy] = k.split(',').map(Number); if (gx >= PLOT_BASE_W || gy >= PLOT_BASE_H) S.machines.delete(k); }
+      for (const k of [...S.conveyors.keys()]) { const [gx, gy] = k.split(',').map(Number); if (gx >= PLOT_BASE_W || gy >= PLOT_BASE_H) S.conveyors.delete(k); }
+      for (const k of [...S.storages.keys()]) { const [gx, gy] = k.split(',').map(Number); if (gx >= PLOT_BASE_W || gy >= PLOT_BASE_H) S.storages.delete(k); }
+      for (const k of [...S.walls.keys()]) { const [gx, gy] = k.split(',').map(Number); if (gx >= PLOT_BASE_W || gy >= PLOT_BASE_H) S.walls.delete(k); }
+      for (const k of [...S.decor.keys()]) { const [gx, gy] = k.split(',').map(Number); if (gx >= PLOT_BASE_W || gy >= PLOT_BASE_H) S.decor.delete(k); }
+      if (S.map === 'plot') applyMap('plot');
+    } else return false;
+    saveGame();
+    return true;
+  }
+  const data = readSlotData(slot);
+  if (!data || data.v !== 2) return false;
+  if (part === 'items') {
+    data.inv = {};
+    (data.machines || []).forEach(([, m]) => { m.input = {}; m.output = {}; });
+    (data.conveyors || []).forEach(([, c]) => { c.item = null; });
+  } else if (part === 'buildings') {
+    data.machines = []; data.conveyors = []; data.storages = []; data.walls = []; data.decor = [];
+  } else if (part === 'upgrades') {
+    data.expansion = 0;
+    const g = buildPlot();
+    data.maps.plot = { w: PLOT_BASE_W, h: PLOT_BASE_H, nodes: flatNodes(g) };
+    const keep = ([k]) => { const [gx, gy] = k.split(',').map(Number); return gx < PLOT_BASE_W && gy < PLOT_BASE_H; };
+    data.machines = (data.machines || []).filter(keep);
+    data.conveyors = (data.conveyors || []).filter(keep);
+    data.storages = (data.storages || []).filter(keep);
+    data.walls = (data.walls || []).filter(keep);
+    data.decor = (data.decor || []).filter(keep);
+  } else return false;
+  try { localStorage.setItem(slotKey(slot), JSON.stringify(data)); } catch (_) { return false; }
+  return true;
+}
