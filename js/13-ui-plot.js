@@ -1,50 +1,98 @@
 // Menu plot: 4 slot save + wagon. Pecahan 13-ui.js (v35).
-// Tiap slot menyimpan uang, tas, bangunan, dan ukuran lahan sendiri
-// (ikut sistem Mayor yang sudah ada: 4 tingkat ekspansi per slot).
-let plotResetSlot = 0; // slot yang opsi resetnya sedang dibuka
+// v52-cozy: slot visual diperkaya (uang, waktu, ekspansi, badge aktif).
+let plotResetSlot = 0;
+
 Object.assign(UI, {
-  // ---- Menu plot ----
   openPlot() {
     plotResetSlot = 0;
     this.renderPlot();
     this.openPanel('plot-panel');
   },
+
   renderPlot() {
     const body = $('plot-body');
     body.innerHTML = '';
-    body.appendChild(el('div', '4 slot save. Muat = pindah ke slot itu (slot sekarang disimpan dulu). Lepas = simpan lalu kosongkan keadaan. Reset = hapus sebagian isi slot.', 'mp-desc'));
-    body.appendChild(el('div', S.saveSlot ? 'Slot dimuat: ' + S.saveSlot : 'Tidak ada slot dimuat.', 'mp-desc'));
+
+    // --- Deskripsi ---
+    body.appendChild(el('div',
+      'Pilih slot save. Muat = pindah ke slot itu. Lepas = simpan lalu keluar. Reset = hapus sebagian isi.',
+      'mp-desc'
+    ));
+    if (S.saveSlot) {
+      body.appendChild(el('div', '▶ Slot aktif: ' + S.saveSlot, 'mp-desc mp-desc--active'));
+    }
+
+    // --- 4 Slot ---
     for (let n = 1; n <= 4; n++) {
-      const info = slotInfo(n);
-      const row = el('div', null, 'mayor-row');
-      // v36: slot 2/3/4 yang kosong dan masih terkunci harus dibayar dulu.
-      const locked = !info && n > 1 && !slotUnlocked(n);
-      const label = info
-        ? 'Slot ' + n + ' — $' + fmt(info.money) + ', lahan ' + info.w + 'x' + info.h + ', ekspansi ' + info.expansion + (n === S.saveSlot ? ' (dimuat)' : '')
-        : locked ? 'Slot ' + n + ' — Terkunci ($' + fmt(SLOT_UNLOCK_COST[n]) + ')'
-        : 'Slot ' + n + ' — Kosong';
-      row.appendChild(el('span', label));
-      const btns = el('span', null, 'shop-btns');
-      const bLoad = el('button', locked ? 'Buka ($' + fmt(SLOT_UNLOCK_COST[n]) + ')' : 'Muat');
-      bLoad.disabled = n === S.saveSlot;
+      const info    = slotInfo(n);
+      const locked  = !info && n > 1 && !slotUnlocked(n);
+      const isActive = n === S.saveSlot;
+
+      // Card slot
+      const card = el('div', null, 'save-slot' + (isActive ? ' save-slot--active' : '') + (!info ? ' empty' : ''));
+
+      if (!info && !locked) {
+        // Kosong
+        card.appendChild(el('span', '— Slot ' + n + ' kosong —', 'slot-name'));
+      } else if (locked) {
+        // Terkunci
+        const lockEl = el('div', null, '');
+        lockEl.appendChild(el('span', 'Slot ' + n, 'slot-name'));
+        lockEl.appendChild(el('span', '🔒 Terkunci — $' + fmt(SLOT_UNLOCK_COST[n]) + ' untuk buka', 'slot-time'));
+        card.appendChild(lockEl);
+      } else {
+        // Ada data
+        const header = el('div', null, 'slot-header');
+        header.appendChild(el('span', 'Slot ' + n + (isActive ? ' ▶ aktif' : ''), 'slot-name'));
+
+        // Waktu save
+        const ts = info.savedAt ? new Date(info.savedAt) : null;
+        const timeStr = ts
+          ? ts.toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
+            + ' ' + ts.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' })
+          : 'Waktu tidak diketahui';
+        header.appendChild(el('span', timeStr, 'slot-time'));
+        card.appendChild(header);
+
+        // Info baris
+        const infoRow = el('div', null, 'slot-info-row');
+        infoRow.appendChild(el('span', '💰 $' + fmt(info.money), 'slot-money'));
+        infoRow.appendChild(el('span', '🗺 ' + info.w + '×' + info.h, 'slot-money'));
+        infoRow.appendChild(el('span', '⬆ Ekspansi ' + info.expansion, 'slot-time'));
+        card.appendChild(infoRow);
+      }
+
+      // Tombol aksi
+      const btns = el('div', null, 'slot-actions');
+
+      const bLoad = el('button', locked ? '🔓 Buka ($' + fmt(SLOT_UNLOCK_COST[n]) + ')' : '▶ Muat');
+      bLoad.className = 'btn-primary';
+      bLoad.disabled = isActive;
       bLoad.addEventListener('click', () => {
         const r = loadSlot(n);
         if (r === 'locked') {
           SFX.play('error');
-          this.toast('Uang tidak cukup untuk membuka Slot ' + n + ' ($' + fmt(SLOT_UNLOCK_COST[n]) + ').');
+          this.toast('Uang tidak cukup untuk buka Slot ' + n + ' ($' + fmt(SLOT_UNLOCK_COST[n]) + ').');
         } else {
           SFX.play('success');
-          this.toast(r === 'fresh' ? 'Slot ' + n + ' baru.' : 'Slot ' + n + ' dimuat.');
+          this.toast(r === 'fresh' ? 'Slot ' + n + ' baru dibuat.' : 'Slot ' + n + ' dimuat.');
         }
         this.renderPlot(); this.refreshHUD();
       });
       btns.appendChild(bLoad);
-      const bReset = el('button', 'Reset');
+
+      const bReset = el('button', '↺ Reset');
+      bReset.className = 'btn-secondary';
       bReset.disabled = !info;
-      bReset.addEventListener('click', () => { plotResetSlot = plotResetSlot === n ? 0 : n; this.renderPlot(); });
+      bReset.addEventListener('click', () => {
+        plotResetSlot = plotResetSlot === n ? 0 : n;
+        this.renderPlot();
+      });
       btns.appendChild(bReset);
-      if (n === S.saveSlot) {
-        const bOut = el('button', 'Lepas');
+
+      if (isActive) {
+        const bOut = el('button', '⏏ Lepas');
+        bOut.className = 'btn-secondary';
         bOut.addEventListener('click', () => {
           unloadSlot();
           SFX.play('place');
@@ -53,15 +101,18 @@ Object.assign(UI, {
         });
         btns.appendChild(bOut);
       }
-      row.appendChild(btns);
-      body.appendChild(row);
-      // Opsi reset: barang / bangunan / upgrade lahan (ikut wiki Plots).
+
+      card.appendChild(btns);
+      body.appendChild(card);
+
+      // Sub-menu reset
       if (plotResetSlot === n) {
-        const rr = el('div', null, 'mayor-row');
-        rr.appendChild(el('span', 'Reset slot ' + n + ':'));
-        const rb = el('span', null, 'shop-btns');
-        for (const [part, label] of [['items', 'Barang'], ['buildings', 'Bangunan'], ['upgrades', 'Upgrade lahan']]) {
+        const rr = el('div', null, 'save-slot save-slot--reset');
+        rr.appendChild(el('span', 'Reset slot ' + n + ' — pilih bagian:', 'slot-name'));
+        const rb = el('div', null, 'slot-actions');
+        for (const [part, label] of [['items','🎒 Barang'], ['buildings','🏗 Bangunan'], ['upgrades','📐 Upgrade lahan']]) {
           const b = el('button', label);
+          b.className = 'btn-danger';
           b.addEventListener('click', () => {
             if (resetSlotPart(n, part)) {
               SFX.play('success');
@@ -79,63 +130,79 @@ Object.assign(UI, {
         body.appendChild(rr);
       }
     }
-    // ---- Wagon: beli, naik tingkat, kuda, respawn ----
-    body.appendChild(el('div', 'Wagon — transportasi: jalan kaki lv1, wagon lv2, kereta lv3. Ketuk wagon untuk naik/turun.', 'mp-desc'));
+
+    // ---- Wagon ----
+    body.appendChild(el('div', 'Wagon — transportasi: jalan kaki lv1, wagon lv2, kereta lv3.', 'mp-desc'));
+
     if (!S.wagon) {
-      const row = el('div', null, 'mayor-row');
-      row.appendChild(el('span', 'Wagon — $' + fmt(WAGON_BUY_COST) + ' (peti 5 barang)'));
-      const b = el('button', 'Beli');
+      const row = el('div', null, 'save-slot');
+      row.appendChild(el('span', '🛒 Wagon — $' + fmt(WAGON_BUY_COST) + ' (peti 5 barang)', 'slot-name'));
+      const b = el('button', 'Beli Wagon');
+      b.className = 'btn-primary';
       b.disabled = !adminOn() && S.money < WAGON_BUY_COST;
       b.addEventListener('click', () => {
-        if (buyWagon()) {
-          SFX.play('success');
-          this.toast('Wagon dibeli! Muncul di lahan, ketuk untuk naik.');
-        } else {
-          SFX.play('error');
-          this.toast('Uang tidak cukup.');
-        }
+        if (buyWagon()) { SFX.play('success'); this.toast('Wagon dibeli! Ketuk untuk naik.'); }
+        else { SFX.play('error'); this.toast('Uang tidak cukup.'); }
         this.renderPlot(); this.refreshHUD();
       });
-      row.appendChild(b);
+      const ba = el('div', null, 'slot-actions');
+      ba.appendChild(b);
+      row.appendChild(ba);
       body.appendChild(row);
     } else {
       const w = S.wagon;
-      body.appendChild(el('div', 'Wagon lv' + w.level + ' — peti ' + wagonItemsTotal() + '/' + wagonCap() + ', kuda: ' + w.horses + (w.riding ? ' (sedang ditunggangi)' : ''), 'mp-desc'));
-      const row1 = el('div', null, 'mayor-row');
+      body.appendChild(el('div',
+        '🛒 Wagon lv' + w.level + ' — peti ' + wagonItemsTotal() + '/' + wagonCap() +
+        ', kuda: ' + w.horses + (w.riding ? ' (ditunggangi)' : ''),
+        'mp-desc'
+      ));
+
+      // Naik tingkat
       const nextCap = w.level < WAGON_LEVELS.length ? WAGON_LEVELS[w.level] : null;
-      row1.appendChild(el('span', nextCap ? 'Naik tingkat — peti ' + nextCap.cap + ' ($' + fmt(nextCap.cost) + ')' : 'Tingkat wagon maks.'));
-      const bUp = el('button', 'Naik tingkat');
+      const r1 = el('div', null, 'save-slot');
+      r1.appendChild(el('span', nextCap ? '⬆ Naik tingkat — peti ' + nextCap.cap + ' ($' + fmt(nextCap.cost) + ')' : '✅ Tingkat wagon maks.', 'slot-name'));
+      const bUp = el('button', 'Naik Tingkat');
+      bUp.className = 'btn-primary';
       bUp.disabled = !nextCap || (!adminOn() && S.money < nextCap.cost);
       bUp.addEventListener('click', () => {
         if (upgradeWagon()) { SFX.play('success'); this.toast('Wagon naik tingkat! Peti ' + wagonCap() + '.'); }
         else { SFX.play('error'); this.toast('Uang tidak cukup.'); }
         this.renderPlot(); this.refreshHUD();
       });
-      row1.appendChild(bUp);
-      body.appendChild(row1);
-      const row2 = el('div', null, 'mayor-row');
+      const ba1 = el('div', null, 'slot-actions'); ba1.appendChild(bUp); r1.appendChild(ba1);
+      body.appendChild(r1);
+
+      // Kuda
       const horseCost = w.horses < 2 ? WAGON_HORSE_COST[w.horses] : null;
-      row2.appendChild(el('span', horseCost ? (w.horses === 0 ? 'Speed+ 1 kuda' : 'Speed++ 2 kuda') + ' ($' + fmt(horseCost) + ')' : 'Kuda maks (2).'));
-      const bHorse = el('button', 'Beli kuda');
+      const r2 = el('div', null, 'save-slot');
+      r2.appendChild(el('span',
+        horseCost ? (w.horses === 0 ? '🐴 Speed+ 1 kuda' : '🐴🐴 Speed++ 2 kuda') + ' ($' + fmt(horseCost) + ')' : '✅ Kuda maks (2).',
+        'slot-name'
+      ));
+      const bHorse = el('button', 'Beli Kuda');
+      bHorse.className = 'btn-primary';
       bHorse.disabled = !horseCost || (!adminOn() && S.money < horseCost);
       bHorse.addEventListener('click', () => {
-        if (buyHorse()) { SFX.play('success'); this.toast('Kuda ditambah! Wagon makin cepat.'); }
+        if (buyHorse()) { SFX.play('success'); this.toast('Kuda ditambah!'); }
         else { SFX.play('error'); this.toast('Uang tidak cukup.'); }
         this.renderPlot(); this.refreshHUD();
       });
-      row2.appendChild(bHorse);
-      body.appendChild(row2);
-      const row3 = el('div', null, 'mayor-row');
-      row3.appendChild(el('span', 'Respawn wagon — pindah ke depan lahan ($' + fmt(WAGON_RESPAWN_COST) + ')'));
+      const ba2 = el('div', null, 'slot-actions'); ba2.appendChild(bHorse); r2.appendChild(ba2);
+      body.appendChild(r2);
+
+      // Respawn
+      const r3 = el('div', null, 'save-slot');
+      r3.appendChild(el('span', '🔄 Respawn wagon ($' + fmt(WAGON_RESPAWN_COST) + ')', 'slot-name'));
       const bRe = el('button', 'Respawn');
+      bRe.className = 'btn-secondary';
       bRe.disabled = !adminOn() && S.money < WAGON_RESPAWN_COST;
       bRe.addEventListener('click', () => {
         if (respawnWagon()) { SFX.play('success'); this.toast('Wagon kembali ke depan lahan.'); }
         else { SFX.play('error'); this.toast('Uang tidak cukup.'); }
         this.renderPlot(); this.refreshHUD();
       });
-      row3.appendChild(bRe);
-      body.appendChild(row3);
+      const ba3 = el('div', null, 'slot-actions'); ba3.appendChild(bRe); r3.appendChild(ba3);
+      body.appendChild(r3);
     }
   },
 });
