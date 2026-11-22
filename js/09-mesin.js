@@ -28,6 +28,7 @@ function updateMachines(dt) {
       m.progress = 0;
       finishCraft(m, gx, gy);
       SFX.play('craft');
+      if (typeof Sound !== 'undefined') Sound.play('craft');
     }
   }
 }

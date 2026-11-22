@@ -29,6 +29,7 @@ function sellItemAt(shopId, id, qty) {
   const gain = price * n;
   S.money += gain;
   S.stats.sold[id] = (S.stats.sold[id] || 0) + n;
+  if (gain > 0 && typeof Sound !== 'undefined') Sound.play('sell');
   saveSoon();
   return gain;
 }
@@ -58,6 +59,7 @@ function sellItem(id, qty) {
   const gain = price * n;
   S.money += gain;
   S.stats.sold[id] = (S.stats.sold[id] || 0) + n;
+  if (gain > 0 && typeof Sound !== 'undefined') Sound.play('sell');
   saveSoon();
   return gain;
 }
