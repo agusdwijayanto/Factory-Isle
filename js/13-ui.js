@@ -10,11 +10,18 @@ $('btn-tas').addEventListener('click', () => UI.openTas());
 $('btn-rotate').addEventListener('click', () => { S.placeDir = (S.placeDir + 1) % 4; });
 $('btn-place-cancel').addEventListener('click', () => UI.cancelPlacing());
 $('btn-place-ok').addEventListener('click', () => confirmPlace());
-$('btn-burger').addEventListener('click', () => {
+
+$('btn-burger').addEventListener('click', (e) => {
+  e.stopPropagation();
   const m = $('burger-menu');
-  if (m.classList.contains('hidden')) UI.openPanel('burger-menu');
-  else m.classList.add('hidden');
+  if (!m) return;
+  if (m.classList.contains('hidden')) {
+    UI.openPanel('burger-menu');
+  } else {
+    UI.closePanel('burger-menu');
+  }
 });
+
 // Panel tutorial di tengah: Lewati mematikan tutorial total,
 // Lanjut memulai langkah 1 (panel lalu menampilkan tiap langkah).
 $('btn-tut-skip').addEventListener('click', () => {
@@ -29,6 +36,7 @@ $('btn-tut-next').addEventListener('click', () => {
   $('btn-tut-next').classList.add('hidden');
   saveSoon();
 });
+
 document.querySelectorAll('[data-close]').forEach((b) => {
   b.addEventListener('click', () => {
     if (b.dataset.close === 'inspect-panel') UI.closeMachine();
@@ -36,6 +44,7 @@ document.querySelectorAll('[data-close]').forEach((b) => {
     else $(b.dataset.close).classList.add('hidden');
   });
 });
+
 document.querySelectorAll('#burger-menu [data-act]').forEach((b) => {
   b.addEventListener('click', () => {
     $('burger-menu').classList.add('hidden');
@@ -48,6 +57,7 @@ document.querySelectorAll('#burger-menu [data-act]').forEach((b) => {
     else if (act === 'Book') UI.openBook();
   });
 });
+
 $('btn-sound').addEventListener('click', () => {
   S.settings.sound = !S.settings.sound;
   $('btn-sound').textContent = 'Suara: ' + (S.settings.sound ? 'Hidup' : 'Mati');
@@ -70,6 +80,7 @@ $('btn-zoom-reset').addEventListener('click', () => {
   centerCamera(window.innerWidth, window.innerHeight);
   UI.closePanel('settings-panel');
 });
+
 document.querySelectorAll('#admin-panel [data-admin]').forEach((b) => {
   b.addEventListener('click', () => {
     const act = b.dataset.admin;
@@ -83,7 +94,7 @@ document.querySelectorAll('#admin-panel [data-admin]').forEach((b) => {
       UI.toast('ADMIN: material ditambah');
     } else if (act === 'unlock') {
       Object.keys(MACHINES).forEach((id) => { S.unlocked[id] = true; });
-      UI.toast('ADMIN: semua resep terbuka');
+UI.toast('ADMIN: semua resep terbuka');
     } else if (act === 'finish') {
       finishAllInstant();
       UI.toast('ADMIN: crafting diselesaikan instan');
@@ -99,11 +110,3 @@ document.querySelectorAll('#admin-panel [data-admin]').forEach((b) => {
     saveSoon();
   });
 });
-// Saklar Mode Admin (on/off). Efeknya di setAdminMode (11-ekonomi.js);
-// tombol lama di atas tetap ada dan tetap jalan.
-$('admin-toggle').addEventListener('click', () => {
-  setAdminMode(!S.admin);
-  SFX.play('success');
-  UI.refreshHUD();
-});
-TOAST = (msg) => UI.toast(msg);
