@@ -52,8 +52,6 @@ function bufText(buf) {
   return parts.length ? parts.join(', ') : 'kosong';
 }
 
-// Ikon item dari atlas untuk panel DOM. Atlas bisa belum siap saat panel
-// pertama dibuka: kembalikan null supaya panel jatuh ke teks nama saja.
 function iconEl(itemId) {
   try {
     if (Atlas.canvas) return Atlas.iconCanvas('item_' + itemId, 28);
@@ -73,43 +71,80 @@ let lastBufSig = '';
 const UI = {
   toast(msg) {
     const t = $('toast');
+    if (!t) return;
     t.textContent = msg;
     t.classList.remove('hidden');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.classList.add('hidden'), 1800);
   },
-  setHint(text) { $('hint').textContent = text; },
+  setHint(text) { 
+    const h = $('hint');
+    if (h) h.textContent = text; 
+  },
 
   refreshHUD() {
-    $('money').textContent = adminOn() ? '∞' : '$' + fmt(S.money);
-    // Label saklar Mode Admin ikut keadaan (refreshHUD dipanggil tiap aksi).
+    const moneyEl = $('money');
+    if (moneyEl) moneyEl.textContent = adminOn() ? '∞' : '$' + fmt(S.money);
+    
     const at = $('admin-toggle');
-    if (at) { at.textContent = adminOn() ? 'Mode Admin: ON' : 'Mode Admin: OFF'; at.classList.toggle('on', adminOn()); }
-    $('mapname').textContent = MAP_NAMES[S.map] || 'Kota';
-    $('btn-tas').textContent = 'TAS (' + carriedTotal() + ')';
-    // Bangun hanya di lahan: tombol disembunyikan di kota.
-    $('btn-build').classList.toggle('hidden', S.map !== 'plot');
+    if (at) { 
+      at.textContent = adminOn() ? 'Mode Admin: ON' : 'Mode Admin: OFF'; 
+      at.classList.toggle('on', adminOn()); 
+    }
+    
+    const mapNameEl = $('mapname');
+    if (mapNameEl) mapNameEl.textContent = MAP_NAMES[S.map] || 'Kota';
+    
+    const btnTas = $('btn-tas');
+    if (btnTas) btnTas.textContent = 'TAS (' + carriedTotal() + ')';
+    
+    const btnBuild = $('btn-build');
+if (btnBuild) btnBuild.classList.toggle('hidden', S.map !== 'plot');
+    
     if (S.map !== 'plot') {
       this.closePanel('build-menu');
       if (S.placing) this.cancelPlacing();
     }
   },
 
-  // Satu panel dalam satu waktu: membuka panel lain menutup panel inspect/storage.
   openPanel(id) {
-    ['build-menu', 'inspect-panel', 'storage-panel', 'shop-panel', 'tas-panel',
-     'burger-menu', 'admin-panel', 'settings-panel', 'help-panel', 'mayor-panel', 'train-panel', 'plot-panel', 'badge-panel', 'book-panel'].forEach((p) => {
-      if (p !== id) $(p).classList.add('hidden');
+    const panels = [
+      'build-menu', 'inspect-panel', 'storage-panel', 'shop-panel', 'tas-panel',
+      'burger-menu', 'admin-panel', 'settings-panel', 'help-panel', 
+      'mayor-panel', 'train-panel', 'plot-panel', 'badge-panel', 'book-panel'
+    ];
+    panels.forEach((p) => {
+      const el = $(p);
+      if (el && p !== id) el.classList.add('hidden');
     });
-    if (id !== 'inspect-panel' && id !== 'storage-panel') { inspectKey = null; S.selected = null; }
-    $(id).classList.remove('hidden');
+    if (id !== 'inspect-panel' && id !== 'storage-panel') { 
+      inspectKey = null; 
+      S.selected = null; 
+    }
+    const target = $(id);
+    if (target) target.classList.remove('hidden');
   },
-  closePanel(id) { $(id).classList.add('hidden'); },
+
+  closePanel(id) { 
+    const el = $(id);
+    if (el) el.classList.add('hidden'); 
+  },
+
   closeAll() {
-    ['build-menu', 'inspect-panel', 'storage-panel', 'shop-panel', 'tas-panel',
-     'burger-menu', 'admin-panel', 'settings-panel', 'help-panel', 'mayor-panel', 'train-panel', 'plot-panel', 'badge-panel', 'book-panel'].forEach((id) => this.closePanel(id));
-    S.selected = null; inspectKey = null;
+    const panels = [
+      'build-menu', 'inspect-panel', 'storage-panel', 'shop-panel', 'tas-panel',
+      'burger-menu', 'admin-panel', 'settings-panel', 'help-panel', 
+      'mayor-panel', 'train-panel', 'plot-panel', 'badge-panel', 'book-panel'
+    ];
+    panels.forEach((id) => this.closePanel(id));
+    S.selected = null; 
+    inspectKey = null;
     if (S.placing) this.cancelPlacing();
   },
-  closeMachine() { this.closePanel('inspect-panel'); S.selected = null; inspectKey = null; },
+
+  closeMachine() { 
+    this.closePanel('inspect-panel'); 
+    S.selected = null; 
+    inspectKey = null; 
+  },
 };
