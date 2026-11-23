@@ -1,54 +1,42 @@
-// Sound manager using Howler.js CDN with Web Audio synth fallback
+// =============================================
+//   FACTORY ISLE — js/15-sound.js
+//   =============================================
+
 const Sound = {
+  muted: false,
   sounds: {},
-  enabled: true,
+
   init() {
-    if (typeof Howl === 'undefined') return;
-    const sfxList = {
-      click: ['sfx/click.mp3', 'https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js'], // fallback or synthetic
-      craft: ['sfx/craft.mp3'],
-      sell: ['sfx/coin.mp3'],
-      walk: ['sfx/walk.mp3']
-    };
-    // Initialize Howl instances if audio files exist or use synth fallback via SFX
-    for (const key of Object.keys(sfxList)) {
-      try {
-        this.sounds[key] = new Howl({
-          src: sfxList[key],
-          volume: key === 'walk' ? 0.15 : 0.5,
-          onloaderror: () => { this.sounds[key] = null; }
-        });
-      } catch (_) {
-        this.sounds[key] = null;
-      }
+    if (typeof Howl === 'undefined') {
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js';
+      script.onload = () => this.setupSounds();
+      document.head.appendChild(script);
+    } else {
+      this.setupSounds();
     }
   },
+
+  setupSounds() {
+    this.sounds = {
+      click: new Howl({ src: ['sfx/click.mp3', 'https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'], volume: 0.3 }),
+      craft: new Howl({ src: ['sfx/craft.mp3', 'https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3'], volume: 0.4 }),
+      sell:  new Howl({ src: ['sfx/sell.mp3',  'https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3'], volume: 0.5 }),
+      step:  new Howl({ src: ['sfx/step.mp3',  'https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3'], volume: 0.1 })
+    };
+  },
+
   play(name) {
-    if (S && S.settings && S.settings.sound === false) return;
-    if (this.sounds[name] && this.sounds[name].state() === 'loaded') {
-      this.sounds[name].play();
-      return;
-    }
-    // Fallback to built-in Web Audio synth (SFX) if Howl sound not loaded/available
-    if (typeof SFX !== 'undefined' && SFX.play) {
-      if (name === 'click') SFX.play('place');
-      else if (name === 'craft') SFX.play('craft');
-      else if (name === 'sell') SFX.play('coin');
-      else if (name === 'walk') {
-        // play quiet walk tap occasionally
-        if (Math.random() < 0.3) SFX.play('chop');
-      }
-    }
+    if (this.muted || !this.sounds[name]) return;
+this.sounds[name].play();
+  },
+
+  toggleMute() {
+    this.muted = !this.muted;
+    Howler.mute(this.muted);
+    return this.muted;
   }
 };
 
-// Global UI click listener for sound effect 1 (Klik tombol UI)
-document.addEventListener('pointerdown', (e) => {
-  if (e.target.closest('button, .hud-btn, .build-item, .menu-btn')) {
-    Sound.play('click');
-  }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  Sound.init();
-});
+window.Sound = Sound;
+document.addEventListener('DOMContentLoaded', () => Sound.init());
