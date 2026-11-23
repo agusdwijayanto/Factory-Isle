@@ -1,63 +1,80 @@
-// Simple Cozy Tutorial System for Factory-Isle
+// =============================================
+//   FACTORY ISLE — js/15-tutorial.js
+//   =============================================
+
 const Tutorial = {
   key: 'factory-isle-tutorial-done',
-  steps: [
-    { text: 'Langkah 1: Klik tile kosong di lahan untuk membuka menu Bangun dan dirikan mesin pertamamu.' },
-    { text: 'Langkah 2: Buka menu Tas (di pojok bawah) untuk melihat hasil produksi dan inventory.' },
-    { text: 'Langkah 3: Kunjungi Toko atau Exchange di kota untuk menjual item dan mendapatkan koin.' }
-  ],
   currentStep: 0,
+  steps: [
+    { title: 'Selamat Datang di Factory Isle!', text: 'Mari bangun pabrik impianmu di pulau kecil ini. Klik Lanjut untuk mulai.' },
+    { title: 'Bangun Mesin', text: 'Klik salah satu petak kosong di grid untuk membuka menu bangunan dan bangun mesin pertamamu.' },
+    { title: 'Cek Inventory', text: 'Hasil produksi mesin akan masuk ke tas. Buka panel Tas untuk melihat barang.' },
+    { title: 'Jual & Dapatkan Uang', text: 'Bawa barang ke toko atau jual langsung untuk mendapatkan koin emas.' }
+  ],
+
   init() {
-    if (localStorage.getItem(this.key) === 'true') return;
-    this.renderOverlay();
+    if (localStorage.getItem(this.key)) return;
+    this.createUI();
+    this.showStep(0);
   },
-  renderOverlay() {
-    let box = document.getElementById('tutorial-overlay');
-    if (!box) {
-      box = document.createElement('div');
-      box.id = 'tutorial-overlay';
-      document.body.appendChild(box);
-    }
-    const stepData = this.steps[this.currentStep];
-    if (!stepData) {
+
+  createUI() {
+    const overlay = document.createElement('div');
+    overlay.id = 'tutorial-overlay';
+    overlay.innerHTML = `
+      <div id="tutorial-box" class="panel">
+        <h3 id="tut-title" class="panel-header"></h3>
+        <p id="tut-text" style="margin-bottom: 16px; font-size: 14px; line-height: 1.5; color: var(--text-main);"></p>
+        <div style="display: flex; justify-content: space-between; gap: 8px;">
+          <button class="btn secondary" onclick="Tutorial.skip()">Lewati</button>
+          <button class="btn primary" onclick="Tutorial.next()">Lanjut →</button>
+        </div>
+      </div>
+    `;
+    
+    overlay.style.cssText = `
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(10, 5, 2, 0.7);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    `;
+    
+    const box = overlay.querySelector('#tutorial-box');
+    box.style.cssText = `
+      max-width: 360px; width: 100%; text-align: left;
+      border: 2px solid var(--border-light);
+    `;
+
+    document.body.appendChild(overlay);
+  },
+
+  showStep(index) {
+    if (index >= this.steps.length) {
       this.finish();
       return;
     }
-    box.style.cssText = `
-      position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
-      z-index: 9999; width: min(380px, 92vw);
-      background: #fffaf2; border: 2px solid #a47e62; border-radius: 12px;
-      padding: 16px; box-shadow: 0 8px 24px rgba(92, 64, 51, 0.2);
-      font-family: 'Nunito', system-ui, sans-serif; color: #3b271d;
-    `;
-    box.innerHTML = `
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-        <span style="font-weight: 800; font-size: 15px; color: #b8860b;">Tutorial (${this.currentStep + 1}/${this.steps.length})</span>
-        <button id="tut-skip" style="background: none; border: none; color: #8c6239; cursor: pointer; font-weight: 700;">Lewati</button>
-      </div>
-      <p style="font-size: 14px; line-height: 1.4; margin-bottom: 12px;">${stepData.text}</p>
-      <div style="display: flex; justify-content: flex-end; gap: 8px;">
-        <button id="tut-next" style="background: #e6b84c; border: 1px solid #a47e62; border-radius: 8px; padding: 6px 14px; font-weight: 700; cursor: pointer; color: #3b271d;">Lanjut</button>
-      </div>
-    `;
-    document.getElementById('tut-skip').addEventListener('click', () => this.finish());
-    document.getElementById('tut-next').addEventListener('click', () => this.next());
+    this.currentStep = index;
+    const step = this.steps[index];
+    document.getElementById('tut-title').innerText = step.title;
+    document.getElementById('tut-text').innerText = step.text;
   },
+
   next() {
-    this.currentStep++;
-    if (this.currentStep >= this.steps.length) {
-      this.finish();
-    } else {
-      this.renderOverlay();
-    }
+    if (typeof Sound !== 'undefined') Sound.play('click');
+    this.showStep(this.currentStep + 1);
   },
+
+  skip() {
+    if (typeof Sound !== 'undefined') Sound.play('click');
+    this.finish();
+  },
+
   finish() {
     localStorage.setItem(this.key, 'true');
-    const box = document.getElementById('tutorial-overlay');
-    if (box) box.remove();
+    const overlay = document.getElementById('tutorial-overlay');
+    if (overlay) overlay.remove();
   }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => Tutorial.init(), 1000);
-});
+window.Tutorial = Tutorial;
+document.addEventListener('DOMContentLoaded', () => Tutorial.init());
