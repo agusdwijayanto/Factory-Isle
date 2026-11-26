@@ -1,4 +1,4 @@
-# PRD — Indotopia Tycoon Pabrik Isometrik
+# PRD — Factory Isle
 
 **Versi:** 0.1 · **Diperbarui:** 2026-11-26 · [STRUKTUR](STRUKTUR.md) · [TASK](TASK.md) · [ROADMAP](../ROADMAP.md)
 
@@ -22,7 +22,7 @@ Sesi: free play. Simpan otomatis. 4 slot save: slot 1 default, slot 2/3/4 dibaya
 
 ## 5. Engine
 
-Vanilla JS + HTML5 canvas. 40 skrip dimuat `index.html` (lihat `STRUKTUR.md`). Sound Howler.js. Font Nunito via Google Fonts.
+Vanilla JS + HTML5 canvas. 48 skrip dimuat `index.html` (lihat `STRUKTUR.md`). Sound Howler.js. Font Nunito via Google Fonts.
 
 ## 6. Ruang lingkup
 
@@ -94,5 +94,5 @@ Referensi: Factory Town Tycoon (Roblox), TheoTown (isometrik 2.5D). Prinsip ATM 
 ## 13. Pertanyaan terbuka
 
 - `[ASSUMPTION]` `unrar` untuk 40 PNG sisa `Factory_Tycon.rar` (Blacksmith) — belum tersedia sistem, alternatif belum ditentukan.
-- `[ASSUMPTION]` Live `https://agusdwijayanto.github.io/Indotopia/?v=52` belum terkonfirmasi (HTTP 404 saat dicek). Versi live saat ini dianggap `9dcf6f0` lokal.
+- Live `https://agusdwijayanto.github.io/Factory-Isle/?v=52` terkonfirmasi (HTTP 200). Versi live saat ini `9dcf6f0`.
 - `[ASSUMPTION]` Detail 6 backlog v52 belum ada di repo; spesifikasi harus ditulis sebelum kode.
