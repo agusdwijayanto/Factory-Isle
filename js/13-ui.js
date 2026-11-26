@@ -80,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (act === 'Bantuan') UI.openPanel('help-panel');
       else if (act === 'Admin') UI.openPanel('admin-panel');
       else if (act === 'Plot') UI.openPlot();
+      else if (act === 'Simpan') UI.openSave();
       else if (act === 'Badge') UI.openBadges();
       else if (act === 'Book') UI.openBook();
     });

@@ -113,7 +113,7 @@ function loadGame() {
     || S.maps.town.grid[7][1].obj !== 'lantern'
     // v51: Mayor di (7,13) — simpan v50 punya petak putih di situ, jadi ke sini ikut bangun ulang.
     || S.maps.town.grid[13][7].obj !== 'mayor'
-    || S.maps.town.grid[3][3].obj !== 'wagonShop'); // v52: bangunan beli wagon pindah ke kota
+    || S.maps.town.grid[4][5].obj !== 'wagonShop'); // v54: wagonShop 2×2 pindah ke (5,4)
   const meadowNStale = S.maps.meadow_n && (S.maps.meadow_n.grid[5][4].obj !== 'plotpad'
     || S.maps.meadow_n.grid[5][5].obj !== 'plotsign'); // v51 petak putih, v52 papan PLOT
   const forestStale = S.maps.forest && (S.maps.forest.grid[7][9].obj !== 'train'

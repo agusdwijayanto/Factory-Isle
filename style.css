@@ -110,6 +110,82 @@ section.panel, .panel {
   letter-spacing: 0.5px;
 }
 
+/* panel-head: judul kiri, tombol X kanan, satu baris */
+.panel-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px; margin-bottom: 14px;
+}
+
+.panel-title {
+  font-size: 15px; font-weight: 800;
+  color: var(--accent2);
+  letter-spacing: 0.5px;
+  flex: 1; min-width: 0;
+}
+
+/* tombol X kecil di kanan atas panel */
+.btn-x {
+  min-width: 28px; min-height: 28px; padding: 0;
+  background: var(--bg-panel2);
+  border: 1.5px solid var(--border) !important;
+  border-radius: 6px;
+  color: var(--text-dim);
+  font-size: 12px; font-weight: 800;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.btn-x:hover { color: var(--text-main); border-color: var(--border-light) !important; }
+
+/* deskripsi teks dalam panel */
+.mp-desc {
+  font-size: 13px; color: var(--text-dim);
+  line-height: 1.55;
+  margin-bottom: 10px;
+}
+.mp-desc--active { color: var(--accent2); font-weight: 700; }
+
+/* baris aksi (tombol bawah panel) */
+.mp-actions {
+  display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap;
+}
+.mp-actions button { flex: 1; min-width: 80px; }
+
+/* baris toko/mayor: label kiri, tombol kanan, tidak menumpuk */
+.mayor-row, .shop-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px;
+  background: var(--bg-panel2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  margin-bottom: 8px;
+}
+.mayor-row span, .shop-row span { flex: 1; font-size: 13px; line-height: 1.4; }
+.mayor-row button, .shop-row button { flex-shrink: 0; }
+
+/* item dalam daftar shop */
+.shop-item {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 13px;
+}
+.shop-item:last-child { border-bottom: none; }
+
+/* kepala dan info kartu slot save */
+.slot-header {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px;
+}
+.slot-info-row {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  margin-top: 6px;
+}
+.save-slot--active { border-color: var(--accent2); }
+
 /* =============================================
    TOMBOL UMUM
    ============================================= */

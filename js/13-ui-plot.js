@@ -1,10 +1,8 @@
-// Menu plot: 4 slot save + wagon. Pecahan 13-ui.js (v35).
-// v52-cozy: slot visual diperkaya (uang, waktu, ekspansi, badge aktif).
+// Menu plot: wagon. Save dipisah ke save-panel. v54.
 let plotResetSlot = 0;
 
 Object.assign(UI, {
   openPlot() {
-    plotResetSlot = 0;
     this.renderPlot();
     this.openPanel('plot-panel');
   },
@@ -13,125 +11,6 @@ Object.assign(UI, {
     const body = $('plot-body');
     body.innerHTML = '';
 
-    // --- Deskripsi ---
-    body.appendChild(el('div',
-      'Pilih slot save. Muat = pindah ke slot itu. Lepas = simpan lalu keluar. Reset = hapus sebagian isi.',
-      'mp-desc'
-    ));
-    if (S.saveSlot) {
-      body.appendChild(el('div', '▶ Slot aktif: ' + S.saveSlot, 'mp-desc mp-desc--active'));
-    }
-
-    // --- 4 Slot ---
-    for (let n = 1; n <= 4; n++) {
-      const info    = slotInfo(n);
-      const locked  = !info && n > 1 && !slotUnlocked(n);
-      const isActive = n === S.saveSlot;
-
-      // Card slot
-      const card = el('div', null, 'save-slot' + (isActive ? ' save-slot--active' : '') + (!info ? ' empty' : ''));
-
-      if (!info && !locked) {
-        // Kosong
-        card.appendChild(el('span', '— Slot ' + n + ' kosong —', 'slot-name'));
-      } else if (locked) {
-        // Terkunci
-        const lockEl = el('div', null, '');
-        lockEl.appendChild(el('span', 'Slot ' + n, 'slot-name'));
-        lockEl.appendChild(el('span', '🔒 Terkunci — $' + fmt(SLOT_UNLOCK_COST[n]) + ' untuk buka', 'slot-time'));
-        card.appendChild(lockEl);
-      } else {
-        // Ada data
-        const header = el('div', null, 'slot-header');
-        header.appendChild(el('span', 'Slot ' + n + (isActive ? ' ▶ aktif' : ''), 'slot-name'));
-
-        // Waktu save
-        const ts = info.savedAt ? new Date(info.savedAt) : null;
-        const timeStr = ts
-          ? ts.toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
-            + ' ' + ts.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' })
-          : 'Waktu tidak diketahui';
-        header.appendChild(el('span', timeStr, 'slot-time'));
-        card.appendChild(header);
-
-        // Info baris
-        const infoRow = el('div', null, 'slot-info-row');
-        infoRow.appendChild(el('span', '💰 $' + fmt(info.money), 'slot-money'));
-        infoRow.appendChild(el('span', '🗺 ' + info.w + '×' + info.h, 'slot-money'));
-        infoRow.appendChild(el('span', '⬆ Ekspansi ' + info.expansion, 'slot-time'));
-        card.appendChild(infoRow);
-      }
-
-      // Tombol aksi
-      const btns = el('div', null, 'slot-actions');
-
-      const bLoad = el('button', locked ? '🔓 Buka ($' + fmt(SLOT_UNLOCK_COST[n]) + ')' : '▶ Muat');
-      bLoad.className = 'btn-primary';
-      bLoad.disabled = isActive;
-      bLoad.addEventListener('click', () => {
-        const r = loadSlot(n);
-        if (r === 'locked') {
-          SFX.play('error');
-          this.toast('Uang tidak cukup untuk buka Slot ' + n + ' ($' + fmt(SLOT_UNLOCK_COST[n]) + ').');
-        } else {
-          SFX.play('success');
-          this.toast(r === 'fresh' ? 'Slot ' + n + ' baru dibuat.' : 'Slot ' + n + ' dimuat.');
-        }
-        this.renderPlot(); this.refreshHUD();
-      });
-      btns.appendChild(bLoad);
-
-      const bReset = el('button', '↺ Reset');
-      bReset.className = 'btn-secondary';
-      bReset.disabled = !info;
-      bReset.addEventListener('click', () => {
-        plotResetSlot = plotResetSlot === n ? 0 : n;
-        this.renderPlot();
-      });
-      btns.appendChild(bReset);
-
-      if (isActive) {
-        const bOut = el('button', '⏏ Lepas');
-        bOut.className = 'btn-secondary';
-        bOut.addEventListener('click', () => {
-          unloadSlot();
-          SFX.play('place');
-          this.toast('Save dilepas. Muat slot lain untuk main lagi.');
-          this.renderPlot(); this.refreshHUD();
-        });
-        btns.appendChild(bOut);
-      }
-
-      card.appendChild(btns);
-      body.appendChild(card);
-
-      // Sub-menu reset
-      if (plotResetSlot === n) {
-        const rr = el('div', null, 'save-slot save-slot--reset');
-        rr.appendChild(el('span', 'Reset slot ' + n + ' — pilih bagian:', 'slot-name'));
-        const rb = el('div', null, 'slot-actions');
-        for (const [part, label] of [['items','🎒 Barang'], ['buildings','🏗 Bangunan'], ['upgrades','📐 Upgrade lahan']]) {
-          const b = el('button', label);
-          b.className = 'btn-danger';
-          b.addEventListener('click', () => {
-            if (resetSlotPart(n, part)) {
-              SFX.play('success');
-              this.toast('Slot ' + n + ' direset: ' + label + '.');
-            } else {
-              SFX.play('error');
-              this.toast('Reset gagal.');
-            }
-            plotResetSlot = 0;
-            this.renderPlot(); this.refreshHUD();
-          });
-          rb.appendChild(b);
-        }
-        rr.appendChild(rb);
-        body.appendChild(rr);
-      }
-    }
-
-    // ---- Wagon ----
     body.appendChild(el('div', 'Wagon — transportasi: jalan kaki lv1, wagon lv2, kereta lv3.', 'mp-desc'));
 
     if (!S.wagon) {
@@ -203,6 +82,124 @@ Object.assign(UI, {
       });
       const ba3 = el('div', null, 'slot-actions'); ba3.appendChild(bRe); r3.appendChild(ba3);
       body.appendChild(r3);
+    }
+  },
+
+  openSave() {
+    plotResetSlot = 0;
+    this.renderSave();
+    this.openPanel('save-panel');
+  },
+
+  renderSave() {
+    const body = $('save-body');
+    body.innerHTML = '';
+
+    body.appendChild(el('div',
+      'Pilih slot save. Muat = pindah ke slot itu. Lepas = simpan lalu keluar. Reset = hapus sebagian isi.',
+      'mp-desc'
+    ));
+    if (S.saveSlot) {
+      body.appendChild(el('div', '▶ Slot aktif: ' + S.saveSlot, 'mp-desc mp-desc--active'));
+    }
+
+    for (let n = 1; n <= 4; n++) {
+      const info    = slotInfo(n);
+      const locked  = !info && n > 1 && !slotUnlocked(n);
+      const isActive = n === S.saveSlot;
+
+      const card = el('div', null, 'save-slot' + (isActive ? ' save-slot--active' : '') + (!info ? ' empty' : ''));
+
+      if (!info && !locked) {
+        card.appendChild(el('span', '— Slot ' + n + ' kosong —', 'slot-name'));
+      } else if (locked) {
+        const lockEl = el('div', null, '');
+        lockEl.appendChild(el('span', 'Slot ' + n, 'slot-name'));
+        lockEl.appendChild(el('span', '🔒 Terkunci — $' + fmt(SLOT_UNLOCK_COST[n]) + ' untuk buka', 'slot-time'));
+        card.appendChild(lockEl);
+      } else {
+        const header = el('div', null, 'slot-header');
+        header.appendChild(el('span', 'Slot ' + n + (isActive ? ' ▶ aktif' : ''), 'slot-name'));
+        const ts = info.savedAt ? new Date(info.savedAt) : null;
+        const timeStr = ts
+          ? ts.toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
+            + ' ' + ts.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' })
+          : 'Waktu tidak diketahui';
+        header.appendChild(el('span', timeStr, 'slot-time'));
+        card.appendChild(header);
+
+        const infoRow = el('div', null, 'slot-info-row');
+        infoRow.appendChild(el('span', '💰 $' + fmt(info.money), 'slot-money'));
+        infoRow.appendChild(el('span', '🗺 ' + info.w + '×' + info.h, 'slot-money'));
+        infoRow.appendChild(el('span', '⬆ Ekspansi ' + info.expansion, 'slot-time'));
+        card.appendChild(infoRow);
+      }
+
+      const btns = el('div', null, 'slot-actions');
+
+      const bLoad = el('button', locked ? '🔓 Buka ($' + fmt(SLOT_UNLOCK_COST[n]) + ')' : '▶ Muat');
+      bLoad.className = 'btn-primary';
+      bLoad.disabled = isActive;
+      bLoad.addEventListener('click', () => {
+        const r = loadSlot(n);
+        if (r === 'locked') {
+          SFX.play('error');
+          this.toast('Uang tidak cukup untuk buka Slot ' + n + ' ($' + fmt(SLOT_UNLOCK_COST[n]) + ').');
+        } else {
+          SFX.play('success');
+          this.toast(r === 'fresh' ? 'Slot ' + n + ' baru dibuat.' : 'Slot ' + n + ' dimuat.');
+        }
+        this.renderSave(); this.refreshHUD();
+      });
+      btns.appendChild(bLoad);
+
+      const bReset = el('button', '↺ Reset');
+      bReset.className = 'btn-secondary';
+      bReset.disabled = !info;
+      bReset.addEventListener('click', () => {
+        plotResetSlot = plotResetSlot === n ? 0 : n;
+        this.renderSave();
+      });
+      btns.appendChild(bReset);
+
+      if (isActive) {
+        const bOut = el('button', '⏏ Lepas');
+        bOut.className = 'btn-secondary';
+        bOut.addEventListener('click', () => {
+          unloadSlot();
+          SFX.play('place');
+          this.toast('Save dilepas. Muat slot lain untuk main lagi.');
+          this.renderSave(); this.refreshHUD();
+        });
+        btns.appendChild(bOut);
+      }
+
+      card.appendChild(btns);
+      body.appendChild(card);
+
+      if (plotResetSlot === n) {
+        const rr = el('div', null, 'save-slot save-slot--reset');
+        rr.appendChild(el('span', 'Reset slot ' + n + ' — pilih bagian:', 'slot-name'));
+        const rb = el('div', null, 'slot-actions');
+        for (const [part, label] of [['items','🎒 Barang'], ['buildings','🏗 Bangunan'], ['upgrades','📐 Upgrade lahan']]) {
+          const b = el('button', label);
+          b.className = 'btn-danger';
+          b.addEventListener('click', () => {
+            if (resetSlotPart(n, part)) {
+              SFX.play('success');
+              this.toast('Slot ' + n + ' direset: ' + label + '.');
+            } else {
+              SFX.play('error');
+              this.toast('Reset gagal.');
+            }
+            plotResetSlot = 0;
+            this.renderSave(); this.refreshHUD();
+          });
+          rb.appendChild(b);
+        }
+        rr.appendChild(rb);
+        body.appendChild(rr);
+      }
     }
   },
 });

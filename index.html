@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=53">
+<link rel="stylesheet" href="style.css?v=54">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
 </head>
 <body>
@@ -22,7 +22,8 @@
 
 <nav id="burger-menu" class="panel hidden">
   <div class="panel-title">Menu</div>
-  <button data-act="Plot">Plot</button>
+  <button data-act="Plot">Plot (Wagon)</button>
+  <button data-act="Simpan">Simpan</button>
   <button data-act="Badge">Badge</button>
   <button data-act="Book">Book</button>
   <button data-act="Pengaturan">Pengaturan</button>
@@ -79,7 +80,7 @@
 
 <section id="train-panel" class="panel hidden">
   <div class="panel-head">
-    <div class="panel-title">Kereta 130</div>
+    <div class="panel-title">Kereta Trading Co.</div>
     <button class="btn-x" data-close="train-panel">X</button>
   </div>
   <div id="train-body"></div>
@@ -95,10 +96,18 @@
 
 <section id="plot-panel" class="panel hidden">
   <div class="panel-head">
-    <div class="panel-title">Plot — Save &amp; Wagon</div>
+    <div class="panel-title">Wagon</div>
     <button class="btn-x" data-close="plot-panel">X</button>
   </div>
   <div id="plot-body"></div>
+</section>
+
+<section id="save-panel" class="panel hidden">
+  <div class="panel-head">
+    <div class="panel-title">Simpan</div>
+    <button class="btn-x" data-close="save-panel">X</button>
+  </div>
+  <div id="save-body"></div>
 </section>
 
 <section id="badge-panel" class="panel hidden">
@@ -191,24 +200,24 @@
 
 <script src="js/01-core.js?v=52"></script>
 <script src="js/02-iso.js?v=52"></script>
-<script src="js/03-data-items.js?v=53"></script>
+<script src="js/03-data-items.js?v=54"></script>
 <script src="js/03-data-tutorial.js?v=52"></script>
 <script src="js/03-data-maps.js?v=52"></script>
-<script src="js/03-map-kota.js?v=53"></script>
+<script src="js/03-map-kota.js?v=54"></script>
 <script src="js/03-map-padang.js?v=52"></script>
 <script src="js/03-map-hutan.js?v=52"></script>
 <script src="js/03-map-hutan2.js?v=52"></script>
 <script src="js/03-map-gunung-es.js?v=52"></script>
 <script src="js/03-map-pelabuhan.js?v=52"></script>
 <script src="js/03-map-lahan.js?v=52"></script>
-<script src="js/04-atlas.js?v=52"></script>
+<script src="js/04-atlas.js?v=54"></script>
 <script src="js/05-render-core.js?v=52"></script>
 <script src="js/05-paint-helpers.js?v=52"></script>
 <script src="js/05-paint-tanah.js?v=52"></script>
 <script src="js/05-paint-node.js?v=52"></script>
 <script src="js/05-paint-mesin.js?v=52"></script>
 <script src="js/05-paint-alat.js?v=52"></script>
-<script src="js/05-paint-tempat.js?v=53"></script>
+<script src="js/05-paint-tempat.js?v=54"></script>
 <script src="js/05-paint-pemain.js?v=52"></script>
 <script src="js/05-paint-item.js?v=52"></script>
 <script src="js/05-paint-v36.js?v=52"></script>
@@ -220,7 +229,7 @@
 <script src="js/09-mesin.js?v=52"></script>
 <script src="js/10-resep.js?v=52"></script>
 <script src="js/11-ekonomi.js?v=52"></script>
-<script src="js/12-simpan.js?v=52"></script>
+<script src="js/12-simpan.js?v=54"></script>
 <script src="js/13-ui-core.js?v=52"></script>
 <script src="js/13-ui-build.js?v=52"></script>
 <script src="js/13-ui-inspect.js?v=52"></script>
@@ -229,11 +238,11 @@
 <script src="js/13-ui-train.js?v=53"></script>
 <script src="js/13-ui-tas.js?v=52"></script>
 <script src="js/13-ui-mayor.js?v=52"></script>
-<script src="js/13-ui-plot.js?v=52"></script>
+<script src="js/13-ui-plot.js?v=54"></script>
 <script src="js/13-ui-badge.js?v=52"></script>
 <script src="js/13-ui-book.js?v=52"></script>
 <script src="js/13-ui-tick.js?v=52"></script>
-<script src="js/13-ui.js?v=53"></script>
+<script src="js/13-ui.js?v=54"></script>
 <script src="js/14-main.js?v=53"></script>
 <script src="js/15-sound.js?v=54"></script>
 <script src="js/15-tutorial.js?v=55"></script>

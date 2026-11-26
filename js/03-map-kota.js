@@ -23,7 +23,12 @@ function buildTown() {
     }
   }
   town[S.mayor.gy][S.mayor.gx].obj = 'mayor'; // v51: (7,13)
-  town[3][3].obj = 'wagonShop'; // v52: bangunan beli wagon pindah ke kota (x17,z4)
+  // v54: wagonShop 2×2 — pindah dari (3,3) ke (5,4) karena 3 tetangga utara
+  // (3,3) menabrak jalan baris gy=2; blokir 3 petak iso-belakang seperti toko.
+  town[4][5].obj = 'wagonShop'; // (5,4) = x16,z6
+  town[3][5].blocked = true; // (5,3)
+  town[4][4].blocked = true; // (4,4)
+  town[3][4].blocked = true; // (4,3)
   // Rel tembus kolom 9 penuh; stasiun di timurnya (jalan kolom 8).
   railYAt(town, 9, 1, TOWN_H - 1);
   town[7][10].obj = 'station'; // (10,7)

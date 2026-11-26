@@ -184,8 +184,8 @@ const MANIFEST_EMBEDDED = {
     snow: { col: 4, row: 23, w: 1, h: 1 },
     ice: { col: 5, row: 23, w: 1, h: 1 },
     signClosed: { col: 6, row: 23, w: 1, h: 1 },
-    // v51: bangunan beli wagon (tanpa NPC).
-    wagonShop: { col: 7, row: 23, w: 1, h: 1 },
+    // v51: bangunan beli wagon (tanpa NPC). v54: diperbesar 2×2 (pindah ke col:0,row:7 — blok 2×2 kosong).
+    wagonShop: { col: 0, row: 7, w: 2, h: 2 },
     // v52: gerbong penumpang lepas (lokomotif dan gerbong dipisah).
     trainCar: { col: 7, row: 22, w: 1, h: 1 },
   },
