@@ -13,7 +13,15 @@ function buildTown() {
   terrain(town, [[9, 0]], 'railY');  // rel menyeberang air
   // v49: sungai lanjut ke selatan lewat kolom 18 (timur kota).
   terrain(town, rng(1, TOWN_H - 1).map((gy) => [18, gy]), 'water');
-  for (const s of SHOP_SPOTS.filter((s) => s.map === 'town')) town[s.gy][s.gx].obj = 'shop_' + s.id;
+  for (const s of SHOP_SPOTS.filter((s) => s.map === 'town')) {
+    town[s.gy][s.gx].obj = 'shop_' + s.id;
+    // sprite toko 2×2 sel menutupi 3 petak iso-belakang; blokir supaya pemain tidak bisa jalan menembus bangunan
+    if (s.gy - 1 >= 0 && s.gx - 1 >= 0) {
+      town[s.gy - 1][s.gx].blocked = true;
+      town[s.gy][s.gx - 1].blocked = true;
+      town[s.gy - 1][s.gx - 1].blocked = true;
+    }
+  }
   town[S.mayor.gy][S.mayor.gx].obj = 'mayor'; // v51: (7,13)
   town[3][3].obj = 'wagonShop'; // v52: bangunan beli wagon pindah ke kota (x17,z4)
   // Rel tembus kolom 9 penuh; stasiun di timurnya (jalan kolom 8).

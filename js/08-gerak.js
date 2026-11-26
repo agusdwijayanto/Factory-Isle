@@ -21,6 +21,7 @@ function blockedForWalk(gx, gy) {
   if (t.obj === 'wagonShop') return true; // v51: bangunan, bukan petak yang bisa diinjak
   if (t.obj === 'trainCar') return true;  // v52: gerbong kereta, memblokir seperti bangunan
   if (t.obj && t.obj.startsWith('shop')) return true;
+  if (t.blocked) return true; // petak visual 2×2 toko yang tidak punya obj
   // Pohon/bijih/kapas hidup menghalangi; tunggul (hp 0) dan lentera bisa dilewati.
   if (t.obj && NODES[t.obj] && t.hp > 0) return true;
   return false;

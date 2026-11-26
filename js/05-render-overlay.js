@@ -88,13 +88,13 @@ function paintRuler() {
   ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.6)';
   ctx.fillStyle = '#9aa3ad';
   for (let gy = 0; gy < GRID_H; gy++) {
-    const { x, y } = tileCenter(0, gy, S.cam);
+    const { x, y } = tileCenter(-0.3, gy, S.cam); // geser ke luar sel, bebas pagar/lampu
     if (x < -20 || x > VW + 20 || y < -20 || y > VH + 20) continue;
     const s = String(GRID_H - gy);
     ctx.strokeText(s, x, y); ctx.fillText(s, x, y);
   }
   for (let gx = 1; gx < GRID_W; gx++) { // z mulai dari 2: angka 1 di pojok sudah diwakili label x
-    const { x, y } = tileCenter(gx, GRID_H - 1, S.cam);
+    const { x, y } = tileCenter(gx, GRID_H - 1 + 0.3, S.cam); // geser ke luar sel
     if (x < -20 || x > VW + 20 || y < -20 || y > VH + 20) continue;
     const s = String(gx + 1);
     ctx.strokeText(s, x, y); ctx.fillText(s, x, y);

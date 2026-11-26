@@ -169,8 +169,8 @@ Object.assign(PAINTERS, {
         g.fillStyle = '#FDF6E7'; g.fillRect(cx + 20, gy - 30, 24, 12);
         g.strokeStyle = P_OL; g.lineWidth = 1; g.strokeRect(cx + 20, gy - 30, 24, 12);
         g.fillStyle = '#5A4432'; g.font = '700 6px system-ui, sans-serif'; g.textAlign = 'center';
-        g.fillText('12 / 8 / 5', cx + 32, gy - 25);
-        g.fillText('PLANK', cx + 32, gy - 21);
+        g.fillText('7 · 6 · 12', cx + 32, gy - 25);  // Log·Plank·Pillar
+        g.fillText('L · P · Pi', cx + 32, gy - 21);
         g.fillStyle = P_shade('#6B4A32', 0.9);
         g.beginPath(); g.arc(cx + 25, gy - 4, 3.5, 0, 6.29); g.fill();
         g.beginPath(); g.arc(cx + 37, gy - 4, 3.5, 0, 6.29); g.fill();

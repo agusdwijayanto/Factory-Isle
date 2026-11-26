@@ -112,19 +112,17 @@ function render() {
             Atlas.draw(ctx, sprite, x, y + 6 * z, z * gs);
             // v48: hanya Mayor yang masih pakai label mengambang — toko dan
             // stasiun sudah punya papan nama di sprite, label dobel dibuang.
-            if (t.obj === 'mayor') {
+            if (t.obj === 'mayor' || t.obj === 'conductor') {
+              const lbl = t.obj === 'mayor' ? 'Mayor' : 'Conductor';
+              const ly = y - (t.obj === 'mayor' ? 88 : 52) * z;
               ctx.font = '700 ' + Math.max(11, Math.round(12 * z)) + 'px system-ui, sans-serif';
               ctx.textAlign = 'center';
-              ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.55)';
-              ctx.strokeText('Mayor', x, y - 88 * z);
-              ctx.fillStyle = '#FFF3C4'; ctx.fillText('Mayor', x, y - 88 * z);
-            }
-            if (t.obj === 'conductor') {
-              ctx.font = '700 ' + Math.max(11, Math.round(12 * z)) + 'px system-ui, sans-serif';
-              ctx.textAlign = 'center';
-              ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.55)';
-              ctx.strokeText('Conductor', x, y - 52 * z);
-              ctx.fillStyle = '#FFF3C4'; ctx.fillText('Conductor', x, y - 52 * z);
+              // pill gelap supaya terbaca di atas atap apapun
+              const lw = ctx.measureText(lbl).width + 10 * z;
+              const lh = 16 * z;
+              ctx.fillStyle = 'rgba(0,0,0,0.52)';
+              ctx.fillRect(x - lw / 2, ly - lh * 0.78, lw, lh);
+              ctx.fillStyle = '#FFF3C4'; ctx.fillText(lbl, x, ly);
             }
           }
           if (GLOWS[t.obj]) { const [dx, dy, r, a] = GLOWS[t.obj]; glows.push({ x: x + dx * z, y: y + dy * z, r: r * z, a }); }
