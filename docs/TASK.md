@@ -1,4 +1,4 @@
-# TASK — Indotopia Tycoon Pabrik Isometrik
+# TASK — Factory Isle
 
 **Versi:** 0.1 · **Diperbarui:** 2026-11-26 · [STRUKTUR](STRUKTUR.md) · [PRD](PRD.md) · [ROADMAP](../ROADMAP.md)
 
@@ -7,13 +7,13 @@ Setiap tugas: judul, instruksi tanpa asumsi, kriteria lolos (cek statement yang 
 ## Tugas sekarang (dokumen)
 
 ### T-001 — Buat docs/STRUKTUR.md
-Instruksi: Dokumentasi struktur game dan kode: 40 skrip `js/` dengan peran, versi aset, 8 map rantai, 13 panel UI, alur simpan + migrasi, fitur aktif v52, blokir `unrar`, backlog 6 item. Sumber: `ROADMAP.md`, `index.html`, berkas `js/`.
-Kriteria lolos: Berkas ada; mencakup tabel 40 skrip, 8 map, 13 panel, versi aset `?v=52`, dan blokir `unrar`; tidak ada asumsi di luar repo.
+Instruksi: Dokumentasi struktur game dan kode: 48 skrip `js/` dengan peran, versi aset, 8 map rantai, 13 panel UI, alur simpan + migrasi, fitur aktif v52, blokir `unrar`, backlog 6 item. Sumber: `ROADMAP.md`, `index.html`, berkas `js/`.
+Kriteria lolos: Berkas ada; mencakup tabel 48 skrip, 8 map, 13 panel, versi aset `?v=52`, dan blokir `unrar`; tidak ada asumsi di luar repo.
 Dependensi: —
 
 ### T-002 — Buat docs/PRD.md
 Instruksi: Dokumen kebutuhan produk: tujuan, audiens, platform/input, sesi/simpan, engine, ruang lingkup, referensi/prinsip, pilar desain, core loop, feature index, kebutuhan non-fungsi, keputusan (D-001..D-006), pertanyaan terbuka `[ASSUMPTION]`. Sumber: `ROADMAP.md`, `index.html`, kode.
-Kriteria lolos: Berkas ada; semua bagian di atas terisi; tabel keputusan lengkap alasan per baris; feature index mencakup 22 baris (16 implemented + 6 ide).
+Kriteria lolos: Berkas ada; semua bagian di atas terisi; tabel keputusan lengkap alasan per baris; feature index mencakup 25 baris (19 implemented + 6 ide).
 Dependensi: T-001 (STRUKTUR sebagai rujukan struktur).
 
 ### T-003 — Buat docs/TASK.md (berkas ini)
