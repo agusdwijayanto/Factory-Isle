@@ -178,8 +178,12 @@ function loadGame() {
   // v57: Gunung Es rombak total (rel mendatar baris 5, jalan baris 8 +
   // kolom 5) — simpan lama yang masih punya lokomotif (9,7) / jalan baris
   // 18 dibangun ulang sekali (cek "masih ada").
+  // v58: Blok 1 ikut angka kunci Agus (x,z) — simpan v57 yang masih punya
+  // lokomotif (10,5) / jalan baris 8 dibangun ulang.
   const iceStale = S.maps.ice && (S.maps.ice.grid[7][9].obj === 'train'
-    || S.maps.ice.grid[18][10].t === 'road');
+    || S.maps.ice.grid[18][10].t === 'road'
+    || S.maps.ice.grid[5][10].obj === 'train'
+    || S.maps.ice.grid[8][10].t === 'road');
   // v52: tiap map berstasiun harus punya lokomotif + gerbong (2 petak).
   // v56: stasiun cuma di ice, town, harbor (forest2 keluar).
   const keretaStale = ['ice', 'town', 'harbor'].some((n) => {

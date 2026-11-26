@@ -169,7 +169,7 @@ const SHOP_SPOTS = [
 // jalan bertemu (bukan lagi kolom 8/9 lama).
 const MAP_EXITS = {
   ice: [
-    { gx: 19, gy: 8, to: 'forest', sx: 1, sy: 8 }, // timur ke Blok 2 (jalan baris 8, di bawah rel 5)
+    { gx: 19, gy: 14, to: 'forest', sx: 1, sy: 14 }, // timur ke Blok 2 (jalan x=6, v58)
     { gx: 5, gy: 19, to: 'forest2', sx: 5, sy: 1 }, // selatan ke Blok 4 (jalan kolom 5)
   ],
   forest: [
@@ -205,11 +205,11 @@ const MAP_EXITS = {
     { gx: 0, gy: 12, to: 'meadow_s', sx: 18, sy: 17 }, // barat ke Blok 8 (jalan baris 12)
   ],
 };
-// Stasiun kereta 3 map (v57: stasiun ikut koridor kanan):
+// Stasiun kereta 3 map (v58: Blok 1 ikut angka kunci Agus):
 // [gx, gy] petak lahir saat naik kereta (petak jalan di sebelah bangunan
-// stasiun): ice (10,6) -> lahir (10,8); town (19,7) -> lahir (17,9);
+// stasiun): ice (6,18) -> lahir (5,18); town (19,7) -> lahir (17,9);
 // harbor (17,5) -> lahir (17,8).
-const TRAIN_SPAWN = { ice: [10, 8], town: [17, 9], harbor: [17, 8] };
+const TRAIN_SPAWN = { ice: [5, 18], town: [17, 9], harbor: [17, 8] };
 
 // v49: Kota jadi KOTAK 20x20 seperti map lain. Plot mulai 16x12 lalu
 // membesar tiap ekspansi sampai 24x16 (ukuran dasar sama dengan grid v1
@@ -528,6 +528,7 @@ const CONVEYOR_COLOR_HEX = { gold: '#e8b64c', purple: '#9a6a9a', red: '#c0392b',
 
 // Riwayat versi untuk tombol Book di dalam game (ringkasan ROADMAP.md).
 const CHANGELOG = [
+  ['v58', 'Blok 1 ikut angka kunci Agus (x,z): jalan x=6 (z 6-20) + jalan z=6 (x 1-6); rel x=3 (z 7-20) di selatan jalan; stasiun (2,7), lokomotif (3,8), gerbong (3,7); pintu timur pindah ke jalan x=6.'],
   ['v57', 'Rombak total jalan+rel+stasiun ikut gambar tangan Agus: koridor utama pindah ke kanan (jalan kolom 17 + rel kolom 18 turun 2-5-8, stasiun di tepi kanan Blok 1/5/9); jalan mendatar di tengah map (baris 8 atas, baris 10 tengah, baris 17 bawah); kereta mendatar di Blok 1 (lokomotif (10,5) + gerbong (9,5)) dan Blok 9 (lokomotif (17,6) + gerbong (16,6)); jembatan di (1,10) Hutan Kapas dan (5,11)+(13,11) Padang Selatan tempat jalan menyeberang sungai; sungai tetap ikut Gemini (1 ke 4 ke 7 ke 8 ke laut di 9); toko Pelabuhan pindah ke (4,9) supaya tidak menabrak sungai.'],
   ['v56', 'Peta pulau 3x3 ganti 5x5: 9 blok (semua bisa dimasuki) — Gletser Kembar, Belantara Sunyi, Bukit Angin, Kebun Kapas, Kota Utama, Lembah Hijau, Padang Ilalang, Savana Selatan, Pelabuhan Utama; stasiun cuma di Blok 1, 5, 9 (Forestry dihapus, kereta tidak lagi berhenti di Hutan Kapas); rel dan jalan antar blok ikut gambar tangan Agus (rel samping jalan, rel cuma di rute 1-2-5-8-9); sungai mengalir 1 ke 4 ke 7 ke 8 ke laut di 9; Lahan jadi rumput semua (sungai, jalan, dan rel di lahan dihapus, bangunan tetap).'],
   ['v55', 'Atlas + panel global + peta pulau 5x5: wagonShop pindah ke atlas (col 0, row 24), atlas 24 jadi 26 baris (perbaiki karakter pemain yang muncul di atap wagonShop); peti bawaan dirapatkan ke bahu pemain (tidak lagi melayang); CSS panel dilengkapi global (.on, .build-item, .shop-btns, .mp-recipes, .mp-bar, .chip, .menu-btn, .help-text, dan lain-lain), burger menu dan tutorial dapat tombol X, tombol jual kereta dibungkus .shop-btns; peta pulau 5x5 dengan 25 blok bernama unik — HUD tampilkan nama blok; petak putih Lahan pindah ke Blok 8 Lembah Hijau (10,5); stasiun Forestry pindah ke Hutan Kapas; rantai map jadi Gunung Es-Hutan Lebat-Hutan Kapas-Padang Rumput-Kota-Padang Rumput Selatan-Teluk Pasir; teks tutorial ikut rute baru.'],
