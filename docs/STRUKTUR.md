@@ -1,4 +1,4 @@
-# STRUKTUR — Indotopia Tycoon Pabrik Isometrik
+# STRUKTUR — Factory Isle
 
 **Versi:** 0.1 · **Diperbarui:** 2026-11-26 · [ROADMAP](../ROADMAP.md) · [PRD](PRD.md) · [TASK](TASK.md)
 
@@ -8,9 +8,9 @@ Dokumen ini mencatat struktur game dan kode secara utuh, satu fakta di satu temp
 
 Game tycoon pabrik single-player di browser, tampilan isometrik 2.5D ala TheoTown, terinspirasi Factory Town Tycoon (Roblox). Bahasa Indonesia. Pemain memulai dengan modal $50 + kapak, lalu panen, olah rantai mesin, jual, beli mesin/resep. Prinsip ATM (Amati, Tiru, Modifikasi) — tidak jiplak mentah-mentah.
 
-## Struktur kode (40 skrip)
+## Struktur kode (48 skrip)
 
-Dimuatan oleh `index.html` dalam urutan ini. Setiap baris: berkas → peran.
+Dimuat oleh `index.html` dalam urutan ini. Setiap baris: berkas → peran.
 
 | Berkas | Peran |
 |---|---|
@@ -114,7 +114,7 @@ Cek staleness: `townStale` (bangun wagon di tempat baru), `plotStale` (masih ada
 - [x] Ikon item 25 prosedural di atlas
 - [x] 2 map awal → 8 map rantai
 - [x] NPC Mayor + ekspansi plot (Size 200/400/800/2000), Auto Seller $5.000
-- [x] 61 sprite manifest
+- [x] 147 sprite manifest
 - [x] UI/UX ATM sentuh, target 36-48px, tanpa tombol HUD baru
 - [x] Sprite masuk sel atlas (147/147 nol luber)
 - [x] Kereta 2 petak (lokomotif + gerbong), nol tulisan di sprite
@@ -126,8 +126,6 @@ Cek staleness: `townStale` (bangun wagon di tempat baru), `plotStale` (masih ada
 ## Blokir dan belum selesai
 
 **Blokir teknis:** BLACKSMITH + menu crafting butuh `unrar` untuk ekstrak sisa 40 PNG dari `Factory_Tycon.rar` (40/80 sukses; `rarfile` Python intermittent, `unrar` sistem tidak tersedia). Dilaporkan saja, tidak diubah.
-
-**Belum ada di repo (belum dibuat):** `docs/STRUKTUR.md`, `docs/PRD.md`, `docs/TASK.md` (dicetus `ROADMAP.md` baris 8).
 
 **Backlog v52 (belum ada centang):** rantai tekstil + Bronze Cannon, quest/trust NPC, fuel meter terpisah, irigasi, bangunan logika, multi-save. Detail spesifikasi belum ada di repo — ditandai `[ASSUMPTION]` di `TASK.md`.
 
