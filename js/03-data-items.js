@@ -152,7 +152,7 @@ const SHOP_SPOTS = [
   { map: 'town', gx: 16, gy: 12, id: 'textile' },
   { map: 'town', gx: 4, gy: 15, id: 'carpenter' },
   { map: 'town', gx: 12, gy: 16, id: 'supply' },
-  { map: 'harbor', gx: 4, gy: 10, id: 'harbor' }, // v51: (x10,z5), jauh dari rel dan dari desert village
+  { map: 'harbor', gx: 4, gy: 9, id: 'harbor' }, // v57: (4,9), 1 petak ke utara supaya tidak menabrak sungai baris 11
   { map: 'harbor', gx: 12, gy: 2, id: 'desert' }, // v36: desa gurun
   { map: 'harbor', gx: 10, gy: 18, id: 'pirate' }, // v52: kapal bajak laut di air dekat dermaga
 ];
@@ -163,52 +163,53 @@ const SHOP_SPOTS = [
 // v56: pulau 3x3 — pintu mengikuti jalan antar blok (gambar tangan Agus):
 // utara/selatan di kolom jalan (8), timur/barat di baris jalan map itu.
 // Dua blok bisa berbagi satu map (meadow_n, meadow_s): pintu di tepi yang
-// sama dibedakan baris/kolomnya (mis. barat meadow_n baris 10 = Blok 3,
-// baris 14 = Blok 6; utara meadow_s kolom 8 = Blok 7, kolom 14 = Blok 8).
-// Lahan (plot) BUKAN di grid — map samping, masuk lewat petak putih di
-// Padang Rumput (Blok 6) dan keluar kembali ke sana (07-pemain.js).
+// v57 (rombak total ikut gambar tangan Agus): koridor utama di kanan —
+// jalan kolom 17 + rel kolom 18 turun 2-5-8; jalan mendatar di tengah map
+// (baris 8 atas, baris 10 tengah, baris 17 bawah); pintu di tepi tempat
+// jalan bertemu (bukan lagi kolom 8/9 lama).
 const MAP_EXITS = {
   ice: [
-    { gx: 19, gy: 18, to: 'forest', sx: 1, sy: 18 }, // timur ke Blok 2 (jalan baris 18, samping rel 17)
-    { gx: 8, gy: 19, to: 'forest2', sx: 8, sy: 1 }, // selatan ke Blok 4
+    { gx: 19, gy: 8, to: 'forest', sx: 1, sy: 8 }, // timur ke Blok 2 (jalan baris 8, di bawah rel 5)
+    { gx: 5, gy: 19, to: 'forest2', sx: 5, sy: 1 }, // selatan ke Blok 4 (jalan kolom 5)
   ],
   forest: [
-    { gx: 0, gy: 18, to: 'ice', sx: 18, sy: 18 }, // barat ke Blok 1
-    { gx: 19, gy: 10, to: 'meadow_n', sx: 1, sy: 10 }, // timur ke Blok 3 (tengah)
-    { gx: 8, gy: 19, to: 'town', sx: 8, sy: 1 }, // selatan ke Blok 5
+    { gx: 0, gy: 8, to: 'ice', sx: 18, sy: 8 }, // barat ke Blok 1
+    { gx: 19, gy: 8, to: 'meadow_n', sx: 1, sy: 8 }, // timur ke Blok 3 (tengah)
+    { gx: 17, gy: 19, to: 'town', sx: 17, sy: 1 }, // selatan ke Blok 5 (jalan kolom 17, samping rel 18)
   ],
   forest2: [
-    { gx: 8, gy: 0, to: 'ice', sx: 8, sy: 18 }, // utara ke Blok 1
-    { gx: 19, gy: 5, to: 'town', sx: 1, sy: 6 }, // timur ke Blok 5 (lahir di jalan baris 6 kota)
-    { gx: 8, gy: 19, to: 'meadow_s', sx: 8, sy: 1 }, // selatan ke Blok 7
+    { gx: 5, gy: 0, to: 'ice', sx: 5, sy: 18 }, // utara ke Blok 1
+    { gx: 19, gy: 10, to: 'town', sx: 1, sy: 10 }, // timur ke Blok 5 (tengah)
+    { gx: 5, gy: 19, to: 'meadow_s', sx: 5, sy: 1 }, // selatan ke Blok 7
   ],
   meadow_n: [
-    { gx: 0, gy: 10, to: 'forest', sx: 18, sy: 10 }, // barat ke Blok 2
-    { gx: 0, gy: 14, to: 'town', sx: 18, sy: 6 }, // barat ke Blok 5 (lahir di jalan baris 6 kota)
+    { gx: 0, gy: 8, to: 'forest', sx: 18, sy: 8 }, // barat ke Blok 2
+    { gx: 0, gy: 10, to: 'town', sx: 17, sy: 10 }, // barat ke Blok 5 (lahir di jalan kolom 17 kota)
   ],
   plot: [
     { gx: 8, gy: 0, to: 'meadow_n', sx: 8, sy: 18 }, // gerbang utara lahan -> Padang Rumput (Blok 6)
   ],
   town: [
-    { gx: 8, gy: 0, to: 'forest', sx: 8, sy: 18 }, // utara ke Blok 2
-    { gx: 0, gy: 6, to: 'forest2', sx: 18, sy: 5 }, // barat ke Blok 4 (jalan baris 6)
-    { gx: 19, gy: 6, to: 'meadow_n', sx: 1, sy: 14 }, // timur ke Blok 6 (jalan baris 6)
-    { gx: 8, gy: 19, to: 'meadow_s', sx: 14, sy: 1 }, // selatan ke Blok 8
+    { gx: 17, gy: 0, to: 'forest', sx: 17, sy: 18 }, // utara ke Blok 2 (kanan atas)
+    { gx: 0, gy: 10, to: 'forest2', sx: 18, sy: 10 }, // barat ke Blok 4 (tengah)
+    { gx: 19, gy: 10, to: 'meadow_n', sx: 1, sy: 10 }, // timur ke Blok 6 (tengah)
+    { gx: 17, gy: 19, to: 'meadow_s', sx: 17, sy: 1 }, // selatan ke Blok 8 (jalan kolom 17)
+    { gx: 13, gy: 19, to: 'meadow_s', sx: 13, sy: 1 }, // selatan ke Blok 8 (pintu kedua, kolom 13)
   ],
   meadow_s: [
-    { gx: 8, gy: 0, to: 'forest2', sx: 8, sy: 18 }, // utara ke Blok 4
-    { gx: 14, gy: 0, to: 'town', sx: 8, sy: 18 }, // utara ke Blok 5 (pintu kedua)
-    { gx: 19, gy: 5, to: 'harbor', sx: 1, sy: 5 }, // timur ke Blok 9 (jalan pantai baris 5)
+    { gx: 5, gy: 0, to: 'forest2', sx: 5, sy: 18 }, // utara ke Blok 4
+    { gx: 13, gy: 0, to: 'town', sx: 13, sy: 18 }, // utara ke Blok 5 (pintu kedua)
+    { gx: 19, gy: 17, to: 'harbor', sx: 1, sy: 12 }, // timur ke Blok 9 (jalan bawah baris 17)
   ],
   harbor: [
-    { gx: 0, gy: 5, to: 'meadow_s', sx: 18, sy: 5 }, // barat ke Blok 8 (jalan pantai baris 5)
+    { gx: 0, gy: 12, to: 'meadow_s', sx: 18, sy: 17 }, // barat ke Blok 8 (jalan baris 12)
   ],
 };
-// Stasiun kereta 3 map (v56: Forestry dihapus, stasiun cuma di Blok 1, 5, 9):
+// Stasiun kereta 3 map (v57: stasiun ikut koridor kanan):
 // [gx, gy] petak lahir saat naik kereta (petak jalan di sebelah bangunan
-// stasiun): ice (8,7) -> lahir (8,8); town (10,7) -> lahir (8,8);
-// harbor (8,6) -> lahir (8,7).
-const TRAIN_SPAWN = { ice: [8, 8], town: [8, 8], harbor: [8, 7] };
+// stasiun): ice (10,6) -> lahir (10,8); town (19,7) -> lahir (17,9);
+// harbor (17,5) -> lahir (17,8).
+const TRAIN_SPAWN = { ice: [10, 8], town: [17, 9], harbor: [17, 8] };
 
 // v49: Kota jadi KOTAK 20x20 seperti map lain. Plot mulai 16x12 lalu
 // membesar tiap ekspansi sampai 24x16 (ukuran dasar sama dengan grid v1
@@ -527,6 +528,7 @@ const CONVEYOR_COLOR_HEX = { gold: '#e8b64c', purple: '#9a6a9a', red: '#c0392b',
 
 // Riwayat versi untuk tombol Book di dalam game (ringkasan ROADMAP.md).
 const CHANGELOG = [
+  ['v57', 'Rombak total jalan+rel+stasiun ikut gambar tangan Agus: koridor utama pindah ke kanan (jalan kolom 17 + rel kolom 18 turun 2-5-8, stasiun di tepi kanan Blok 1/5/9); jalan mendatar di tengah map (baris 8 atas, baris 10 tengah, baris 17 bawah); kereta mendatar di Blok 1 (lokomotif (10,5) + gerbong (9,5)) dan Blok 9 (lokomotif (17,6) + gerbong (16,6)); jembatan di (1,10) Hutan Kapas dan (5,11)+(13,11) Padang Selatan tempat jalan menyeberang sungai; sungai tetap ikut Gemini (1 ke 4 ke 7 ke 8 ke laut di 9); toko Pelabuhan pindah ke (4,9) supaya tidak menabrak sungai.'],
   ['v56', 'Peta pulau 3x3 ganti 5x5: 9 blok (semua bisa dimasuki) — Gletser Kembar, Belantara Sunyi, Bukit Angin, Kebun Kapas, Kota Utama, Lembah Hijau, Padang Ilalang, Savana Selatan, Pelabuhan Utama; stasiun cuma di Blok 1, 5, 9 (Forestry dihapus, kereta tidak lagi berhenti di Hutan Kapas); rel dan jalan antar blok ikut gambar tangan Agus (rel samping jalan, rel cuma di rute 1-2-5-8-9); sungai mengalir 1 ke 4 ke 7 ke 8 ke laut di 9; Lahan jadi rumput semua (sungai, jalan, dan rel di lahan dihapus, bangunan tetap).'],
   ['v55', 'Atlas + panel global + peta pulau 5x5: wagonShop pindah ke atlas (col 0, row 24), atlas 24 jadi 26 baris (perbaiki karakter pemain yang muncul di atap wagonShop); peti bawaan dirapatkan ke bahu pemain (tidak lagi melayang); CSS panel dilengkapi global (.on, .build-item, .shop-btns, .mp-recipes, .mp-bar, .chip, .menu-btn, .help-text, dan lain-lain), burger menu dan tutorial dapat tombol X, tombol jual kereta dibungkus .shop-btns; peta pulau 5x5 dengan 25 blok bernama unik — HUD tampilkan nama blok; petak putih Lahan pindah ke Blok 8 Lembah Hijau (10,5); stasiun Forestry pindah ke Hutan Kapas; rantai map jadi Gunung Es-Hutan Lebat-Hutan Kapas-Padang Rumput-Kota-Padang Rumput Selatan-Teluk Pasir; teks tutorial ikut rute baru.'],
   ['v54', 'Perbaikan panel + wagonShop: aturan CSS panel ditambah (.panel-head, .panel-title, .btn-x, .mp-desc, .mayor-row, .shop-row, .shop-item) supaya judul dan tombol X satu baris dan tombol Naik/Beli tidak menumpuk teks; judul panel kereta di index.html dibetulkan jadi "Kereta Trading Co."; save dipisah dari panel wagon ke panel Simpan sendiri lewat burger menu; bangunan beli wagon diperbesar jadi 2×2 (pindah ke (5,4) karena posisi lama (3,3) menabrak jalan baris gy=2, 3 petak tetangga ikut diblokir).'],

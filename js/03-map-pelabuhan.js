@@ -1,9 +1,13 @@
 // v49: Gurun + Pelabuhan, 20x20 — ujung TIMUR-SELATAN pulau 3x3 (Blok 9).
 // Desa gurun di timur laut (pasir), pantai + dermaga di selatan (laut),
-// pulau palem di teluk tenggara (dicapai dengan berenang), stasiun di
-// (8,6) + kereta (9,6), rel masuk dari barat (Blok 8) di baris 6.
-// v56: rel tidak lagi masuk dari utara — rel datang dari barat di baris 6
-// (samping jalan pantai baris 5), kereta di ujungnya. Sungai masuk dari
+// pulau palem di teluk tenggara (dicapai dengan berenang), stasiun +
+// kereta di ujung timur rel baris 6.
+// v57 (rombak total ikut gambar tangan Agus): rel mendatar baris 6 penuh
+// (barat ke Blok 8 sampai tepi timur); kereta di ujung timur (lokomotif
+// (17,6) menghadap timur, gerbong di baratnya (16,6)); stasiun di utara
+// lokomotif (17,5, tepi kanan atas sesuai gambar). Jalan pantai pindah ke
+// baris 12 (barat ke Blok 8, dari jalan bawah Blok 7-8); toko Pelabuhan
+// pindah ke (4,9) supaya tidak menabrak sungai baris 11. Sungai masuk dari
 // barat di baris 11 (lanjutan Padang Rumput Selatan), turun kolom 18 ke teluk.
 function buildHarbor() {
   const harbor = makeGrid(MAP_W, MAP_H);
@@ -11,16 +15,15 @@ function buildHarbor() {
   terrain(harbor, [...rng(9, 17).flatMap((gx) => rng(1, 5).map((gy) => [gx, gy]))], 'sand');
   // Pantai di selatan.
   terrain(harbor, [...rng(0, 12).flatMap((gx) => rng(12, 17).map((gy) => [gx, gy]))], 'sand');
-  // Jalan: kolom 8 dari pintu utara + jalan pantai baris 5.
-  terrain(harbor, rng(0, 5).map((gy) => [8, gy]), 'road');
-  terrain(harbor, rng(0, 17).map((gx) => [gx, 5]), 'road');
-  // Rel terminus: masuk dari barat di baris 6 (samping jalan pantai),
-  // kereta di ujungnya; palang di selatan kereta.
-  railXAt(harbor, 6, 0, 9);
-  terrain(harbor, [[9, 7]], 'railStop');
-  harbor[6][8].obj = 'station';
-  harbor[6][9].obj = 'train';
-  harbor[7][9].obj = 'trainCar'; // v52: gerbong 1 petak ke selatan (di palang rel)
+  // Jalan: baris 12 dari pintu barat (Blok 8) ke tengah map.
+  terrain(harbor, rng(0, 10).map((gx) => [gx, 12]), 'road');
+  // Rel terminus: mendatar baris 6 penuh (barat ke Blok 8 sampai tepi
+  // timur); palang di timur lokomotif, di atas sungai kolom 18.
+  railXAt(harbor, 6, 0, 19);
+  terrain(harbor, [[18, 6]], 'railStop'); // palang di timur lokomotif, di atas sungai kolom 18
+  harbor[5][17].obj = 'station'; // (17,5), utara lokomotif
+  harbor[6][17].obj = 'train'; // (17,6), lokomotif menghadap timur
+  harbor[6][16].obj = 'trainCar'; // (16,6), gerbong di barat lokomotif
   for (const s of SHOP_SPOTS.filter((s) => s.map === 'harbor')) harbor[s.gy][s.gx].obj = 'shop_' + s.id;
   // Laut: tepi selatan + jalur timur + teluk tenggara.
   terrain(harbor, [...rng(0, MAP_W - 1).flatMap((gx) => [[gx, 18], [gx, 19]])], 'water');
