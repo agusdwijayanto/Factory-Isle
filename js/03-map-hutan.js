@@ -1,31 +1,27 @@
-// v49: Padang Rumput + Hutan Lebat, 20x20 — hutan lebat + stasiun kereta.
-// JANGKAR SIMPAN: grid[0][8] jembatan, grid[7][9] kereta (v50), grid[5][12]
-// dyeplant. Jangan pindahkan.
-// v50: rel diluruskan (tanpa belokan); stasiun di (8,7), kereta di (9,7) di
-// rel lurus. Pintu utara ke Padang Rumput, pintu selatan ke Hutan Kapas.
+// v49: Padang Rumput + Hutan Lebat, 20x20 — hutan lebat tanpa stasiun.
+// JANGKAR SIMPAN: grid[0][8] jalan, grid[5][12] dyeplant. Jangan pindahkan.
+// v56: sungai utara-selatan (kolom 1) dan air tepi utara DIHAPUS — sungai
+// pulau tidak lagi lewat Blok 2 (rute sungai: 1 ke 4 ke 7 ke 8 ke 9).
+// Rel belok: masuk dari barat (Blok 1) di baris 17, turun kolom 9 ke
+// selatan (Blok 5). Pintu: barat ke Blok 1, timur ke Blok 3, selatan ke Blok 5.
+// v55: stasiun kereta PINDAH ke Hutan Kapas. v56: stasiun Forestry DIHAPUS
+// — stasiun cuma di Blok 1, 5, 9; Hutan Lebat tanpa stasiun.
 function buildForest() {
   const forest = makeGrid(MAP_W, MAP_H);
   put(forest, [[2, 2], [5, 3], [3, 5], [6, 4], [2, 8], [4, 10], [3, 12], [5, 14],
-    [10, 4], [11, 11], [7, 16], [16, 12], [15, 17], [4, 17], [12, 15], [17, 14]], 'tree');
+    [10, 4], [11, 11], [7, 16], [16, 12], [15, 17], [4, 16], [12, 15], [17, 14]], 'tree');
   put(forest, [[17, 2], [18, 2], [17, 3]], 'cotton');
   put(forest, [[12, 5], [13, 5], [16, 5]], 'dyeplant'); // (12,5) jangkar simpan
   put(forest, [[11, 8]], 'lantern');
   terrain(forest, [[2, 1], [18, 1]], 'sand');
-  // Sungai tepi utara: air dulu, baru jembatan + rel menimpa air.
-  terrain(forest, rng(0, MAP_W - 1).map((gx) => [gx, 0]), 'water');
-  terrain(forest, [[8, 0]], 'bridge'); // jembatan jalan utama (jangkar simpan)
-  terrain(forest, [[9, 0]], 'railY');  // rel menyeberang air
-  // v49: sungai mengalir utara-selatan lewat kolom 1 (nyambung dari Lahan Ijo
-  // di utara ke Hutan Dikit di selatan), jadi air tepi utara tidak buntu.
-  terrain(forest, rng(1, MAP_H - 1).map((gy) => [1, gy]), 'water');
-  // v50: rel LURUS kolom 9 utara-selatan (belokan + rel cabang ke (14,9)
-  // dihapus).
-  // v55: stasiun kereta + lokomotif + gerbong PINDAH ke Hutan Kapas
-  // (forest2, Blok 2 Kebun Kapas = Forestry Station). Hutan Lebat kini
-  // tanpa stasiun; jalan utama kolom 8 tembus tanpa lubang.
-  railYAt(forest, 9, 0, MAP_H - 1);
-  // Jalan: kolom 8 utara-selatan tembus; cabang jalan baris 7 ke stasiun lama
-  // (x 10..17) sudah dibuang v50.
+  // v56: rel masuk dari barat di baris 17 (samping jalan baris 18), turun
+  // kolom 9 ke selatan. Rel utara (ke tepi pulau) dihapus.
+  railYAt(forest, 9, 17, MAP_H - 1);
+  railXAt(forest, 17, 0, 9);
+  // Jalan: kolom 8 utara-selatan tembus; baris 18 ke barat (Blok 1),
+  // baris 10 ke timur (Blok 3, tengah).
   roadAt(forest, rng(0, MAP_H - 1).map((gy) => [8, gy]));
+  roadAt(forest, rng(0, 8).map((gx) => [gx, 18]));
+  roadAt(forest, rng(8, 19).map((gx) => [gx, 10]));
   return forest;
 }

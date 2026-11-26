@@ -1,12 +1,14 @@
 // Bantuan bangun map + rakitan map statis.
-// v49: dunia jadi SATU RANTAI 8 map dari utara ke selatan. Tiap map KOTAK
-// 20x20 = 400 blok (lahan tetap 16x12 lalu membesar sampai 24x16).
-//   ice -> meadow_n -> forest -> forest2 -> plot -> town -> meadow_s -> harbor
-// Konvensi: gy=0 tepi UTARA, gy=19 tepi SELATAN. Jalan utama kolom x=8,
-// rel kolom x=9 di SEMUA map. Sungai mengalir utara->selatan: kolom 1 di
-// ice/meadow_n/forest/forest2/plot, masuk kota lewat jembatan utara lalu
-// turun kolom 18 di town/meadow_s/harbor sampai laut. Pintu antar map di
-// (8,0)/(8,19) kecuali stasiun-rel terminus di ujung rantai.
+// v56: dunia jadi PULAU 3x3 (9 blok, 8 map game + lahan samping). Tiap map
+// KOTAK 20x20 = 400 blok (lahan tetap 16x12 lalu membesar sampai 24x16).
+//   1 ice | 2 forest | 3 meadow_n
+//   4 forest2 | 5 town | 6 meadow_n
+//   7 meadow_s | 8 meadow_s | 9 harbor
+// Konvensi: gy=0 tepi UTARA, gy=19 tepi SELATAN. Jalan utama kolom x=8;
+// rel di samping jalan (rute kereta 1-2-5-8-9). Sungai mengalir
+// 1 -> 4 -> 7 -> 8 -> laut di 9 (kolom 1 di ice/forest2, baris 11 di
+// meadow_s/harbor, turun kolom 18 ke teluk). Pintu antar map mengikuti
+// jalan antar blok (lihat MAP_EXITS di 03-data-items.js).
 const MAP_W = 20, MAP_H = 20;
 // Bantuan bangun map, dipakai buildMap dan migrasi simpan lama (12-simpan.js).
 const rng = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);

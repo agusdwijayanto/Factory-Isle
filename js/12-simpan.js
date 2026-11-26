@@ -113,46 +113,70 @@ function loadGame() {
     || S.maps.town.grid[7][1].obj !== 'lantern'
     // v51: Mayor di (7,13) — simpan v50 punya petak putih di situ, jadi ke sini ikut bangun ulang.
     || S.maps.town.grid[13][7].obj !== 'mayor'
-    || S.maps.town.grid[4][5].obj !== 'wagonShop'); // v54: wagonShop 2×2 pindah ke (5,4)
+    || S.maps.town.grid[4][5].obj !== 'wagonShop' // v54: wagonShop 2×2 pindah ke (5,4)
+    // v56: sungai keluar dari kota (jembatan utara, sungai kolom 18, dan
+    // papan COMING SOON dihapus) — simpan lama yang masih punya dibangun ulang.
+    || S.maps.town.grid[0][8].t === 'bridge'
+    || S.maps.town.grid[1][18].t === 'water'
+    || S.maps.town.grid[6][0].obj === 'signClosed');
   const meadowNStale = S.maps.meadow_n && (S.maps.meadow_n.grid[5][10].obj !== 'plotpad'
-    || S.maps.meadow_n.grid[5][11].obj !== 'plotsign'); // v55: petak putih pindah ke Blok 8 (10,5)
+    || S.maps.meadow_n.grid[5][11].obj !== 'plotsign' // v55: petak putih pindah ke Blok 6 (10,5)
+    // v56: sungai dan rel keluar dari Padang Rumput (Blok 3+6).
+    || S.maps.meadow_n.grid[0][9].t === 'railY'
+    || S.maps.meadow_n.grid[0][1].t === 'water');
   // v55: stasiun kereta pindah dari Hutan Lebat ke Hutan Kapas (Forestry).
   // Hutan Lebat baru TIDAK punya stasiun/kereta; simpan lama yang masih
   // menyimpannya dibangun ulang sekali (cek "masih ada", bukan "harus ada").
   const forestStale = S.maps.forest && (S.maps.forest.grid[7][9].obj === 'train'
     || S.maps.forest.grid[7][10].obj === 'station'
-    || S.maps.forest.grid[0][8].t !== 'bridge' || S.maps.forest.grid[5][12].obj !== 'dyeplant');
-  const harborStale = S.maps.harbor && !SHOP_SPOTS.filter((s) => s.map === 'harbor').every((s) => S.maps.harbor.grid[s.gy][s.gx].obj === 'shop_' + s.id);
+    // v56: jembatan utara jadi jalan (8,0); sungai kolom 1 dan rel utara dihapus.
+    || S.maps.forest.grid[0][8].t !== 'road'
+    || S.maps.forest.grid[5][12].obj !== 'dyeplant'
+    || S.maps.forest.grid[1][1].t === 'water'
+    || S.maps.forest.grid[0][9].t === 'railY');
+  // v56: Hutan Kapas kehilangan stasiun/kereta/rel — simpan lama yang masih
+  // punya dibangun ulang sekali (cek "masih ada").
+  const forest2Stale = S.maps.forest2 && (S.maps.forest2.grid[7][9].obj === 'train'
+    || S.maps.forest2.grid[7][10].obj === 'station'
+    || S.maps.forest2.grid[0][9].t === 'railY');
+  // v56: sungai Padang Rumput Selatan pindah (kolom 18 -> kolom 1 + baris 11).
+  const meadowSStale = S.maps.meadow_s && (S.maps.meadow_s.grid[0][18].t === 'water'
+    || S.maps.meadow_s.grid[11][1].t !== 'water');
+  const harborStale = S.maps.harbor && (!SHOP_SPOTS.filter((s) => s.map === 'harbor').every((s) => S.maps.harbor.grid[s.gy][s.gx].obj === 'shop_' + s.id)
+    // v56: rel masuk dari barat (baris 6), bukan dari utara; sungai masuk dari barat (baris 11).
+    || S.maps.harbor.grid[0][9].t === 'railY'
+    || S.maps.harbor.grid[11][0].t !== 'water');
   // v52: tiap map berstasiun harus punya lokomotif + gerbong (2 petak).
-  // v55: stasiun Forestry di forest2 (bukan forest lagi).
-  const keretaStale = ['ice', 'forest2', 'town', 'harbor'].some((n) => {
+  // v56: stasiun cuma di ice, town, harbor (forest2 keluar).
+  const keretaStale = ['ice', 'town', 'harbor'].some((n) => {
     const m = S.maps[n];
     if (!m) return false;
     const flat = m.grid.flat();
     return flat.filter((t) => t.obj === 'train').length !== 1 || flat.filter((t) => t.obj === 'trainCar').length !== 1;
   });
-  // v49: lahan harus punya dua gerbang jalan (8,0) dan (8, h-1) plus kolom
-  // sungai/jalan/rel; lahan lama (satu jalan di gerbang bawah) dibangun ulang
-  // di ukuran yang sekarang, mesin dan ekspansinya tetap.
+  // v56: lahan jadi rumput semua — simpan lama yang masih punya kolom
+  // sungai/jalan/rel dibangun ulang sekali (cek "masih ada", bukan "harus
+  // ada", supaya lahan baru tidak dibangun ulang tiap muat). Mesin dan
+  // ekspansi tetap (mesin tersimpan terpisah di S.machines, bukan di grid).
   const pg = S.maps.plot ? gatePos() : null;
-  const plotStale = S.maps.plot && (S.maps.plot.grid[pg.gy][pg.gx].t !== 'road'
-    || S.maps.plot.grid[0][8].t !== 'road'
-    || S.maps.plot.grid[Math.floor(S.maps.plot.h / 2)][1].t !== 'water'
-    || S.maps.plot.grid[Math.floor(S.maps.plot.h / 2)][9].t !== 'railY'
+  const plotStale = S.maps.plot && (S.maps.plot.grid[pg.gy][pg.gx].t === 'road'
+    || S.maps.plot.grid[0][8].t === 'road'
+    || S.maps.plot.grid[Math.floor(S.maps.plot.h / 2)][1].t === 'water'
+    || S.maps.plot.grid[Math.floor(S.maps.plot.h / 2)][9].t === 'railY'
     // v52: simpan v51 punya bangunan beli wagon di lahan (5, h-2) — sekarang
     // bangunannya di kota, jadi lahan yang masih menyimpannya dibangun ulang
     // sekali. Cek ini SENGAJA "masih ada" (bukan "harus ada"), karena setelah
     // v52 lahan tidak lagi memuat bangunan itu — kalau dibalik, lahan akan
     // dibangun ulang tiap kali dimuat.
     || S.maps.plot.grid[S.maps.plot.h - 2][5].obj === 'wagonShop');
-  if (townStale || meadowNStale || forestStale || harborStale || keretaStale) {
+  if (townStale || meadowNStale || forestStale || forest2Stale || meadowSStale || harborStale || keretaStale) {
     const sm = buildStaticMaps();
     for (const [name, m] of Object.entries(sm)) S.maps[name] = m;
   }
   if (plotStale) {
-    // Lahan: dua gerbang jalan + kolom sungai/rel, sisanya rumput — di
-    // ukuran lahan saat ini (ekspansi ikut terjaga), supaya jalan keluar
-    // tetap di gerbang (8, h-1) = Agus (1,9).
+    // Lahan: rumput semua di ukuran lahan saat ini (ekspansi ikut terjaga),
+    // gerbang keluar tetap di (8, h-1) = Agus (1,9) dan (8,0) — keduanya
+    // gerbang koordinat, bukan terrain.
     const m = S.maps.plot;
     const g = makeGrid(m.w, m.h);
     stampPlotColumns(g);

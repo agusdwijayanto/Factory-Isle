@@ -11,10 +11,12 @@ Object.assign(UI, {
     body.innerHTML = '';
     body.appendChild(el('div', 'Kereta Trading Co. — angkutan cepat antar zona. Jalan kaki tetap bisa lewat ujung map.', 'mp-desc'));
     body.appendChild(el('div', 'Kereta di: ' + currentBlockName(), 'mp-desc'));
-    for (const dest of ['ice', 'forest2', 'town', 'harbor']) {
+    // v56: stasiun cuma di Blok 1, 5, 9 — tujuan tampil nama blok.
+    const TRAIN_BLOCK = { ice: 1, town: 5, harbor: 9 };
+    for (const dest of ['ice', 'town', 'harbor']) {
       if (dest === S.map) continue;
       const row = el('div', null, 'mayor-row');
-      row.appendChild(el('span', MAP_NAMES[dest]));
+      row.appendChild(el('span', BLOCKS[TRAIN_BLOCK[dest]].name));
       const b = el('button', 'Naik');
       b.addEventListener('click', () => this.rideTrain(dest));
       row.appendChild(b);

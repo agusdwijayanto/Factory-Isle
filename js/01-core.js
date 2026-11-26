@@ -98,22 +98,22 @@ function gatePos() {
   return { gx: 8, gy: m.h - 1 };
 }
 
-// v55: blok pulau 5x5 yang ditempati pemain saat ini (dari map + posisi
-// di dalam map). Map yang memuat beberapa blok dibagi menurut koordinat:
-// ice: rel (gx 9) di Blok 4; meadow_n: Blok 8 tengah = plot Lahan;
-// town: stasiun (gx 10) di Blok 14; harbor: gurun utara, pelabuhan selatan;
-// meadow_s: belah dua. Lahan (plot) = map samping, tanpa nomor blok.
+// v56: blok pulau 3x3 yang ditempati pemain saat ini (dari map + posisi
+// di dalam map). Map yang memuat dua blok dibagi menurut koordinat:
+// meadow_n: timur (gx>=10, petak Plot) atau selatan (gy>=12) = Blok 6,
+// sisanya Blok 3; meadow_s: belah dua (gx<10 = Blok 7, sisanya Blok 8).
+// Lahan (plot) = map samping, tanpa nomor blok.
 function currentBlock() {
   const p = S.player;
   const gx = Math.floor(p.fx), gy = Math.floor(p.fy);
   switch (S.map) {
-    case 'forest': return 1;
-    case 'forest2': return 2;
-    case 'ice': return gx < 8 ? 3 : 4;
-    case 'meadow_n': return gx < 7 ? 7 : gx < 14 ? 8 : 9;
-    case 'town': return gx < 8 ? 13 : 14;
-    case 'harbor': return gy < 7 ? 15 : gy < 14 ? 16 : 24;
-    case 'meadow_s': return gx < 10 ? 22 : 23;
+    case 'ice': return 1;
+    case 'forest': return 2;
+    case 'meadow_n': return (gx >= 10 || gy >= 12) ? 6 : 3;
+    case 'forest2': return 4;
+    case 'town': return 5;
+    case 'meadow_s': return gx < 10 ? 7 : 8;
+    case 'harbor': return 9;
     case 'plot': return 0;
     default: return 0;
   }
@@ -186,7 +186,7 @@ function switchMap(name, spawn) {
   if (typeof centerCamera === 'function' && typeof VW !== 'undefined') {
     centerCamera(VW, VH);
   }
-  TOAST(name === 'plot' ? 'Masuk ke lahanmu.' : name === 'town' ? 'Kembali ke kota.' : 'Tiba di ' + MAP_NAMES[name] + '.');
+  TOAST(name === 'plot' ? 'Masuk ke lahanmu.' : name === 'town' ? 'Kembali ke kota.' : 'Tiba di ' + currentBlockName() + '.');
   if (typeof UI !== 'undefined') UI.refreshHUD();
   saveSoon();
 }

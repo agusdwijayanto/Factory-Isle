@@ -215,8 +215,8 @@ function checkMapTrigger() {
   const cur = playerTile();
   // v55: utara kota = Padang Rumput (meadow_n) lewat MAP_EXITS; jembatan
   // kota (8,0) TIDAK lagi ke lahan. Lahan map samping, masuk lewat petak
-  // putih di Padang Rumput (Blok 8) dan keluar kembali ke sana.
-  // v55: petak putih plot di Padang Rumput (10,5) = Blok 8 Lembah Hijau —
+  // putih di Padang Rumput (Blok 6) dan keluar kembali ke sana.
+  // v55: petak putih plot di Padang Rumput (10,5) = Blok 6 Lembah Hijau —
   // diinjak langsung masuk lahan.
   if (S.map === 'meadow_n' && cur.gx === 10 && cur.gy === 5) {
     switchMap('plot');
