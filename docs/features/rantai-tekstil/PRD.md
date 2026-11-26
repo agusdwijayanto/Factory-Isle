@@ -20,7 +20,7 @@ Free play, simpan otomatis. Rantai tekstil tidak menambahkan slot save baru. Sim
 
 ## 5. Engine
 
-Vanilla JS + HTML5 canvas. 40 skrip di `index.html`. Mesin tekstil mengikuti pola mesin lain (`js/09-mesin.js`, `js/10-resep.js`).
+Vanilla JS + HTML5 canvas. 48 skrip di `index.html`. Mesin tekstil mengikuti pola mesin lain (`js/09-mesin.js`, `js/10-resep.js`).
 
 ## 6. Ruang lingkup
 
