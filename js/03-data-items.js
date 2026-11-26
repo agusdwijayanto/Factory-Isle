@@ -83,6 +83,38 @@ const MAP_NAMES = {
   meadow_s: 'Padang Rumput Selatan', harbor: 'Teluk Pasir',
 };
 
+// v55: Peta pulau 5x5 (25 blok). Tiap blok punya nama unik; HUD tampilkan
+// nama blok, bukan nama map game. map = map game (8 map utama) yang memuat
+// blok itu; null = blok batas/laut (tidak bisa dimasuki). station = nama
+// stasiun kereta di blok itu; plot = akses petak putih ke Lahan.
+const BLOCKS = {
+  1: { name: 'Belantara Sunyi', map: 'forest', access: 'playable' },
+  2: { name: 'Kebun Kapas', map: 'forest2', access: 'playable', station: 'Forestry' },
+  3: { name: 'Puncak Salju', map: 'ice', access: 'playable' },
+  4: { name: 'Gletser Kembar', map: 'ice', access: 'playable', station: 'Gunung' },
+  5: { name: 'Karang Utara', map: null, access: 'batas' },
+  6: { name: 'Kastel Lumut', map: 'forest', access: 'visual' },
+  7: { name: 'Bukit Angin', map: 'meadow_n', access: 'playable' },
+  8: { name: 'Lembah Hijau', map: 'meadow_n', access: 'playable', plot: true },
+  9: { name: 'Ladang Gandum', map: 'meadow_n', access: 'playable' },
+  10: { name: 'Samudra Biru', map: null, access: 'batas' },
+  11: { name: 'Menara Jam', map: 'forest', access: 'visual' },
+  12: { name: 'Bazar Senja', map: 'town', access: 'visual' },
+  13: { name: 'Kota Utama', map: 'town', access: 'playable' },
+  14: { name: 'Stasiun Kota', map: 'town', access: 'playable', station: 'Kota' },
+  15: { name: 'Bukit Pasir', map: 'harbor', access: 'playable' },
+  16: { name: 'Teluk Pasir', map: 'harbor', access: 'playable' },
+  17: { name: 'Kebun Teh', map: 'meadow_s', access: 'visual' },
+  18: { name: 'Dusun Buah', map: 'meadow_s', access: 'visual' },
+  19: { name: 'Ladang Zaitun', map: 'harbor', access: 'visual' },
+  20: { name: 'Rawa Kabut', map: 'harbor', access: 'visual' },
+  21: { name: 'Tanjung Karang', map: null, access: 'batas' },
+  22: { name: 'Padang Ilalang', map: 'meadow_s', access: 'playable' },
+  23: { name: 'Savana Selatan', map: 'meadow_s', access: 'playable' },
+  24: { name: 'Pelabuhan Utama', map: 'harbor', access: 'playable', station: 'Pelabuhan' },
+  25: { name: 'Ujung Cakrawala', map: null, access: 'batas' },
+};
+
 // Toko v2. sell = harga toko membeli dari pemain; buy = harga toko menjual
 // ke pemain. Harga ikut riset wiki 4.2; yang tidak ada di riset memakai
 // harga papan (ITEMS.price). Exchange membeli semua barang lain dengan
@@ -142,31 +174,32 @@ const SHOP_SPOTS = [
 // Pintu keluar antar map: injak petak (gx,gy) pindah ke map `to`, lahir di
 // petak (sx,sy) map tujuan. Mekanisme TP yang sama seperti jalan
 // masuk/keluar lahan v12.
-// v49: rantai utara -> selatan: ice, meadow_n, forest, forest2, plot, town,
+// v55: rantai utara -> selatan: ice, forest, forest2, meadow_n, town,
 // meadow_s, harbor. Pintu di (8,0) (utara) / (8,19) (selatan); masuk dari
 // utara lahir di baris 1 map tujuan, masuk dari selatan lahir di baris 18.
-// Gerbang lahan (dari/ke Kota) ditangani khusus di 07-pemain.js karena
-// tinggi lahan ikut ekspansi.
+// Lahan (plot) BUKAN di rantai utama — map samping, masuk lewat petak putih
+// di Padang Rumput (Blok 8) dan keluar kembali ke sana (07-pemain.js).
 const MAP_EXITS = {
   ice: [
-    { gx: 8, gy: 19, to: 'meadow_n', sx: 8, sy: 1 },
-  ],
-  meadow_n: [
-    { gx: 8, gy: 0, to: 'ice', sx: 8, sy: 18 },
     { gx: 8, gy: 19, to: 'forest', sx: 8, sy: 1 },
   ],
   forest: [
-    { gx: 8, gy: 0, to: 'meadow_n', sx: 8, sy: 18 }, // jembatan tepi utara
+    { gx: 8, gy: 0, to: 'ice', sx: 8, sy: 18 }, // jembatan tepi utara
     { gx: 8, gy: 19, to: 'forest2', sx: 8, sy: 1 },
   ],
   forest2: [
     { gx: 8, gy: 0, to: 'forest', sx: 8, sy: 18 },
-    { gx: 8, gy: 19, to: 'plot', sx: 8, sy: 1 }, // masuk lahan dari utara
+    { gx: 8, gy: 19, to: 'meadow_n', sx: 8, sy: 1 }, // v55: selatan Hutan Kapas = Padang Rumput
+  ],
+  meadow_n: [
+    { gx: 8, gy: 0, to: 'forest2', sx: 8, sy: 18 },
+    { gx: 8, gy: 19, to: 'town', sx: 8, sy: 1 }, // v55: selatan Padang Rumput = Kota
   ],
   plot: [
-    { gx: 8, gy: 0, to: 'forest2', sx: 8, sy: 18 }, // gerbang utara lahan
+    { gx: 8, gy: 0, to: 'meadow_n', sx: 8, sy: 18 }, // v55: gerbang utara lahan -> Padang Rumput
   ],
   town: [
+    { gx: 8, gy: 0, to: 'meadow_n', sx: 8, sy: 18 }, // v55: utara kota = Padang Rumput (bukan lahan)
     { gx: 8, gy: 19, to: 'meadow_s', sx: 8, sy: 1 }, // gerbang selatan kota
   ],
   meadow_s: [
@@ -178,9 +211,10 @@ const MAP_EXITS = {
   ],
 };
 // Stasiun kereta 4 map: [gx, gy] petak lahir saat naik kereta (petak jalan
-// di sebelah bangunan stasiun): ice (8,7) -> lahir (8,8); forest (8,7) ->
+// di sebelah bangunan stasiun): ice (8,7) -> lahir (8,8); forest2 (8,7) ->
 // lahir di jalan (8,8); town (10,7) -> lahir (8,8); harbor (8,6) -> lahir (8,7).
-const TRAIN_SPAWN = { ice: [8, 8], forest: [8, 8], town: [8, 8], harbor: [8, 7] };
+// v55: stasiun Forestry pindah dari Hutan Lebat (forest) ke Hutan Kapas (forest2).
+const TRAIN_SPAWN = { ice: [8, 8], forest2: [8, 8], town: [8, 8], harbor: [8, 7] };
 
 // v49: Kota jadi KOTAK 20x20 seperti map lain. Plot mulai 16x12 lalu
 // membesar tiap ekspansi sampai 24x16 (ukuran dasar sama dengan grid v1
@@ -499,6 +533,7 @@ const CONVEYOR_COLOR_HEX = { gold: '#e8b64c', purple: '#9a6a9a', red: '#c0392b',
 
 // Riwayat versi untuk tombol Book di dalam game (ringkasan ROADMAP.md).
 const CHANGELOG = [
+  ['v55', 'Atlas + panel global + peta pulau 5x5: wagonShop pindah ke atlas (col 0, row 24), atlas 24 jadi 26 baris (perbaiki karakter pemain yang muncul di atap wagonShop); peti bawaan dirapatkan ke bahu pemain (tidak lagi melayang); CSS panel dilengkapi global (.on, .build-item, .shop-btns, .mp-recipes, .mp-bar, .chip, .menu-btn, .help-text, dan lain-lain), burger menu dan tutorial dapat tombol X, tombol jual kereta dibungkus .shop-btns; peta pulau 5x5 dengan 25 blok bernama unik — HUD tampilkan nama blok; petak putih Lahan pindah ke Blok 8 Lembah Hijau (10,5); stasiun Forestry pindah ke Hutan Kapas; rantai map jadi Gunung Es-Hutan Lebat-Hutan Kapas-Padang Rumput-Kota-Padang Rumput Selatan-Teluk Pasir; teks tutorial ikut rute baru.'],
   ['v54', 'Perbaikan panel + wagonShop: aturan CSS panel ditambah (.panel-head, .panel-title, .btn-x, .mp-desc, .mayor-row, .shop-row, .shop-item) supaya judul dan tombol X satu baris dan tombol Naik/Beli tidak menumpuk teks; judul panel kereta di index.html dibetulkan jadi "Kereta Trading Co."; save dipisah dari panel wagon ke panel Simpan sendiri lewat burger menu; bangunan beli wagon diperbesar jadi 2×2 (pindah ke (5,4) karena posisi lama (3,3) menabrak jalan baris gy=2, 3 petak tetangga ikut diblokir).'],
   ['v53', 'Perbaikan UI/UX/map/bangunan: judul panel kereta hapus "130" dan tambah baris "Kereta di: [map]"; harga gerobak Carpenter dibetulkan jadi Log 7 · Plank 6 · Pillar 12; angka penggaris digeser ke luar sel supaya tidak bertumpuk pagar/lampu; label Mayor diberi background pill gelap supaya terbaca di atas atap; toko kota kini memblokir 2×2 petak penuh (3 petak tetangga di belakang anchor ikut diblokir, pemain tidak bisa lagi jalan menembus bangunan); tutorial tambah 2 langkah (jelajahi 8 map, temui Mayor).'],
   ['v52', 'Lima sprite yang menggambar di luar sel atlas dimasukkan ke dalam selnya (shop + shop_exchange 2px dari atas, gate 4px, station 2px, plotpad 1px dari kiri) — semua 147 sprite kini muat di selnya. Lokomotif dan gerbong kereta dipisah jadi dua petak (gerbong 1 petak ke selatan lokomotif, memblokir seperti bangunan) dan semua tulisan di sprite kereta dihapus (TRADING CO. + angka 130). Kapal bajak laut pindah ke air (10,18) di dekat dermaga. Papan "PLOT" pasang lagi di Padang Rumput (5,5) di samping petak putih. Bangunan beli wagon pindah dari lahan ke kota (3,3); simpan lama yang masih menyimpan bangunan itu di lahan dibangun ulang sekali.'],

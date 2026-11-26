@@ -98,6 +98,32 @@ function gatePos() {
   return { gx: 8, gy: m.h - 1 };
 }
 
+// v55: blok pulau 5x5 yang ditempati pemain saat ini (dari map + posisi
+// di dalam map). Map yang memuat beberapa blok dibagi menurut koordinat:
+// ice: rel (gx 9) di Blok 4; meadow_n: Blok 8 tengah = plot Lahan;
+// town: stasiun (gx 10) di Blok 14; harbor: gurun utara, pelabuhan selatan;
+// meadow_s: belah dua. Lahan (plot) = map samping, tanpa nomor blok.
+function currentBlock() {
+  const p = S.player;
+  const gx = Math.floor(p.fx), gy = Math.floor(p.fy);
+  switch (S.map) {
+    case 'forest': return 1;
+    case 'forest2': return 2;
+    case 'ice': return gx < 8 ? 3 : 4;
+    case 'meadow_n': return gx < 7 ? 7 : gx < 14 ? 8 : 9;
+    case 'town': return gx < 8 ? 13 : 14;
+    case 'harbor': return gy < 7 ? 15 : gy < 14 ? 16 : 24;
+    case 'meadow_s': return gx < 10 ? 22 : 23;
+    case 'plot': return 0;
+    default: return 0;
+  }
+}
+function currentBlockName() {
+  const b = currentBlock();
+  if (b === 0) return S.map === 'plot' ? 'Lahan' : (MAP_NAMES[S.map] || 'Kota');
+  return BLOCKS[b].name;
+}
+
 function tileAt(gx, gy) { return inGrid(gx, gy) ? S.grid[gy][gx] : null; }
 
 // Tukar grid aktif tanpa DOM: dipakai muat simpan dan pindah map.

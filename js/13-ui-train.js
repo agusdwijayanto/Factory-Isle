@@ -10,8 +10,8 @@ Object.assign(UI, {
     const body = $('train-body');
     body.innerHTML = '';
     body.appendChild(el('div', 'Kereta Trading Co. — angkutan cepat antar zona. Jalan kaki tetap bisa lewat ujung map.', 'mp-desc'));
-    body.appendChild(el('div', 'Kereta di: ' + MAP_NAMES[S.map], 'mp-desc'));
-    for (const dest of ['ice', 'forest', 'town', 'harbor']) {
+    body.appendChild(el('div', 'Kereta di: ' + currentBlockName(), 'mp-desc'));
+    for (const dest of ['ice', 'forest2', 'town', 'harbor']) {
       if (dest === S.map) continue;
       const row = el('div', null, 'mayor-row');
       row.appendChild(el('span', MAP_NAMES[dest]));
@@ -30,11 +30,14 @@ Object.assign(UI, {
         try { if (Atlas.canvas) left.appendChild(Atlas.iconCanvas('item_' + id, 28)); } catch (_) { /* abaikan */ }
         left.appendChild(document.createTextNode(ITEMS[id].name + ' x' + S.inv[id] + ' — $' + sellPrice(id)));
         row.appendChild(left);
+        // v55: tombol 1/10/Semua dibungkus .shop-btns (dulu langsung di row, menyebar).
+        const btns = el('span', null, 'shop-btns');
         for (const n of [1, 10, 0]) {
           const b = el('button', n === 0 ? 'Semua' : String(n));
           b.addEventListener('click', () => { sellItem(id, n === 0 ? (S.inv[id] || 0) : n); this.renderTrain(); });
-          row.appendChild(b);
+          btns.appendChild(b);
         }
+        row.appendChild(btns);
         body.appendChild(row);
       }
     }

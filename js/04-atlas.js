@@ -22,7 +22,7 @@ const Atlas = {
     this._ready = (async () => {
       let m = null;
       try {
-        const r = await fetch('assets/atlas-manifest.json?v=52');
+        const r = await fetch('assets/atlas-manifest.json?v=55');
         if (r.ok) m = await r.json();
       } catch (_) { /* file:// atau offline: pakai salinan darurat */ }
       this.manifest = m || MANIFEST_EMBEDDED;
@@ -102,7 +102,7 @@ const Atlas = {
 // Salinan darurat manifest, sama isinya dengan assets/atlas-manifest.json.
 const MANIFEST_EMBEDDED = {
   name: 'indotopia-tycoon-atlas-v1', atlasFile: 'atlas.png', source: 'procedural',
-  cell: 64, cols: 8, rows: 24, anchor: 'bottom-center',
+  cell: 64, cols: 8, rows: 26, anchor: 'bottom-center',
   sprites: {
     tree: { col: 0, row: 0, w: 1, h: 1 }, oreIron: { col: 1, row: 0, w: 1, h: 1 },
     oreCopper: { col: 2, row: 0, w: 1, h: 1 }, oreTin: { col: 3, row: 0, w: 1, h: 1 },
@@ -185,7 +185,7 @@ const MANIFEST_EMBEDDED = {
     ice: { col: 5, row: 23, w: 1, h: 1 },
     signClosed: { col: 6, row: 23, w: 1, h: 1 },
     // v51: bangunan beli wagon (tanpa NPC). v54: diperbesar 2×2 (pindah ke col:0,row:7 — blok 2×2 kosong).
-    wagonShop: { col: 0, row: 7, w: 2, h: 2 },
+    wagonShop: { col: 0, row: 24, w: 2, h: 2 },
     // v52: gerbong penumpang lepas (lokomotif dan gerbong dipisah).
     trainCar: { col: 7, row: 22, w: 1, h: 1 },
   },

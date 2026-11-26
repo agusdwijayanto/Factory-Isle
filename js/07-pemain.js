@@ -213,23 +213,21 @@ function updatePlayer(dt) {
 // keluar di ujung tiap map zona.
 function checkMapTrigger() {
   const cur = playerTile();
-  // v49: lahan ada di UTARA kota. Jembatan kota (8,0) membawa ke lahan;
-  // gerbang lahan (petak bawah, tinggi ikut ekspansi) membawa balik ke kota.
-  // Titik lahir memakai defaultSpawn supaya ikut ukuran lahan terkini.
-  if (S.map === 'town' && cur.gx === 8 && cur.gy === 0) {
-    switchMap('plot');
-    return true;
-  }
-  // v51: petak putih plot pindah ke Padang Rumput (4,5) — diinjak langsung
-  // masuk lahan. Kota tidak punya petak putih lagi.
-  if (S.map === 'meadow_n' && cur.gx === 4 && cur.gy === 5) {
+  // v55: utara kota = Padang Rumput (meadow_n) lewat MAP_EXITS; jembatan
+  // kota (8,0) TIDAK lagi ke lahan. Lahan map samping, masuk lewat petak
+  // putih di Padang Rumput (Blok 8) dan keluar kembali ke sana.
+  // v55: petak putih plot di Padang Rumput (10,5) = Blok 8 Lembah Hijau —
+  // diinjak langsung masuk lahan.
+  if (S.map === 'meadow_n' && cur.gx === 10 && cur.gy === 5) {
     switchMap('plot');
     return true;
   }
   if (S.map === 'plot') {
     const g = gatePos();
     if (cur.gx === g.gx && cur.gy === g.gy) {
-      switchMap('town');
+      // v55: gerbang lahan kembali ke Padang Rumput (Blok 8, satu petak di
+      // selatan petak putih), bukan ke kota.
+      switchMap('meadow_n', { fx: 10.5, fy: 6.5, dir: 3 });
       return true;
     }
   }

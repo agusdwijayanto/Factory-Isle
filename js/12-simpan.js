@@ -114,14 +114,18 @@ function loadGame() {
     // v51: Mayor di (7,13) — simpan v50 punya petak putih di situ, jadi ke sini ikut bangun ulang.
     || S.maps.town.grid[13][7].obj !== 'mayor'
     || S.maps.town.grid[4][5].obj !== 'wagonShop'); // v54: wagonShop 2×2 pindah ke (5,4)
-  const meadowNStale = S.maps.meadow_n && (S.maps.meadow_n.grid[5][4].obj !== 'plotpad'
-    || S.maps.meadow_n.grid[5][5].obj !== 'plotsign'); // v51 petak putih, v52 papan PLOT
-  const forestStale = S.maps.forest && (S.maps.forest.grid[7][9].obj !== 'train'
-    || S.maps.forest.grid[7][10].obj !== 'station' // v51: stasiun di timur rel
+  const meadowNStale = S.maps.meadow_n && (S.maps.meadow_n.grid[5][10].obj !== 'plotpad'
+    || S.maps.meadow_n.grid[5][11].obj !== 'plotsign'); // v55: petak putih pindah ke Blok 8 (10,5)
+  // v55: stasiun kereta pindah dari Hutan Lebat ke Hutan Kapas (Forestry).
+  // Hutan Lebat baru TIDAK punya stasiun/kereta; simpan lama yang masih
+  // menyimpannya dibangun ulang sekali (cek "masih ada", bukan "harus ada").
+  const forestStale = S.maps.forest && (S.maps.forest.grid[7][9].obj === 'train'
+    || S.maps.forest.grid[7][10].obj === 'station'
     || S.maps.forest.grid[0][8].t !== 'bridge' || S.maps.forest.grid[5][12].obj !== 'dyeplant');
   const harborStale = S.maps.harbor && !SHOP_SPOTS.filter((s) => s.map === 'harbor').every((s) => S.maps.harbor.grid[s.gy][s.gx].obj === 'shop_' + s.id);
   // v52: tiap map berstasiun harus punya lokomotif + gerbong (2 petak).
-  const keretaStale = ['ice', 'forest', 'town', 'harbor'].some((n) => {
+  // v55: stasiun Forestry di forest2 (bukan forest lagi).
+  const keretaStale = ['ice', 'forest2', 'town', 'harbor'].some((n) => {
     const m = S.maps[n];
     if (!m) return false;
     const flat = m.grid.flat();

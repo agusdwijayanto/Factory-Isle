@@ -19,12 +19,11 @@ function buildForest() {
   // di utara ke Hutan Dikit di selatan), jadi air tepi utara tidak buntu.
   terrain(forest, rng(1, MAP_H - 1).map((gy) => [1, gy]), 'water');
   // v50: rel LURUS kolom 9 utara-selatan (belokan + rel cabang ke (14,9)
-  // dihapus). v51: stasiun pindah ke sisi TIMUR rel (10,7), kereta tetap di
-  // (9,7) — jadi jalan utama kolom 8 tembus lagi tanpa lubang.
+  // dihapus).
+  // v55: stasiun kereta + lokomotif + gerbong PINDAH ke Hutan Kapas
+  // (forest2, Blok 2 Kebun Kapas = Forestry Station). Hutan Lebat kini
+  // tanpa stasiun; jalan utama kolom 8 tembus tanpa lubang.
   railYAt(forest, 9, 0, MAP_H - 1);
-  forest[7][10].obj = 'station'; // (10,7) timur rel
-  forest[7][9].obj = 'train';    // (9,7) jangkar simpan v50
-  forest[8][9].obj = 'trainCar'; // (9,8) gerbong 1 petak ke selatan (v52)
   // Jalan: kolom 8 utara-selatan tembus; cabang jalan baris 7 ke stasiun lama
   // (x 10..17) sudah dibuang v50.
   roadAt(forest, rng(0, MAP_H - 1).map((gy) => [8, gy]));

@@ -187,6 +187,61 @@ section.panel, .panel {
 .save-slot--active { border-color: var(--accent2); }
 
 /* =============================================
+   PANEL GLOBAL v55: kelas yang tadinya tanpa CSS
+   ============================================= */
+/* penanda aktif (tab build, resep mesin, warna conveyor, filter sorter) */
+button.on { background: var(--accent); color: #1a0800; border-color: var(--accent); }
+
+/* tab kategori menu bangun */
+#build-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+
+/* item menu bangun: ikon kiri, nama + sub kanan */
+.build-item { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: var(--bg-panel2); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 10px 12px; margin-bottom: 8px; font-size: 13px; color: var(--text-main); }
+.build-item > span { flex: 1; min-width: 0; }
+.build-item small { display: block; font-size: 12px; color: var(--text-dim); font-weight: 400; }
+.build-item canvas, .build-item .sw { flex-shrink: 0; }
+.build-item.locked { opacity: 0.6; }
+
+/* swatch warna fallback ikon build */
+.sw { display: inline-block; width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border); flex-shrink: 0; }
+
+/* grup tombol 1/10/Semua di baris toko/kereta */
+.shop-btns { display: flex; gap: 6px; flex-shrink: 0; }
+.shop-btns button { flex-shrink: 0; }
+
+/* baris tombol resep/warna/filter di panel periksa */
+.mp-recipes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.mp-recipes button { flex-shrink: 0; }
+
+/* label resep, buffer, status di panel periksa */
+.mp-recipe { font-size: 13px; color: var(--text-main); line-height: 1.5; margin-bottom: 10px; }
+.mp-buffers { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 13px; color: var(--text-dim); margin-bottom: 10px; }
+.mp-status { font-size: 13px; color: var(--text-dim); line-height: 1.5; margin-bottom: 10px; }
+
+/* bar progres mesin */
+.mp-bar { height: 10px; background: var(--bg-panel2); border: 1px solid var(--border); border-radius: 5px; overflow: hidden; margin-bottom: 10px; }
+.mp-bar > div { height: 100%; background: var(--accent); width: 0; }
+
+/* chip buffer (Masuk/Keluar) */
+.chip { display: inline-flex; align-items: center; gap: 4px; background: var(--bg-panel2); border: 1px solid var(--border); border-radius: 6px; padding: 2px 8px; font-size: 12px; color: var(--text-main); }
+.chip canvas { display: block; }
+
+/* daftar ekspansi mayor */
+.mayor-list { display: flex; flex-direction: column; }
+
+/* tombol menu pengaturan */
+.menu-btn { display: block; width: 100%; text-align: left; background: var(--bg-panel2); color: var(--text-main); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 10px 14px; margin-bottom: 8px; font-size: 13px; }
+.menu-btn:hover { background: var(--accent); color: #1a0800; }
+
+/* teks bantuan */
+.help-text { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+.help-text p { margin: 0 0 10px; }
+.help-text p:last-child { margin-bottom: 0; }
+
+/* kartu konfirmasi reset slot */
+.save-slot--reset { border-color: #c04020; background: #2a0f08; }
+
+/* =============================================
    TOMBOL UMUM
    ============================================= */
 button, .btn {

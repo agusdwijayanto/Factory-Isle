@@ -93,7 +93,7 @@ const UI = {
     }
     
     const mapNameEl = $('mapname');
-    if (mapNameEl) mapNameEl.textContent = MAP_NAMES[S.map] || 'Kota';
+    if (mapNameEl) mapNameEl.textContent = currentBlockName();
     
     const btnTas = $('btn-tas');
     if (btnTas) btnTas.textContent = 'TAS (' + carriedTotal() + ')';

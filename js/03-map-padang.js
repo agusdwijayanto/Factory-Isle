@@ -16,8 +16,8 @@ function buildMeadow(north) {
   put(g, [[5, 3], [12, 4], [7, 9], [13, 13], [4, 17], [11, 17]], 'flowers');
   put(g, [[10, 6], [12, 14]], 'lantern');
   if (north) {
-    g[5][4].obj = 'plotpad'; // (4,5) rumput kosong, 3 petak dari sungai, 4 dari jalan, 5 dari rel
-    g[5][5].obj = 'plotsign'; // v52: papan "PLOT" tepat di timur petak putih
+    g[5][10].obj = 'plotpad'; // v55: (10,5) tengah map = Blok 8 Lembah Hijau, 2 petak dari jalan, 1 dari rel
+    g[5][11].obj = 'plotsign'; // v55: papan "PLOT" tepat di timur petak putih
   }
   return g;
 }

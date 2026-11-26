@@ -66,7 +66,7 @@ function paintPlayer() {
   Atlas.draw(ctx, tool, 0, 10 * z, z * 0.8);
   ctx.restore();
   // Bawaan dipanggul di bahu kiri.
-  if (carriedTotal() > 0) Atlas.draw(ctx, 'crate', x - 11 * z, gy - 34 * z, z * 0.55);
+  if (carriedTotal() > 0) Atlas.draw(ctx, 'crate', x - 2 * z, gy - 24 * z, z * 0.5);
 }
 
 function paintMiniBar(x, y, z, frac) {

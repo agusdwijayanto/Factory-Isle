@@ -50,6 +50,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // v55: tombol X di panel tutorial = lewati (sama seperti Lewati).
+  const btnTutX = $('btn-tut-x');
+  if (btnTutX && btnTutSkip) btnTutX.addEventListener('click', () => btnTutSkip.click());
+
   const btnTutNext = $('btn-tut-next');
   if (btnTutNext) {
     btnTutNext.addEventListener('click', () => {
