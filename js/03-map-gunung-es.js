@@ -4,6 +4,8 @@
 // v58 (angka kunci Agus (x,z) Blok 1): jalan x=6 (z 6-20) + jalan z=6
 // (x 1-6); rel x=3 (z 7-20) di selatan jalan; stasiun (2,7), lokomotif
 // (3,8) menghadap timur, gerbong di baratnya (3,7).
+// v59: palang merah railStop (3,9) diganti rel biasa (perintah Agus
+// 2026-11-27) — Blok 1 tidak ada railStop lagi.
 function buildIce() {
   const ice = makeGrid(MAP_W, MAP_H);
   for (let gy = 0; gy < MAP_H; gy++) for (let gx = 0; gx < MAP_W; gx++) ice[gy][gx].t = 'snow';
@@ -21,7 +23,6 @@ function buildIce() {
   put(ice, [[3, 4], [4, 7], [3, 10], [6, 15], [3, 17], [15, 13], [14, 16], [16, 16], [4, 18]], 'treePine'); // (15,14) pindah ke (15,13): jalan x=6
   // Rel mendatar x=3 (baris 17), z 7-20, di selatan jalan x=6.
   terrain(ice, rng(6, 19).map((gx) => [gx, 17]), 'railX');
-  terrain(ice, [[8, 17]], 'railStop'); // palang di timur lokomotif
   ice[18][6].obj = 'station'; // (2,7), selatan gerbong
   ice[17][7].obj = 'train'; // (3,8), lokomotif menghadap timur
   ice[17][6].obj = 'trainCar'; // (3,7), gerbong di barat lokomotif

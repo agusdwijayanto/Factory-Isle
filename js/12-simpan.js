@@ -109,7 +109,7 @@ function loadGame() {
   const townStale = S.maps.town && (S.maps.town.w !== TOWN_W || S.maps.town.h !== TOWN_H
     || !S.maps.town.grid.flat().some((t) => t.t === 'road')
     || !SHOP_SPOTS.filter((s) => s.map === 'town').every((s) => S.maps.town.grid[s.gy][s.gx].obj === 'shop_' + s.id)
-    || S.maps.town.grid[10][17].t !== 'road' // v57: jangkar jalan pindah ke kolom 17 (kanan)
+    || S.maps.town.grid[9][10].t !== 'road' // v59: jangkar jalan pindah ke baris 9 (x=11)
     || S.maps.town.grid[7][1].obj !== 'lantern'
     // v51: Mayor di (7,13) — simpan v50 punya petak putih di situ, jadi ke sini ikut bangun ulang.
     || S.maps.town.grid[13][7].obj !== 'mayor'
@@ -121,19 +121,25 @@ function loadGame() {
     || S.maps.town.grid[6][0].obj === 'signClosed'
     // v57: koridor pindah ke kanan (jalan kolom 17, rel kolom 18, stasiun
     // (19,7)) — simpan lama yang masih punya koridor kolom 8/9 dibangun ulang.
+    // v59: jalan+stasiun+kereta pindah (jalan baris 9 + kolom 14, stasiun
+    // (19,10)) — simpan v58 yang masih punya lokomotif (18,7) dibangun ulang.
     || S.maps.town.grid[7][9].obj === 'train'
+    || S.maps.town.grid[7][18].obj === 'train'
     || S.maps.town.grid[0][8].t === 'road'
     || S.maps.town.grid[0][9].t === 'railY'
     || S.maps.town.grid[10][14].obj === 'lantern');
-  const meadowNStale = S.maps.meadow_n && (S.maps.meadow_n.grid[5][10].obj !== 'plotpad'
-    || S.maps.meadow_n.grid[5][11].obj !== 'plotsign' // v55: petak putih pindah ke Blok 6 (10,5)
+  const meadowNStale = S.maps.meadow_n && (S.maps.meadow_n.grid[9][10].obj !== 'plotpad'
+    || S.maps.meadow_n.grid[9][11].obj !== 'plotsign' // v59: petak putih pindah ke Blok 6 (10,9)
     // v56: sungai dan rel keluar dari Padang Rumput (Blok 3+6).
     || S.maps.meadow_n.grid[0][9].t === 'railY'
     || S.maps.meadow_n.grid[0][1].t === 'water'
     // v57: jalan pindah (baris 8/10 + kolom 10, cabang 14) — simpan lama
     // yang masih punya jalan kolom 8 / cabang barat baris 14 dibangun ulang.
+    // v59: jalan cuma baris 9 — simpan v58 yang masih punya jalan baris 8/10 dibangun ulang.
     || S.maps.meadow_n.grid[0][8].t === 'road'
     || S.maps.meadow_n.grid[14][0].t === 'road'
+    || S.maps.meadow_n.grid[8][0].t === 'road'
+    || S.maps.meadow_n.grid[10][0].t === 'road'
     || S.maps.meadow_n.grid[7][10].obj === 'lantern');
   // v55: stasiun kereta pindah dari Hutan Lebat ke Hutan Kapas (Forestry).
   // Hutan Lebat baru TIDAK punya stasiun/kereta; simpan lama yang masih
@@ -142,13 +148,18 @@ function loadGame() {
     || S.maps.forest.grid[7][10].obj === 'station'
     // v57: jangkar jalan pindah ke kolom 17 (kanan) + dyeplant pindah ke
     // (12,6) (rel baris 5); simpan lama yang masih punya jalan kolom 8 /
-    // rel baris 17 / dyeplant (12,5) dibangun ulang.
-    || S.maps.forest.grid[8][17].t !== 'road'
+    // dyeplant (12,5) dibangun ulang.
+    // v59: jangkar jalan pindah ke baris 14 (x=6); rel kembali ke baris 17
+    // (x=3) — penanda rel baris 17 lama DIHAPUS supaya tidak membangun ulang
+    // simpan v59 tiap muat. Simpan v58 yang masih punya jalan baris 8 /
+    // rel baris 5 dibangun ulang.
+    || S.maps.forest.grid[14][10].t !== 'road'
     || S.maps.forest.grid[6][12].obj !== 'dyeplant'
     || S.maps.forest.grid[1][1].t === 'water'
     || S.maps.forest.grid[0][9].t === 'railY'
     || S.maps.forest.grid[0][8].t === 'road'
-    || S.maps.forest.grid[17][9].t === 'railX'
+    || S.maps.forest.grid[8][10].t === 'road'
+    || S.maps.forest.grid[5][10].t === 'railX'
     || S.maps.forest.grid[5][12].obj === 'dyeplant');
   // v56: Hutan Kapas kehilangan stasiun/kereta/rel — simpan lama yang masih
   // punya dibangun ulang sekali (cek "masih ada").
@@ -157,33 +168,46 @@ function loadGame() {
     || S.maps.forest2.grid[0][9].t === 'railY'
     // v57: jalan pindah ke baris 10 + kolom 5 — simpan lama yang masih
     // punya jalan kolom 8 / baris 5 dibangun ulang.
+    // v59: jalan pindah (baris 9 + kolom 5 utara + kolom 14 selatan) —
+    // simpan v58 yang masih punya jalan baris 10 dibangun ulang.
     || S.maps.forest2.grid[0][8].t === 'road'
-    || S.maps.forest2.grid[5][10].t === 'road');
+    || S.maps.forest2.grid[5][10].t === 'road'
+    || S.maps.forest2.grid[10][10].t === 'road');
   // v56: sungai Padang Rumput Selatan pindah (kolom 18 -> kolom 1 + baris 11).
   const meadowSStale = S.maps.meadow_s && (S.maps.meadow_s.grid[0][18].t === 'water'
     || S.maps.meadow_s.grid[11][1].t !== 'water'
     // v57: jalan pindah (kolom 5/13 + baris 17, rel kolom 18) — simpan lama
-    // yang masih punya jalan kolom 8 / baris 5 / rel kolom 9 dibangun ulang.
+    // yang masih punya jalan kolom 8 / rel kolom 9 dibangun ulang.
+    // v59: jalan pindah ke baris 5 + kolom 14, rel ke kolom 18 selatan +
+    // baris 9 — penanda jalan baris 5 lama DIHAPUS (baris 5 jadi jalan lagi
+    // di v59) supaya tidak membangun ulang simpan v59 tiap muat. Simpan v58
+    // yang masih punya jalan baris 17 dibangun ulang.
     || S.maps.meadow_s.grid[0][8].t === 'road'
-    || S.maps.meadow_s.grid[5][10].t === 'road'
-    || S.maps.meadow_s.grid[0][9].t === 'railY');
+    || S.maps.meadow_s.grid[0][9].t === 'railY'
+    || S.maps.meadow_s.grid[17][10].t === 'road');
   const harborStale = S.maps.harbor && (!SHOP_SPOTS.filter((s) => s.map === 'harbor').every((s) => S.maps.harbor.grid[s.gy][s.gx].obj === 'shop_' + s.id)
     // v56: rel masuk dari barat (baris 6), bukan dari utara; sungai masuk dari barat (baris 11).
     || S.maps.harbor.grid[0][9].t === 'railY'
     || S.maps.harbor.grid[11][0].t !== 'water'
     // v57: rel mendatar baris 6 penuh + kereta di ujung timur — simpan lama
     // yang masih punya lokomotif (9,6) / jalan kolom 8 dibangun ulang.
+    // v59: jalan+rel+kereta pindah (jalan baris 5, rel baris 9, lokomotif
+    // (8,9)) — simpan v58 yang masih punya lokomotif (17,6) dibangun ulang.
     || S.maps.harbor.grid[6][9].obj === 'train'
+    || S.maps.harbor.grid[6][17].obj === 'train'
     || S.maps.harbor.grid[0][8].t === 'road');
   // v57: Gunung Es rombak total (rel mendatar baris 5, jalan baris 8 +
   // kolom 5) — simpan lama yang masih punya lokomotif (9,7) / jalan baris
   // 18 dibangun ulang sekali (cek "masih ada").
   // v58: Blok 1 ikut angka kunci Agus (x,z) — simpan v57 yang masih punya
   // lokomotif (10,5) / jalan baris 8 dibangun ulang.
+  // v59: railStop (3,9) diganti rel biasa — simpan v58 yang masih punya
+  // railStop dibangun ulang.
   const iceStale = S.maps.ice && (S.maps.ice.grid[7][9].obj === 'train'
     || S.maps.ice.grid[18][10].t === 'road'
     || S.maps.ice.grid[5][10].obj === 'train'
-    || S.maps.ice.grid[8][10].t === 'road');
+    || S.maps.ice.grid[8][10].t === 'road'
+    || S.maps.ice.grid[17][8].t === 'railStop');
   // v52: tiap map berstasiun harus punya lokomotif + gerbong (2 petak).
   // v56: stasiun cuma di ice, town, harbor (forest2 keluar).
   const keretaStale = ['ice', 'town', 'harbor'].some((n) => {

@@ -147,12 +147,12 @@ const SHOPS = {
 // kolom sungai (18), atau petak jangkar simpan.
 const SHOP_SPOTS = [
   { map: 'town', gx: 7, gy: 11, id: 'exchange' },  // v51: salon (x9,z8), utara Mayor
-  { map: 'town', gx: 14, gy: 4, id: 'toolshop' },
+  { map: 'town', gx: 16, gy: 4, id: 'toolshop' }, // v59: (14,4)->(16,4), jalan z=15
   { map: 'town', gx: 3, gy: 8, id: 'blacksmith' },
   { map: 'town', gx: 16, gy: 12, id: 'textile' },
   { map: 'town', gx: 4, gy: 15, id: 'carpenter' },
   { map: 'town', gx: 12, gy: 16, id: 'supply' },
-  { map: 'harbor', gx: 4, gy: 9, id: 'harbor' }, // v57: (4,9), 1 petak ke utara supaya tidak menabrak sungai baris 11
+  { map: 'harbor', gx: 4, gy: 7, id: 'harbor' }, // v59: (4,9)->(4,7), rel baris 9
   { map: 'harbor', gx: 12, gy: 2, id: 'desert' }, // v36: desa gurun
   { map: 'harbor', gx: 10, gy: 18, id: 'pirate' }, // v52: kapal bajak laut di air dekat dermaga
 ];
@@ -167,49 +167,51 @@ const SHOP_SPOTS = [
 // jalan kolom 17 + rel kolom 18 turun 2-5-8; jalan mendatar di tengah map
 // (baris 8 atas, baris 10 tengah, baris 17 bawah); pintu di tepi tempat
 // jalan bertemu (bukan lagi kolom 8/9 lama).
+// v59 (angka kunci Agus (x,z) semua blok): pintu ikut jalan baru. Jalan
+// Hutan Lebat selatan (z=16) dan jalan Kota utara (z=15) geser 1 petak —
+// lahir ikut jalan map tujuan. Pintu barat Lembah Hijau (0,9) dan pintu
+// utara Savana (14,0) cuma satu jalan, diarahkan ke Kota (bukan ke Hutan
+// Lebat / Hutan Kapas) supaya pulang dari Plot dan ke Pelabuhan langsung.
 const MAP_EXITS = {
   ice: [
     { gx: 19, gy: 14, to: 'forest', sx: 1, sy: 14 }, // timur ke Blok 2 (jalan x=6, v58)
     { gx: 5, gy: 19, to: 'forest2', sx: 5, sy: 1 }, // selatan ke Blok 4 (jalan kolom 5)
   ],
   forest: [
-    { gx: 0, gy: 8, to: 'ice', sx: 18, sy: 8 }, // barat ke Blok 1
-    { gx: 19, gy: 8, to: 'meadow_n', sx: 1, sy: 8 }, // timur ke Blok 3 (tengah)
-    { gx: 17, gy: 19, to: 'town', sx: 17, sy: 1 }, // selatan ke Blok 5 (jalan kolom 17, samping rel 18)
+    { gx: 0, gy: 14, to: 'ice', sx: 18, sy: 14 }, // barat ke Blok 1 (jalan x=6)
+    { gx: 19, gy: 9, to: 'meadow_n', sx: 1, sy: 9 }, // timur ke Blok 3 (jalan x=11)
+    { gx: 15, gy: 19, to: 'town', sx: 14, sy: 1 }, // selatan ke Blok 5 (jalan z=16, lahir di jalan z=15 kota)
   ],
   forest2: [
     { gx: 5, gy: 0, to: 'ice', sx: 5, sy: 18 }, // utara ke Blok 1
-    { gx: 19, gy: 10, to: 'town', sx: 1, sy: 10 }, // timur ke Blok 5 (tengah)
-    { gx: 5, gy: 19, to: 'meadow_s', sx: 5, sy: 1 }, // selatan ke Blok 7
+    { gx: 19, gy: 9, to: 'town', sx: 1, sy: 9 }, // timur ke Blok 5 (jalan x=11)
+    { gx: 14, gy: 19, to: 'meadow_s', sx: 14, sy: 1 }, // selatan ke Blok 7 (jalan z=15)
   ],
   meadow_n: [
-    { gx: 0, gy: 8, to: 'forest', sx: 18, sy: 8 }, // barat ke Blok 2
-    { gx: 0, gy: 10, to: 'town', sx: 17, sy: 10 }, // barat ke Blok 5 (lahir di jalan kolom 17 kota)
+    { gx: 0, gy: 9, to: 'town', sx: 18, sy: 9 }, // barat ke Blok 5 (jalan x=11 cuma satu)
   ],
   plot: [
     { gx: 8, gy: 0, to: 'meadow_n', sx: 8, sy: 18 }, // gerbang utara lahan -> Padang Rumput (Blok 6)
   ],
   town: [
-    { gx: 17, gy: 0, to: 'forest', sx: 17, sy: 18 }, // utara ke Blok 2 (kanan atas)
-    { gx: 0, gy: 10, to: 'forest2', sx: 18, sy: 10 }, // barat ke Blok 4 (tengah)
-    { gx: 19, gy: 10, to: 'meadow_n', sx: 1, sy: 10 }, // timur ke Blok 6 (tengah)
-    { gx: 17, gy: 19, to: 'meadow_s', sx: 17, sy: 1 }, // selatan ke Blok 8 (jalan kolom 17)
-    { gx: 13, gy: 19, to: 'meadow_s', sx: 13, sy: 1 }, // selatan ke Blok 8 (pintu kedua, kolom 13)
+    { gx: 14, gy: 0, to: 'forest', sx: 15, sy: 18 }, // utara ke Blok 2 (jalan z=15, lahir di jalan z=16 hutan)
+    { gx: 0, gy: 9, to: 'forest2', sx: 18, sy: 9 }, // barat ke Blok 4 (jalan x=11)
+    { gx: 19, gy: 9, to: 'meadow_n', sx: 1, sy: 9 }, // timur ke Blok 6 (jalan x=11)
+    { gx: 14, gy: 19, to: 'meadow_s', sx: 14, sy: 1 }, // selatan ke Blok 8 (jalan z=15)
   ],
   meadow_s: [
-    { gx: 5, gy: 0, to: 'forest2', sx: 5, sy: 18 }, // utara ke Blok 4
-    { gx: 13, gy: 0, to: 'town', sx: 13, sy: 18 }, // utara ke Blok 5 (pintu kedua)
-    { gx: 19, gy: 17, to: 'harbor', sx: 1, sy: 12 }, // timur ke Blok 9 (jalan bawah baris 17)
+    { gx: 14, gy: 0, to: 'town', sx: 14, sy: 18 }, // utara ke Blok 5 (jalan z=15 cuma satu)
+    { gx: 19, gy: 5, to: 'harbor', sx: 1, sy: 5 }, // timur ke Blok 9 (jalan x=15)
   ],
   harbor: [
-    { gx: 0, gy: 12, to: 'meadow_s', sx: 18, sy: 17 }, // barat ke Blok 8 (jalan baris 12)
+    { gx: 0, gy: 5, to: 'meadow_s', sx: 18, sy: 5 }, // barat ke Blok 8 (jalan x=15)
   ],
 };
-// Stasiun kereta 3 map (v58: Blok 1 ikut angka kunci Agus):
+// Stasiun kereta 3 map (v59: Blok 5+9 ikut angka kunci Agus):
 // [gx, gy] petak lahir saat naik kereta (petak jalan di sebelah bangunan
-// stasiun): ice (6,18) -> lahir (5,18); town (19,7) -> lahir (17,9);
-// harbor (17,5) -> lahir (17,8).
-const TRAIN_SPAWN = { ice: [5, 18], town: [17, 9], harbor: [17, 8] };
+// stasiun): ice (6,18) -> lahir (5,18); town (19,10) -> lahir (17,9);
+// harbor (9,8) -> lahir (9,5).
+const TRAIN_SPAWN = { ice: [5, 18], town: [17, 9], harbor: [9, 5] };
 
 // v49: Kota jadi KOTAK 20x20 seperti map lain. Plot mulai 16x12 lalu
 // membesar tiap ekspansi sampai 24x16 (ukuran dasar sama dengan grid v1
@@ -528,6 +530,7 @@ const CONVEYOR_COLOR_HEX = { gold: '#e8b64c', purple: '#9a6a9a', red: '#c0392b',
 
 // Riwayat versi untuk tombol Book di dalam game (ringkasan ROADMAP.md).
 const CHANGELOG = [
+  ['v59', 'Semua 9 blok ikut angka kunci Agus (x,z); railStop Blok 1 (3,9) jadi rel biasa; Plot pindah ke (11,11); pintu barat Lembah Hijau + utara Savana ke Kota (jalan cuma satu).'],
   ['v58', 'Blok 1 ikut angka kunci Agus (x,z): jalan x=6 (z 6-20) + jalan z=6 (x 1-6); rel x=3 (z 7-20) di selatan jalan; stasiun (2,7), lokomotif (3,8), gerbong (3,7); pintu timur pindah ke jalan x=6.'],
   ['v57', 'Rombak total jalan+rel+stasiun ikut gambar tangan Agus: koridor utama pindah ke kanan (jalan kolom 17 + rel kolom 18 turun 2-5-8, stasiun di tepi kanan Blok 1/5/9); jalan mendatar di tengah map (baris 8 atas, baris 10 tengah, baris 17 bawah); kereta mendatar di Blok 1 (lokomotif (10,5) + gerbong (9,5)) dan Blok 9 (lokomotif (17,6) + gerbong (16,6)); jembatan di (1,10) Hutan Kapas dan (5,11)+(13,11) Padang Selatan tempat jalan menyeberang sungai; sungai tetap ikut Gemini (1 ke 4 ke 7 ke 8 ke laut di 9); toko Pelabuhan pindah ke (4,9) supaya tidak menabrak sungai.'],
   ['v56', 'Peta pulau 3x3 ganti 5x5: 9 blok (semua bisa dimasuki) — Gletser Kembar, Belantara Sunyi, Bukit Angin, Kebun Kapas, Kota Utama, Lembah Hijau, Padang Ilalang, Savana Selatan, Pelabuhan Utama; stasiun cuma di Blok 1, 5, 9 (Forestry dihapus, kereta tidak lagi berhenti di Hutan Kapas); rel dan jalan antar blok ikut gambar tangan Agus (rel samping jalan, rel cuma di rute 1-2-5-8-9); sungai mengalir 1 ke 4 ke 7 ke 8 ke laut di 9; Lahan jadi rumput semua (sungai, jalan, dan rel di lahan dihapus, bangunan tetap).'],

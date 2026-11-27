@@ -35,11 +35,11 @@ function blockedForWalk(gx, gy) {
 // bijih di dekat pintu tidak malah pindah map. Petak keluar tetap boleh
 // jadi target (klik pintu memang mau pindah).
 function isExitTile(gx, gy) {
-  // v49: jembatan kota (8,0) = pintu ke utara. v55: petak putih plot pindah
-  // ke Padang Rumput (10,5), juga pemicu pindah map. Semuanya nggak boleh
+  // v49: jembatan kota (8,0) = pintu ke utara. v59: petak putih plot pindah
+  // ke Padang Rumput (10,9), juga pemicu pindah map. Semuanya nggak boleh
   // dilewati saat jalan ke target lain.
   if (S.map === 'town' && gx === 8 && gy === 0) return true;
-  if (S.map === 'meadow_n' && gx === 10 && gy === 5) return true;
+  if (S.map === 'meadow_n' && gx === 10 && gy === 9) return true;
   if (S.map === 'plot') { const g = gatePos(); if (gx === g.gx && gy === g.gy) return true; }
   for (const e of MAP_EXITS[S.map] || []) if (e.gx === gx && e.gy === gy) return true;
   return false;

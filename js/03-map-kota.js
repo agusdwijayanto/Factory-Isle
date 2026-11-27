@@ -1,10 +1,8 @@
 // v49: Kota 20x20 (dulu 20x14) — 6 toko, Mayor, rel + stasiun.
-// v57 (rombak total ikut gambar tangan Agus): koridor utama pindah ke
-// kanan — jalan kolom 17 utara-selatan (pintu utara ke Blok 2, pintu selatan
-// ke Blok 8), rel kolom 18 di sampingnya, stasiun di timur lokomotif (19,7);
-// jalan mendatar baris 10 (tengah, barat ke Blok 4, timur ke Blok 6);
-// jalan kolom 13 turun dari baris 10 ke selatan (pintu kedua ke Blok 8).
-// Sungai tetap tidak lewat kota. JANGKAR SIMPAN: grid[10][17] jalan,
+// v59 (angka kunci Agus (x,z) Blok 5): jalan x=11 (baris 9, z 1-20) +
+// jalan z=15 (x 1-20); rel z=19 (x 1-20, kolom 18) tetap; stasiun di timur
+// gerbong (20,10); lokomotif (19,9) + gerbong (19,10) di atas rel. Sungai
+// tetap tidak lewat kota. JANGKAR SIMPAN: grid[9][10] jalan (v59),
 // grid[7][1] lantern, grid[13][7] mayor.
 function buildTown() {
   const town = makeGrid(TOWN_W, TOWN_H);
@@ -24,20 +22,20 @@ function buildTown() {
   town[3][5].blocked = true; // (5,3)
   town[4][4].blocked = true; // (4,4)
   town[3][4].blocked = true; // (4,3)
-  // Rel tembus kolom 18 penuh (samping jalan kolom 17); stasiun di timur
-  // lokomotif (tepi kanan map, sesuai gambar: stasiun di batas Blok 5-6).
+  // Rel tembus kolom 18 penuh (samping jalan kolom 14); stasiun di timur
+  // gerbong (tepi kanan map, sesuai gambar: stasiun di batas Blok 5-6).
   railYAt(town, 18, 0, TOWN_H - 1);
-  town[7][19].obj = 'station'; // (19,7)
-  town[7][18].obj = 'train'; // (18,7), di atas rel
-  town[8][18].obj = 'trainCar'; // (18,8), gerbong 1 petak ke selatan (v52)
-  // Jalan: kolom 17 utara-selatan, baris 10 mendatar (tengah), kolom 13
-  // dari baris 10 ke selatan (pintu kedua).
+  town[10][19].obj = 'station'; // (19,10)
+  town[11][18].obj = 'train'; // (18,11), lokomotif di atas rel
+  town[10][18].obj = 'trainCar'; // (18,10), gerbong 1 petak ke utara (v59)
+  // Jalan: baris 9 mendatar (barat ke Blok 4, timur ke Blok 6), kolom 14
+  // utara-selatan (pintu utara ke Blok 2, pintu selatan ke Blok 8). Rel
+  // dulu, jalan kemudian — di persilangan (18,9) rel yang terus.
   roadAt(town, [
-    ...rng(0, TOWN_H - 1).map((gy) => [17, gy]),
-    ...rng(10, TOWN_H - 1).map((gy) => [13, gy]),
-    ...rng(0, TOWN_W - 1).map((gx) => [gx, 10]),
+    ...rng(0, TOWN_W - 1).map((gx) => [gx, 9]),
+    ...rng(0, TOWN_H - 1).map((gy) => [14, gy]),
   ]);
-  put(town, [[1, 7], [14, 7], [14, 11]], 'lantern'); // (1,7) jangkar simpan; (14,10) pindah ke (14,11): jalan baris 10
+  put(town, [[1, 7], [15, 7], [15, 11]], 'lantern'); // (1,7) jangkar simpan; (14,7)->(15,7) jalan 14, (14,11)->(15,11) jalan 14
   put(town, [[3, 5]], 'lamppost');
   put(town, [[5, 7]], 'planter');
   put(town, [[12, 5]], 'bench');

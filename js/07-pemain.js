@@ -216,18 +216,18 @@ function checkMapTrigger() {
   // v55: utara kota = Padang Rumput (meadow_n) lewat MAP_EXITS; jembatan
   // kota (8,0) TIDAK lagi ke lahan. Lahan map samping, masuk lewat petak
   // putih di Padang Rumput (Blok 6) dan keluar kembali ke sana.
-  // v55: petak putih plot di Padang Rumput (10,5) = Blok 6 Lembah Hijau —
+  // v59: petak putih plot di Padang Rumput (10,9) = Blok 6 Lembah Hijau —
   // diinjak langsung masuk lahan.
-  if (S.map === 'meadow_n' && cur.gx === 10 && cur.gy === 5) {
+  if (S.map === 'meadow_n' && cur.gx === 10 && cur.gy === 9) {
     switchMap('plot');
     return true;
   }
   if (S.map === 'plot') {
     const g = gatePos();
     if (cur.gx === g.gx && cur.gy === g.gy) {
-      // v55: gerbang lahan kembali ke Padang Rumput (Blok 8, satu petak di
+      // v59: gerbang lahan kembali ke Padang Rumput (Blok 6, satu petak di
       // selatan petak putih), bukan ke kota.
-      switchMap('meadow_n', { fx: 10.5, fy: 6.5, dir: 3 });
+      switchMap('meadow_n', { fx: 10.5, fy: 10.5, dir: 3 });
       return true;
     }
   }
