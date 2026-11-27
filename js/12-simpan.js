@@ -140,6 +140,9 @@ function loadGame() {
     || S.maps.meadow_n.grid[14][0].t === 'road'
     || S.maps.meadow_n.grid[8][0].t === 'road'
     || S.maps.meadow_n.grid[10][0].t === 'road'
+    // v60: jalan utara persis (11,1-5) — simpan v59 yang masih punya jalan
+    // baris 9 sampai z=10 (perpanjangan v59) dibangun ulang.
+    || S.maps.meadow_n.grid[9][7].t === 'road'
     || S.maps.meadow_n.grid[7][10].obj === 'lantern');
   // v55: stasiun kereta pindah dari Hutan Lebat ke Hutan Kapas (Forestry).
   // Hutan Lebat baru TIDAK punya stasiun/kereta; simpan lama yang masih
@@ -184,7 +187,11 @@ function loadGame() {
     // yang masih punya jalan baris 17 dibangun ulang.
     || S.maps.meadow_s.grid[0][8].t === 'road'
     || S.maps.meadow_s.grid[0][9].t === 'railY'
-    || S.maps.meadow_s.grid[17][10].t === 'road');
+    || S.maps.meadow_s.grid[17][10].t === 'road'
+    // v60: rel selatan tegak (11-20,19) — simpan v59 yang masih punya rel
+    // kolom 18 di selatan (baris 10-19) / jembatan (18,11) dibangun ulang.
+    || S.maps.meadow_s.grid[15][18].t === 'railY'
+    || S.maps.meadow_s.grid[11][18].t === 'bridge');
   const harborStale = S.maps.harbor && (!SHOP_SPOTS.filter((s) => s.map === 'harbor').every((s) => S.maps.harbor.grid[s.gy][s.gx].obj === 'shop_' + s.id)
     // v56: rel masuk dari barat (baris 6), bukan dari utara; sungai masuk dari barat (baris 11).
     || S.maps.harbor.grid[0][9].t === 'railY'

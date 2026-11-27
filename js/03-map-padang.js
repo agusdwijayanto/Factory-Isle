@@ -1,13 +1,15 @@
 // v49: Padang Rumput, 20x20 — dua varian (utara & selatan kota).
 // v59 (angka kunci Agus (x,z)): varian UTARA = Blok 3 + Blok 6 (tanpa
-// sungai, tanpa rel); jalan x=11 (baris 9, z 1-5) diteruskan sampai z=10,
-// ujungnya Plot di (11,11) — angka Agus z=5, kata kunci "ujungnya Plot"
-// (lihat MEMORY). Variasi SELATAN = Blok 7 + Blok 8 (sungai masuk dari
-// utara lewat kolom 1, belok timur di baris 11 ke Pelabuhan; rel masuk dari
-// utara kolom 18 turun sampai baris 9, belok timur ke Pelabuhan); jalan
-// x=15 (baris 5, z 1-20) + jalan z=15 (x 15-20, turun ke baris 5);
-// jembatan di (1,5) tempat jalan menyeberang sungai kolom 1, dan di (18,11)
-// tempat rel menyeberang sungai baris 11.
+// sungai, tanpa rel); jalan x=11 (baris 9, z 1-5); Plot di (11,11) = Blok 6
+// (bukan Blok 3), di rumput timur ujung jalan. Variasi SELATAN = Blok 7 +
+// Blok 8 (sungai masuk dari utara lewat kolom 1, belok timur di baris 11
+// ke Pelabuhan; rel masuk dari utara kolom 18 turun sampai baris 9, belok
+// timur ke Pelabuhan); jalan x=15 (baris 5, z 1-20) + jalan z=15 (x 15-20,
+// turun ke baris 5); jembatan di (1,5) tempat jalan menyeberang sungai
+// kolom 1.
+// v60: jalan utara persis (11,1-5) — perpanjangan v59 sampai z=10 dihapus
+// (angka Agus z=5); rel selatan tegak (11-20,19) nyambung ke rel Kota,
+// jembatan (18,11) dihapus karena rel tidak lagi menyeberang sungai.
 // v51: varian UTARA membawa petak putih plot di (10,9) — diinjak langsung
 // pindah ke lahan.
 function buildMeadow(north) {
@@ -22,22 +24,21 @@ function buildMeadow(north) {
   // supaya tidak menutup sungai).
   terrain(g, north ? [[2, 4], [2, 11], [2, 17]] : [[17, 4], [17, 18]], 'sand');
   if (!north) {
-    // Rel selatan: kolom 18 (x 1-11) turun ke selatan, belok timur di
-    // baris 9 (x=11) menuju Pelabuhan. Rel dulu, jalan kemudian.
-    railYAt(g, 18, 9, 19);
+    // Rel selatan: kolom 18 (x 11-20) turun dari utara (rel Kota), belok
+    // timur di baris 9 (x=11) menuju Pelabuhan. Rel dulu, jalan kemudian.
+    railYAt(g, 18, 0, 9);
     railXAt(g, 9, 18, 19);
   }
   if (north) {
-    // Jalan: baris 9 ke Blok 2 (barat) dan ke Blok 5 (barat, lewat pintu
-    // kota), ujung timur di Plot (10,9).
-    roadAt(g, rng(0, 9).map((gx) => [gx, 9]));
+    // Jalan: baris 9 (x=11, z 1-5) ke Blok 2 (barat); Plot (10,9) di Blok 6
+    // di rumput timur ujung jalan, bukan di ujung jalan.
+    roadAt(g, rng(0, 4).map((gx) => [gx, 9]));
   } else {
     // Jalan: baris 5 mendatar (barat ke Blok 7, timur ke Blok 9), kolom 14
     // turun dari utara (Blok 4/Blok 5) ke baris 5.
     roadAt(g, rng(0, 19).map((gx) => [gx, 5]));
     roadAt(g, rng(0, 5).map((gy) => [14, gy]));
     terrain(g, [[1, 5]], 'bridge'); // jalan baris 5 menyeberang sungai kolom 1
-    terrain(g, [[18, 11]], 'bridge'); // rel kolom 18 menyeberang sungai baris 11
   }
   put(g, [[3, 4], [4, 8], [15, 4], [16, 10], [3, 15], [14, 16], [6, 12], [17, 8]], 'tree'); // (4,9)->(4,8): jalan baris 9 (utara)
   if (north) {

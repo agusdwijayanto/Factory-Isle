@@ -3,6 +3,12 @@
 Object.assign(UI, {
   // ---- Tutorial + panel ----
   tick(dt) {
+    // Nama blok di atas layar ikut kaki: pindah blok di dalam map yang sama
+    // (Bukit Angin ke Lembah Hijau) tanpa ganti map harus ganti nama juga.
+    // v60: dulu nama cuma ganti pas switchMap, jadi di Plot tetap tertulis
+    // Bukit Angin.
+    const b = currentBlock();
+    if (b !== S._lastBlock) { S._lastBlock = b; this.refreshHUD(); }
     // Tutorial maju sendiri saat syarat langkah terpenuhi.
     if (!S.tutDone && S.tut < TUTORIAL.length && TUTORIAL[S.tut].done()) {
       S.tut++;

@@ -169,9 +169,10 @@ const SHOP_SPOTS = [
 // jalan bertemu (bukan lagi kolom 8/9 lama).
 // v59 (angka kunci Agus (x,z) semua blok): pintu ikut jalan baru. Jalan
 // Hutan Lebat selatan (z=16) dan jalan Kota utara (z=15) geser 1 petak —
-// lahir ikut jalan map tujuan. Pintu barat Lembah Hijau (0,9) dan pintu
-// utara Savana (14,0) cuma satu jalan, diarahkan ke Kota (bukan ke Hutan
-// Lebat / Hutan Kapas) supaya pulang dari Plot dan ke Pelabuhan langsung.
+// lahir ikut jalan map tujuan. Pintu utara Savana (14,0) cuma satu jalan,
+// ke Kota.
+// v60: pintu barat (0,9) di wilayah Blok 3, ke Hutan Lebat (Blok 2) —
+// bukan ke Kota. Plot (11,11) di Blok 6, bukan Blok 3.
 const MAP_EXITS = {
   ice: [
     { gx: 19, gy: 14, to: 'forest', sx: 1, sy: 14 }, // timur ke Blok 2 (jalan x=6, v58)
@@ -188,7 +189,7 @@ const MAP_EXITS = {
     { gx: 14, gy: 19, to: 'meadow_s', sx: 14, sy: 1 }, // selatan ke Blok 7 (jalan z=15)
   ],
   meadow_n: [
-    { gx: 0, gy: 9, to: 'town', sx: 18, sy: 9 }, // barat ke Blok 5 (jalan x=11 cuma satu)
+    { gx: 0, gy: 9, to: 'forest', sx: 18, sy: 9 }, // barat ke Blok 2 (jalan x=11, pintu di wilayah Blok 3)
   ],
   plot: [
     { gx: 8, gy: 0, to: 'meadow_n', sx: 8, sy: 18 }, // gerbang utara lahan -> Padang Rumput (Blok 6)
@@ -530,6 +531,7 @@ const CONVEYOR_COLOR_HEX = { gold: '#e8b64c', purple: '#9a6a9a', red: '#c0392b',
 
 // Riwayat versi untuk tombol Book di dalam game (ringkasan ROADMAP.md).
 const CHANGELOG = [
+  ['v60', 'Pintu barat Blok 3 ke Hutan Lebat (bukan Kota); jalan Lembah Hijau persis (11,1-5) sesuai angka, Plot (11,11) di Blok 6; rel Savana tegak (11-20,19) nyambung ke rel Kota; nama blok di atas layar ganti pas jalan kaki masuk blok lain.'],
   ['v59', 'Semua 9 blok ikut angka kunci Agus (x,z); railStop Blok 1 (3,9) jadi rel biasa; Plot pindah ke (11,11); pintu barat Lembah Hijau + utara Savana ke Kota (jalan cuma satu).'],
   ['v58', 'Blok 1 ikut angka kunci Agus (x,z): jalan x=6 (z 6-20) + jalan z=6 (x 1-6); rel x=3 (z 7-20) di selatan jalan; stasiun (2,7), lokomotif (3,8), gerbong (3,7); pintu timur pindah ke jalan x=6.'],
   ['v57', 'Rombak total jalan+rel+stasiun ikut gambar tangan Agus: koridor utama pindah ke kanan (jalan kolom 17 + rel kolom 18 turun 2-5-8, stasiun di tepi kanan Blok 1/5/9); jalan mendatar di tengah map (baris 8 atas, baris 10 tengah, baris 17 bawah); kereta mendatar di Blok 1 (lokomotif (10,5) + gerbong (9,5)) dan Blok 9 (lokomotif (17,6) + gerbong (16,6)); jembatan di (1,10) Hutan Kapas dan (5,11)+(13,11) Padang Selatan tempat jalan menyeberang sungai; sungai tetap ikut Gemini (1 ke 4 ke 7 ke 8 ke laut di 9); toko Pelabuhan pindah ke (4,9) supaya tidak menabrak sungai.'],
