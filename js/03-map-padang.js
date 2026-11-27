@@ -10,6 +10,9 @@
 // v60: jalan utara persis (11,1-5) — perpanjangan v59 sampai z=10 dihapus
 // (angka Agus z=5); rel selatan tegak (11-20,19) nyambung ke rel Kota,
 // jembatan (18,11) dihapus karena rel tidak lagi menyeberang sungai.
+// v61: Lembah Hijau PISAH jadi map sendiri (meadow_e) — Blok 3 (Bukit Angin)
+// cuma jalan, Blok 6 (Lembah Hijau) jalan + Plot. Jalan Blok 3 diteruskan
+// sampai tepi timur (z=20) supaya pintu timur ke Lembah Hijau ada di jalan.
 // v51: varian UTARA membawa petak putih plot di (10,9) — diinjak langsung
 // pindah ke lahan.
 function buildMeadow(north) {
@@ -28,11 +31,14 @@ function buildMeadow(north) {
     // timur di baris 9 (x=11) menuju Pelabuhan. Rel dulu, jalan kemudian.
     railYAt(g, 18, 0, 9);
     railXAt(g, 9, 18, 19);
+    // v61: tikungan L di (18,9) pakai sprite belokan, bukan rel tegak —
+    // "rel ga belok" Agus: sudutnya harus kelihatan membelok.
+    terrain(g, [[18, 9]], 'railBend');
   }
   if (north) {
-    // Jalan: baris 9 (x=11, z 1-5) ke Blok 2 (barat); Plot (10,9) di Blok 6
-    // di rumput timur ujung jalan, bukan di ujung jalan.
-    roadAt(g, rng(0, 4).map((gx) => [gx, 9]));
+    // v61: jalan Blok 3 (Bukit Angin) diteruskan sampai tepi timur (z=20)
+    // supaya pintu timur ke Lembah Hijau ada di jalan, bukan di rumput.
+    roadAt(g, rng(0, 19).map((gx) => [gx, 9]));
   } else {
     // Jalan: baris 5 mendatar (barat ke Blok 7, timur ke Blok 9), kolom 14
     // turun dari utara (Blok 4/Blok 5) ke baris 5.
@@ -48,10 +54,21 @@ function buildMeadow(north) {
     put(g, [[6, 3], [12, 4], [7, 9], [14, 13], [4, 17], [11, 18]], 'flowers'); // (5,3)->(6,3) jalan 5, (13,13)->(14,13) jalan 13, (11,17)->(11,18) jalan 17
     put(g, [[10, 7], [12, 14]], 'lantern');
   }
-  if (north) {
-    g[9][10].obj = 'plotpad'; // v59: (10,9) = Blok 6 Lembah Hijau, di ujung jalan baris 9
-    g[9][11].obj = 'plotsign'; // v59: papan "PLOT" tepat di timur petak putih
-  }
+  return g;
+}
+
+// v61: Lembah Hijau (Blok 6) map sendiri — jalan + Plot. Jalan baris 9
+// (x=11) dari tepi barat sampai ujung Plot (z=10); petak putih + papan
+// "PLOT" di (10,9)/(11,9). Pintu barat (0,9) ke Kota, petak putih ke Lahan.
+function buildMeadowE() {
+  const g = makeGrid(MAP_W, MAP_H);
+  terrain(g, [[2, 4], [2, 11], [2, 17]], 'sand');
+  roadAt(g, rng(0, 9).map((gx) => [gx, 9]));
+  put(g, [[3, 4], [15, 4], [4, 14], [16, 14], [7, 15], [13, 3]], 'tree');
+  put(g, [[5, 12], [12, 13], [7, 4], [14, 15]], 'flowers');
+  put(g, [[5, 7], [14, 7]], 'lantern');
+  g[9][10].obj = 'plotpad'; // (10,9) = petak putih ke Lahan
+  g[9][11].obj = 'plotsign'; // papan "PLOT" tepat di timur petak putih
   return g;
 }
 function buildMeadowN() { return buildMeadow(true); }

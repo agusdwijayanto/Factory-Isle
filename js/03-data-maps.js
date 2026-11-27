@@ -1,5 +1,7 @@
 // Bantuan bangun map + rakitan map statis.
-// v56: dunia jadi PULAU 3x3 (9 blok, 8 map game + lahan samping). Tiap map
+// v56: dunia jadi PULAU 3x3 (9 blok, 9 map: 8 utama + lahan samping).
+// v61: Lembah Hijau pisah jadi map sendiri (meadow_e); 7+8 masih berbagi
+// Padang Rumput Selatan. Tiap map
 // KOTAK 20x20 = 400 blok (lahan tetap 16x12 lalu membesar sampai 24x16).
 //   1 ice | 2 forest | 3 meadow_n
 //   4 forest2 | 5 town | 6 meadow_n
@@ -34,6 +36,7 @@ function buildStaticMaps() {
   return {
     ice: { w: MAP_W, h: MAP_H, grid: buildIce() },
     meadow_n: { w: MAP_W, h: MAP_H, grid: buildMeadowN() },
+    meadow_e: { w: MAP_W, h: MAP_H, grid: buildMeadowE() },
     forest: { w: MAP_W, h: MAP_H, grid: buildForest() },
     forest2: { w: MAP_W, h: MAP_H, grid: buildForest2() },
     meadow_s: { w: MAP_W, h: MAP_H, grid: buildMeadowS() },

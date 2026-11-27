@@ -78,16 +78,17 @@ const ITEMS = {
 // Nama map untuk HUD.
 // v49: dunia = 8 map satu rantai utara-selatan. v50: sebagian nama diganti.
 const MAP_NAMES = {
-  ice: 'Gunung Es', meadow_n: 'Padang Rumput', forest: 'Hutan Lebat',
+  ice: 'Gunung Es', meadow_n: 'Padang Rumput', meadow_e: 'Lembah Hijau', forest: 'Hutan Lebat',
   forest2: 'Hutan Kapas', plot: 'Lahan', town: 'Kota',
   meadow_s: 'Padang Rumput Selatan', harbor: 'Teluk Pasir',
 };
 
 // v56: Peta pulau 3x3 (9 blok, semua bisa dimasuki). Tiap blok punya nama
 // unik; HUD tampilkan nama blok, bukan nama map game. map = map game yang
-// memuat blok itu; dua blok bisa berbagi satu map (3+6 Padang Rumput,
-// 7+8 Padang Rumput Selatan) — currentBlock() membedakannya dari posisi
-// pemain di dalam map. station = stasiun kereta di blok itu (cuma 1, 5, 9);
+// memuat blok itu; dua blok bisa berbagi satu map (7+8 Padang Rumput
+// Selatan) — currentBlock() membedakannya dari posisi pemain di dalam map.
+// v61: Lembah Hijau pisah jadi map sendiri (meadow_e); Blok 3 cuma map
+// meadow_n. station = stasiun kereta di blok itu (cuma 1, 5, 9);
 // plot = akses petak putih ke Lahan.
 const BLOCKS = {
   1: { name: 'Gletser Kembar', map: 'ice', access: 'playable', station: 'Gunung' },
@@ -95,7 +96,7 @@ const BLOCKS = {
   3: { name: 'Bukit Angin', map: 'meadow_n', access: 'playable' },
   4: { name: 'Kebun Kapas', map: 'forest2', access: 'playable' },
   5: { name: 'Kota Utama', map: 'town', access: 'playable', station: 'Kota' },
-  6: { name: 'Lembah Hijau', map: 'meadow_n', access: 'playable', plot: true },
+  6: { name: 'Lembah Hijau', map: 'meadow_e', access: 'playable', plot: true },
   7: { name: 'Padang Ilalang', map: 'meadow_s', access: 'playable' },
   8: { name: 'Savana Selatan', map: 'meadow_s', access: 'playable' },
   9: { name: 'Pelabuhan Utama', map: 'harbor', access: 'playable', station: 'Pelabuhan' },
@@ -173,6 +174,11 @@ const SHOP_SPOTS = [
 // ke Kota.
 // v60: pintu barat (0,9) di wilayah Blok 3, ke Hutan Lebat (Blok 2) —
 // bukan ke Kota. Plot (11,11) di Blok 6, bukan Blok 3.
+// v61: Lembah Hijau pisah (meadow_e) — pintu timur Blok 3 (19,9) ke
+// Lembah Hijau, pintu barat Lembah Hijau (0,9) ke Kota, gerbang lahan
+// kembali ke Lembah Hijau, pintu timur Kota ke Lembah Hijau. Pintu utara
+// Savana (14,0) ke Hutan Kapas (Blok 4) — sebelumnya ke Kota, jadi jalan
+// Savana ke Blok 4 putus satu arah.
 const MAP_EXITS = {
   ice: [
     { gx: 19, gy: 14, to: 'forest', sx: 1, sy: 14 }, // timur ke Blok 2 (jalan x=6, v58)
@@ -190,18 +196,22 @@ const MAP_EXITS = {
   ],
   meadow_n: [
     { gx: 0, gy: 9, to: 'forest', sx: 18, sy: 9 }, // barat ke Blok 2 (jalan x=11, pintu di wilayah Blok 3)
+    { gx: 19, gy: 9, to: 'meadow_e', sx: 1, sy: 9 }, // timur ke Blok 6 (jalan x=11 diteruskan sampai tepi timur)
+  ],
+  meadow_e: [
+    { gx: 0, gy: 9, to: 'town', sx: 18, sy: 9 }, // barat ke Blok 5 (jalan x=11, pulang dari Plot ke Kota langsung)
   ],
   plot: [
-    { gx: 8, gy: 0, to: 'meadow_n', sx: 8, sy: 18 }, // gerbang utara lahan -> Padang Rumput (Blok 6)
+    { gx: 8, gy: 0, to: 'meadow_e', sx: 8, sy: 18 }, // gerbang utara lahan -> Lembah Hijau (Blok 6)
   ],
   town: [
     { gx: 14, gy: 0, to: 'forest', sx: 15, sy: 18 }, // utara ke Blok 2 (jalan z=15, lahir di jalan z=16 hutan)
     { gx: 0, gy: 9, to: 'forest2', sx: 18, sy: 9 }, // barat ke Blok 4 (jalan x=11)
-    { gx: 19, gy: 9, to: 'meadow_n', sx: 1, sy: 9 }, // timur ke Blok 6 (jalan x=11)
+    { gx: 19, gy: 9, to: 'meadow_e', sx: 1, sy: 9 }, // timur ke Blok 6 (jalan x=11)
     { gx: 14, gy: 19, to: 'meadow_s', sx: 14, sy: 1 }, // selatan ke Blok 8 (jalan z=15)
   ],
   meadow_s: [
-    { gx: 14, gy: 0, to: 'town', sx: 14, sy: 18 }, // utara ke Blok 5 (jalan z=15 cuma satu)
+    { gx: 14, gy: 0, to: 'forest2', sx: 14, sy: 18 }, // utara ke Blok 4 (jalan z=15; Savana ke Kota lewat Blok 4)
     { gx: 19, gy: 5, to: 'harbor', sx: 1, sy: 5 }, // timur ke Blok 9 (jalan x=15)
   ],
   harbor: [
@@ -531,6 +541,7 @@ const CONVEYOR_COLOR_HEX = { gold: '#e8b64c', purple: '#9a6a9a', red: '#c0392b',
 
 // Riwayat versi untuk tombol Book di dalam game (ringkasan ROADMAP.md).
 const CHANGELOG = [
+  ['v61', 'Lembah Hijau pisah jadi map sendiri (Blok 3 cuma jalan, Blok 6 jalan + Plot); jalan Blok 3 diteruskan sampai pintu timur; pintu utara Savana ke Hutan Kapas (jalan ke Blok 4 nyambung dua arah); tikungan rel Savana pakai sprite belokan.'],
   ['v60', 'Pintu barat Blok 3 ke Hutan Lebat (bukan Kota); jalan Lembah Hijau persis (11,1-5) sesuai angka, Plot (11,11) di Blok 6; rel Savana tegak (11-20,19) nyambung ke rel Kota; nama blok di atas layar ganti pas jalan kaki masuk blok lain.'],
   ['v59', 'Semua 9 blok ikut angka kunci Agus (x,z); railStop Blok 1 (3,9) jadi rel biasa; Plot pindah ke (11,11); pintu barat Lembah Hijau + utara Savana ke Kota (jalan cuma satu).'],
   ['v58', 'Blok 1 ikut angka kunci Agus (x,z): jalan x=6 (z 6-20) + jalan z=6 (x 1-6); rel x=3 (z 7-20) di selatan jalan; stasiun (2,7), lokomotif (3,8), gerbong (3,7); pintu timur pindah ke jalan x=6.'],

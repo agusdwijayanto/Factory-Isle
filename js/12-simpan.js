@@ -128,8 +128,12 @@ function loadGame() {
     || S.maps.town.grid[0][8].t === 'road'
     || S.maps.town.grid[0][9].t === 'railY'
     || S.maps.town.grid[10][14].obj === 'lantern');
-  const meadowNStale = S.maps.meadow_n && (S.maps.meadow_n.grid[9][10].obj !== 'plotpad'
-    || S.maps.meadow_n.grid[9][11].obj !== 'plotsign' // v59: petak putih pindah ke Blok 6 (10,9)
+  // v61: petak putih pindah ke map Lembah Hijau sendiri (meadow_e) —
+  // simpan lama yang masih punya petak putih di meadow_n dibangun ulang.
+  // Jalan Blok 3 diteruskan sampai tepi timur (19,9) untuk pintu timur.
+  const meadowNStale = S.maps.meadow_n && (S.maps.meadow_n.grid[9][10].obj === 'plotpad'
+    || S.maps.meadow_n.grid[9][11].obj === 'plotsign'
+    || S.maps.meadow_n.grid[9][19].t !== 'road' // v61: jalan harus sampai pintu timur
     // v56: sungai dan rel keluar dari Padang Rumput (Blok 3+6).
     || S.maps.meadow_n.grid[0][9].t === 'railY'
     || S.maps.meadow_n.grid[0][1].t === 'water'
@@ -140,10 +144,12 @@ function loadGame() {
     || S.maps.meadow_n.grid[14][0].t === 'road'
     || S.maps.meadow_n.grid[8][0].t === 'road'
     || S.maps.meadow_n.grid[10][0].t === 'road'
-    // v60: jalan utara persis (11,1-5) — simpan v59 yang masih punya jalan
-    // baris 9 sampai z=10 (perpanjangan v59) dibangun ulang.
-    || S.maps.meadow_n.grid[9][7].t === 'road'
     || S.maps.meadow_n.grid[7][10].obj === 'lantern');
+  // v61: map Lembah Hijau baru — simpan lama tidak punya, dibangun ulang.
+  const meadowEStale = !S.maps.meadow_e
+    || S.maps.meadow_e.grid[9][10].obj !== 'plotpad'
+    || S.maps.meadow_e.grid[9][11].obj !== 'plotsign'
+    || S.maps.meadow_e.grid[9][2].t !== 'road';
   // v55: stasiun kereta pindah dari Hutan Lebat ke Hutan Kapas (Forestry).
   // Hutan Lebat baru TIDAK punya stasiun/kereta; simpan lama yang masih
   // menyimpannya dibangun ulang sekali (cek "masih ada", bukan "harus ada").
@@ -191,7 +197,9 @@ function loadGame() {
     // v60: rel selatan tegak (11-20,19) — simpan v59 yang masih punya rel
     // kolom 18 di selatan (baris 10-19) / jembatan (18,11) dibangun ulang.
     || S.maps.meadow_s.grid[15][18].t === 'railY'
-    || S.maps.meadow_s.grid[11][18].t === 'bridge');
+    || S.maps.meadow_s.grid[11][18].t === 'bridge'
+    // v61: tikungan rel (18,9) pakai sprite belokan, bukan rel tegak.
+    || S.maps.meadow_s.grid[9][18].t !== 'railBend');
   const harborStale = S.maps.harbor && (!SHOP_SPOTS.filter((s) => s.map === 'harbor').every((s) => S.maps.harbor.grid[s.gy][s.gx].obj === 'shop_' + s.id)
     // v56: rel masuk dari barat (baris 6), bukan dari utara; sungai masuk dari barat (baris 11).
     || S.maps.harbor.grid[0][9].t === 'railY'
@@ -238,7 +246,7 @@ function loadGame() {
     // v52 lahan tidak lagi memuat bangunan itu — kalau dibalik, lahan akan
     // dibangun ulang tiap kali dimuat.
     || S.maps.plot.grid[S.maps.plot.h - 2][5].obj === 'wagonShop');
-  if (townStale || meadowNStale || forestStale || forest2Stale || meadowSStale || harborStale || iceStale || keretaStale) {
+  if (townStale || meadowNStale || meadowEStale || forestStale || forest2Stale || meadowSStale || harborStale || iceStale || keretaStale) {
     const sm = buildStaticMaps();
     for (const [name, m] of Object.entries(sm)) S.maps[name] = m;
   }

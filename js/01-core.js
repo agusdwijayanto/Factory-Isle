@@ -109,7 +109,8 @@ function currentBlock() {
   switch (S.map) {
     case 'ice': return 1;
     case 'forest': return 2;
-    case 'meadow_n': return (gx >= 10 || gy >= 12) ? 6 : 3;
+    case 'meadow_n': return 3; // v61: Blok 3 saja (Lembah Hijau pisah)
+    case 'meadow_e': return 6; // v61: Lembah Hijau map sendiri
     case 'forest2': return 4;
     case 'town': return 5;
     case 'meadow_s': return gx < 10 ? 7 : 8;

@@ -39,7 +39,7 @@ function isExitTile(gx, gy) {
   // ke Padang Rumput (10,9), juga pemicu pindah map. Semuanya nggak boleh
   // dilewati saat jalan ke target lain.
   if (S.map === 'town' && gx === 8 && gy === 0) return true;
-  if (S.map === 'meadow_n' && gx === 10 && gy === 9) return true;
+  if (S.map === 'meadow_e' && gx === 10 && gy === 9) return true;
   if (S.map === 'plot') { const g = gatePos(); if (gx === g.gx && gy === g.gy) return true; }
   for (const e of MAP_EXITS[S.map] || []) if (e.gx === gx && e.gy === gy) return true;
   return false;

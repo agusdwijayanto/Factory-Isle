@@ -10,7 +10,7 @@ const Tutorial = {
     { title: 'Bangun Mesin', text: 'Klik salah satu petak kosong di grid untuk membuka menu bangunan dan bangun mesin pertamamu.' },
     { title: 'Cek Inventory', text: 'Hasil produksi mesin akan masuk ke tas. Buka panel Tas untuk melihat barang.' },
     { title: 'Jual & Dapatkan Uang', text: 'Bawa barang ke toko atau jual langsung untuk mendapatkan koin emas.' },
-    { title: 'Jelajahi Dunia', text: 'Jalan ke ujung map untuk pindah ke map lain. Ada 8 map — Hutan, Gunung, Pelabuhan, dan lainnya.' },
+    { title: 'Jelajahi Dunia', text: 'Jalan ke ujung map untuk pindah ke map lain. Ada 9 map — Hutan, Gunung, Pelabuhan, dan lainnya.' },
     { title: 'Temui Mayor', text: 'Ketuk Mayor di Kota untuk beli lahan lebih besar dan pasang Auto Seller otomatis.' }
   ],
 
